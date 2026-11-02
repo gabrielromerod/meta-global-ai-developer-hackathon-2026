@@ -1,0 +1,31 @@
+{
+  "$comment": "Copy to eval/labels/<scenario>.json, fill in BEFORE any pipeline run, commit, then run `vigil eval`. Keys starting with $ are ignored. Times are seconds on the aligned session clock. No names, faces, ages, genders or other identity fields: subjects are S1, S2, V1 ... See README.md.",
+  "schema_version": 1,
+  "scenario": "C",
+  "title": "Night: side gate touched, 41 s behind the shed, leaves",
+  "session": "evening-1",
+  "lighting": "night_ir",
+  "expected_verdict": "needs_attention",
+  "expected_escalated": true,
+  "subjects": [
+    {
+      "id": "S1",
+      "class": "person",
+      "appearances": [
+        {"camera_id": "front", "t0": 0.0, "t1": 10.0},
+        {"camera_id": "side_left", "t0": 14.0, "t1": 40.0},
+        {"camera_id": "side_left", "t0": 81.0, "t1": 95.0}
+      ]
+    }
+  ],
+  "gaps": [
+    {"id": "g4", "kind": "blind_spot", "t0": 40.0, "t1": 81.0, "region_id": "shed_back"}
+  ],
+  "events": [
+    {"type": "touch", "camera_id": "side_left", "t": 22.0, "target": "po_side_gate"}
+  ],
+  "rules_fired": ["r7"],
+  "labelled_by": "field lead",
+  "labelled_at": "YYYY-MM-DDTHH:MM:SS-08:00",
+  "notes": ""
+}

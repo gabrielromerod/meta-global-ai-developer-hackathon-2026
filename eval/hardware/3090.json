@@ -1,0 +1,101 @@
+{
+  "burn": {
+    "max_clock_mhz": 1830,
+    "max_temp_c": 67,
+    "min_clock_mhz": 1650,
+    "samples": [
+      {
+        "clocks_sm_mhz": 1740,
+        "power_draw_w": 47.88,
+        "temperature_c": 41
+      },
+      {
+        "clocks_sm_mhz": 1665,
+        "power_draw_w": 348.84,
+        "temperature_c": 67
+      },
+      {
+        "clocks_sm_mhz": 1665,
+        "power_draw_w": 348.84,
+        "temperature_c": 67
+      },
+      {
+        "clocks_sm_mhz": 1665,
+        "power_draw_w": 348.84,
+        "temperature_c": 67
+      },
+      {
+        "clocks_sm_mhz": 1815,
+        "power_draw_w": 294.7,
+        "temperature_c": 60
+      },
+      {
+        "clocks_sm_mhz": 1815,
+        "power_draw_w": 294.7,
+        "temperature_c": 60
+      },
+      {
+        "clocks_sm_mhz": 1815,
+        "power_draw_w": 294.7,
+        "temperature_c": 60
+      },
+      {
+        "clocks_sm_mhz": 1815,
+        "power_draw_w": 294.7,
+        "temperature_c": 60
+      },
+      {
+        "clocks_sm_mhz": 1830,
+        "power_draw_w": 227.16,
+        "temperature_c": 58
+      },
+      {
+        "clocks_sm_mhz": 1830,
+        "power_draw_w": 227.16,
+        "temperature_c": 58
+      },
+      {
+        "clocks_sm_mhz": 1830,
+        "power_draw_w": 227.16,
+        "temperature_c": 58
+      },
+      {
+        "clocks_sm_mhz": 1650,
+        "power_draw_w": 348.62,
+        "temperature_c": 67
+      }
+    ],
+    "seconds": 38.9,
+    "tflops": 63.9
+  },
+  "cuda_driver_version": "13.4",
+  "gpus": [
+    {
+      "clocks_max_sm_mhz": 2100,
+      "clocks_sm_mhz": 1740,
+      "driver_version": "617.42",
+      "memory_free_mib": 21975,
+      "memory_total_mib": 24576,
+      "memory_used_mib": 2352,
+      "name": "NVIDIA GeForce RTX 3090",
+      "power_draw_w": 130.48,
+      "pstate": "P0",
+      "temperature_c": 47
+    }
+  ],
+  "os": "Windows 11",
+  "probe": "H-01",
+  "probed_at": "2026-11-02T20:50:57+00:00",
+  "python": "3.12.13",
+  "ready": true,
+  "reasons": [],
+  "torch": {
+    "cuda": "13.0",
+    "cuda_available": true,
+    "device_count": 1,
+    "device_name": "NVIDIA GeForce RTX 3090",
+    "free_mib": 23336,
+    "total_mib": 24575,
+    "version": "2.14.1+cu130"
+  }
+}

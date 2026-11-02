@@ -1,0 +1,62 @@
+# go2rtc restreamer for the 4 home Reolink cameras (spec 6 "Streams", FR-031, FR-034).
+#
+# go2rtc: https://github.com/AlexxIT/go2rtc  — licence: MIT (Copyright (c) 2022 Alexey Khit),
+# checked against the repository LICENSE file on 2026-11-02. Used as an unmodified binary.
+#
+# One connection per camera; everything else (capture, LAN live view) reads the restream:
+#   rtsp://127.0.0.1:8554/<camera_id>        main stream, read by vigil/reolink/capture.py
+#   rtsp://127.0.0.1:8554/<camera_id>_sub    sub stream, motion gate and live view
+# Stream names match the camera ids in config/cameras.yaml.
+#
+# Credentials: NEVER written here. go2rtc substitutes ${VAR} (and ${VAR:default}) from the
+# environment (or systemd credential files) at load time, so run it with the same .env the
+# edge service uses, e.g.
+#   set -a; . ./.env; set +a; go2rtc -c infra/go2rtc.yaml
+# go2rtc inserts the value verbatim, so REOLINK_PASSWORD must not contain URL-special
+# characters (@ : / ? # % &); pick a long alphanumeric password for the low-privilege
+# camera user (spec 6 "Security and privacy").
+#
+# Cameras behind a Reolink NVR: point every *_HOST at the NVR and change Preview_01 to
+# Preview_0N (N = NVR channel), as vigil.reolink.probe.rtsp_url() does.
+#
+# Audio never leaves the camera: `#media=video` asks go2rtc for the video track only, and
+# `#backchannel=0` disables the two-way-audio request (go2rtc internal/rtsp README).
+# If a model's RTSP is unusable (go2rtc and the Home Assistant docs warn about some
+# Reolink firmware), add the HTTP-FLV source as a second line, e.g.
+#   - http://${REOLINK_FRONT_HOST}/flv?port=1935&app=bcs&stream=channel0_main.bcs&user=${REOLINK_USER}&password=${REOLINK_PASSWORD}
+
+streams:
+  front:
+    - rtsp://${REOLINK_USER}:${REOLINK_PASSWORD}@${REOLINK_FRONT_HOST}:554/Preview_01_main#media=video#backchannel=0
+  front_sub:
+    - rtsp://${REOLINK_USER}:${REOLINK_PASSWORD}@${REOLINK_FRONT_HOST}:554/Preview_01_sub#media=video#backchannel=0
+  side_left:
+    - rtsp://${REOLINK_USER}:${REOLINK_PASSWORD}@${REOLINK_SIDE_LEFT_HOST}:554/Preview_01_main#media=video#backchannel=0
+  side_left_sub:
+    - rtsp://${REOLINK_USER}:${REOLINK_PASSWORD}@${REOLINK_SIDE_LEFT_HOST}:554/Preview_01_sub#media=video#backchannel=0
+  side_right:
+    - rtsp://${REOLINK_USER}:${REOLINK_PASSWORD}@${REOLINK_SIDE_RIGHT_HOST}:554/Preview_01_main#media=video#backchannel=0
+  side_right_sub:
+    - rtsp://${REOLINK_USER}:${REOLINK_PASSWORD}@${REOLINK_SIDE_RIGHT_HOST}:554/Preview_01_sub#media=video#backchannel=0
+  backyard:
+    - rtsp://${REOLINK_USER}:${REOLINK_PASSWORD}@${REOLINK_BACKYARD_HOST}:554/Preview_01_main#media=video#backchannel=0
+  backyard_sub:
+    - rtsp://${REOLINK_USER}:${REOLINK_PASSWORD}@${REOLINK_BACKYARD_HOST}:554/Preview_01_sub#media=video#backchannel=0
+
+# Home network only (NFR-031, FR-034): no port forwarding, nothing public.
+# The API/web UI and RTSP server bind to localhost by default; set GO2RTC_LAN_BIND to the
+# edge machine's LAN address to let the LAN app on a phone reach WebRTC.
+api:
+  listen: "${GO2RTC_LAN_BIND:127.0.0.1}:1984"
+
+rtsp:
+  listen: "127.0.0.1:8554"   # capture reads here; localhost needs no RTSP auth
+
+webrtc:
+  listen: "${GO2RTC_LAN_BIND:127.0.0.1}:8555"
+  # LAN only: no public `candidates` (no static IP, no `stun:` entry) and no default
+  # STUN/TURN servers, so no candidate outside the home network is ever advertised.
+  ice_servers: []
+
+log:
+  level: info                # go2rtc logs stream URLs at debug; keep debug off

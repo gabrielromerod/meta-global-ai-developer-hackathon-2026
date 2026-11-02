@@ -1,0 +1,85 @@
+[project]
+name = "vigil"
+version = "0.1.0"
+description = "One cited story per visit, placed in a 3D model of the house. Meta models perceive and write; Vigil's code links, checks and decides."
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+license = { text = "Proprietary (hackathon submission)" }
+authors = [{ name = "Lord Solutions" }]
+# Exact pins per spec 9.2 ("pin exact versions in pyproject.toml on day 1"); uv.lock pins the transitive set.
+dependencies = [
+  "fastapi==0.162.0",
+  "uvicorn[standard]==0.54.0",
+  "sse-starlette==3.6.0",
+  "pydantic==2.14.2",
+  "pydantic-settings==2.16.2",
+  "httpx==0.28.1",
+  "typer==0.27.3",
+  "pyyaml==6.0.3",
+  "numpy==2.5.4",
+  "opencv-python-headless==5.0.0.93",
+  "shapely==2.2.0",
+  "meta-sam-parser==0.1.0",
+  "python-dotenv==1.2.4",
+]
+
+[project.optional-dependencies]
+# Field hardware: Reolink TCP push events (FR-032). Not needed for CI.
+reolink = ["reolink-aio==0.22.0"]
+# LiDAR scan registration (FR-035). Heavy; core ray casting uses numpy/OpenCV only.
+spatial = ["open3d==0.20.0", "trimesh==5.2.0"]
+
+[project.scripts]
+vigil = "vigil.cli:app"
+
+[dependency-groups]
+dev = [
+  "pytest==9.2.0",
+  "pytest-cov==7.1.0",
+  "respx==0.23.1",
+  "hypothesis==6.170.14",
+  "ruff==0.17.3",
+  "playwright==1.64.1",
+  "pytest-playwright==0.10.0",
+  "pillow==13.0.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["vigil"]
+
+[tool.uv]
+default-groups = ["dev"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+extend-exclude = ["web/twin/vendor", "docs/spec"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF", "S", "PT"]
+ignore = [
+  "S101",   # assert is fine in tests
+  "S603",   # subprocess with ffmpeg/ffprobe is intended
+  "S607",
+  "RUF001", "RUF002", "RUF003",  # unicode in docstrings (·, ±, —) is intended
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S", "PT011"]
+"scripts/**" = ["S"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers -m 'not live and not gpu and not e2e'"
+markers = [
+  "live: makes real, billed Meta API calls (never in CI; run by hand behind the budget guard)",
+  "gpu: needs a probed local GPU (H-01)",
+  "slow: takes more than a few seconds",
+  "e2e: Playwright browser tests against a running server",
+  "hardware: needs Reolink cameras or other field hardware",
+]
+filterwarnings = ["error::pytest.PytestUnraisableExceptionWarning"]

@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.hypothesis/
+.mypy_cache/
+*.egg-info/
+build/
+dist/
+
+# Secrets and local env
+.env
+.env.*
+!.env.example
+
+# Raw home data never leaves the edge machine (spec section 6, NFR-001/032)
+data/
+*.mp4
+*.mov
+*.mkv
+*.ts
+*.ply
+*.las
+*.obj
+*.usdz
+*.glb
+!demo/**/*.mp4
+!demo/**/*.glb
+!tests/fixtures/**/*.mp4
+
+# Caches and generated outputs
+.vigil-cache/
+vigil.db
+*.sqlite
+*.sqlite-journal
+eval/cache/
+test-results/
+playwright-report/
+node_modules/
+docs/architecture/rendered/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

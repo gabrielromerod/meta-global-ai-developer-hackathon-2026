@@ -1,0 +1,4 @@
+{
+  "description": "Noun phrases Wonder may ask SAM 3.1 to watch (FR-020, NFR-016). Single nouns only; never people.",
+  "phrases": ["package", "bicycle", "ladder", "bin", "box", "car", "trailer"]
+}

@@ -1,0 +1,23 @@
+{
+  "$comment": "Synthetic label for the golden pipeline test (tests/fixtures/scenarios/builders.py, scenario_a). Written from the authored keyframes before the pipeline ran. Times are seconds on the session clock.",
+  "schema_version": 1,
+  "scenario": "A",
+  "title": "Routine: a person leaves by the front door and drives off",
+  "session": "synthetic-golden",
+  "lighting": "day",
+  "expected_verdict": "normal",
+  "expected_escalated": false,
+  "subjects": [
+    {"id": "S1", "class": "person", "appearances": [{"camera_id": "front", "t0": 2.0, "t1": 11.0}]},
+    {"id": "V1", "class": "vehicle", "appearances": [{"camera_id": "front", "t0": 0.0, "t1": 22.0}]}
+  ],
+  "gaps": [],
+  "events": [
+    {"type": "enter", "camera_id": "front", "t": 2.0, "target": "porch"},
+    {"type": "exit", "camera_id": "front", "t": 19.6, "target": "driveway"}
+  ],
+  "rules_fired": [],
+  "labelled_by": "integration agent",
+  "labelled_at": "2026-11-02T12:00:00-08:00",
+  "notes": "Synthetic scenario; no footage."
+}

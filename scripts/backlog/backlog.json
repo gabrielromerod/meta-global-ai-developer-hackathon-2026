@@ -1,0 +1,889 @@
+[
+  {
+    "id": "FR-001",
+    "title": "FR-001: Camera config",
+    "labels": [
+      "type:fr",
+      "P0",
+      "track:A"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Requirement (P0).** Camera config. `cameras.yaml` defines cameras, zones and lines (polygons), blind spots, and topology edges with min and max transit seconds\n\n**Depends on:** none\n\n**Acceptance criteria:** Loader rejects unknown camera or zone references with a named error; `test_config.py` passes\n\n**Blocked by:** nothing (offline-buildable)\n\nSpec: [FR-001](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-002",
+    "title": "FR-002: Clock alignment",
+    "labels": [
+      "type:fr",
+      "P0",
+      "track:A",
+      "blocked:hardware"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Requirement (P0).** Clock alignment. Each camera gets a time offset measured from one sync event (a hand clap with a phone flash) filmed by all cameras at session start\n\n**Depends on:** FR-001\n\n**Acceptance criteria:** The sync event's aligned times agree within 0.2 s across cameras on every session\n\n**Blocked by:** hardware\n\nSpec: [FR-002](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-003",
+    "title": "FR-003: Privacy at source",
+    "labels": [
+      "type:fr",
+      "P0",
+      "track:A"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Requirement (P0).** Privacy at source. Fixed polygons are blacked out and audio removed before anything is stored for upload\n\n**Depends on:** FR-001\n\n**Acceptance criteria:** Every pixel inside a polygon is 0 in every output frame; ffprobe finds no audio stream; upload is refused otherwise\n\n**Blocked by:** nothing (offline-buildable)\n\nSpec: [FR-003](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-004",
+    "title": "FR-004: Windowing",
+    "labels": [
+      "type:fr",
+      "P0",
+      "track:A",
+      "blocked:credits"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Requirement (P0).** Windowing. Clips are cut into 10 s windows with 2 s overlap, re-encoded to H.264 MP4, 10 fps, at most 1280 px wide, faststart\n\n**Depends on:** FR-002, FR-003\n\n**Acceptance criteria:** Window edges match the plan to one frame; SAM 3.1 accepts every window (no 400)\n\n**Blocked by:** credits\n\nSpec: [FR-004](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-005",
+    "title": "FR-005: Motion gate",
+    "labels": [
+      "type:fr",
+      "P0",
+      "track:A",
+      "blocked:hardware"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Requirement (P0).** Motion gate. Frame differencing outside masked areas; windows below a per-camera threshold make no model calls\n\n**Depends on:** FR-004\n\n**Acceptance criteria:** On the 12 labelled scenarios, no labelled event falls in a skipped window\n\n**Blocked by:** hardware\n\nSpec: [FR-005](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-006",
+    "title": "FR-006: SAM 3.1 tracking",
+    "labels": [
+      "type:fr",
+      "P0",
+      "track:A",
+      "blocked:credits"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Requirement (P0).** SAM 3.1 tracking. Upload each active window once, then one request per noun phrase (`person`, `car`, plus active watches) with confidence; parse with `meta-sam-parser`; cache by request hash\n\n**Depends on:** FR-005\n\n**Acceptance criteria:** Recorded responses parse into tracks; zero matches give an empty result, not an error; a 400 is surfaced with its body\n\n**Blocked by:** credits\n\nSpec: [FR-006](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-007",
+    "title": "FR-007: Track stitching",
+    "labels": [
+      "type:fr",
+      "P0",
+      "track:A"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Requirement (P0).** Track stitching. IDs are joined across overlapping windows by box overlap (IoU) on shared frames\n\n**Depends on:** FR-006\n\n**Acceptance criteria:** A person crossing 3 windows on one camera is 1 track in the fixture\n\n**Blocked by:** nothing (offline-buildable)\n\nSpec: [FR-007](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-008",
+    "title": "FR-008: Event builder",
+    "labels": [
+      "type:fr",
+      "P0",
+      "track:A"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Requirement (P0).** Event builder. Emits `enter`, `exit`, `cross`, `touch` (person mask overlaps a protected object), `removed` (watched object disappears while a person overlaps it) and `dwell`; each event has an ID, camera, times, track and clip range\n\n**Depends on:** FR-007, FR-019\n\n**Acceptance criteria:** Synthetic-track unit tests pass; each demo scenario yields its labelled events\n\n**Blocked by:** nothing (offline-buildable)\n\nSpec: [FR-008](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-009",
+    "title": "FR-009: Appearance notes",
+    "labels": [
+      "type:fr",
+      "P0",
+      "track:B",
+      "blocked:credits"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Requirement (P0).** Appearance notes. Muse Spark reads a clip with SAM's track tags drawn on it and returns JSON whose tag field is an enum of those tags. Fields: class, upper and lower clothing colour, carried items, vehicle colour and body. No face, age, gender or ethnicity fields exist\n\n**Depends on:** FR-007\n\n**Acceptance criteria:** 100% of responses pass schema validation; an unknown tag is rejected\n\n**Blocked by:** credits\n\nSpec: [FR-009](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-010",
+    "title": "FR-010: Visit assembly",
+    "labels": [
+      "type:fr",
+      "P0",
+      "track:B",
+      "blocked:hardware"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Requirement (P0).** Visit assembly. Tracks are linked across cameras only when the gap fits a topology edge and the notes agree; two or more candidates means no link\n\n**Depends on:** FR-008, FR-009\n\n**Acceptance criteria:** Link precision at least 90% on the labelled set\n\n**Blocked by:** hardware\n\nSpec: [FR-010](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-011",
+    "title": "FR-011: Gaps",
+    "labels": [
+      "type:fr",
+      "P0",
+      "track:B",
+      "blocked:hardware"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Requirement (P0).** Gaps. Every interval with a visit's subject out of view is stored with type (`blind_spot`, `ambiguous_link`), times and cameras\n\n**Depends on:** FR-010\n\n**Acceptance criteria:** Scenario C records the shed gap at 41 s, within 1 s of the label\n\n**Blocked by:** hardware\n\nSpec: [FR-011](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-012",
+    "title": "FR-012: Rules engine",
+    "labels": [
+      "type:fr",
+      "P0",
+      "track:B"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Requirement (P0).** Rules engine. Rule JSON with target, trigger, time window (crossing midnight) and severity, plus 2 default rules: watched package removed; anyone in the backyard 23:00 to 05:00\n\n**Depends on:** FR-008\n\n**Acceptance criteria:** Truth-table tests pass, including windows across midnight\n\n**Blocked by:** nothing (offline-buildable)\n\nSpec: [FR-012](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-013",
+    "title": "FR-013: Triage",
+    "labels": [
+      "type:fr",
+      "P1",
+      "track:B",
+      "blocked:credits"
+    ],
+    "milestone": "G4",
+    "body": "**Requirement (P1).** Triage. Code forces escalation when a rule fired, a protected object was touched, or a gap is unresolved; otherwise Spark decides. Visits not escalated get a story built from a template\n\n**Depends on:** FR-012\n\n**Acceptance criteria:** Forced cases always escalate; the escalation rate is reported in EVAL\n\n**Blocked by:** credits\n\nSpec: [FR-013](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-014",
+    "title": "FR-014: Story",
+    "labels": [
+      "type:fr",
+      "P0",
+      "track:B",
+      "blocked:credits"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Requirement (P0).** Story. Muse Wonder receives the visit ledger as JSON (no pixels) and returns sentences citing event IDs, a verdict proposal and watch proposals. Gap sentences are written by code, not by the model\n\n**Depends on:** FR-011, FR-013\n\n**Acceptance criteria:** Schema-valid output on all 12 scenarios\n\n**Blocked by:** credits\n\nSpec: [FR-014](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-015",
+    "title": "FR-015: Citation validator",
+    "labels": [
+      "type:fr",
+      "P0",
+      "track:B"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Requirement (P0).** Citation validator. Each sentence cites at least one event in this visit; clock times in the text match a cited event within 60 s; camera names match cited events. Failure triggers one retry with the reasons, then the template\n\n**Depends on:** FR-014\n\n**Acceptance criteria:** Planted bad sentences are all caught; zero uncited sentences ship\n\n**Blocked by:** nothing (offline-buildable)\n\nSpec: [FR-015](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-016",
+    "title": "FR-016: Verdict",
+    "labels": [
+      "type:fr",
+      "P0",
+      "track:B"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Requirement (P0).** Verdict. A pure function: rules set the floor; only a rule can produce Needs your attention, and a protected-object touch with no rule gives Noteworthy; an unresolved gap with no rule fired gives Can't confirm; Wonder may raise Normal to Noteworthy, never lower\n\n**Depends on:** FR-012, FR-015\n\n**Acceptance criteria:** Truth-table test covers every combination\n\n**Blocked by:** nothing (offline-buildable)\n\nSpec: [FR-016](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-017",
+    "title": "FR-017: Visit cards",
+    "labels": [
+      "type:fr",
+      "P0",
+      "track:C"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Requirement (P0).** Visit cards. List and detail views: verdict as icon plus word, story with citation chips, gap bars, event timeline, path in the 3D view (FR-040), a source badge per sentence\n\n**Depends on:** FR-016\n\n**Acceptance criteria:** E2E test opens each demo card and finds every element\n\n**Blocked by:** nothing (offline-buildable)\n\nSpec: [FR-017](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-018",
+    "title": "FR-018: Synced player",
+    "labels": [
+      "type:fr",
+      "P0",
+      "track:C"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Requirement (P0).** Synced player. 3 to 4 videos play in step; a canvas draws SAM boxes and outlines from overlay JSON; a citation click seeks all players and highlights the right camera\n\n**Depends on:** FR-017\n\n**Acceptance criteria:** After a seek, players differ by under 0.2 s (Playwright reads `currentTime`)\n\n**Blocked by:** nothing (offline-buildable)\n\nSpec: [FR-018](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-019",
+    "title": "FR-019: Tap-to-protect",
+    "labels": [
+      "type:fr",
+      "P0",
+      "track:B",
+      "blocked:credits"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Requirement (P0).** Tap-to-protect. A click on a still frame sends a SAM 3.1 point prompt; the mask is stored as a protected object and drawn on the feed\n\n**Depends on:** FR-006\n\n**Acceptance criteria:** Live call returns a mask; cached mode returns stored masks for preset points\n\n**Blocked by:** credits\n\nSpec: [FR-019](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-020",
+    "title": "FR-020: Closed loop",
+    "labels": [
+      "type:fr",
+      "P1",
+      "track:B",
+      "blocked:credits"
+    ],
+    "milestone": "G4",
+    "body": "**Requirement (P1).** Closed loop. Wonder's watch proposals pass an allowlist and a cap of 4 per camera, expire after 24 h, show the owner a notice with undo, and add the prompt to that camera's next windows\n\n**Depends on:** FR-014, FR-006\n\n**Acceptance criteria:** In scenario B the package watch activates and later windows track the package\n\n**Blocked by:** credits\n\nSpec: [FR-020](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-021",
+    "title": "FR-021: Typed rules",
+    "labels": [
+      "type:fr",
+      "P0",
+      "track:B",
+      "blocked:credits"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Requirement (P0).** Typed rules. Spark compiles text into rule JSON whose targets are limited to existing objects and zones; a draft card states what Vigil cannot do (it never identifies people); the owner confirms\n\n**Depends on:** FR-012, FR-019\n\n**Acceptance criteria:** At least 9 of 10 reference phrasings compile to the expected JSON; an unresolvable target asks a question\n\n**Blocked by:** credits\n\nSpec: [FR-021](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-022",
+    "title": "FR-022: Voice rules",
+    "labels": [
+      "type:fr",
+      "P2",
+      "track:B",
+      "blocked:credits"
+    ],
+    "milestone": null,
+    "body": "**Requirement (P2).** Voice rules. Browser records up to 30 s; Muse Voice Transcribe returns text the owner can edit before compiling\n\n**Depends on:** FR-021\n\n**Acceptance criteria:** 5 of 5 spoken reference phrasings compile correctly\n\n**Blocked by:** credits\n\nSpec: [FR-022](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-023",
+    "title": "FR-023: Call ledger and telemetry",
+    "labels": [
+      "type:fr",
+      "P0",
+      "track:B"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Requirement (P0).** Call ledger and telemetry. Every model call logs model, purpose, latency, billed units, cost, cached or live, and success; each card has a \"How this was decided\" trace\n\n**Depends on:** FR-006\n\n**Acceptance criteria:** 100% of calls appear; the panel total matches the ledger\n\n**Blocked by:** nothing (offline-buildable)\n\nSpec: [FR-023](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-024",
+    "title": "FR-024: Evaluation harness",
+    "labels": [
+      "type:fr",
+      "P0",
+      "track:D",
+      "blocked:hardware"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Requirement (P0).** Evaluation harness. Labels are written before running; `vigil eval` computes the EVAL metrics and writes `eval/results.json` and the table in EVAL.md\n\n**Depends on:** FR-016\n\n**Acceptance criteria:** Re-running from cache gives identical results\n\n**Blocked by:** hardware\n\nSpec: [FR-024](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-025",
+    "title": "FR-025: Naive baseline",
+    "labels": [
+      "type:fr",
+      "P1",
+      "track:D",
+      "blocked:credits"
+    ],
+    "milestone": "G4",
+    "body": "**Requirement (P1).** Naive baseline. One Spark call per motion window asking whether anything is wrong; alerts and unsupported claims are counted for the 3 demo scenarios\n\n**Depends on:** FR-005\n\n**Acceptance criteria:** Side-by-side table committed\n\n**Blocked by:** credits\n\nSpec: [FR-025](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-026",
+    "title": "FR-026: Sandbox modes and guards",
+    "labels": [
+      "type:fr",
+      "P0",
+      "track:C"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Requirement (P0).** Sandbox modes and guards. Cached by default; live buttons; daily spend cap; per-IP rate limit; any live failure falls back to cached with a visible notice\n\n**Depends on:** FR-023\n\n**Acceptance criteria:** With an invalid API key, every cached E2E flow still passes\n\n**Blocked by:** nothing (offline-buildable)\n\nSpec: [FR-026](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-027",
+    "title": "FR-027: Export and scenario switcher",
+    "labels": [
+      "type:fr",
+      "P0",
+      "track:C",
+      "blocked:hardware"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Requirement (P0).** Export and scenario switcher. `vigil export` writes a demo bundle (masked clips, overlays, DB); the sandbox switches between scenarios A, B and C\n\n**Depends on:** FR-017\n\n**Acceptance criteria:** A clean clone plus `make demo` serves all 3 scenarios\n\n**Blocked by:** hardware\n\nSpec: [FR-027](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-028",
+    "title": "FR-028: Glimmer triage",
+    "labels": [
+      "type:fr",
+      "P1",
+      "track:B",
+      "blocked:hardware",
+      "blocked:owner"
+    ],
+    "milestone": "G4",
+    "body": "**Requirement (P1).** Glimmer triage. Muse Glimmer 30B (4-bit, llama.cpp) on the local RTX 3090 handles triage, with automatic Spark fallback (section 10)\n\n**Depends on:** FR-013\n\n**Acceptance criteria:** Agrees with Spark on at least 10 of 12 scenarios; latency logged\n\n**Blocked by:** hardware, owner\n\nSpec: [FR-028](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-029",
+    "title": "FR-029: Owner label",
+    "labels": [
+      "type:fr",
+      "P2",
+      "track:C"
+    ],
+    "milestone": null,
+    "body": "**Requirement (P2).** Owner label. \"This was expected\" marks one visit Normal for that visit only and is logged as feedback\n\n**Depends on:** FR-017\n\n**Acceptance criteria:** Label persists; no other visit changes\n\n**Blocked by:** nothing (offline-buildable)\n\nSpec: [FR-029](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-030",
+    "title": "FR-030: Reolink connection and probe",
+    "labels": [
+      "type:fr",
+      "P0",
+      "track:A",
+      "blocked:hardware"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Requirement (P0).** Reolink connection and probe. `cameras.yaml` lists the 4 cameras (host or NVR channel, stream paths); credentials come from `.env`. `vigil reolink probe` reports model, firmware, RTSP or FLV reachability and AI-event support\n\n**Depends on:** FR-001\n\n**Acceptance criteria:** Probe passes for all 4 cameras; credentials never appear in logs\n\n**Blocked by:** hardware\n\nSpec: [FR-030](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-031",
+    "title": "FR-031: Continuous capture",
+    "labels": [
+      "type:fr",
+      "P0",
+      "track:A",
+      "blocked:hardware"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Requirement (P0).** Continuous capture. A restreamer holds one connection per camera; ffmpeg writes 10 s segments by stream copy, audio removed; raw segments kept 48 h; windows built with 2 s overlap\n\n**Depends on:** FR-030, FR-004\n\n**Acceptance criteria:** 2 h run with no segment gap over 1 s; reconnects within 30 s after a cable is pulled\n\n**Blocked by:** hardware\n\nSpec: [FR-031](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-032",
+    "title": "FR-032: Reolink AI events",
+    "labels": [
+      "type:fr",
+      "P1",
+      "track:A",
+      "blocked:hardware"
+    ],
+    "milestone": "G4",
+    "body": "**Requirement (P1).** Reolink AI events. Person and vehicle events via reolink_aio TCP push are stored as `camera_ai` events and pushed to the UI\n\n**Depends on:** FR-030\n\n**Acceptance criteria:** At least 9 of 10 staged walk-ins produce an event; latency measured\n\n**Blocked by:** hardware\n\nSpec: [FR-032](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-033",
+    "title": "FR-033: Near-real-time loop",
+    "labels": [
+      "type:fr",
+      "P1",
+      "track:A",
+      "blocked:hardware",
+      "blocked:credits"
+    ],
+    "milestone": "G4",
+    "body": "**Requirement (P1).** Near-real-time loop. Windows overlapping a Reolink event or motion are processed automatically, in order, once each\n\n**Depends on:** FR-031, FR-006\n\n**Acceptance criteria:** Median and 90th-percentile lag reported; no window processed twice\n\n**Blocked by:** hardware, credits\n\nSpec: [FR-033](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-034",
+    "title": "FR-034: LAN live view",
+    "labels": [
+      "type:fr",
+      "P1",
+      "track:C",
+      "blocked:hardware"
+    ],
+    "milestone": "G4",
+    "body": "**Requirement (P1).** LAN live view. WebRTC video from the restreamer, plus server-sent updates to cards and the 3D view; bound to the home network only\n\n**Depends on:** FR-033, FR-040\n\n**Acceptance criteria:** Works on a phone on home Wi-Fi; unreachable from a phone on cellular\n\n**Blocked by:** hardware\n\nSpec: [FR-034](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-035",
+    "title": "FR-035: 3D model build",
+    "labels": [
+      "type:fr",
+      "P0",
+      "track:C",
+      "blocked:hardware"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Requirement (P0).** 3D model build. `vigil spatial build`: scale check, segment registration, world frame, ground mesh and height grid, compressed GLB, metadata stripped\n\n**Depends on:** none\n\n**Acceptance criteria:** Scale error under 2%; GLB under 15 MB loads in the viewer; no GPS metadata\n\n**Blocked by:** hardware\n\nSpec: [FR-035](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-036",
+    "title": "FR-036: Intrinsic calibration per camera from checkerboard views (standard or ",
+    "labels": [
+      "type:fr",
+      "P0",
+      "track:C",
+      "blocked:hardware"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Requirement (P0).** Intrinsic calibration per camera from checkerboard views (standard or fisheye model)\n\n**Depends on:** FR-030\n\n**Acceptance criteria:** RMS under 1.0 px, or the field-of-view fallback is used and flagged\n\n**Blocked by:** hardware\n\nSpec: [FR-036](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-037",
+    "title": "FR-037: Extrinsic calibration",
+    "labels": [
+      "type:fr",
+      "P0",
+      "track:C",
+      "blocked:hardware"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Requirement (P0).** Extrinsic calibration. Calibration tool for clicking marker pairs (still and mesh); PnP with RANSAC on 6 points, 2 held out; saved to `calibration.json`\n\n**Depends on:** FR-035, FR-036\n\n**Acceptance criteria:** Mean reprojection under 4 px at 1280 px; held-out ground error under 0.25 m\n\n**Blocked by:** hardware\n\nSpec: [FR-037](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-038",
+    "title": "FR-038: Coverage and blind regions",
+    "labels": [
+      "type:fr",
+      "P0",
+      "track:C",
+      "blocked:hardware"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Requirement (P0).** Coverage and blind regions. A 0.25 m ground grid with per-camera visibility (image bounds, privacy polygons, mesh line of sight); blind regions written to `cameras.yaml` and used by FR-010 and FR-011\n\n**Depends on:** FR-037\n\n**Acceptance criteria:** The region behind the shed is found; a walk test along its edge agrees\n\n**Blocked by:** hardware\n\nSpec: [FR-038](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-039",
+    "title": "FR-039: 3D position estimates",
+    "labels": [
+      "type:fr",
+      "P0",
+      "track:C",
+      "blocked:hardware"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Requirement (P0).** 3D position estimates. Foot point ray-cast to the ground with a 95% radius; height-prior fallback flagged low confidence; two-camera fusion with an inconsistency flag; no positions inside gaps\n\n**Depends on:** FR-037, FR-007\n\n**Acceptance criteria:** Pre-registered accuracy target met or reported as missed; at least 90% of test points inside their stated radius\n\n**Blocked by:** hardware\n\nSpec: [FR-039](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-040",
+    "title": "FR-040: 3D viewer",
+    "labels": [
+      "type:fr",
+      "P0",
+      "track:C",
+      "blocked:hardware"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Requirement (P0).** 3D viewer. three.js view with mesh, coverage, blind regions, camera cones, discs, paths and gaps, encoded as in section 7; shared timeline with video and cards; click-through to evidence\n\n**Depends on:** FR-035, FR-039, FR-017\n\n**Acceptance criteria:** E2E: scenario C shows the dotted 41 s gap, discs with radius and the cone pulse; at least 30 fps on a mid-range phone\n\n**Blocked by:** hardware\n\nSpec: [FR-040](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-041",
+    "title": "FR-041: Wi-Fi motion annotation (after the hackathon): ESPectre over MQTT, ann",
+    "labels": [
+      "type:fr",
+      "P2",
+      "track:D",
+      "blocked:hardware"
+    ],
+    "milestone": null,
+    "body": "**Requirement (P2).** Wi-Fi motion annotation (after the hackathon): ESPectre over MQTT, annotation only, never a verdict on its own\n\n**Depends on:** FR-011\n\n**Acceptance criteria:** As in section 8\n\n**Blocked by:** hardware\n\nSpec: [FR-041](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-042",
+    "title": "FR-042: Local inference backends",
+    "labels": [
+      "type:fr",
+      "P1",
+      "track:B",
+      "blocked:hardware",
+      "blocked:owner"
+    ],
+    "milestone": "G4",
+    "body": "**Requirement (P1).** Local inference backends. `VIGIL_SAM_BACKEND=local\\\n\n**Depends on:** api\\\n\n**Acceptance criteria:** remote` and `VIGIL_TRIAGE_BACKEND=glimmer\\\n\n**Blocked by:** hardware, owner\n\nSpec: [FR-042](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-043",
+    "title": "FR-043: Budget guard",
+    "labels": [
+      "type:fr",
+      "P0",
+      "track:B",
+      "blocked:credits"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Requirement (P0).** Budget guard. Prices every call before sending; enforces the total, feature and daily caps; warns at 50, 75 and 90%; pre-flight estimates for batch commands; disables live calls after the credit window unless approved\n\n**Depends on:** FR-023\n\n**Acceptance criteria:** Unit tests: refusal at each cap; window-end switch; estimate within 10% of the Billing page after T-03\n\n**Blocked by:** credits\n\nSpec: [FR-043](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "T-01",
+    "title": "T-01: Audit repo; claim credits and set spend limit; pick track; commit EVAL.md targets, including NFR-025 and NFR-026",
+    "labels": [
+      "type:task",
+      "track:D",
+      "blocked:owner"
+    ],
+    "milestone": "G1",
+    "body": "**Due:** Mon 11:30 PT · **Track:** D · **Depends on:** none\n\n**Files:** `EVAL.md`, `HACKATHON.md`\n\n**Done when:** Commit pushed; Status column in section 1 updated\n\n**Blocked by:** owner\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+  },
+  {
+    "id": "T-02",
+    "title": "T-02: Scaffold and CI (skip what exists)",
+    "labels": [
+      "type:task",
+      "track:A"
+    ],
+    "milestone": "G1",
+    "body": "**Due:** Mon 12:30 PT · **Track:** A · **Depends on:** T-01\n\n**Files:** `pyproject.toml`, `Makefile`, `ci.yml`, `settings.py`\n\n**Done when:** CI green: ruff, pytest, gitleaks\n\n**Blocked by:** nothing\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+  },
+  {
+    "id": "T-03",
+    "title": "T-03: Meta smoke tests; resolve the 3 open API questions",
+    "labels": [
+      "type:task",
+      "track:B",
+      "blocked:credits"
+    ],
+    "milestone": "G1",
+    "body": "**Due:** Mon 12:30 PT · **Track:** B · **Depends on:** T-01\n\n**Files:** `scripts/smoke_meta.py`, `tests/fixtures/meta/`\n\n**Done when:** One recorded response per model; findings written into section 5.14\n\n**Blocked by:** credits\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+  },
+  {
+    "id": "T-04",
+    "title": "T-04: Reolink probe; on-camera privacy masks; audio off",
+    "labels": [
+      "type:task",
+      "track:D",
+      "blocked:hardware"
+    ],
+    "milestone": "G1",
+    "body": "**Due:** Mon 12:30 PT · **Track:** D · **Depends on:** T-01\n\n**Files:** `reolink/probe.py`, `config/cameras.yaml`\n\n**Done when:** FR-030 passes; mask confirmed in the RTSP stream\n\n**Blocked by:** hardware\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+  },
+  {
+    "id": "T-05",
+    "title": "T-05: Restreamer and capture service",
+    "labels": [
+      "type:task",
+      "track:A",
+      "blocked:hardware"
+    ],
+    "milestone": "G1",
+    "body": "**Due:** Mon 14:00 PT · **Track:** A · **Depends on:** T-04\n\n**Files:** `reolink/capture.py`, `infra/go2rtc.yaml`\n\n**Done when:** 30 min test without gaps; 2 h test runs overnight (NFR-029)\n\n**Blocked by:** hardware\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+  },
+  {
+    "id": "T-06",
+    "title": "T-06: Markers, 4 LiDAR loops, checkerboard views, calibration stills",
+    "labels": [
+      "type:task",
+      "track:D",
+      "blocked:hardware"
+    ],
+    "milestone": "G1",
+    "body": "**Due:** Mon 16:30 (before dusk) PT · **Track:** D · **Depends on:** T-04\n\n**Files:** `data/scan/`, `data/calib/`\n\n**Done when:** Exports on disk; 2 measured distances written down\n\n**Blocked by:** hardware\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+  },
+  {
+    "id": "T-07",
+    "title": "T-07: Film 12 scenarios with consent; write labels before processing",
+    "labels": [
+      "type:task",
+      "track:D",
+      "blocked:hardware",
+      "blocked:owner"
+    ],
+    "milestone": "G1",
+    "body": "**Due:** Mon 21:00 PT · **Track:** D · **Depends on:** T-05\n\n**Files:** `eval/labels/`\n\n**Done when:** 12 labelled scenarios; consent records held privately\n\n**Blocked by:** hardware, owner\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+  },
+  {
+    "id": "T-08",
+    "title": "T-08: Privacy, windows, motion gate, privacy scan",
+    "labels": [
+      "type:task",
+      "track:A"
+    ],
+    "milestone": "G1",
+    "body": "**Due:** Mon 17:00 PT · **Track:** A · **Depends on:** T-05\n\n**Files:** `ingest/*.py`, `scripts/privacy_scan.py`\n\n**Done when:** FR-003 to FR-005 tests pass\n\n**Blocked by:** nothing\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+  },
+  {
+    "id": "T-09",
+    "title": "T-09: Meta client, cache, ledger; SAM concept tracking",
+    "labels": [
+      "type:task",
+      "track:B"
+    ],
+    "milestone": "G1",
+    "body": "**Due:** Mon 18:00 PT · **Track:** B · **Depends on:** T-03\n\n**Files:** `meta/client.py`, `cache.py`, `sam.py`\n\n**Done when:** FR-006 and FR-023 tests pass on fixtures\n\n**Blocked by:** nothing\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+  },
+  {
+    "id": "T-10",
+    "title": "T-10: 3D model build",
+    "labels": [
+      "type:task",
+      "track:C",
+      "blocked:hardware"
+    ],
+    "milestone": "G1",
+    "body": "**Due:** Mon 20:00 PT · **Track:** C · **Depends on:** T-06\n\n**Files:** `spatial/scan.py`\n\n**Done when:** FR-035 passes\n\n**Blocked by:** hardware\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+  },
+  {
+    "id": "T-11",
+    "title": "T-11: Track stitching and overlays",
+    "labels": [
+      "type:task",
+      "track:A"
+    ],
+    "milestone": "G1",
+    "body": "**Due:** Mon 21:00 PT · **Track:** A · **Depends on:** T-09\n\n**Files:** `perception/tracks.py`, `overlays.py`\n\n**Done when:** FR-007 passes\n\n**Blocked by:** nothing\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+  },
+  {
+    "id": "T-12",
+    "title": "T-12: Calibration tool and solver",
+    "labels": [
+      "type:task",
+      "track:C",
+      "blocked:hardware"
+    ],
+    "milestone": "G1",
+    "body": "**Due:** Mon 23:00 PT · **Track:** C · **Depends on:** T-10\n\n**Files:** `spatial/calibrate.py`, `web/calibrate/`\n\n**Done when:** FR-036 passes for 4 cameras\n\n**Blocked by:** hardware\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+  },
+  {
+    "id": "T-13",
+    "title": "T-13: Event builder",
+    "labels": [
+      "type:task",
+      "track:A"
+    ],
+    "milestone": "G2",
+    "body": "**Due:** Tue 09:00 PT · **Track:** A · **Depends on:** T-11\n\n**Files:** `perception/events.py`\n\n**Done when:** FR-008 passes\n\n**Blocked by:** nothing\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+  },
+  {
+    "id": "T-14",
+    "title": "T-14: Extrinsics accepted, or switch to the fallback",
+    "labels": [
+      "type:task",
+      "track:C",
+      "blocked:hardware"
+    ],
+    "milestone": "G2",
+    "body": "**Due:** Tue 10:00 cut-off PT · **Track:** C · **Depends on:** T-12\n\n**Files:** `config/calibration.json`\n\n**Done when:** FR-037 passes, or the site-plan fallback is active\n\n**Blocked by:** hardware\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+  },
+  {
+    "id": "T-15",
+    "title": "T-15: Marker walk for 3D accuracy",
+    "labels": [
+      "type:task",
+      "track:D",
+      "blocked:hardware"
+    ],
+    "milestone": "G2",
+    "body": "**Due:** Tue 11:00 PT · **Track:** D · **Depends on:** T-14\n\n**Files:** `eval/spatial/`\n\n**Done when:** Recordings of 6 markers per camera\n\n**Blocked by:** hardware\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+  },
+  {
+    "id": "T-16",
+    "title": "T-16: Appearance notes",
+    "labels": [
+      "type:task",
+      "track:B",
+      "blocked:credits"
+    ],
+    "milestone": "G2",
+    "body": "**Due:** Tue 10:00 PT · **Track:** B · **Depends on:** T-11\n\n**Files:** `meta/spark.py`\n\n**Done when:** FR-009 passes\n\n**Blocked by:** credits\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+  },
+  {
+    "id": "T-17",
+    "title": "T-17: Coverage and blind regions",
+    "labels": [
+      "type:task",
+      "track:C",
+      "blocked:hardware"
+    ],
+    "milestone": "G2",
+    "body": "**Due:** Tue 11:00 PT · **Track:** C · **Depends on:** T-14\n\n**Files:** `spatial/coverage.py`\n\n**Done when:** FR-038 passes\n\n**Blocked by:** hardware\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+  },
+  {
+    "id": "T-18",
+    "title": "T-18: Topology, visits, gaps",
+    "labels": [
+      "type:task",
+      "track:B"
+    ],
+    "milestone": "G2",
+    "body": "**Due:** Tue 12:00 PT · **Track:** B · **Depends on:** T-13, T-16, T-17\n\n**Files:** `reasoning/topology.py`, `visits.py`\n\n**Done when:** FR-010, FR-011 pass\n\n**Blocked by:** nothing\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+  },
+  {
+    "id": "T-19",
+    "title": "T-19: Position estimates",
+    "labels": [
+      "type:task",
+      "track:C",
+      "blocked:hardware"
+    ],
+    "milestone": "G2",
+    "body": "**Due:** Tue 12:00 PT · **Track:** C · **Depends on:** T-14\n\n**Files:** `spatial/locate.py`\n\n**Done when:** FR-039 unit tests pass\n\n**Blocked by:** hardware\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+  },
+  {
+    "id": "T-20",
+    "title": "T-20: Rules, story, validator, verdict",
+    "labels": [
+      "type:task",
+      "track:B",
+      "blocked:credits"
+    ],
+    "milestone": "G2",
+    "body": "**Due:** Tue 13:00 PT · **Track:** B · **Depends on:** T-18\n\n**Files:** `rules.py`, `wonder.py`, `story.py`, `validator.py`, `verdict.py`\n\n**Done when:** FR-012, FR-014 to FR-016 pass\n\n**Blocked by:** credits\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+  },
+  {
+    "id": "T-21",
+    "title": "T-21: API, export, cards, synced player",
+    "labels": [
+      "type:task",
+      "track:C"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Due:** Tue 15:00 PT · **Track:** C · **Depends on:** G2\n\n**Files:** `api/`, `store/export.py`, `web/*.js`\n\n**Done when:** FR-017, FR-018, FR-027 pass\n\n**Blocked by:** nothing\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+  },
+  {
+    "id": "T-22",
+    "title": "T-22: Tap-to-protect, typed rules",
+    "labels": [
+      "type:task",
+      "track:B",
+      "blocked:credits"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Due:** Tue 16:00 PT · **Track:** B · **Depends on:** G2\n\n**Files:** `api/routes.py`, `meta/spark.py`\n\n**Done when:** FR-019, FR-021 pass\n\n**Blocked by:** credits\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+  },
+  {
+    "id": "T-23",
+    "title": "T-23: Triage and closed loop",
+    "labels": [
+      "type:task",
+      "track:B",
+      "blocked:hardware"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Due:** Tue 17:00 PT · **Track:** B · **Depends on:** T-20\n\n**Files:** `triage.py`, `loop.py`\n\n**Done when:** FR-013, FR-020 pass\n\n**Blocked by:** hardware\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+  },
+  {
+    "id": "T-24",
+    "title": "T-24: 3D viewer",
+    "labels": [
+      "type:task",
+      "track:C"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Due:** Tue 17:30 PT · **Track:** C · **Depends on:** T-21, T-19\n\n**Files:** `web/twin/`\n\n**Done when:** FR-040 passes\n\n**Blocked by:** nothing\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+  },
+  {
+    "id": "T-25",
+    "title": "T-25: Guards and telemetry panel",
+    "labels": [
+      "type:task",
+      "track:C"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Due:** Tue 18:00 PT · **Track:** C · **Depends on:** T-21\n\n**Files:** `api/guards.py`, `web/cards.js`\n\n**Done when:** FR-023 UI and FR-026 pass\n\n**Blocked by:** nothing\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+  },
+  {
+    "id": "T-26",
+    "title": "T-26: Reolink events, live loop, LAN live view",
+    "labels": [
+      "type:task",
+      "track:A",
+      "blocked:hardware"
+    ],
+    "milestone": "G4",
+    "body": "**Due:** Tue 21:00 PT · **Track:** A · **Depends on:** G3\n\n**Files:** `reolink/ai_events.py`, `api/live.py`\n\n**Done when:** FR-032 to FR-034 pass\n\n**Blocked by:** hardware\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+  },
+  {
+    "id": "T-27",
+    "title": "T-27: Benchmark, spatial accuracy, baseline",
+    "labels": [
+      "type:task",
+      "track:D",
+      "blocked:credits",
+      "blocked:hardware"
+    ],
+    "milestone": "G4",
+    "body": "**Due:** Tue 22:00 PT · **Track:** D · **Depends on:** G3, T-15\n\n**Files:** `eval/*.py`, `EVAL.md`\n\n**Done when:** Results committed, misses included\n\n**Blocked by:** credits, hardware\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+  },
+  {
+    "id": "T-28",
+    "title": "T-28: Deploy sandbox; E2E suite in CI",
+    "labels": [
+      "type:task",
+      "track:C",
+      "blocked:owner"
+    ],
+    "milestone": "G4",
+    "body": "**Due:** Tue 23:00 PT · **Track:** C · **Depends on:** G3\n\n**Files:** `Dockerfile`, `tests/e2e/`\n\n**Done when:** Live URL passes E2E from CI\n\n**Blocked by:** owner\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+  },
+  {
+    "id": "T-29",
+    "title": "T-29: Record live home clip; edit video; README; HACKATHON.md",
+    "labels": [
+      "type:task",
+      "track:D",
+      "blocked:hardware",
+      "blocked:owner"
+    ],
+    "milestone": "Submission",
+    "body": "**Due:** Wed 12:00 PT · **Track:** D · **Depends on:** G4\n\n**Files:** `README.md`, `HACKATHON.md`, video\n\n**Done when:** Video under 3:00, link tested privately\n\n**Blocked by:** hardware, owner\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+  },
+  {
+    "id": "T-30",
+    "title": "T-30: Final scans and submission",
+    "labels": [
+      "type:task",
+      "track:D",
+      "blocked:owner"
+    ],
+    "milestone": "Submission",
+    "body": "**Due:** Wed 14:00 PT · **Track:** D · **Depends on:** T-29\n\n**Files:** none\n\n**Done when:** Section 13 checklist all ticked; submitted\n\n**Blocked by:** owner\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+  },
+  {
+    "id": "H-01",
+    "title": "H-01: GPU probe",
+    "labels": [
+      "type:hw",
+      "track:B"
+    ],
+    "milestone": "G1",
+    "body": "**Due:** Mon 12:30 PT\n\n**Runs:** `scripts/gpu_probe.py`: `nvidia-smi`, driver, CUDA, `torch.cuda` check, free VRAM, a 30 s matrix-multiply burn to confirm clocks and temperatures\n\n**Done when:** Report saved to `eval/hardware/3090.json`; 3090 marked Ready or Not ready\n\n**Blocked by:** nothing\n\nSpec: [10.2 Hardware verification](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#102-hardware-verification-tasks-added-to-section-9) · Runbook: docs/runbooks/gpu-h01-h04.md"
+  },
+  {
+    "id": "H-02",
+    "title": "H-02: Local SAM 3.1 benchmark",
+    "labels": [
+      "type:hw",
+      "track:B",
+      "blocked:owner",
+      "blocked:hardware"
+    ],
+    "milestone": "G1",
+    "body": "**Due:** Mon 22:00 (gate) PT\n\n**Runs:** sam3 install, checkpoint download (licence accepted on Hugging Face), image prompt test, then video chunks of 2, 3, 5 and 10 s at 640 and 960 px, 5 and 10 fps\n\n**Done when:** Table of peak VRAM, seconds per window, out-of-memory failures; chosen chunk settings\n\n**Blocked by:** owner, hardware\n\nSpec: [10.2 Hardware verification](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#102-hardware-verification-tasks-added-to-section-9) · Runbook: docs/runbooks/gpu-h01-h04.md"
+  },
+  {
+    "id": "H-03",
+    "title": "H-03: Local Glimmer benchmark",
+    "labels": [
+      "type:hw",
+      "track:B",
+      "blocked:owner",
+      "blocked:hardware"
+    ],
+    "milestone": "G2",
+    "body": "**Due:** Tue 12:00 PT\n\n**Runs:** llama.cpp server with the 4-bit GGUF and vision projector; 20 triage fixtures\n\n**Done when:** Tokens per second, peak VRAM, JSON-valid rate, agreement with Spark on the 20 fixtures\n\n**Blocked by:** owner, hardware\n\nSpec: [10.2 Hardware verification](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#102-hardware-verification-tasks-added-to-section-9) · Runbook: docs/runbooks/gpu-h01-h04.md"
+  },
+  {
+    "id": "H-04",
+    "title": "H-04: Local versus API SAM parity",
+    "labels": [
+      "type:hw",
+      "track:B",
+      "blocked:credits"
+    ],
+    "milestone": "G2",
+    "body": "**Due:** Tue 12:00 PT\n\n**Runs:** Same 20 windows through both backends\n\n**Done when:** Mean mask IoU and ID-switch counts; target mean IoU at least 0.8 ⚠️, pre-registered in EVAL.md\n\n**Blocked by:** credits\n\nSpec: [10.2 Hardware verification](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#102-hardware-verification-tasks-added-to-section-9) · Runbook: docs/runbooks/gpu-h01-h04.md"
+  },
+  {
+    "id": "D-1",
+    "title": "D-1: DGX Spark full-window SAM 3.1 (conditional: only if gate H-02 fails)",
+    "labels": [
+      "type:hw",
+      "track:B",
+      "blocked:dgx"
+    ],
+    "milestone": "G2",
+    "body": "**Conditional.** Triggered only if gate H-02 fails at Mon 22:00 PT; connect the Spark by Tue 08:00 PT. Runs SAM 3.1 on full 10 s windows via a `sam-worker` (`VIGIL_SAM_BACKEND=remote`).\n\n**Done when:** no OOM on 10 s windows; ID switches at most the API's; mean IoU with the API >= 0.8; seconds per window recorded.\n\nSpec: [10.4](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#104-advance-notice-dgx-spark-phase-d-1-conditional-not-yet-triggered) · Runbook: docs/runbooks/dgx-spark-d1.md"
+  }
+]

@@ -1,0 +1,30 @@
+{
+  "$comment": "Synthetic label for the golden pipeline test (tests/fixtures/scenarios/builders.py, scenario_c). Written from the authored keyframes before the pipeline ran. Session t=0 is 22:13:40 PDT.",
+  "schema_version": 1,
+  "scenario": "C",
+  "title": "Night: side gate touched, 41 s behind the shed, leaves",
+  "session": "synthetic-golden",
+  "lighting": "night_ir",
+  "expected_verdict": "needs_attention",
+  "expected_escalated": true,
+  "subjects": [
+    {
+      "id": "S1",
+      "class": "person",
+      "appearances": [
+        {"camera_id": "side_left", "t0": 14.0, "t1": 40.0},
+        {"camera_id": "side_left", "t0": 81.0, "t1": 95.0}
+      ]
+    }
+  ],
+  "gaps": [
+    {"id": "g4", "kind": "blind_spot", "t0": 40.0, "t1": 81.0, "region_id": "shed_back"}
+  ],
+  "events": [
+    {"type": "touch", "camera_id": "side_left", "t": 20.0, "target": "po_side_gate"}
+  ],
+  "rules_fired": ["r7"],
+  "labelled_by": "integration agent",
+  "labelled_at": "2026-11-02T12:00:00-08:00",
+  "notes": "Synthetic scenario; no footage."
+}

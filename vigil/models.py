@@ -82,6 +82,10 @@ class CameraCfg(_Model):
     privacy: list[Polygon] = Field(default_factory=list)
     """Pixel polygons blacked out before anything is stored for upload (FR-003)."""
     motion_threshold: float | None = None
+    """Fraction in [0, 1] of unmasked pixels changed between 0.2 s samples (FR-005).
+
+    None uses the ingest default (0.002). The loader rejects values outside [0, 1].
+    """
 
 
 class BlindRegion(_Model):
@@ -168,6 +172,9 @@ class SamObject(_Model):
     phrase: str
     obj_id: int
     frames: list[SamFrame]
+    width: int | None = None
+    """Frame size of the media SAM saw (the box/mask w and h), when known."""
+    height: int | None = None
 
 
 class TrackFrame(_Model):
@@ -189,6 +196,8 @@ class Track(_Model):
     window_ids: list[str] = Field(default_factory=list)
     tag: str | None = None
     """Burned-in tag shown to Spark, e.g. "T3" (FR-009)."""
+    phrase: str | None = None
+    """SAM noun phrase that produced the track (distinguishes watches mapped to "object")."""
 
 
 class Event(_Model):
@@ -346,6 +355,10 @@ class StorySentence(_Model):
     source: SentenceSource = "wonder"
     gap_id: str | None = None
     """Set on code-written gap sentences."""
+    model: str | None = None
+    """Model id that wrote the sentence (NFR-022); None for template and code sentences."""
+    call_id: str | None = None
+    """Ledger call id that produced the sentence (NFR-022)."""
 
 
 class GapPlacement(_Model):
@@ -417,6 +430,8 @@ class VisitLedger(_Model):
     """Keyed by track id."""
     camera_names: dict[str, str] = Field(default_factory=dict)
     """camera_id -> display name, used by validator check 4."""
+    region_names: dict[str, str] = Field(default_factory=dict)
+    """blind region id -> display name (e.g. shed_back -> "behind the shed"), for gap sentences."""
     timezone: str = "America/Los_Angeles"
     session_start: datetime | None = None
     """Wall-clock time of session t=0, for rendering and checking clock times."""
@@ -503,12 +518,14 @@ class ModelCall(_Model):
     ok: bool = True
     error: str | None = None
     backend: str = "api"
+    feature: str | None = None
+    """Budget feature this call is charged to (spec 11.4), so per-feature caps survive restarts."""
     gpu_s: float | None = None
     created_at: datetime | None = None
 
     @model_validator(mode="after")
     def _no_contributor(self) -> ModelCall:
-        if "-contributor" in self.model:
+        if self.model.endswith("contributor") or "contributor" in self.model.split("-"):
             raise ValueError("Contributor-mode model IDs are forbidden (NFR-004)")
         return self
 

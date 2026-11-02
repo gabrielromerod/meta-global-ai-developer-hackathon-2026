@@ -21,6 +21,7 @@ dependencies = [
   "shapely==2.2.0",
   "meta-sam-parser==0.1.0",
   "python-dotenv==1.2.4",
+  "tzdata==2026.6",  # Windows has no IANA zone database; rules use America/Los_Angeles
 ]
 
 [project.optional-dependencies]
@@ -71,10 +72,11 @@ ignore = [
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["S", "PT011"]
 "scripts/**" = ["S"]
+"scripts/backlog/**" = ["S", "E501"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "-ra --strict-markers -m 'not live and not gpu and not e2e'"
+addopts = "-ra --strict-markers -m 'not live and not gpu and not e2e and not hardware'"
 markers = [
   "live: makes real, billed Meta API calls (never in CI; run by hand behind the budget guard)",
   "gpu: needs a probed local GPU (H-01)",

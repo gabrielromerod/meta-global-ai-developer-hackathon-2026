@@ -2,7 +2,8 @@
 .SYNOPSIS
   Vigil task runner for Windows. Same targets as the Makefile (used by CI and Linux).
 .EXAMPLE
-  pwsh scripts/tasks.ps1 test
+  pwsh scripts/tasks.ps1 test        # PowerShell 7
+  powershell -File scripts/tasks.ps1 test   # Windows PowerShell 5.1
 #>
 param(
     [Parameter(Position = 0)]
@@ -33,6 +34,6 @@ switch ($Task) {
     'demo'   { Invoke-Step uv @('run', 'vigil', 'serve', '--host', '127.0.0.1', '--port', '8000') }
     'eval'   { Invoke-Step uv @('run', 'vigil', 'eval') }
     'export' { Invoke-Step uv @('run', 'vigil', 'export') }
-    'scan'   { Invoke-Step uv @('run', 'python', 'scripts/privacy_scan.py', 'demo') }
+    'scan'   { Invoke-Step uv @('run', 'python', 'scripts/privacy_scan.py', 'demo'); Invoke-Step bash @('scripts/metadata_scan.sh', 'demo') }
     'help'   { Write-Output 'Targets: setup lint format test e2e demo eval export scan' }
 }

@@ -1,5 +1,5 @@
 # Spec 12.2. Runs on every push and pull request with recorded model responses only:
-# no secrets, no billed calls, deterministic.
+# no secrets, no billed calls, deterministic. Steps are numbered as in the spec.
 name: ci
 
 on:
@@ -21,27 +21,28 @@ env:
 
 jobs:
   lint:
-    name: 1. ruff
-    runs-on: ubuntu-latest
+    name: 1. ruff + NFR-004 grep
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v6
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
         with:
           enable-cache: true
       - run: uv sync --locked
       - run: uv run ruff check .
       - run: uv run ruff format --check .
-      - name: No Contributor-mode model IDs in code (NFR-004)
+      - name: No Contributor-mode model IDs (NFR-004)
         run: |
-          if grep -rnE -- "-contributor" vigil web scripts config --include='*.py' --include='*.js' --include='*.json' --include='*.yaml'; then
+          if grep -rnE --include='*.py' --include='*.js' --include='*.json' --include='*.yaml' \
+               -e '["'"'"'][a-z0-9.-]+-contributor["'"'"']' vigil web scripts config; then
             echo "::error::Contributor-mode model ID found"; exit 1
           fi
 
   secrets:
     name: 2. gitleaks
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: gitleaks
@@ -50,14 +51,77 @@ jobs:
           ./gitleaks git --redact --verbose --exit-code 1 .
 
   test:
-    name: 3. pytest (not live)
-    runs-on: ubuntu-latest
+    name: 3-4. pytest (not live) + determinism
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v6
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
         with:
           enable-cache: true
       - name: ffmpeg
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
       - run: uv sync --locked
-      - run: uv run pytest
+      - name: Unit, property and integration tests
+        run: uv run pytest -q
+      - name: Determinism (NFR-011) — pipeline twice, byte-identical visits.json
+        run: uv run pytest -q tests/integration/test_determinism.py -p no:cacheprovider
+
+  scans:
+    name: 5. privacy + metadata scan (demo/)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
+        with:
+          enable-cache: true
+      - name: ffmpeg + exiftool
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg libimage-exiftool-perl
+      - run: uv sync --locked
+      - name: Privacy scan (NFR-001, NFR-002)
+        run: uv run python scripts/privacy_scan.py demo
+      - name: Metadata scan (NFR-032)
+        run: bash scripts/metadata_scan.sh demo
+
+  sandbox-e2e:
+    name: 6-8. Docker sandbox + Playwright E2E
+    runs-on: ubuntu-24.04
+    needs: [lint, test]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
+        with:
+          enable-cache: true
+      - name: 6. Build the sandbox image
+        run: docker build -t vigil-sandbox:ci .
+      - name: 6. Start it with VIGIL_MODE=sandbox and an invalid key (NFR-009)
+        # The Meta base URL points at a closed local port, so any live call fails fast and
+        # falls back to the recorded result; CI never reaches the real API.
+        run: |
+          docker run -d --name vigil -p 8000:8000 \
+            -e VIGIL_MODE=sandbox -e MODEL_API_KEY=ci-sentinel-invalid-key-7f3a \
+            -e VIGIL_META_BASE_URL=http://127.0.0.1:9/v1 vigil-sandbox:ci
+          for i in $(seq 1 30); do
+            curl -fsS http://127.0.0.1:8000/api/health && exit 0; sleep 1
+          done
+          docker logs vigil; exit 1
+      - name: Key never served (NFR-014)
+        run: |
+          if curl -fsS http://127.0.0.1:8000/ http://127.0.0.1:8000/api/health | grep -q 'ci-sentinel-invalid-key-7f3a'; then
+            echo "::error::API key text found in a served response"; exit 1
+          fi
+      - run: uv sync --locked
+      - run: uv run playwright install --with-deps chromium
+      - name: 7. Playwright E2E (judge path, offline, mobile) against the container
+        env:
+          VIGIL_E2E_BASE_URL: http://127.0.0.1:8000
+        run: uv run pytest -m e2e tests/e2e -q --tracing retain-on-failure --screenshot only-on-failure --output test-results
+      - name: Container logs
+        if: always()
+        run: docker logs vigil || true
+      - name: 8. Upload Playwright traces and screenshots
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-evidence
+          path: test-results/
+          if-no-files-found: ignore

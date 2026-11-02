@@ -15,6 +15,9 @@ format:
 test:
 	uv run pytest
 
+test-all:
+	uv run pytest -m 'not live'
+
 e2e:
 	uv run playwright install chromium
 	uv run pytest -m e2e tests/e2e

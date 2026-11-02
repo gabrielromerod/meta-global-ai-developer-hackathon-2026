@@ -47,6 +47,10 @@ class Settings(BaseSettings):
     config_path: Path = REPO_ROOT / "config" / "cameras.yaml"
     data_dir: Path = REPO_ROOT / "data"
     demo_dir: Path = REPO_ROOT / "demo"
+    bundle_dir: Path | None = None
+    """Bundle served by the sandbox; None: demo/ if it has a manifest, else demo/synthetic/."""
+    meta_cache_only: bool = False
+    """Sandbox cached-by-default: the client answers from cache and never sends (FR-026)."""
     cache_dir: Path = REPO_ROOT / ".vigil-cache"
     db_path: Path = REPO_ROOT / "vigil.db"
     ffmpeg: str | None = None

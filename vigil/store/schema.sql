@@ -23,5 +23,13 @@ CREATE TABLE rules(id TEXT PRIMARY KEY, json TEXT, source TEXT, state TEXT, crea
 CREATE TABLE rule_hits(rule_id TEXT, visit_id TEXT, event_id TEXT);
 CREATE TABLE model_calls(id TEXT PRIMARY KEY, model TEXT, purpose TEXT, visit_id TEXT, req_hash TEXT,
   latency_ms INT, in_tokens INT, out_tokens INT, units REAL, cost_usd REAL, cached INT, ok INT,
-  error TEXT, backend TEXT, gpu_s REAL, created_at TEXT);  -- backend, gpu_s: FR-042
+  error TEXT, backend TEXT, gpu_s REAL, feature TEXT, created_at TEXT);  -- backend, gpu_s: FR-042; feature: spec 11.4
 CREATE TABLE validations(visit_id TEXT, attempt INT, passed INT, failures_json TEXT);
+
+-- Added during integration (2026-11-02), beyond spec 9.3:
+CREATE TABLE visit_tracks(visit_id TEXT, track_id TEXT, PRIMARY KEY (visit_id, track_id));
+CREATE TABLE triage(visit_id TEXT PRIMARY KEY, escalate INT, forced INT, source TEXT, reason TEXT,
+  call_id TEXT);
+CREATE TABLE drafts(visit_id TEXT, attempt INT, call_id TEXT, draft_json TEXT,
+  PRIMARY KEY (visit_id, attempt));
+CREATE TABLE outages(camera_id TEXT, t0 REAL, t1 REAL, attempts INT);

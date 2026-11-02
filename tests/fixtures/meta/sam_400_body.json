@@ -1,0 +1,7 @@
+{
+ "error": {
+  "message": "17 objects exceed this model's limit of 16.",
+  "type": "invalid_request_error",
+  "code": "invalid_prompt"
+ }
+}

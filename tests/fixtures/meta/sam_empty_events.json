@@ -1,0 +1,21 @@
+[
+ {
+  "type": "response.created",
+  "response": {
+   "id": "resp_empty"
+  }
+ },
+ {
+  "type": "response.output_text.done",
+  "item_id": "msg_fixture_0",
+  "output_index": 0,
+  "content_index": 0,
+  "text": ""
+ },
+ {
+  "type": "response.completed",
+  "response": {
+   "id": "resp_empty"
+  }
+ }
+]

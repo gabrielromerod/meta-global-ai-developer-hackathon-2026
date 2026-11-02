@@ -1,0 +1,42 @@
+{
+ "note": "Pre-registered targets only. `vigil eval` appends measured results (FR-024); this synthetic bundle has none.",
+ "status": "not measured",
+ "synthetic": true,
+ "targets": [
+  {
+   "metric": "Alert reduction",
+   "result": null,
+   "target": ">= 80%"
+  },
+  {
+   "metric": "Correct verdicts",
+   "result": null,
+   "target": ">= 10 of 12"
+  },
+  {
+   "metric": "Link precision",
+   "result": null,
+   "target": ">= 90%"
+  },
+  {
+   "metric": "Claims inside gaps",
+   "result": null,
+   "target": "0"
+  },
+  {
+   "metric": "Uncited sentences shipped",
+   "result": null,
+   "target": "0"
+  },
+  {
+   "metric": "3D position error (median, within 10 m)",
+   "result": null,
+   "target": "< 0.5 m"
+  },
+  {
+   "metric": "Test points inside stated r95",
+   "result": null,
+   "target": ">= 90%"
+  }
+ ]
+}

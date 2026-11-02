@@ -1,0 +1,247 @@
+[
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_a1",
+  "window_id": "w_front_2518"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_a1",
+  "window_id": "w_front_2526"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_a1",
+  "window_id": "w_front_2534"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_a1",
+  "window_id": "w_front_2542"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_a2",
+  "window_id": "w_front_2534"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_a2",
+  "window_id": "w_front_2542"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_a2",
+  "window_id": "w_front_2550"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_a2",
+  "window_id": "w_front_2558"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_a2",
+  "window_id": "w_front_2566"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_a2",
+  "window_id": "w_front_2574"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_b1",
+  "window_id": "w_front_5458"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_b1",
+  "window_id": "w_front_5466"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_b1",
+  "window_id": "w_front_5474"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_b1",
+  "window_id": "w_front_5482"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_b1",
+  "window_id": "w_front_5490"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_b1",
+  "window_id": "w_front_5498"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_b1",
+  "window_id": "w_front_5506"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_b1",
+  "window_id": "w_front_5514"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_b2",
+  "window_id": "w_front_5490"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_b2",
+  "window_id": "w_front_5498"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_b2",
+  "window_id": "w_front_5506"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_b2",
+  "window_id": "w_front_5514"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_c0",
+  "window_id": "w_front_15166"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_c0",
+  "window_id": "w_front_15174"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_c0",
+  "window_id": "w_front_15182"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_c1",
+  "window_id": "w_side_left_15182"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_c1",
+  "window_id": "w_side_left_15190"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_c1",
+  "window_id": "w_side_left_15198"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_c1",
+  "window_id": "w_side_left_15206"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_c1",
+  "window_id": "w_side_left_15214"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_c1",
+  "window_id": "w_side_left_15222"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_c1",
+  "window_id": "w_side_left_15230"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_c1",
+  "window_id": "w_side_left_15238"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_c1",
+  "window_id": "w_side_left_15246"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_c1",
+  "window_id": "w_side_left_15254"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_c1",
+  "window_id": "w_side_left_15262"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_c2",
+  "window_id": "w_side_left_15302"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_c2",
+  "window_id": "w_side_left_15310"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_c2",
+  "window_id": "w_side_left_15318"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_c2",
+  "window_id": "w_side_left_15326"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_c2",
+  "window_id": "w_side_left_15334"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_c2",
+  "window_id": "w_side_left_15342"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_c2",
+  "window_id": "w_side_left_15350"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_c2",
+  "window_id": "w_side_left_15358"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_c3",
+  "window_id": "w_front_15350"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_c3",
+  "window_id": "w_front_15358"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_c3",
+  "window_id": "w_front_15366"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_c3",
+  "window_id": "w_front_15374"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_c3",
+  "window_id": "w_front_15382"
+ }
+]

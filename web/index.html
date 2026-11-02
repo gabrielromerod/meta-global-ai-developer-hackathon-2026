@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Vigil: one cited story per visit, placed in a 3D model of the house.">
+  <title>Vigil</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "/twin/vendor/three/build/three.module.min.js",
+        "three/addons/": "/twin/vendor/three/examples/jsm/"
+      }
+    }
+  </script>
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#/" aria-label="Vigil home">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M12 3 3 7v5c0 5 4 8 9 9 5-1 9-4 9-9V7z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>
+      <span>Vigil</span>
+    </a>
+    <span class="tagline">One cited story per visit</span>
+    <span id="mode-badge" class="pill" data-testid="mode-badge">Cached</span>
+    <span id="live-status" class="pill subtle" data-testid="live-status">Checking live…</span>
+  </header>
+
+  <div id="synthetic-banner" class="banner" role="note" hidden data-testid="synthetic-banner"></div>
+
+  <section id="summary" class="summary" data-testid="summary" aria-live="polite">
+    <span class="summary-loading">Loading the recorded evening…</span>
+  </section>
+
+  <nav id="tabs" class="tabs" aria-label="Scenarios"></nav>
+
+  <main id="layout" class="layout">
+    <section id="detail" class="panel detail" aria-live="polite" hidden></section>
+
+    <section id="twin-panel" class="panel twin-panel" aria-label="3D model of the house">
+      <div class="panel-head">
+        <h2>House model</h2>
+        <span id="twin-mode" class="pill subtle" data-testid="twin-mode"></span>
+      </div>
+      <div id="twin" class="twin" data-testid="twin"></div>
+      <div id="legend" class="legend" data-testid="legend" aria-label="Legend"></div>
+    </section>
+
+    <section id="players-panel" class="panel players-panel" aria-label="Camera players">
+      <div class="panel-head">
+        <h2>Cameras</h2>
+        <div class="player-controls">
+          <button id="play-toggle" type="button" class="btn small" aria-label="Play">Play</button>
+          <input id="scrub" type="range" min="0" max="100" step="0.1" value="0" aria-label="Timeline">
+          <span id="player-clock" class="mono" data-testid="player-clock">--:--</span>
+        </div>
+      </div>
+      <div id="players" class="players" data-testid="players"></div>
+      <div id="protect-tools" class="tools-row">
+        <label class="toggle"><input id="protect-mode" type="checkbox"> Tap a camera to protect an object</label>
+        <span id="protect-presets" class="preset-list"></span>
+      </div>
+      <div id="protect-result" class="result-box" hidden aria-live="polite"></div>
+    </section>
+
+    <section id="visits" class="panel visits" aria-label="Visits">
+      <div class="panel-head"><h2 id="visits-title">Visits this evening</h2></div>
+      <ul id="visit-list" class="visit-list" data-testid="visit-list"></ul>
+    </section>
+
+    <section id="rules" class="panel rules" aria-label="Rules">
+      <div class="panel-head"><h2>Rules</h2></div>
+      <form id="rule-form" class="rule-form">
+        <label for="rule-text">Type a rule</label>
+        <input id="rule-text" name="text" type="text" maxlength="500"
+               value="tell me if anyone touches the bin after 9 PM" autocomplete="off">
+        <div class="btn-row">
+          <button type="submit" class="btn" data-live="false">Compile (recorded)</button>
+          <button type="button" id="rule-live" class="btn live" data-live="true">Compile live</button>
+        </div>
+      </form>
+      <div id="rule-result" class="result-box" hidden aria-live="polite"></div>
+    </section>
+
+    <section id="benchmark" class="panel benchmark" hidden aria-label="Benchmark"></section>
+  </main>
+
+  <footer class="footer">
+    <p>Seen versus estimated: outlines are what a camera saw; discs are where Vigil estimates someone stood, with their uncertainty. Gaps are drawn as gaps, never as guessed paths.</p>
+  </footer>
+</body>
+</html>

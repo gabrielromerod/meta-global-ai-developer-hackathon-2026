@@ -1,0 +1,206 @@
+{
+ "v_a": {
+  "drafts": [],
+  "story_call_id": null,
+  "triage": {
+   "call_id": "call_0123",
+   "escalate": false,
+   "forced": false,
+   "reason": "One household departure by car; no rule, object or gap involved.",
+   "source": "spark"
+  },
+  "verdict_inputs": {
+   "floor": "normal",
+   "proposal": null,
+   "proposal_cited": false,
+   "result": "normal",
+   "unresolved_gap": false
+  },
+  "watch_proposals": []
+ },
+ "v_b": {
+  "drafts": [
+   {
+    "attempt": 1,
+    "call_id": "call_0125",
+    "passed": true,
+    "sentences": [
+     {
+      "call_id": null,
+      "event_ids": [
+       "e5",
+       "e6"
+      ],
+      "gap_id": null,
+      "model": null,
+      "source": "wonder",
+      "text": "A person walked up to the porch on the Front entrance camera at 7:31 PM."
+     },
+     {
+      "call_id": null,
+      "event_ids": [
+       "e7",
+       "e9"
+      ],
+      "gap_id": null,
+      "model": null,
+      "source": "wonder",
+      "text": "They stayed on the porch for about 18 s, and a package appeared there at 7:31 PM."
+     },
+     {
+      "call_id": null,
+      "event_ids": [
+       "e8",
+       "e9"
+      ],
+      "gap_id": null,
+      "model": null,
+      "source": "wonder",
+      "text": "They left at 7:32 PM; the package stayed on the porch."
+     }
+    ]
+   }
+  ],
+  "story_call_id": "call_0125",
+  "triage": {
+   "call_id": "call_0124",
+   "escalate": true,
+   "forced": false,
+   "reason": "A new object was left on the porch.",
+   "source": "spark"
+  },
+  "verdict_inputs": {
+   "floor": "normal",
+   "proposal": "noteworthy",
+   "proposal_cited": true,
+   "result": "noteworthy",
+   "unresolved_gap": false
+  },
+  "watch_proposals": [
+   {
+    "accepted": true,
+    "camera_id": "front",
+    "phrase": "package",
+    "reason": "camera exists; 'package' is on the allowlist; 1 of 4 watches on Front entrance",
+    "reason_event_id": "e9",
+    "watch_id": "w2"
+   }
+  ]
+ },
+ "v_c": {
+  "drafts": [
+   {
+    "attempt": 1,
+    "call_id": "call_0126",
+    "failures": [
+     {
+      "check": "uncited",
+      "detail": "'He checked the shed door.' cites no event",
+      "sentence_index": 2
+     },
+     {
+      "check": "banned_word",
+      "detail": "'He' assumes gender; the subject is always 'a person' or 'they'",
+      "sentence_index": 2
+     }
+    ],
+    "passed": false,
+    "sentences": [
+     {
+      "event_ids": [
+       "e15",
+       "e16"
+      ],
+      "text": "A person walked from the front of the house into the left side yard at 10:13 PM."
+     },
+     {
+      "event_ids": [
+       "e17"
+      ],
+      "text": "They touched the side gate at 10:14 PM."
+     },
+     {
+      "event_ids": [],
+      "text": "He checked the shed door."
+     },
+     {
+      "event_ids": [
+       "e19",
+       "e20"
+      ],
+      "text": "They came back into view on the Left side camera at 10:15 PM and walked back through the side gate."
+     }
+    ]
+   },
+   {
+    "attempt": 2,
+    "call_id": "call_0127",
+    "passed": true,
+    "sentences": [
+     {
+      "call_id": null,
+      "event_ids": [
+       "e15",
+       "e16"
+      ],
+      "gap_id": null,
+      "model": null,
+      "source": "wonder",
+      "text": "A person walked from the front of the house into the left side yard at 10:13 PM."
+     },
+     {
+      "call_id": null,
+      "event_ids": [
+       "e17"
+      ],
+      "gap_id": null,
+      "model": null,
+      "source": "wonder",
+      "text": "They touched the side gate at 10:14 PM."
+     },
+     {
+      "call_id": null,
+      "event_ids": [
+       "e19",
+       "e20"
+      ],
+      "gap_id": null,
+      "model": null,
+      "source": "wonder",
+      "text": "They came back into view on the Left side camera at 10:15 PM and walked back through the side gate."
+     },
+     {
+      "call_id": null,
+      "event_ids": [
+       "e22",
+       "e23"
+      ],
+      "gap_id": null,
+      "model": null,
+      "source": "wonder",
+      "text": "They left past the Front entrance camera at 10:16 PM."
+     }
+    ]
+   }
+  ],
+  "gap_sentences": [
+   "g4"
+  ],
+  "story_call_id": "call_0127",
+  "triage": {
+   "call_id": null,
+   "escalate": true,
+   "forced": true,
+   "reason": "Rule r7 fired and a protected object was touched.",
+   "source": "code"
+  },
+  "verdict_inputs": {
+   "floor": "needs_attention",
+   "proposal": "normal",
+   "proposal_cited": true,
+   "result": "needs_attention",
+   "unresolved_gap": false
+  },
+  "watch_proposals": []
+ }
+}

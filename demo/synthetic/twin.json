@@ -1,0 +1,592 @@
+{
+ "blind_regions": [
+  {
+   "id": "shed_back",
+   "name": "behind the shed",
+   "polygon_m": [
+    [
+     4.1,
+     9.0
+    ],
+    [
+     7.3,
+     9.0
+    ],
+    [
+     7.3,
+     11.2
+    ],
+    [
+     4.1,
+     11.2
+    ]
+   ]
+  }
+ ],
+ "cameras": [
+  {
+   "calibration": {
+    "heldout_ground_m": 0.14,
+    "method": "pnp_ransac",
+    "reproj_mean_px": 2.1,
+    "synthetic": true
+   },
+   "height": 720,
+   "hfov_deg": 100.0,
+   "id": "front",
+   "look_at": [
+    1.2,
+    0.0,
+    -7.0
+   ],
+   "name": "Front entrance",
+   "position": [
+    0.8,
+    2.6,
+    -0.3
+   ],
+   "range_m": 11.0,
+   "vfov_deg": 67.67,
+   "width": 1280
+  },
+  {
+   "calibration": {
+    "heldout_ground_m": 0.18,
+    "method": "pnp_ransac",
+    "reproj_mean_px": 2.6,
+    "synthetic": true
+   },
+   "height": 720,
+   "hfov_deg": 85.0,
+   "id": "side_left",
+   "look_at": [
+    6.4,
+    0.0,
+    7.5
+   ],
+   "name": "Left side",
+   "position": [
+    3.7,
+    2.6,
+    0.2
+   ],
+   "range_m": 11.0,
+   "vfov_deg": 54.54,
+   "width": 1280
+  },
+  {
+   "calibration": {
+    "heldout_ground_m": 0.21,
+    "method": "pnp_ransac",
+    "reproj_mean_px": 3.1,
+    "synthetic": true
+   },
+   "height": 720,
+   "hfov_deg": 80.0,
+   "id": "side_right",
+   "look_at": [
+    -7.6,
+    0.0,
+    7.0
+   ],
+   "name": "Right side",
+   "position": [
+    -6.2,
+    2.6,
+    0.2
+   ],
+   "range_m": 10.0,
+   "vfov_deg": 50.53,
+   "width": 1280
+  },
+  {
+   "calibration": {
+    "heldout_ground_m": 0.16,
+    "method": "homography",
+    "reproj_mean_px": 2.4,
+    "synthetic": true
+   },
+   "height": 720,
+   "hfov_deg": 90.0,
+   "id": "backyard",
+   "look_at": [
+    -1.0,
+    0.0,
+    12.5
+   ],
+   "name": "Backyard",
+   "position": [
+    -5.8,
+    2.7,
+    7.3
+   ],
+   "range_m": 10.0,
+   "vfov_deg": 58.72,
+   "width": 1280
+  }
+ ],
+ "coverage": [
+  {
+   "camera_id": "front",
+   "polygon_m": [
+    [
+     9.63,
+     -6.86
+    ],
+    [
+     8.59,
+     -8.07
+    ],
+    [
+     7.38,
+     -9.11
+    ],
+    [
+     6.03,
+     -9.97
+    ],
+    [
+     4.58,
+     -10.63
+    ],
+    [
+     3.04,
+     -11.07
+    ],
+    [
+     1.46,
+     -11.28
+    ],
+    [
+     -0.14,
+     -11.26
+    ],
+    [
+     -1.72,
+     -11.01
+    ],
+    [
+     -3.25,
+     -10.53
+    ],
+    [
+     -4.69,
+     -9.83
+    ],
+    [
+     -6.01,
+     -8.94
+    ],
+    [
+     -7.19,
+     -7.86
+    ],
+    [
+     0.8,
+     -0.3
+    ]
+   ],
+   "synthetic": true
+  },
+  {
+   "camera_id": "side_left",
+   "polygon_m": [
+    [
+     3.5,
+     0.69
+    ],
+    [
+     3.5,
+     7.0
+    ],
+    [
+     0.92,
+     7.0
+    ],
+    [
+     -0.46,
+     10.38
+    ],
+    [
+     0.83,
+     10.82
+    ],
+    [
+     2.16,
+     11.09
+    ],
+    [
+     3.52,
+     11.2
+    ],
+    [
+     4.1,
+     11.17
+    ],
+    [
+     4.1,
+     9.0
+    ],
+    [
+     4.1,
+     7.6
+    ],
+    [
+     7.3,
+     7.6
+    ],
+    [
+     7.3,
+     9.0
+    ],
+    [
+     7.3,
+     10.58
+    ],
+    [
+     7.52,
+     10.52
+    ],
+    [
+     8.76,
+     9.97
+    ],
+    [
+     9.92,
+     9.27
+    ],
+    [
+     11.0,
+     8.43
+    ],
+    [
+     11.96,
+     7.47
+    ],
+    [
+     12.79,
+     6.4
+    ],
+    [
+     13.48,
+     5.23
+    ],
+    [
+     3.7,
+     0.2
+    ]
+   ],
+   "synthetic": true
+  },
+  {
+   "camera_id": "side_right",
+   "polygon_m": [
+    [
+     -14.04,
+     6.41
+    ],
+    [
+     -13.27,
+     7.28
+    ],
+    [
+     -12.4,
+     8.05
+    ],
+    [
+     -11.44,
+     8.71
+    ],
+    [
+     -10.42,
+     9.27
+    ],
+    [
+     -9.34,
+     9.69
+    ],
+    [
+     -8.22,
+     9.99
+    ],
+    [
+     -7.07,
+     10.16
+    ],
+    [
+     -5.9,
+     10.2
+    ],
+    [
+     -4.74,
+     10.09
+    ],
+    [
+     -3.61,
+     9.86
+    ],
+    [
+     -2.5,
+     9.49
+    ],
+    [
+     -1.45,
+     9.0
+    ],
+    [
+     -2.53,
+     7.0
+    ],
+    [
+     -6.0,
+     7.0
+    ],
+    [
+     -6.0,
+     0.57
+    ],
+    [
+     -6.2,
+     0.2
+    ]
+   ],
+   "synthetic": true
+  },
+  {
+   "camera_id": "backyard",
+   "polygon_m": [
+    [
+     -6.2,
+     17.29
+    ],
+    [
+     -4.89,
+     17.26
+    ],
+    [
+     -3.6,
+     17.05
+    ],
+    [
+     -2.35,
+     16.68
+    ],
+    [
+     -1.15,
+     16.15
+    ],
+    [
+     -0.03,
+     15.47
+    ],
+    [
+     0.98,
+     14.65
+    ],
+    [
+     1.88,
+     13.7
+    ],
+    [
+     2.65,
+     12.64
+    ],
+    [
+     3.28,
+     11.49
+    ],
+    [
+     3.75,
+     10.27
+    ],
+    [
+     4.05,
+     9.0
+    ],
+    [
+     4.1,
+     8.57
+    ],
+    [
+     4.1,
+     7.7
+    ],
+    [
+     -5.8,
+     7.3
+    ]
+   ],
+   "synthetic": true
+  }
+ ],
+ "fallback_level": 3,
+ "fallback_note": "Synthetic site plan (house, shed and fences as boxes); no LiDAR scan.",
+ "frame": "x along the front wall, y up, z towards the backyard (metres)",
+ "glb_url": "/media/ground.glb",
+ "ground": {
+  "max": [
+   12.0,
+   16.0
+  ],
+  "min": [
+   -12.0,
+   -12.0
+  ]
+ },
+ "protected_objects": [
+  {
+   "camera_id": "side_left",
+   "footprint": [
+    [
+     5.5,
+     2.95
+    ],
+    [
+     6.7,
+     2.95
+    ],
+    [
+     6.7,
+     3.05
+    ],
+    [
+     5.5,
+     3.05
+    ]
+   ],
+   "id": "po_side_gate",
+   "label": "side gate"
+  }
+ ],
+ "site_plan": {
+  "boxes": [
+   {
+    "h": 3.0,
+    "id": "house",
+    "kind": "building",
+    "max": [
+     3.5,
+     7.0
+    ],
+    "min": [
+     -6.0,
+     0.0
+    ],
+    "name": "House"
+   },
+   {
+    "h": 2.2,
+    "id": "shed",
+    "kind": "building",
+    "max": [
+     7.3,
+     9.0
+    ],
+    "min": [
+     4.1,
+     7.6
+    ],
+    "name": "Shed"
+   },
+   {
+    "h": 1.8,
+    "id": "fence_left",
+    "kind": "fence",
+    "max": [
+     9.6,
+     14.0
+    ],
+    "min": [
+     9.4,
+     -1.0
+    ],
+    "name": "Left fence"
+   },
+   {
+    "h": 1.8,
+    "id": "fence_back",
+    "kind": "fence",
+    "max": [
+     9.6,
+     14.1
+    ],
+    "min": [
+     -9.6,
+     13.9
+    ],
+    "name": "Back fence"
+   },
+   {
+    "h": 1.8,
+    "id": "fence_right",
+    "kind": "fence",
+    "max": [
+     -9.4,
+     14.0
+    ],
+    "min": [
+     -9.6,
+     -1.0
+    ],
+    "name": "Right fence"
+   },
+   {
+    "h": 1.6,
+    "id": "gate_fence_a",
+    "kind": "fence",
+    "max": [
+     5.5,
+     3.05
+    ],
+    "min": [
+     3.5,
+     2.95
+    ],
+    "name": "Side fence"
+   },
+   {
+    "h": 1.6,
+    "id": "gate_fence_b",
+    "kind": "fence",
+    "max": [
+     9.4,
+     3.05
+    ],
+    "min": [
+     6.7,
+     2.95
+    ],
+    "name": "Side fence"
+   },
+   {
+    "h": 1.5,
+    "id": "side_gate",
+    "kind": "protected",
+    "max": [
+     6.7,
+     3.05
+    ],
+    "min": [
+     5.5,
+     2.95
+    ],
+    "name": "Side gate"
+   },
+   {
+    "h": 1.1,
+    "id": "bin",
+    "kind": "object",
+    "max": [
+     -7.8,
+     4.9
+    ],
+    "min": [
+     -8.4,
+     4.3
+    ],
+    "name": "Recycling bin"
+   }
+  ]
+ },
+ "synthetic": true
+}

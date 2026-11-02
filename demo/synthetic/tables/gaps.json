@@ -1,0 +1,13 @@
+[
+ {
+  "from_camera": "side_left",
+  "id": "g4",
+  "kind": "blind_spot",
+  "region_id": "shed_back",
+  "resolved": 1,
+  "t0": 15263.0,
+  "t1": 15304.0,
+  "to_camera": "side_left",
+  "visit_id": "v_c"
+ }
+]

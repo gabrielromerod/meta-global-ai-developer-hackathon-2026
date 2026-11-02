@@ -1,0 +1,31 @@
+[
+ {
+  "attempt": 1,
+  "failures_json": [],
+  "passed": 1,
+  "visit_id": "v_b"
+ },
+ {
+  "attempt": 1,
+  "failures_json": [
+   {
+    "check": "uncited",
+    "detail": "'He checked the shed door.' cites no event",
+    "sentence_index": 2
+   },
+   {
+    "check": "banned_word",
+    "detail": "'He' assumes gender; the subject is always 'a person' or 'they'",
+    "sentence_index": 2
+   }
+  ],
+  "passed": 0,
+  "visit_id": "v_c"
+ },
+ {
+  "attempt": 2,
+  "failures_json": [],
+  "passed": 1,
+  "visit_id": "v_c"
+ }
+]

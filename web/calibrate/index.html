@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Vigil calibration (LAN only)</title>
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .cal { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 12px 16px; }
+    .cal canvas { width: 100%; height: auto; background: #101418; border-radius: 8px; cursor: crosshair; display: block; }
+    .cal ol { font-size: 13px; }
+    @media (max-width: 800px) { .cal { grid-template-columns: 1fr; } }
+  </style>
+  <script type="module" src="/calibrate/calibrate.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/">Vigil</a>
+    <span class="tagline">Extrinsic calibration: click a marker in the camera still, then the same marker on the ground map (FR-037)</span>
+    <span class="pill warn">LAN only</span>
+  </header>
+  <div class="tools-row" style="padding: 8px 16px">
+    <label>Camera <select id="camera"></select></label>
+    <label>Still <input id="still" type="file" accept="image/*"></label>
+    <span class="card-meta">The still stays in this browser; only pixel and world coordinates are sent.</span>
+  </div>
+  <div class="cal">
+    <section class="panel">
+      <div class="panel-head"><h2>Camera still (1280 × 720)</h2><span id="pixel" class="mono">pixel: none</span></div>
+      <canvas id="still-canvas" width="1280" height="720" aria-label="Camera still"></canvas>
+    </section>
+    <section class="panel">
+      <div class="panel-head"><h2>Ground map (metres)</h2><span id="world" class="mono">world: none</span></div>
+      <canvas id="map-canvas" width="800" height="900" aria-label="Ground map"></canvas>
+    </section>
+  </div>
+  <div style="padding: 0 16px 16px">
+    <button id="send" class="btn live" type="button" disabled>Send pair</button>
+    <span id="status" class="card-meta"></span>
+    <ol id="pairs"></ol>
+  </div>
+</body>
+</html>

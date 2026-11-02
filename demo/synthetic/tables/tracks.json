@@ -1,0 +1,66 @@
+[
+ {
+  "camera_id": "front",
+  "cls": "person",
+  "id": "t_a1",
+  "overlay_path": "overlays.json#front/t_a1",
+  "t_first": 2522.0,
+  "t_last": 2546.0
+ },
+ {
+  "camera_id": "front",
+  "cls": "car",
+  "id": "t_a2",
+  "overlay_path": "overlays.json#front/t_a2",
+  "t_first": 2540.0,
+  "t_last": 2578.0
+ },
+ {
+  "camera_id": "front",
+  "cls": "person",
+  "id": "t_b1",
+  "overlay_path": "overlays.json#front/t_b1",
+  "t_first": 5462.0,
+  "t_last": 5520.0
+ },
+ {
+  "camera_id": "front",
+  "cls": "package",
+  "id": "t_b2",
+  "overlay_path": "overlays.json#front/t_b2",
+  "t_first": 5494.0,
+  "t_last": 5530.0
+ },
+ {
+  "camera_id": "front",
+  "cls": "person",
+  "id": "t_c0",
+  "overlay_path": "overlays.json#front/t_c0",
+  "t_first": 15170.0,
+  "t_last": 15190.0
+ },
+ {
+  "camera_id": "side_left",
+  "cls": "person",
+  "id": "t_c1",
+  "overlay_path": "overlays.json#side_left/t_c1",
+  "t_first": 15186.0,
+  "t_last": 15263.0
+ },
+ {
+  "camera_id": "side_left",
+  "cls": "person",
+  "id": "t_c2",
+  "overlay_path": "overlays.json#side_left/t_c2",
+  "t_first": 15304.0,
+  "t_last": 15360.0
+ },
+ {
+  "camera_id": "front",
+  "cls": "person",
+  "id": "t_c3",
+  "overlay_path": "overlays.json#front/t_c3",
+  "t_first": 15356.0,
+  "t_last": 15385.0
+ }
+]

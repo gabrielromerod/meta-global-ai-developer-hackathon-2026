@@ -1,0 +1,116 @@
+[
+ {
+  "cameras": [
+   {
+    "clip_t0": 2512.0,
+    "clip_url": null,
+    "id": "backyard",
+    "name": "Backyard"
+   },
+   {
+    "clip_t0": 2512.0,
+    "clip_url": null,
+    "id": "front",
+    "name": "Front entrance"
+   },
+   {
+    "clip_t0": 2512.0,
+    "clip_url": null,
+    "id": "side_left",
+    "name": "Left side"
+   },
+   {
+    "clip_t0": 2512.0,
+    "clip_url": null,
+    "id": "side_right",
+    "name": "Right side"
+   }
+  ],
+  "id": "A",
+  "t0": 2512.0,
+  "t1": 2588.0,
+  "title": "A · Routine departure",
+  "verdicts": [
+   "normal"
+  ],
+  "visit_ids": [
+   "v_a"
+  ]
+ },
+ {
+  "cameras": [
+   {
+    "clip_t0": 5452.0,
+    "clip_url": null,
+    "id": "backyard",
+    "name": "Backyard"
+   },
+   {
+    "clip_t0": 5452.0,
+    "clip_url": null,
+    "id": "front",
+    "name": "Front entrance"
+   },
+   {
+    "clip_t0": 5452.0,
+    "clip_url": null,
+    "id": "side_left",
+    "name": "Left side"
+   },
+   {
+    "clip_t0": 5452.0,
+    "clip_url": null,
+    "id": "side_right",
+    "name": "Right side"
+   }
+  ],
+  "id": "B",
+  "t0": 5452.0,
+  "t1": 5540.0,
+  "title": "B · Delivery on the porch",
+  "verdicts": [
+   "noteworthy"
+  ],
+  "visit_ids": [
+   "v_b"
+  ]
+ },
+ {
+  "cameras": [
+   {
+    "clip_t0": 15160.0,
+    "clip_url": null,
+    "id": "backyard",
+    "name": "Backyard"
+   },
+   {
+    "clip_t0": 15160.0,
+    "clip_url": null,
+    "id": "front",
+    "name": "Front entrance"
+   },
+   {
+    "clip_t0": 15160.0,
+    "clip_url": null,
+    "id": "side_left",
+    "name": "Left side"
+   },
+   {
+    "clip_t0": 15160.0,
+    "clip_url": null,
+    "id": "side_right",
+    "name": "Right side"
+   }
+  ],
+  "id": "C",
+  "t0": 15160.0,
+  "t1": 15395.0,
+  "title": "C · Night visit to the side gate",
+  "verdicts": [
+   "needs_attention"
+  ],
+  "visit_ids": [
+   "v_c"
+  ]
+ }
+]

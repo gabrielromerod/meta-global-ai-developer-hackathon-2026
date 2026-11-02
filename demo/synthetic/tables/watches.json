@@ -1,0 +1,12 @@
+[
+ {
+  "camera_id": "front",
+  "expires_at": "2026-10-31T19:32:10-07:00",
+  "id": "w2",
+  "origin": "wonder",
+  "phrase": "package",
+  "reason": "e9: a package appeared on the porch",
+  "source_visit_id": "v_b",
+  "status": "watching"
+ }
+]

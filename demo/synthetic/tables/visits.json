@@ -1,0 +1,149 @@
+[
+ {
+  "escalated": 0,
+  "floor": "normal",
+  "id": "v_a",
+  "proposal": null,
+  "scenario": "A",
+  "state": "published",
+  "story_json": [
+   {
+    "call_id": null,
+    "event_ids": [
+     "e1",
+     "e3"
+    ],
+    "gap_id": null,
+    "model": null,
+    "source": "template",
+    "text": "A person was seen on the Front entrance camera at 6:42 PM."
+   },
+   {
+    "call_id": null,
+    "event_ids": [
+     "e4"
+    ],
+    "gap_id": null,
+    "model": null,
+    "source": "template",
+    "text": "A car left the driveway at 6:42 PM."
+   }
+  ],
+  "t0": 2522.0,
+  "t1": 2578.0,
+  "verdict": "normal"
+ },
+ {
+  "escalated": 1,
+  "floor": "normal",
+  "id": "v_b",
+  "proposal": "noteworthy",
+  "scenario": "B",
+  "state": "published",
+  "story_json": [
+   {
+    "call_id": null,
+    "event_ids": [
+     "e5",
+     "e6"
+    ],
+    "gap_id": null,
+    "model": null,
+    "source": "wonder",
+    "text": "A person walked up to the porch on the Front entrance camera at 7:31 PM."
+   },
+   {
+    "call_id": null,
+    "event_ids": [
+     "e7",
+     "e9"
+    ],
+    "gap_id": null,
+    "model": null,
+    "source": "wonder",
+    "text": "They stayed on the porch for about 18 s, and a package appeared there at 7:31 PM."
+   },
+   {
+    "call_id": null,
+    "event_ids": [
+     "e8",
+     "e9"
+    ],
+    "gap_id": null,
+    "model": null,
+    "source": "wonder",
+    "text": "They left at 7:32 PM; the package stayed on the porch."
+   }
+  ],
+  "t0": 5462.0,
+  "t1": 5530.0,
+  "verdict": "noteworthy"
+ },
+ {
+  "escalated": 1,
+  "floor": "needs_attention",
+  "id": "v_c",
+  "proposal": "normal",
+  "scenario": "C",
+  "state": "published",
+  "story_json": [
+   {
+    "call_id": null,
+    "event_ids": [
+     "e15",
+     "e16"
+    ],
+    "gap_id": null,
+    "model": null,
+    "source": "wonder",
+    "text": "A person walked from the front of the house into the left side yard at 10:13 PM."
+   },
+   {
+    "call_id": null,
+    "event_ids": [
+     "e17"
+    ],
+    "gap_id": null,
+    "model": null,
+    "source": "wonder",
+    "text": "They touched the side gate at 10:14 PM."
+   },
+   {
+    "call_id": null,
+    "event_ids": [
+     "e18",
+     "e19"
+    ],
+    "gap_id": "g4",
+    "model": null,
+    "source": "code",
+    "text": "Not observed for 41 s: they left the Left side view toward the area behind the shed, which no camera covers. Vigil can't confirm what happened there."
+   },
+   {
+    "call_id": null,
+    "event_ids": [
+     "e19",
+     "e20"
+    ],
+    "gap_id": null,
+    "model": null,
+    "source": "wonder",
+    "text": "They came back into view on the Left side camera at 10:15 PM and walked back through the side gate."
+   },
+   {
+    "call_id": null,
+    "event_ids": [
+     "e22",
+     "e23"
+    ],
+    "gap_id": null,
+    "model": null,
+    "source": "wonder",
+    "text": "They left past the Front entrance camera at 10:16 PM."
+   }
+  ],
+  "t0": 15170.0,
+  "t1": 15385.0,
+  "verdict": "needs_attention"
+ }
+]

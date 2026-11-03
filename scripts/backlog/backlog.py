@@ -27,9 +27,9 @@ SPEC_URL = f"https://github.com/{REPO}/blob/main/docs/spec/vigil-spec.md"
 
 # PST (UTC-8) after DST ended on Nov 1 2026.
 MILESTONES = {
-    "G1": ("2026-11-03T07:00:00Z", "Mon Nov 2 23:00 PT: footage and labels committed; SAM tracks for A, B, C; GLB built"),
+    "G1": ("2026-11-03T07:00:00Z", "Mon Nov 2 23:00 PT: footage and labels committed; SAM tracks for A, A′, B, B′, C; GLB built"),
     "G2": ("2026-11-03T21:00:00Z", "Tue Nov 3 13:00 PT: scenario C end to end, including 3D positions and the gap"),
-    "G3 MVP freeze": ("2026-11-04T02:00:00Z", "Tue Nov 3 18:00 PT: all P0 pass in CI"),
+    "G3 MVP freeze": ("2026-11-04T02:00:00Z", "Tue Nov 3 18:00 PT: the 5 blocking P0 suites pass in CI"),
     "G4": ("2026-11-04T07:00:00Z", "Tue Nov 3 23:00 PT: evidence complete; sandbox opened on a phone"),
     "Submission": ("2026-11-04T22:00:00Z", "Wed Nov 4 14:00 PT: spec 13.5 checklist ticked; form submitted"),
 }  # fmt: skip

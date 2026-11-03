@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import '@testing-library/jest-dom/vitest';
 import {useState} from 'react';
-import {act, cleanup, render, screen} from '@testing-library/react';
+import {act, cleanup, render, screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
 import {MotionProvider, PageTransition, PanelTransition, useMotionPolicy, useMotionPreference} from './index';
@@ -75,5 +75,10 @@ describe('View and panel transitions',()=>{
     expect(screen.queryByRole('button',{name:'Panel action'})).not.toBeInTheDocument();
     rerender(<MotionProvider><PanelTransition open label="Visit panel"><button>Panel action</button></PanelTransition></MotionProvider>);
     expect(screen.getAllByRole('button',{name:'Panel action'})).toHaveLength(1);
+  });
+  it('unmounts an ordinary-motion closing panel after its library-managed exit',async()=>{
+    const {rerender}=render(<MotionProvider><PanelTransition open label="Evidence panel"><span>Closing evidence</span></PanelTransition></MotionProvider>);
+    rerender(<MotionProvider><PanelTransition open={false} label="Evidence panel"><span>Closing evidence</span></PanelTransition></MotionProvider>);
+    await waitFor(()=>expect(screen.queryByText('Closing evidence')).not.toBeInTheDocument());
   });
 });

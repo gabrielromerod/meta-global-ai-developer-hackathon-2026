@@ -62,7 +62,7 @@ function Preview() {
     capabilities,drafts,onDraftChange:(id:string,text:string)=>setDrafts(values=>({...values,[id]:text})),
     onShareClip:shareClip,onOpenVisit:setVisitId,onOpenClip:setClipId};
   const pageProps={state,onOpenVisit:setVisitId,onOpenClip:setClipId,activeView:view,
-    onViewChange:(id:string)=>{setView(id);setCameraId(null);},
+    onViewChange:(id:string)=>{setView(id);const selected=state.views.find(v=>v.id===id);setCameraId(selected?.camera_ids.length===1?selected.camera_ids[0]:null);},
     twinSlot:<HouseView twin={twinFixture} positions={positionData} time={time} activeCameraId={cameraId} onCameraSelect={id=>{
       setCameraId(id);const selected=state.views.find(v=>v.camera_ids.length===1&&v.camera_ids[0]===id);if(selected)setView(selected.id);
     }}/>};

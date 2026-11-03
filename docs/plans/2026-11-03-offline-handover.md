@@ -16,7 +16,7 @@ are the durable progress record. Existing recorded-input contracts remain suppor
 | 1 | .gitignore, local three runtime, WebGL-required judge-path E2E | Complete: 94f6786; 1419 default tests and WebGL E2E passed |
 | 2 | sam/spark upload guards; CameraCfg explicit none_needed; ingest preflight | Complete: 4dab0a6; 1425 default tests passed |
 | 3 | pipeline/process cloud orchestration, split cutter, tagged media, SQLite, estimate/confirm; respx generated MP4 integration | Complete: 5abbbc7; 1428 default tests passed |
-| 4 | export clips/overlay/twin and actual video playback E2E | Pending |
+| 4 | export clips/overlay/twin and actual video playback E2E | Complete: a55aed9; 1430 default and 19 browser tests passed |
 | 5 | time-ordered session watch feedback; next-window phrase regression | Pending |
 | 6 | main owner UI, session token, checkin countdown, Expected Windows CRUD, sandbox example; undo | Pending |
 | 7 | MetaClient timeout billing classification and 20 s read deadline | Pending |

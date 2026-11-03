@@ -138,6 +138,11 @@ def write_visits_json(result: Mapping[str, Any], path: Path | str) -> Path:
 
 
 def _watch_live(w: Watch, at: datetime) -> bool:
+    if w.origin == "wonder" and w.expires_at is not None:
+        from vigil.reasoning.loop import WATCH_TTL
+
+        if at < w.expires_at - WATCH_TTL:
+            return False  # a generated watch cannot change an earlier window
     return w.status == "watching" and (w.expires_at is None or w.expires_at > at)
 
 

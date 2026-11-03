@@ -89,7 +89,7 @@ def generated_session(tmp_path):
     return settings, polys
 
 
-def mock_models(router, *, saturated=False):
+def mock_models(router, *, saturated=False, propose_watch=False):
     calls = []
     uploads = []
 
@@ -145,6 +145,14 @@ def mock_models(router, *, saturated=False):
                 "gap_after_sentence": [],
                 "watch_proposals": [],
             }
+            if propose_watch:
+                answer["watch_proposals"] = [
+                    {
+                        "camera_id": "side_left",
+                        "phrase": "package",
+                        "reason_event_id": ledger["events"][0]["id"],
+                    }
+                ]
         return httpx.Response(200, json={"status": "completed", "output_text": json.dumps(answer)})
 
     router.post("https://api.meta.ai/v1/responses").mock(side_effect=respond)
@@ -212,3 +220,30 @@ def test_cloud_confirm_before_upload(tmp_path):
             process_session("generated", settings=settings, client=client, report=reports.append)
         assert len(router.calls) == 0
     assert "estimated cost:" in reports[0]
+
+
+def test_watches_apply_to_later_windows_in_same_run(tmp_path):
+    settings, _ = generated_session(tmp_path)
+    wfile = settings.data_dir / "windows" / "generated" / "windows.json"
+    windows = json.loads(wfile.read_text())
+    windows.append({**windows[0], "id": "w1", "t0": 4, "t1": 8})
+    wfile.write_text(json.dumps(windows), encoding="utf-8")
+    with (
+        respx.mock as router,
+        MetaClient(
+            settings,
+            clock=lambda: datetime(2026, 11, 3, tzinfo=UTC),
+            sleep=lambda _: None,
+        ) as client,
+    ):
+        calls = mock_models(router, propose_watch=True)
+        result = process_session("generated", settings=settings, client=client, confirm=True)
+    package = [
+        i
+        for i, c in enumerate(calls)
+        if c["model"] == "sam-3.1" and c["input"][0]["content"][0]["text"] == "package"
+    ]
+    assert len(package) == 1, "the accepted watch must reach the next window in this run"
+    story = next(i for i, c in enumerate(calls) if c["model"] == "muse-wonder-1.0")
+    assert package[0] > story
+    assert len(result["watches"]["accepted"]) == 1

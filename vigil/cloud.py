@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Any
 
 from vigil.meta.budget import SAM, SPARK, WONDER, estimate, preflight
-from vigil.models import Config, Track, Window
+from vigil.models import Config, Track, Watch, Window
 
 
 def cloud_estimates(windows: list[Window]) -> list:
@@ -45,7 +45,7 @@ def run_cloud(
     from vigil.ingest.windows import cut_window
     from vigil.meta import sam, spark, wonder
     from vigil.perception.tagged import burn_tags
-    from vigil.pipeline import run_scenario, upload_window
+    from vigil.pipeline import phrases_for, run_scenario, upload_window
 
     estimates = cloud_estimates(windows)
     summary = preflight(estimates, confirm=True)
@@ -59,6 +59,11 @@ def run_cloud(
     appearance = {}
     appearance_calls = {}
     ledger_start = len(client.ledger)
+    sam_cache = {}
+    notes_done = set()
+    processed = []
+    accepted = {}
+    rejected = {}
 
     def source(w: Window, phrase: str):
         cam = cfg.camera(w.camera_id)
@@ -81,7 +86,7 @@ def run_cloud(
         )
 
     def notes(tracks: list[Track]):
-        for w in windows:
+        for w in processed:
             mine = [
                 t
                 for t in tracks
@@ -89,6 +94,9 @@ def run_cloud(
                 or (t.camera_id == w.camera_id and t.t_first < w.t1 and t.t_last >= w.t0)
             ]
             if w.status == "idle" or not mine:
+                continue
+            key = (w.id, tuple((t.id, t.tag) for t in mine))
+            if key in notes_done:
                 continue
             cam = cfg.camera(w.camera_id)
             clip = burn_tags(w, mine, cam, result_dir / "tagged" / f"{w.id}.mp4")
@@ -107,22 +115,39 @@ def run_cloud(
                 c for c in reversed(client.ledger.rows()) if c.purpose == "appearance_notes"
             )
             appearance_calls.update({by_tag[tag]: call.id for tag in found})
+            notes_done.add(key)
         return appearance
 
-    result = run_scenario(
-        {"scenario": session, "windows": windows},
-        cfg=cfg,
-        rules=rules,
-        protected=protected,
-        watches=watches,
-        session_start=session_start,
-        sam=source,
-        notes=notes,
-        triage_model=lambda summary: spark.triage(client, summary),
-        writer=lambda ledger, failures: wonder.write_story(client, ledger, failures),
-        expected_windows=expected,
-        checkins=checkins,
-    )
+    # Only the current window may generate fresh perception. Rebuilding the accumulated
+    # evidence stitches across windows without sending a new watch into earlier footage.
+    for current in sorted(windows, key=lambda w: (w.t0, w.camera_id, w.id)):
+        active_watches = [*watches, *(Watch.model_validate(w) for w in accepted.values())]
+        if current.status != "idle":
+            for phrase in phrases_for(current, active_watches, session_start):
+                sam_cache[current.id, phrase] = source(current, phrase)
+        processed.append(current)
+        result = run_scenario(
+            {"scenario": session, "windows": processed},
+            cfg=cfg,
+            rules=rules,
+            protected=protected,
+            watches=active_watches,
+            session_start=session_start,
+            sam=lambda w, phrase: sam_cache.get((w.id, phrase), []),
+            notes=notes,
+            triage_model=lambda summary: spark.triage(client, summary),
+            writer=lambda ledger, failures: wonder.write_story(client, ledger, failures),
+            expected_windows=expected,
+            checkins=checkins,
+        )
+        accepted.update({w["id"]: w for w in result["watches"]["accepted"]})
+        rejected.update({w["id"]: w for w in result["watches"]["rejected"]})
+    result["watches"]["accepted"] = list(accepted.values())
+    result["watches"]["rejected"] = [w for wid, w in rejected.items() if wid not in accepted]
+    for visit in result["visits"]:
+        visit["watches"]["accepted"] = [
+            w for w in accepted.values() if w["source_visit_id"] == visit["id"]
+        ]
     result["appearance"] = appearance
     result["appearance_calls"] = appearance_calls
     result["cost_estimate"] = summary.model_dump()

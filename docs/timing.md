@@ -83,3 +83,19 @@ Initial baseline wall times are approximate; durations come from pytest. Later f
 | Linux full offline suite (isolated image, network disabled) | 2026-11-03T08:26:42.382630-08:00 | 2026-11-03T08:30:00.813933-08:00 | exit 1; output data/linux-suite.log |
 
 - FIXTURE Linux verification first attempt:1538 passed/4 metadata-shell failures,44 E2E excluded. Diagnosis: the verification context copied a trailing CR from the Windows working file although Git already stores LF. The Bash argument included that CR. No assertions were weakened; all25 host privacy tests pass after owned-file LF normalization, including a new first-failing LF invariant. Rebuild uses committed blobs and offline UV cache.
+
+| Linux full suite from committed bytes, network disabled | 2026-11-03T08:33:39.800513-08:00 | 2026-11-03T08:37:11.617603-08:00 | exit 0; output data/linux-git-suite.log |
+
+| Post-cutover frontend full tests/build | 2026-11-03T08:57:02.508820-08:00 | 2026-11-03T08:57:12.295139-08:00 | exits [0, 0]; output data/postcutover-frontend.log |
+
+| Post-cutover Docker build | 2026-11-03T08:58:02.030689-08:00 | 2026-11-03T08:58:31.995406-08:00 | exit 0; output data/postcutover-docker-build.log |
+
+| Post-cutover full offline backend | 2026-11-03T08:56:52.326237-08:00 | 2026-11-03T08:59:44.752197-08:00 | exit 0; output data/postcutover-backend.log |
+
+| Reviewed Docker full browser E2E | 2026-11-03T08:59:33.858471-08:00 | 2026-11-03T09:01:02.247763-08:00 | exit 0; output data/postcutover-docker-e2e.log |
+
+| Post-cutover full browser E2E | 2026-11-03T08:59:44.758785-08:00 | 2026-11-03T09:01:12.902957-08:00 | exit 0; output data/postcutover-e2e.log |
+
+| Post-cutover Ruff check | 2026-11-03T09:01:12.909850-08:00 | 2026-11-03T09:01:13.028470-08:00 | exit 0; output data/postcutover-check.log |
+
+| Post-cutover Ruff format | 2026-11-03T09:01:13.033493-08:00 | 2026-11-03T09:01:13.138467-08:00 | exit 0; output data/postcutover-format.log |

@@ -35,3 +35,8 @@ Builders append requests below and keep edits within their assigned paths.
 
 - REAL: reviewer isolated the exported hook's initial-only library fallback registering an extra permanent bare-query listener. New unit and actual-browser tests first reproduced 0→2→1 across both query forms; fix 47dddac6 removes the library fallback hook and retains the native conservative snapshot, giving 0→1→0. Unsupported-native fallback is now explicitly tested.
 - FIXTURE: final focused evidence is `qa/screens/ebc421a9/`; f61680ed/ebc421a9 add only QA waits for the first WebGL draw and mounted annotations. All eleven sizes and both themes exercise live preference changes, with the existing adaptive state/focus/draft, 20-route churn and active-tween regression retained. Full frontend suite now passes 75 tests. No Chat/Twin source edited; their listener/tween integration remains root-owned.
+
+
+## Root resolution, Nov3 reviewed cutover060c583c
+
+All seven tasks are independently APPROVED and integrated; final A/B R2 are APPROVED (cde38c03/80e217f0). Shared motion/provider, live preference hook, event-gated token pulse, scroll clearance and canonical camera owner validation are integrated and covered by final interaction matrices. Root owns all API/shared-state/transport/chat/point work; no builder is waiting on an outside-path request. See docs/react-review-ledger.md, QA_NOTES.md and docs/readiness.md for exact fixes and genuine field prerequisites.

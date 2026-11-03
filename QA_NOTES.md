@@ -37,9 +37,12 @@ will include the implementation commit SHA after verification.
 - QA-FINAL-010 — FIXTURE: ordinary-motion popup now animates after its portal mounts; actual opacity and live-preference draft/focus tests pass. Fix: a8329a47.
 - QA-FINAL-011 — FIXTURE: persistent Radix tablist-wrapper focus has an inset tokenized ring. The earlier provisional panel diagnosis was rejected; its existing ring remains unchanged. Fix: 5cf05c57.
 
-- QA-DOCTOR-001 — REAL logic / FIXTURE: no-Hub battery import mode no longer reports irrelevant missing camera IP prerequisites; privacy/clock checks remain. Regression failed first; fix SHA recorded after commit.
+- QA-DOCTOR-001 — REAL logic / FIXTURE: no-Hub battery import mode no longer reports irrelevant missing camera IP prerequisites; privacy/clock checks remain. Regression failed first; fix: e018fcda.
 
 ## Owner decisions
 
 - FONT-001: Inter selected by the owner in chat on Nov 3 after the three-font study. Default retained; decision commit recorded in docs/decisions.md.
 - CAMERA-001: No Reolink Home Hub. The three battery cameras use imported clips.
+
+- QA-CUTOVER-001 — REAL logic / FIXTURE: reviewed React now owns `/`, old consumer asset routes return404, preview alias matches byte-for-byte, actual root→visit navigation passes. Fix:060c583c. Both final UI reviews APPROVED; A mechanical recheck APPROVED9e3aa161.
+- QA-WINDOWS-001 — REAL logic / FIXTURE: scan task invokes shared Python metadata scanner directly instead of an unavailable WSL Bash. Actual PowerShell scan passes. Fix:dd77d169.

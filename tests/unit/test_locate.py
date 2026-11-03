@@ -7,6 +7,7 @@ import numpy as np
 import pytest
 
 from vigil.models import Box, Calibration, Gap, Position, TrackFrame
+from vigil.spatial.calibrate import intrinsics_from_fov
 from vigil.spatial.geometry import (
     CameraGeom,
     RaycastScene,
@@ -21,6 +22,7 @@ from vigil.spatial.locate import (
     foot_point,
     fuse,
     locate,
+    radial_sigma_px,
     smooth,
 )
 
@@ -296,3 +298,61 @@ def test_fusion_more_than_1m_apart_keeps_both_flagged_inconsistent():
     assert len(out) == 2
     assert all("inconsistent" in p.flags for p in out)
     assert {p.method for p in out} == {"footpoint"}
+
+
+# ---------------------------------------------------------------------------
+# r95 calibration terms (spec 7 step 4, revised Nov 2)
+# ---------------------------------------------------------------------------
+
+
+def _cal_with(heldout=None, reproj=None, nominal=False) -> Calibration:
+    if nominal:
+        intr = intrinsics_from_fov(2 * np.degrees(np.arctan(640.0 / 900.0)), W, H)
+    else:
+        intr = pinhole_intrinsics(W, H, f=900.0)
+    ext = look_at_extrinsics((0.0, 3.5, -1.0), (0.0, 0.5, 8.0))
+    ext.heldout_ground_m = heldout
+    ext.reproj_mean_px = reproj
+    return Calibration(camera_id="side_left", intrinsics=intr, extrinsics=ext)
+
+
+def _r95_at(scene, cal, x, z) -> float:
+    (u, v) = project(cal, [ground_point(x, z)])[0]
+    frame = TrackFrame(t=0, box=Box(x1=u - 20, y1=v - 200, x2=u + 20, y2=v))
+    return locate(frame, cal, scene, np.random.default_rng(0)).r95
+
+
+def test_r95_uses_landmark_error_when_no_audit_was_measured(scene):
+    plain = _r95_at(scene, _cal_with(), 0.0, 8.0)
+    landmark = _r95_at(scene, _cal_with(reproj=5.0), 0.0, 8.0)
+    assert landmark > plain * 1.3
+
+
+def test_r95_uses_audit_error_where_measured_instead_of_landmark_error(scene):
+    audited = _r95_at(scene, _cal_with(heldout=0.1, reproj=5.0), 0.0, 8.0)
+    audit_only = _r95_at(scene, _cal_with(heldout=0.1), 0.0, 8.0)
+    assert audited == pytest.approx(audit_only)
+    assert audited > _r95_at(scene, _cal_with(), 0.0, 8.0)
+
+
+def test_fov_nominal_adds_a_radial_term_that_grows_toward_the_edge(scene):
+    profile, nominal = _cal_with(), _cal_with(nominal=True)
+    assert nominal.intrinsics.k[0][0] == pytest.approx(900.0)
+    # Near the principal point the radial term is negligible ...
+    centre_p = _r95_at(scene, profile, 0.0, 8.0)
+    centre_n = _r95_at(scene, nominal, 0.0, 8.0)
+    assert centre_n == pytest.approx(centre_p, rel=0.1)
+    # ... toward the image edge it widens r95 clearly.
+    edge_p = _r95_at(scene, profile, 6.0, 9.0)
+    edge_n = _r95_at(scene, nominal, 6.0, 9.0)
+    assert edge_n > edge_p * 1.3
+
+
+def test_radial_sigma_is_zero_for_a_lens_profile_and_grows_with_radius():
+    nominal = CameraGeom.from_calibration(_cal_with(nominal=True))
+    profile = CameraGeom.from_calibration(_cal_with())
+    uv = np.array([[640.0, 360.0], [840.0, 360.0], [1240.0, 360.0]])
+    assert np.all(radial_sigma_px(profile, uv) == 0.0)
+    s = radial_sigma_px(nominal, uv)
+    assert s[0] == pytest.approx(0.0, abs=1e-9)
+    assert 0.0 < s[1] < s[2]

@@ -400,6 +400,13 @@ class CameraGeom:
     r: FloatArray
     center: FloatArray
     heldout_ground_m: float
+    """Audit-harness ground error in metres, 0.0 when not measured (see ``audit_ground_m``)."""
+    audit_ground_m: float | None = None
+    """Audit-harness held-out ground error (m) when measured, else None."""
+    reproj_mean_px: float | None = None
+    """Mean landmark reprojection error (px) of the extrinsic solve."""
+    nominal: bool = False
+    """True for nominal-FOV intrinsics (``fov_nominal``): no measured lens model."""
 
     @classmethod
     def from_calibration(cls, cal: Calibration) -> CameraGeom:
@@ -423,6 +430,9 @@ class CameraGeom:
             r=r,
             center=center,
             heldout_ground_m=float(ext.heldout_ground_m or 0.0),
+            audit_ground_m=ext.heldout_ground_m,
+            reproj_mean_px=ext.reproj_mean_px,
+            nominal=intr.source == "fov_nominal" or intr.fov_fallback,
         )
 
     def project(self, points: FloatArray) -> tuple[FloatArray, np.ndarray]:

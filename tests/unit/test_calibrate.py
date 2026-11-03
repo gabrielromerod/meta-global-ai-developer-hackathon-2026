@@ -11,12 +11,19 @@ import pytest
 from vigil.models import Calibration, Extrinsics, Intrinsics
 from vigil.spatial.calibrate import (
     MarkerPair,
+    SurveyedMarker,
+    audit_error,
     calibrate_extrinsics,
     calibrate_from_points,
     calibrate_intrinsics,
+    calibration_report,
     fov_intrinsics,
+    intrinsics_from_fov,
+    landmark_threshold_px,
     load_calibrations,
     save_calibrations,
+    solve_landmarks,
+    with_audit,
 )
 from vigil.spatial.geometry import (
     CameraGeom,
@@ -134,7 +141,9 @@ def test_homography_fallback_from_four_flat_markers():
     pairs = [
         MarkerPair(u=a, v=b, x=p[0], y=p[1], z=p[2]) for (a, b), p in zip(uv, pts, strict=True)
     ]
-    est = calibrate_extrinsics(pairs[:6], k, method="homography")
+    # Since the Nov 2 revision every landmark is used by default (FR-037); the 2-point
+    # hold-out is now asked for explicitly.
+    est = calibrate_extrinsics(pairs[:6], k, method="homography", holdout=2)
     assert est.method == "homography"
     pos_err, ang_err = _pose_errors(est, true_ext)
     assert pos_err < 0.02
@@ -225,6 +234,7 @@ def test_intrinsics_detection_failure_uses_fov_fallback(tmp_path):
     cv2.imwrite(str(blank), np.full((480, 640), 128, np.uint8))
     intr = calibrate_intrinsics([blank, blank, blank], hfov_deg=90.0)
     assert intr.fov_fallback
+    assert intr.source == "fov_nominal"
     assert intr.dist == []
     assert intr.k[0][0] == pytest.approx(320.0)  # (w/2) / tan(45 deg)
     assert (intr.width, intr.height) == (640, 480)
@@ -233,6 +243,7 @@ def test_intrinsics_detection_failure_uses_fov_fallback(tmp_path):
 def test_fov_intrinsics_focal_from_horizontal_fov():
     intr = fov_intrinsics(1280, 720, hfov_deg=100.0)
     assert intr.fov_fallback
+    assert intr.source == "fov_nominal"
     assert intr.model == "pinhole"
     assert intr.k[0][0] == pytest.approx(640.0 / np.tan(np.radians(50.0)))
     assert intr.k[0][2] == 640.0
@@ -271,6 +282,7 @@ def test_calibrate_from_points_recovers_model(model):
     assert intr.model == model
     assert intr.rms_px < 1.0
     assert not intr.fov_fallback
+    assert intr.source == "lens_profile"
     assert abs(intr.k[0][0] - 600.0) < 6.0
     expected_len = 4 if model == "fisheye" else 5
     assert len(intr.dist) == expected_len
@@ -311,3 +323,219 @@ def test_calibration_json_round_trip(tmp_path):
     # A {"cameras": [...]} wrapper is accepted too.
     path.write_text(json.dumps({"cameras": raw}), encoding="utf-8")
     assert load_calibrations(path) == cals
+
+
+# ---------------------------------------------------------------------------
+# Product path (FR-036, FR-037 revised Nov 2): nominal FOV + 6 SAM landmarks
+# ---------------------------------------------------------------------------
+
+HFOV = 100.0
+
+
+def _landmarks() -> np.ndarray:
+    """6 fixed landmarks (door-frame corners, gate-post tops and bases, a shed corner)."""
+    return np.array(
+        [[-1.5, 2.1, 4.0], [3.5, 0.0, 4.5], [0.0, 1.0, 6.5], [4.5, 2.2, 7.5],
+         [-2.0, 0.0, 9.0], [2.5, 1.5, 10.5]]
+    )  # fmt: skip
+
+
+def _audit_points() -> np.ndarray:
+    """6 surveyed ground markers, separate from the landmarks (benchmark only)."""
+    xz = np.array([[-1.0, 3.5], [2.0, 4.0], [0.5, 6.0], [3.0, 8.0], [-1.5, 10.0], [1.5, 12.0]])
+    return np.column_stack([xz[:, 0], 0.04 * xz[:, 1], xz[:, 1]])
+
+
+def _nominal_camera() -> tuple[Intrinsics, Extrinsics]:
+    return intrinsics_from_fov(HFOV, W, H), look_at_extrinsics((1.0, 3.0, -1.0), (2.0, 0.0, 7.0))
+
+
+def _pairs_for(k: Intrinsics, ext: Extrinsics, pts: np.ndarray, noise_px=0.0, seed=7, tag="l"):
+    geom = CameraGeom.from_calibration(Calibration(camera_id="c", intrinsics=k, extrinsics=ext))
+    uv, front = geom.project(pts)
+    assert front.all()
+    uv = uv + np.random.default_rng(seed).normal(0.0, noise_px, uv.shape)
+    return [
+        MarkerPair(u=float(u), v=float(v), x=float(p[0]), y=float(p[1]), z=float(p[2]),
+                   id=f"{tag}{i}")
+        for i, ((u, v), p) in enumerate(zip(uv, pts, strict=True))
+    ]  # fmt: skip
+
+
+def test_intrinsics_from_fov_is_nominal_and_flagged():
+    intr = intrinsics_from_fov(HFOV, 1280, 720)
+    assert intr.source == "fov_nominal"
+    assert intr.fov_fallback
+    assert intr.model == "pinhole"
+    assert intr.dist == []
+    assert intr.rms_px is None
+    assert intr.k[0][0] == pytest.approx(640.0 / np.tan(np.radians(HFOV / 2)))
+    assert intr.k[1][1] == intr.k[0][0]
+    assert (intr.k[0][2], intr.k[1][2]) == (640.0, 360.0)
+    assert (intr.width, intr.height) == (1280, 720)
+    for bad in (0.0, 180.0, -5.0):
+        with pytest.raises(ValueError):
+            intrinsics_from_fov(bad, 1280, 720)
+
+
+def test_checkerboard_path_is_a_lens_profile(tmp_path):
+    k = np.array([[520.0, 0, 322.0], [0, 520.0, 238.0], [0, 0, 1]])
+    paths = _render_board_views(tmp_path, k)
+    intr = calibrate_intrinsics(paths, pattern=PATTERN, square_m=SQUARE)
+    assert intr.source == "lens_profile"
+    assert intr.rms_px < 1.0
+
+
+def test_landmark_threshold_by_source_scaled_to_1280():
+    assert landmark_threshold_px(intrinsics_from_fov(90.0, 1280, 720)) == pytest.approx(6.0)
+    assert landmark_threshold_px(pinhole_intrinsics(1280, 720, 900.0)) == pytest.approx(4.0)
+    # Thresholds are stated at 1280 px width: a 640 px frame accepts half the pixels.
+    assert landmark_threshold_px(intrinsics_from_fov(90.0, 640, 360)) == pytest.approx(3.0)
+
+
+def test_pnp_on_six_landmarks_recovers_pose_within_2cm_and_half_degree():
+    k, true_ext = _nominal_camera()
+    pairs = _pairs_for(k, true_ext, _landmarks(), noise_px=0.3)
+    est = calibrate_extrinsics(pairs, k)
+    pos_err, ang_err = _pose_errors(est, true_ext)
+    assert est.method == "pnp_ransac"
+    assert pos_err < 0.02, pos_err
+    assert ang_err < 0.5, ang_err
+    assert est.reproj_mean_px < 6.0
+    # Accuracy is not asserted from the 6 landmarks: no held-out error without the audit.
+    assert est.heldout_ground_m is None
+
+
+def test_solve_landmarks_accepts_under_threshold():
+    k, true_ext = _nominal_camera()
+    res = solve_landmarks(_pairs_for(k, true_ext, _landmarks(), noise_px=0.5), k)
+    assert res.accepted
+    assert res.threshold_px == pytest.approx(6.0)
+    assert res.reproj_px_at_1280 < 6.0
+    assert res.used == [f"l{i}" for i in range(6)]
+    assert res.dropped == []
+
+
+def test_gross_landmark_outlier_is_rejected_by_ransac():
+    k, true_ext = _nominal_camera()
+    pairs = _pairs_for(k, true_ext, _landmarks(), noise_px=0.3)
+    pairs[2] = pairs[2].model_copy(update={"u": pairs[2].u + 60.0})  # mis-clicked landmark
+    res = solve_landmarks(pairs, k)
+    assert res.accepted
+    assert res.dropped == ["l2"]
+    pos_err, ang_err = _pose_errors(res.extrinsics, true_ext)
+    assert pos_err < 0.05
+    assert ang_err < 0.5
+
+
+def test_landmark_over_threshold_drops_worst_point_and_retries():
+    k = pinhole_intrinsics(W, H, f=640.0 / np.tan(np.radians(HFOV / 2)))  # lens profile: 4 px
+    true_ext = _nominal_camera()[1]
+    pairs = _pairs_for(k, true_ext, _landmarks(), noise_px=0.2)
+    pairs[4] = pairs[4].model_copy(update={"u": pairs[4].u + 30.0, "v": pairs[4].v - 20.0})
+    # A wide RANSAC gate keeps every point in the first solve, so the mean is over 4 px.
+    first = solve_landmarks(pairs, k, ransac_px=200.0, max_drops=0)
+    assert not first.accepted
+    assert first.reproj_px_at_1280 > 4.0
+    res = solve_landmarks(pairs, k, ransac_px=200.0)
+    assert res.accepted
+    assert res.dropped == ["l4"]
+    assert len(res.used) == 5
+    assert res.reproj_px_at_1280 < 4.0
+    # calibrate_extrinsics runs the same retry and returns the accepted pose.
+    ext = calibrate_extrinsics(pairs, k, ransac_px=200.0)
+    assert ext.reproj_mean_px == pytest.approx(res.extrinsics.reproj_mean_px)
+
+
+def test_landmark_solve_still_over_threshold_is_not_accepted():
+    k, true_ext = _nominal_camera()
+    pairs = _pairs_for(k, true_ext, _landmarks(), noise_px=12.0, seed=3)
+    res = solve_landmarks(pairs, k, ransac_px=200.0)
+    assert not res.accepted
+    assert len(res.dropped) <= 1
+    assert res.reproj_px_at_1280 >= 6.0
+
+
+def test_pairs_accept_nested_pixel_world_tuples():
+    k, true_ext = _nominal_camera()
+    nested = [((p.u, p.v), (p.x, p.y, p.z)) for p in _pairs_for(k, true_ext, _landmarks())]
+    est = calibrate_extrinsics(nested, k)
+    assert est.reproj_mean_px < 0.1
+
+
+# ---------------------------------------------------------------------------
+# Audit harness (NFR-024, benchmark only)
+# ---------------------------------------------------------------------------
+
+
+def _calibrated_nominal() -> Calibration:
+    k, true_ext = _nominal_camera()
+    ext = calibrate_extrinsics(_pairs_for(k, true_ext, _landmarks(), noise_px=0.3), k)
+    return Calibration(camera_id="side_left", intrinsics=k, extrinsics=ext)
+
+
+def _audit_markers(noise_px: float = 0.0) -> list[SurveyedMarker]:
+    k, true_ext = _nominal_camera()
+    return [
+        SurveyedMarker(**p.model_dump())
+        for p in _pairs_for(k, true_ext, _audit_points(), noise_px=noise_px, tag="a")
+    ]
+
+
+def test_audit_error_reports_held_out_ground_error_per_camera():
+    cal = _calibrated_nominal()
+    rep = audit_error(cal, _audit_markers(noise_px=0.3))
+    assert rep.camera_id == "side_left"
+    assert rep.n_markers == 6
+    assert [m.id for m in rep.markers] == [f"a{i}" for i in range(6)]
+    assert rep.mean_ground_m < 0.05
+    assert rep.max_ground_m >= rep.mean_ground_m
+    assert rep.mean_reproj_px < 2.0
+    assert rep.passed
+    assert rep.target_m == pytest.approx(0.25)
+
+
+def test_audit_error_exposes_a_bad_calibration():
+    cal = _calibrated_nominal()
+    markers = _audit_markers()
+    markers[0] = markers[0].model_copy(update={"x": markers[0].x + 1.0})
+    markers[3] = markers[3].model_copy(update={"z": markers[3].z + 1.0})
+    rep = audit_error(cal, markers)
+    assert rep.max_ground_m > 0.9
+    assert rep.mean_ground_m > 0.3
+    assert not rep.passed
+
+
+def test_audit_markers_are_never_landmarks():
+    cal = _calibrated_nominal()
+    k, true_ext = _nominal_camera()
+    landmarks = _pairs_for(k, true_ext, _landmarks())
+    reused = [SurveyedMarker(**landmarks[0].model_dump()), *_audit_markers()[1:]]
+    with pytest.raises(ValueError, match="never used"):
+        audit_error(cal, reused, landmarks=landmarks)
+    with pytest.raises(ValueError, match="at least 1"):
+        audit_error(cal, [])
+
+
+def test_with_audit_records_error_for_locate_and_report():
+    cal = _calibrated_nominal()
+    rep = audit_error(cal, _audit_markers(noise_px=0.3))
+    audited = with_audit(cal, rep)
+    assert audited.extrinsics.heldout_ground_m == pytest.approx(rep.mean_ground_m)
+    assert cal.extrinsics.heldout_ground_m is None  # the input is not mutated
+    report = calibration_report(audited)
+    assert report["intrinsics_source"] == "fov_nominal"
+    assert report["intrinsics_ok"] is True  # nominal FOV is always accepted, but flagged
+    assert report["fov_fallback"] is True
+    assert report["landmark_threshold_px"] == pytest.approx(6.0)
+    assert report["reproj_ok"] is True
+    assert report["audit_measured"] is True
+    assert report["heldout_ground_m"] == pytest.approx(rep.mean_ground_m)
+    assert report["heldout_ok"] is True
+
+
+def test_calibration_report_without_audit_says_not_measured():
+    report = calibration_report(_calibrated_nominal())
+    assert report["audit_measured"] is False
+    assert report["heldout_ground_m"] is None
+    assert report["heldout_ok"] is False

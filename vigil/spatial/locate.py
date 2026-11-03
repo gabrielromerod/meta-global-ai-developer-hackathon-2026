@@ -6,8 +6,10 @@
 3. Occlusion: a mask touching the image's bottom edge (or flagged clipped) hides the feet;
    the top of the mask with a 1.7 ± 0.15 m height prior is used instead, flagged
    ``low_confidence`` with method ``height_prior``.
-4. Uncertainty: 50 samples with 3 px noise, plus the camera's held-out ground error,
-   give the 95% radius ``r95``.
+4. Uncertainty: 50 samples with 3 px noise, plus the camera's audit-harness ground error
+   where it was measured (otherwise its landmark reprojection error, as extra pixel noise),
+   plus a per-pixel radial term when the intrinsics are nominal FOV (``fov_nominal``: no
+   lens model, so error grows toward the image edge), give the 95% radius ``r95``.
 5. Smoothing at 2 Hz with a 1 s median filter; nothing is interpolated across a gap, and no
    position is ever kept inside a gap.
 6. Two cameras: inverse-variance weighted mean (method ``fused``); estimates more than 1 m
@@ -38,6 +40,19 @@ K95 = math.sqrt(CHI2_2D_95)
 FUSE_MAX_SEP_M = 1.0
 MIN_HIT_FRACTION = 0.5
 MAX_RANGE_M = 60.0
+LANDMARK_SIGMA_FACTOR = 1.5
+"""Per-axis pixel sigma added per unit of mean landmark reprojection error (px) when no
+audit was measured. A mean 2D residual e is a per-axis sigma of e / sqrt(pi / 2) (0.8 e);
+a 6-point pose fit leaves only 6 of 12 residual degrees of freedom (x sqrt(2)), and the
+pose error it hides is shared by every pixel, so the factor rounds 1.13 up to 1.5. Checked by
+the landmark-only truthfulness test in test_locate_coverage.py."""
+FOV_FOCAL_FRAC = 0.02
+"""fov_nominal: 1-sigma relative focal error of a datasheet FOV (about 1.5 deg at 90 deg)."""
+FOV_K1_SIGMA = 0.03
+"""fov_nominal: 1-sigma unmodelled radial distortion k1 (x_d = x (1 + k1 r^2)).
+
+Both FOV terms are pre-field priors; the audit harness (NFR-026) checks that r95 stays
+truthful, and a camera that misses gets a lens profile instead."""
 
 
 @dataclass(frozen=True)
@@ -121,6 +136,58 @@ def _ground_hits(
     return ground.cast_ground(origins, dirs, max_t=MAX_RANGE_M)
 
 
+def radial_sigma_px(geom: CameraGeom, uv: np.ndarray) -> np.ndarray:
+    """Per-pixel 1-sigma radial error (px) of nominal-FOV intrinsics; 0 for a lens profile.
+
+    A pixel at normalised radius r (focal length f) sits f r from the principal point; a
+    relative focal error and an unmodelled k1 move it radially by f r (df + k1 r^2).
+    """
+    pts = np.asarray(uv, float).reshape(-1, 2)
+    if not geom.nominal or len(pts) == 0:
+        return np.zeros(len(pts))
+    r_n = np.linalg.norm(geom.undistort(pts), axis=1)
+    f = float(np.sqrt(geom.k[0, 0] * geom.k[1, 1]))
+    return f * r_n * (FOV_FOCAL_FRAC + FOV_K1_SIGMA * r_n**2)
+
+
+def _radial_dirs(geom: CameraGeom, uv: np.ndarray) -> np.ndarray:
+    d = np.asarray(uv, float).reshape(-1, 2) - geom.k[:2, 2][None, :]
+    n = np.linalg.norm(d, axis=1, keepdims=True)
+    return np.where(n > 1e-9, d / np.where(n > 1e-9, n, 1.0), 0.0)
+
+
+def calibration_terms(geom: CameraGeom) -> tuple[float, float]:
+    """(ground sigma in m, extra pixel sigma) from the camera's calibration quality.
+
+    The audit-harness error is used where it was measured; otherwise the landmark
+    reprojection error, which is all a product home has (spec 7 step 4).
+    """
+    audit = geom.audit_ground_m
+    if audit is None and geom.heldout_ground_m > 0:
+        audit = geom.heldout_ground_m
+    if audit is not None:
+        # Mean horizontal error e of an isotropic 2D Gaussian is sigma * sqrt(pi / 2).
+        return float(audit) / math.sqrt(math.pi / 2.0), 0.0
+    if geom.reproj_mean_px:
+        return 0.0, float(geom.reproj_mean_px) * LANDMARK_SIGMA_FACTOR
+    return 0.0, 0.0
+
+
+def _pixel_noise(
+    geom: CameraGeom, uv0: np.ndarray, rng: np.random.Generator, n: int, pixel_sigma: float
+) -> tuple[np.ndarray, float]:
+    """Sample offsets for the observed pixel and the ground sigma (m) left to add."""
+    noise = rng.normal(0.0, pixel_sigma, (n, 2))
+    ground_sigma, extra_px = calibration_terms(geom)
+    if extra_px > 0:
+        noise = noise + rng.normal(0.0, extra_px, (n, 2))
+    if geom.nominal:
+        sigma_r = float(radial_sigma_px(geom, uv0)[0])
+        if sigma_r > 0:
+            noise = noise + rng.normal(0.0, sigma_r, (n, 1)) * _radial_dirs(geom, uv0)
+    return noise, ground_sigma
+
+
 def r95_from_samples(center_xz: np.ndarray, samples_xz: np.ndarray, extra_sigma: float) -> float:
     """95% horizontal radius from Monte Carlo samples plus an isotropic calibration term.
 
@@ -149,20 +216,21 @@ def locate(
 ) -> Position | None:
     """Foot point -> undistort -> ray -> ground hit; 50 noisy samples give r95 (spec 9.4).
 
+    The samples carry 3 px detection noise, the landmark error (no audit) and the
+    ``fov_nominal`` radial term; the audit error, where measured, widens r95 in metres.
+
     Returns None when the ray never meets the ground (sky, outside the mesh) or when too few
     noisy samples hit to state an honest radius.
     """
     rng = rng if rng is not None else np.random.default_rng(0)
     geom = _geom(cam)
     fp = foot_point(frame, geom.width, geom.height)
-    # Mean horizontal error e of an isotropic 2D Gaussian is sigma * sqrt(pi / 2).
-    cal_sigma = geom.heldout_ground_m / math.sqrt(math.pi / 2.0)
-    noise = rng.normal(0.0, pixel_sigma, (n_samples, 2))
     flags: list[str] = []
+    uv0 = np.asarray(fp.top if fp.clipped else fp.foot, float)[None]
+    noise, cal_sigma = _pixel_noise(geom, uv0, rng, n_samples, pixel_sigma)
 
     if not fp.clipped:
         method = "footpoint"
-        uv0 = np.asarray(fp.foot, float)[None]
         pts, hit = _ground_hits(geom, ground, uv0)
         if not hit[0]:
             return None
@@ -171,7 +239,6 @@ def locate(
     else:
         method = "height_prior"
         flags.append("low_confidence")
-        uv0 = np.asarray(fp.top, float)[None]
         pts, hit = _height_prior_hits(geom, ground, uv0, np.array([HEIGHT_PRIOR_M]))
         if not hit[0]:
             return None

@@ -10,7 +10,8 @@ validator failure: one retry with the reasons, then the template (FR-015).
 
 Roles (FR-044, validator check 7): the ledger carries each subject chain's ``actor_role``
 and ``role_basis``, and code adds the one ``role_phrase`` the story may use for it (or
-``null``), so Wonder never has to infer a role. The ledger holds no person names.
+``null``), so Wonder never has to infer a role. The ledger holds no person names. The
+phrases come from ``config/role_phrases.json``, the file validator check 7 reads.
 
 Spec 5.14 notes that strict-schema support on ``muse-wonder-1.0`` is unverified, so
 ``schema_mode="json"`` sends no ``text.format`` and puts the schema in the instructions
@@ -21,6 +22,8 @@ from __future__ import annotations
 
 import json
 import re
+from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, Literal
 
 from pydantic import ValidationError
@@ -38,26 +41,62 @@ _MEDIA_KEYS = frozenset({"file_id", "image_url", "video_url", "audio_url", "file
 _MEDIA_TEXT = re.compile(r"\bfile-[A-Za-z0-9]|data:(?:image|video|audio)/", re.I)
 _SENTENCE_KEYS = frozenset({"text", "event_ids"})
 
-ROLE_PHRASES: dict[str, str] = {
-    "someone who came out of the house": "household_insider",
-    "an expected visitor": "expected_visitor",
-    "someone who arrived from outside the property": "external_visitor",
-}
+ROLE_PHRASES_PATH = Path(__file__).resolve().parents[2] / "config" / "role_phrases.json"
+"""The single source of role phrases, shared with validator check 7 (spec 9.4)."""
+
+
+@dataclass(frozen=True)
+class RolePhrase:
+    """One allowed role phrase: the role it asserts and, optionally, the role bases it needs."""
+
+    phrase: str
+    role: str
+    basis_prefixes: tuple[str, ...] = ()
+
+
+DEFAULT_ROLE_PHRASES: tuple[RolePhrase, ...] = (
+    RolePhrase("someone who came out of the house", "household_insider", ("egress:",)),
+    RolePhrase("an expected visitor", "expected_visitor"),
+    RolePhrase("someone who arrived from outside the property", "external_visitor"),
+)
+"""Used only when ``config/role_phrases.json`` is absent."""
+
+
+def load_role_phrases(path: Path | str = ROLE_PHRASES_PATH) -> tuple[RolePhrase, ...]:
+    """Role phrases from the check-7 config; :data:`DEFAULT_ROLE_PHRASES` if it is absent."""
+    p = Path(path)
+    if not p.is_file():
+        return DEFAULT_ROLE_PHRASES
+    raw = json.loads(p.read_text(encoding="utf-8"))
+    return tuple(
+        RolePhrase(
+            " ".join(str(item["phrase"]).lower().split()),
+            str(item["role"]),
+            tuple(item.get("basis_prefixes") or ()),
+        )
+        for item in raw["phrases"]
+    )
+
+
+ROLE_PHRASE_LIST: tuple[RolePhrase, ...] = load_role_phrases()
+ROLE_PHRASES: dict[str, str] = {rp.phrase: rp.role for rp in ROLE_PHRASE_LIST}
 """Allowed role phrase -> the role it asserts (spec 9.4 check 7; config/role_phrases.json)."""
 
 
-def role_phrase_for(subject: Subject) -> str | None:
+def role_phrase_for(subject: Subject, phrases: tuple[RolePhrase, ...] | None = None) -> str | None:
     """The one role phrase a story may use for this subject, or None (check 7).
 
-    ``household_insider`` gets its phrase only with an ``egress:<zone>`` basis; check-in and
-    group subjects get none, and ``unknown`` has no phrase.
+    A phrase with ``basis_prefixes`` applies only when the subject's ``role_basis`` starts
+    with one of them (``household_insider`` needs ``egress:<zone>``, so check-in and group
+    subjects get none); ``unknown`` has no phrase.
     """
     role, basis = subject.actor_role, subject.role_basis
-    if role == "household_insider" and not basis.startswith("egress:"):
-        return None
-    for phrase, phrase_role in ROLE_PHRASES.items():
-        if phrase_role == role:
-            return phrase
+    for rp in ROLE_PHRASE_LIST if phrases is None else phrases:
+        if rp.role != role:
+            continue
+        if rp.basis_prefixes and not basis.startswith(rp.basis_prefixes):
+            continue
+        return rp.phrase
     return None
 
 

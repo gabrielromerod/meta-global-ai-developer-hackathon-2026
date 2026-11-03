@@ -13,7 +13,10 @@ Appearance schema (NFR-003): ``tag`` is an enum of the burned-in tags, colours c
 Rule compile (FR-021): identity phrases map to roles, never to people. Code reads the
 owner's words (:func:`classify_role_phrasing`) and its reading wins over the model's
 ``applies_to``; a named person ("except Sam") gives ``non_household`` plus the spec notice,
-and :func:`rule_person_terms` guarantees that no compiled rule names a person.
+and no compiled rule names a person: the rule's name is always built by code from the
+target, trigger and window (the model's free-text name is ignored), then checked with
+:func:`rule_person_terms`. A ``removed`` rule must target a watch (removal events refer to
+watches only); a protected object is mapped to its watch or the draft is refused.
 """
 
 from __future__ import annotations
@@ -46,6 +49,7 @@ from vigil.models import (
     VisitSummary,
     Watch,
 )
+from vigil.reasoning.triage import forced_escalation  # the one FR-013 forced rule
 
 # ---------------------------------------------------------------------------
 # Appearance notes (FR-009)
@@ -412,8 +416,9 @@ _TRIGGER_NOUN = {
 
 
 def _code_rule_name(entry: CatalogEntry, rule: Rule) -> str:
-    """A neutral name built by code from the target and trigger, used when the model's name
-    could name a person."""
+    """The rule's name, always built by code from the target's label, the trigger and the
+    active window. The model's free-text name is never kept (FR-021): a lower-case name in a
+    transcript ("unless sam is home") cannot be told from an ordinary word."""
     label = entry.label[:1].upper() + entry.label[1:]
     name = f"{label} {_TRIGGER_NOUN.get(rule.trigger, rule.trigger)}"
     if rule.active is not None:
@@ -428,8 +433,28 @@ _TRIGGER_KINDS: dict[str, set[str]] = {
     "cross": {"line"},
     "enter": {"zone"},
     "dwell": {"zone"},
-    "removed": {"watch", "protected_object"},
+    "removed": {"watch"},
 }
+"""Target kinds each trigger's events can refer to. ``removed`` events target watches only
+(vigil.perception.events), so a removal rule on anything else could never fire."""
+
+
+def _norm_label(text: str) -> str:
+    words = [w for w in _WORD_RE.findall(text.lower()) if w != "," and w not in _SKIP]
+    return " ".join(words)
+
+
+def _watch_for_object(entry: CatalogEntry, catalog: TargetCatalog) -> CatalogEntry | None:
+    """The one active watch on the protected object's camera whose phrase is its label."""
+    label = _norm_label(entry.label)
+    found = [
+        e
+        for e in catalog.entries
+        if e.kind == "watch"
+        and _norm_label(e.label) == label
+        and (entry.camera_id is None or e.camera_id in (None, entry.camera_id))
+    ]
+    return found[0] if len(found) == 1 else None
 
 
 class CatalogEntry(BaseModel):
@@ -636,6 +661,24 @@ def parse_rule(
     if not isinstance(target_id, str) or target_id not in options:
         return ask(f"target {target_id!r} is not an existing object, zone, line or watch")
     entry = catalog.get(target_id)
+    trigger = data.get("trigger")
+    target_notes: list[str] = []
+    if trigger == "removed" and entry.kind != "watch":
+        # Removal events refer to watches only: a removal rule on a protected object, zone or
+        # line could never fire (fail-open). Use the object's watch, or refuse.
+        watch = _watch_for_object(entry, catalog) if entry.kind == "protected_object" else None
+        if watch is None:
+            return ask(
+                f"Vigil can only notice removal of a watched object, and {entry.label} has "
+                "no active watch; a removal rule on the protected object would never fire",
+                f"Vigil can only tell you an object was taken when it is watched. Watch "
+                f"{entry.label} first, or choose a touch rule for it instead?",
+            )
+        target_notes.append(
+            f"Removal is noticed through the watch on {watch.label}, so this rule targets "
+            "that watch; it stops working if the watch is revoked or expires."
+        )
+        entry = watch
     role = resolve_applies_to(text, data.get("applies_to"), bool(data.get("named_person") is True))
     applies_to = role.applies_to or "anyone"
     active = None
@@ -645,9 +688,9 @@ def parse_rule(
             active = ActiveWindow(start=start or "00:00", end=end or "23:59")
         rule = Rule(
             id=rule_id or _rule_id(text),
-            name=str(data.get("name") or f"Rule on {entry.label}")[:80],
+            name=f"Rule on {entry.label}"[:80],  # replaced by the code-built name below
             target=RuleTarget(kind=entry.kind, id=entry.id),
-            trigger=data.get("trigger"),
+            trigger=trigger,
             min_dwell_s=data.get("min_dwell_s"),
             active=active,
             severity=data.get("severity") or "needs_attention",
@@ -657,14 +700,14 @@ def parse_rule(
     except (ValidationError, ValueError) as exc:
         return ask(f"the rule was incomplete: {type(exc).__name__}", question)
 
-    # No compiled rule ever names a person: replace a risky name, then verify.
-    if rule_person_terms(rule, catalog, role.names):
-        rule = rule.model_copy(update={"name": _code_rule_name(entry, rule)})
+    # No compiled rule ever names a person: the name is always built by code (the model's
+    # free text is never kept), then verified.
+    rule = rule.model_copy(update={"name": _code_rule_name(entry, rule)})
     if rule_person_terms(rule, catalog, role.names):
         return ask("the rule's name would identify a person; fill the form instead")
 
     notice = named_person_notice(role.names) if role.named else None
-    limits = [BASE_LIMIT]
+    limits = [BASE_LIMIT, *target_notes]
     if notice:
         limits.append(notice)
     if entry.kind not in _TRIGGER_KINDS.get(rule.trigger, {entry.kind}):
@@ -714,22 +757,6 @@ TRIAGE_SCHEMA: dict = {
 }
 
 
-def forced_escalation(summary: VisitSummary) -> TriageDecision | None:
-    """Code forces escalation on a rule hit, protected touch or unresolved gap (FR-013)."""
-    reasons = [
-        label
-        for flag, label in (
-            (summary.rule_fired, "a rule fired"),
-            (summary.protected_touched, "a protected object was touched"),
-            (summary.unresolved_gap, "a gap is unresolved"),
-        )
-        if flag
-    ]
-    if not reasons:
-        return None
-    return TriageDecision(escalate=True, forced=True, reason="; ".join(reasons), source="code")
-
-
 def build_triage_request(summary: VisitSummary) -> dict:
     prompt = load_prompt("triage")
     return {
@@ -758,7 +785,12 @@ def parse_triage(answer: str) -> TriageDecision:
 
 
 def triage(c, summary: VisitSummary) -> TriageDecision:
-    """Forced cases are decided by code with no call; otherwise Spark decides."""
+    """Forced cases are decided by code with no call; otherwise Spark decides.
+
+    The forced rule is :func:`vigil.reasoning.triage.forced_escalation`, the single source,
+    so the spec 9.4 case-2 household exemption (``RuleResult.scoped_out``, applied when the
+    summary is built) holds here too.
+    """
     forced = forced_escalation(summary)
     if forced is not None:
         return forced

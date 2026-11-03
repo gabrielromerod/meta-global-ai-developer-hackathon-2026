@@ -168,9 +168,51 @@ def build_concept_request(
     """Body for POST /v1/responses: one noun phrase on one uploaded video."""
     if not file_id:
         raise SamRequestError("file_id is required (upload the window first)")
+    return _concept_body(
+        phrase,
+        {"type": "input_video", "file_id": file_id},
+        include_confidence=include_confidence,
+        mask_encoding=mask_encoding,
+        stream=stream,
+    )
+
+
+def build_image_concept_request(
+    image_ref: str,
+    phrase: str,
+    *,
+    include_confidence: bool = True,
+    mask_encoding: str | None = None,
+    stream: bool = True,
+) -> dict:
+    """Body for one noun phrase on one still (landmark proposals, FR-037).
+
+    Same rules as :func:`build_concept_request` (one phrase, ``include_confidence`` as the
+    string ``"true"``), with the still as ``{"type": "input_image", "image_url": image_ref}``
+    (a base64 data URL or an https URL). Parse the answer with :func:`parse_image_output`.
+    """
+    if not image_ref:
+        raise SamRequestError("image_ref is required (a data URL or an image URL)")
+    return _concept_body(
+        phrase,
+        {"type": "input_image", "image_url": image_ref},
+        include_confidence=include_confidence,
+        mask_encoding=mask_encoding,
+        stream=stream,
+    )
+
+
+def _concept_body(
+    phrase: str,
+    media: dict,
+    *,
+    include_confidence: bool,
+    mask_encoding: str | None,
+    stream: bool,
+) -> dict:
     body: dict[str, Any] = {
         "model": SAM_MODEL,
-        "input": _message(validate_phrase(phrase), {"type": "input_video", "file_id": file_id}),
+        "input": _message(validate_phrase(phrase), media),
         "stream": stream,
     }
     metadata: dict[str, str] = {}

@@ -613,3 +613,108 @@ def test_rule_person_terms_ignores_hash_ids_but_catches_named_ids(catalog):
     )
     assert rule_person_terms(Rule(id="r_dad1f0e2", **base), catalog) == []
     assert rule_person_terms(Rule(id="r_sam_gate", **base), catalog, names=["Sam"]) == ["sam"]
+
+
+# --- F9: the rule name is always built by code (FR-021) ----------------------------------
+
+
+def test_rule_name_is_code_built_even_for_a_lowercase_name(catalog):
+    """'except when sam is home': code reads no name after the cue, the model flags a named
+    person and puts 'sam' in its free-text name. No compiled rule ever names a person."""
+    fake = FakeClient(
+        _rule_answer(
+            name="side gate touch unless sam is home",
+            active_start="17:30",
+            active_end="06:00",
+            applies_to="non_household",
+            named_person=True,
+        )
+    )
+    text = "alert me when the side gate is touched at night, except when sam is home"
+    draft = compile_rule(fake, text, catalog)
+    assert isinstance(draft, RuleDraft), getattr(draft, "reason", draft)
+    assert "sam" not in draft.rule.model_dump_json().lower()
+    assert draft.rule.name == "Side gate touch, 17:30-06:00"
+    assert draft.notice is not None
+
+
+@pytest.mark.parametrize(
+    "model_name", ["Side gate after dark", "anything at all", "Gate rule for the kids"]
+)
+def test_rule_name_never_keeps_model_free_text(catalog, model_name):
+    draft = compile_rule(
+        FakeClient(_rule_answer(name=model_name, active_start=None, active_end=None)),
+        "tell me if anyone opens the side gate",
+        catalog,
+    )
+    assert isinstance(draft, RuleDraft)
+    assert draft.rule.name == "Side gate touch"
+
+
+# --- removed on a protected object can never fire (fail-open) ----------------------------
+
+
+@pytest.fixture
+def bike(po_side_gate):
+    return po_side_gate.model_copy(update={"id": "po_bike", "label": "bike"})
+
+
+def _bike_answer() -> dict:
+    return _rule_answer(
+        name="Bike taken", target_id="po_bike", trigger="removed", active_start=None,
+        active_end=None,
+    )  # fmt: skip
+
+
+def test_removed_on_protected_object_without_a_watch_is_rejected(sample_config, bike):
+    """'Alert if my bike is taken': removed events target watches only, so a rule on the
+    protected object would never fire. It is not accepted as a rule."""
+    catalog = TargetCatalog.from_config(sample_config, [bike])
+    out = compile_rule(FakeClient(_bike_answer()), "Alert if my bike is taken", catalog)
+    assert isinstance(out, ClarifyingQuestion)
+    assert "watch" in out.reason
+
+
+def test_removed_on_protected_object_maps_to_its_watch(sample_config, bike):
+    from vigil.models import Watch
+
+    watch = Watch(
+        id="w_bike", camera_id=bike.camera_id, phrase="bike", origin="owner", status="watching"
+    )
+    catalog = TargetCatalog.from_config(sample_config, [bike], [watch])
+    draft = compile_rule(FakeClient(_bike_answer()), "Alert if my bike is taken", catalog)
+    assert isinstance(draft, RuleDraft), getattr(draft, "reason", draft)
+    assert draft.rule.target == RuleTarget(kind="watch", id="w_bike")
+    assert draft.rule.trigger == "removed"
+    assert draft.rule.name == "Bike removal"
+    assert any("watch" in note for note in draft.limits)
+
+
+# --- triage: one forced-escalation rule, shared with vigil.reasoning.triage (FR-013) -------
+
+
+def test_spark_triage_uses_the_reasoning_forced_escalation():
+    from vigil.meta import spark
+    from vigil.reasoning import triage as reasoning_triage
+
+    assert spark.forced_escalation is reasoning_triage.forced_escalation
+
+
+def test_spark_triage_case2_household_touch_is_not_forced():
+    """Spec 9.4 case 2: a household touch every in-force rule excludes does not force
+    escalation, so Spark decides."""
+    from vigil.models import Event, Visit
+    from vigil.reasoning.rules import RuleOutcome
+    from vigil.reasoning.triage import summarize
+
+    touch = Event(
+        id="e1", visit_id="v1", camera_id="side_left", track_id="t1", type="touch", t0=1.0,
+        t1=2.0, target="po_side_gate", clip_t0=0.0, clip_t1=3.0, actor_role="household_insider",
+    )  # fmt: skip
+    visit = Visit(id="v1", t0=0.0, t1=3.0, event_ids=["e1"])
+    summary = summarize(visit, [touch], [], RuleOutcome(scoped_out=["e1"]))
+    assert summary.protected_touched is False
+    fake = FakeClient({"escalate": False, "reason": "routine"})
+    decision = triage(fake, summary)
+    assert decision.source == "spark"
+    assert len(fake.calls) == 1

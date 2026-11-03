@@ -305,3 +305,50 @@ def test_story_prompt_states_the_role_phrase_rules():
     assert "role_phrase" in text
     assert "capitalised" in lower
     assert "different roles" in lower
+
+
+# --- role phrases come from config/role_phrases.json (single source with check 7) ---------
+
+
+def test_role_phrases_load_from_the_validator_config():
+    from pathlib import Path
+
+    from vigil.meta.wonder import ROLE_PHRASES_PATH, load_role_phrases
+
+    assert Path(ROLE_PHRASES_PATH).name == "role_phrases.json"
+    raw = json.loads(Path(ROLE_PHRASES_PATH).read_text(encoding="utf-8"))
+    assert {p["phrase"].lower(): p["role"] for p in raw["phrases"]} == ROLE_PHRASES
+    assert load_role_phrases() == load_role_phrases(ROLE_PHRASES_PATH)
+
+
+def test_role_phrases_follow_an_edited_config(tmp_path):
+    from vigil.meta.wonder import load_role_phrases, role_phrase_for
+
+    path = tmp_path / "role_phrases.json"
+    path.write_text(
+        json.dumps(
+            {
+                "phrases": [
+                    {"phrase": "Someone from inside", "role": "household_insider",
+                     "basis_prefixes": ["egress:", "checkin:"]},
+                    {"phrase": "a person from outside", "role": "external_visitor"},
+                ]
+            }
+        ),
+        encoding="utf-8",
+    )  # fmt: skip
+    phrases = load_role_phrases(path)
+    assert [(p.phrase, p.role, p.basis_prefixes) for p in phrases] == [
+        ("someone from inside", "household_insider", ("egress:", "checkin:")),
+        ("a person from outside", "external_visitor", ()),
+    ]
+    subj = _subject("s1", "household_insider", "checkin:c1")
+    assert role_phrase_for(subj, phrases) == "someone from inside"
+    assert role_phrase_for(_subject("s1", "expected_visitor", "window:w3"), phrases) is None
+
+
+def test_role_phrases_fall_back_when_the_config_is_absent(tmp_path):
+    from vigil.meta.wonder import DEFAULT_ROLE_PHRASES, load_role_phrases
+
+    assert load_role_phrases(tmp_path / "missing.json") == DEFAULT_ROLE_PHRASES
+    assert {p.phrase: p.role for p in DEFAULT_ROLE_PHRASES} == ROLE_PHRASES

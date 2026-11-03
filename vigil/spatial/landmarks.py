@@ -32,7 +32,7 @@ from vigil.meta.sam import (
     SAM_MODEL,
     SamClient,
     SamParseError,
-    build_concept_request,
+    build_image_concept_request,
     parse_image_output,
     response_payload,
 )
@@ -88,14 +88,9 @@ class LandmarkProposal(BaseModel):
 
 
 def build_landmark_request(image_ref: str, concept: str) -> dict:
-    """One concept request on one still: ``sam.build_concept_request`` with the media part
-    replaced by ``{"type": "input_image", "image_url": image_ref}``."""
-    body = build_concept_request(image_ref, concept, include_confidence=True)
-    for part in body["input"][0]["content"]:
-        if part.get("type") == "input_video":
-            part.clear()
-            part.update({"type": "input_image", "image_url": image_ref})
-    return body
+    """One concept request on one still (:func:`vigil.meta.sam.build_image_concept_request`):
+    the phrase as ``input_text`` and ``{"type": "input_image", "image_url": image_ref}``."""
+    return build_image_concept_request(image_ref, concept, include_confidence=True)
 
 
 def mask_points(mask: np.ndarray) -> list[tuple[PointKind, float, float]]:

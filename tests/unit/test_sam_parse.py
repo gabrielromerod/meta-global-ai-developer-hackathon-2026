@@ -103,6 +103,34 @@ def test_build_point_request_uses_media_size() -> None:
     assert body["model"] == "sam-3.1"
 
 
+def test_build_image_concept_request_shape() -> None:
+    """Landmark proposals (FR-037): one noun phrase on one still, sent as input_image."""
+    ref = "data:image/jpeg;base64,AAAA"
+    body = sam.build_image_concept_request(ref, "  fence post ")
+    assert body["model"] == "sam-3.1"
+    assert body["stream"] is True
+    msg = body["input"][0]
+    assert (msg["type"], msg["role"]) == ("message", "user")
+    assert msg["content"] == [
+        {"type": "input_text", "text": "fence post"},
+        {"type": "input_image", "image_url": ref},
+    ]
+    assert body["metadata"] == {"include_confidence": "true"}
+    no_conf = sam.build_image_concept_request(ref, "door", include_confidence=False)
+    assert "metadata" not in no_conf
+
+
+@pytest.mark.parametrize("phrase", ["door, gate", "", "a\nb"])
+def test_build_image_concept_request_rejects_non_single_phrase(phrase: str) -> None:
+    with pytest.raises(SamRequestError):
+        sam.build_image_concept_request("data:image/jpeg;base64,AAAA", phrase)
+
+
+def test_build_image_concept_request_needs_an_image() -> None:
+    with pytest.raises(SamRequestError):
+        sam.build_image_concept_request("", "door")
+
+
 @pytest.mark.parametrize("xy", [(1280, 10), (10, 720), (-1, 5)])
 def test_build_point_request_rejects_point_outside_media(xy: tuple[int, int]) -> None:
     with pytest.raises(SamRequestError):

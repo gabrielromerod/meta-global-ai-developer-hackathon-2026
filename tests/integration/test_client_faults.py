@@ -27,6 +27,7 @@ from vigil.meta.client import (
     MetaHTTPError,
     MetaUnavailable,
     ModelNotAllowed,
+    estimate_request,
     extract_text,
 )
 from vigil.models import VisitSummary
@@ -59,13 +60,14 @@ BODY = {"input": "hello", "max_output_tokens": 200}
 
 
 class Env:
-    def __init__(self, tmp_path: Path, **settings_kw):
+    def __init__(self, tmp_path: Path, durable: bool = False, **settings_kw):
         settings_kw.setdefault("MODEL_API_KEY", KEY)
         self.settings = Settings(_env_file=None, cache_dir=tmp_path / "cache", **settings_kw)
         self.sleeps: list[float] = []
-        self.ledger = CallLedger()
+        # Paid calls need a durable ledger (fail closed); credit-window tests stay in memory.
+        self.ledger = CallLedger(tmp_path / "ledger.db") if durable else CallLedger()
         self.cache = ResponseCache(tmp_path / "cache")
-        self.guard = BudgetGuard(self.settings, clock=lambda: NOW)
+        self.guard = BudgetGuard(self.settings, clock=lambda: NOW, ledger=self.ledger)
         self.tmp_path = tmp_path
 
     def client(self, **kw) -> MetaClient:
@@ -175,8 +177,10 @@ def test_client_malformed_json(env: Env, router):
     assert route.call_count == 3
     [row] = env.ledger.rows()
     assert not row.ok
-    # A 200 may have been billed: the guard is charged the estimate, conservatively.
-    assert row.cost_usd > 0
+    # Every 200 may have been billed: the guard is charged the estimate for each, conservatively.
+    est = estimate_request("muse-spark-1.3", "triage", {**BODY, "model": "muse-spark-1.3"})
+    assert exc.value.billed_attempts == 3
+    assert row.cost_usd == pytest.approx(3 * est.usd)
     assert env.guard.spent_total == pytest.approx(env.ledger.total())
 
 
@@ -199,6 +203,116 @@ def test_failed_status_with_server_error_is_retried(env: Env, router):
         side_effect=[httpx.Response(200, json=failed), httpx.Response(200, json=OK_BODY)]
     )
     assert env.client().responses("muse-spark-1.3", BODY, purpose="triage")["id"] == "resp_1"
+
+
+# --- F5: every billed attempt is counted; the budget is re-checked before each retry -----
+
+NOT_JSON = {"text": "{not json", "headers": {"content-type": "text/plain"}}
+
+
+def _spark_est():
+    return estimate_request("muse-spark-1.3", "triage", {**BODY, "model": "muse-spark-1.3"})
+
+
+def test_client_retry_counts_every_billed_attempt(env: Env, router):
+    """non-JSON 200, 500, non-JSON 200: two billed attempts are charged, not one."""
+    router.post("/responses").mock(
+        side_effect=[
+            httpx.Response(200, **NOT_JSON),
+            httpx.Response(500, text="boom"),
+            httpx.Response(200, **NOT_JSON),
+        ]
+    )
+    with pytest.raises(MalformedResponse) as exc:
+        env.client().responses("muse-spark-1.3", BODY, purpose="triage")
+    assert exc.value.attempts == 3
+    assert exc.value.billed_attempts == 2
+    [row] = env.ledger.rows()
+    assert not row.ok
+    assert row.cost_usd == pytest.approx(2 * _spark_est().usd)
+    assert "2 billed" in (row.error or "")
+    assert env.guard.spent_total == pytest.approx(2 * _spark_est().usd)
+
+
+def test_client_retry_counts_a_billed_attempt_before_unbilled_ones(env: Env, router):
+    """non-JSON 200, 500, 500: one billed attempt is charged although the last was a 500."""
+    router.post("/responses").mock(
+        side_effect=[
+            httpx.Response(200, **NOT_JSON),
+            httpx.Response(500, text="boom"),
+            httpx.Response(500, text="boom"),
+        ]
+    )
+    with pytest.raises(MetaUnavailable) as exc:
+        env.client().responses("muse-spark-1.3", BODY, purpose="triage")
+    assert exc.value.billed_attempts == 1
+    [row] = env.ledger.rows()
+    assert row.cost_usd == pytest.approx(_spark_est().usd)
+    assert env.guard.spent_total == pytest.approx(_spark_est().usd)
+
+
+def test_client_success_after_billed_attempt_charges_both(env: Env, router):
+    router.post("/responses").mock(
+        side_effect=[httpx.Response(200, **NOT_JSON), httpx.Response(200, json=OK_BODY)]
+    )
+    resp = env.client().responses("muse-spark-1.3", BODY, purpose="triage")
+    [row] = env.ledger.rows()
+    assert row.ok
+    assert row.cost_usd == pytest.approx(_spark_est().usd + SPARK_COST)
+    assert resp["_vigil"]["cost_usd"] == pytest.approx(row.cost_usd)
+    assert env.guard.spent_total == pytest.approx(row.cost_usd)
+
+
+def test_retry_cannot_cross_a_cap(env: Env, router):
+    """The budget is checked again before a retry: a billed failure that leaves no room for
+    another attempt stops the retries instead of crossing the cap."""
+    est = _spark_est().usd
+    env.guard.record(1.0 - 1.5 * est, "triage")  # triage feature budget is $1
+    route = router.post("/responses").mock(return_value=httpx.Response(200, **NOT_JSON))
+    with pytest.raises(BudgetExceeded) as exc:
+        env.client().responses("muse-spark-1.3", BODY, purpose="triage")
+    assert exc.value.cap == "feature:triage"
+    assert route.call_count == 1
+    [row] = env.ledger.rows()
+    assert not row.ok
+    assert row.cost_usd == pytest.approx(est)
+    assert env.guard.spent_feature("triage") <= 1.0 + 1e-9
+    assert env.guard.spent_feature("triage") == pytest.approx(1.0 - 0.5 * est)
+
+
+# --- F1 / F4: fail closed --------------------------------------------------------------
+
+
+def test_paid_call_refused_without_a_durable_ledger(tmp_path: Path, router):
+    """No VIGIL_LEDGER_PATH: the client's own ledger is in memory, so paid calls fail closed."""
+    settings = Settings(
+        _env_file=None,
+        MODEL_API_KEY=KEY,
+        cache_dir=tmp_path / "cache",
+        credit_window_end=datetime(2026, 11, 1, tzinfo=UTC),
+        allow_paid=True,
+    )
+    route = router.post("/responses").mock(return_value=httpx.Response(200, json=OK_BODY))
+    client = MetaClient(settings, clock=lambda: NOW, sleep=lambda s: None)
+    assert client.ledger.durable is False
+    with pytest.raises(BudgetExceeded) as exc:
+        client.responses("muse-spark-1.3", BODY, purpose="triage")
+    assert exc.value.cap == "ledger"
+    assert route.call_count == 0
+
+
+def test_judging_end_refuses_live_calls_without_credit_window_end(tmp_path: Path, router):
+    """VIGIL_CREDIT_WINDOW_END unset (every call tagged credit): still none after judging end."""
+    after = datetime(2026, 11, 12, 20, 0, tzinfo=UTC)
+    settings = Settings(
+        _env_file=None, MODEL_API_KEY=KEY, cache_dir=tmp_path / "cache", credit_window_end=None
+    )
+    route = router.post("/responses").mock(return_value=httpx.Response(200, json=OK_BODY))
+    client = MetaClient(settings, ledger=CallLedger(), clock=lambda: after, sleep=lambda s: None)
+    with pytest.raises(BudgetExceeded) as exc:
+        client.responses("muse-spark-1.3", BODY, purpose="triage")
+    assert exc.value.cap == "judging_end"
+    assert route.call_count == 0
 
 
 # --- allowlist (NFR-004) -----------------------------------------------------------------
@@ -314,7 +428,7 @@ def test_window_end_disables_paid_calls(tmp_path: Path, router):
 def _paid_env(tmp_path: Path, **kw) -> Env:
     kw.setdefault("credit_window_end", datetime(2026, 11, 1, tzinfo=UTC))
     kw.setdefault("allow_paid", True)
-    return Env(tmp_path, **kw)
+    return Env(tmp_path, durable=True, **kw)
 
 
 def test_ledger_rows_are_tagged_credit_inside_the_window(env: Env, router):

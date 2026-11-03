@@ -4,14 +4,19 @@ Every Meta Model API call in Vigil goes through :class:`MetaClient`, in this ord
 
 1. model allowlist (exactly the four Standard-mode IDs; Contributor IDs refused, NFR-004);
 2. cache lookup by request hash (a hit costs $0 and is ledgered as cached);
-3. budget guard pre-flight price: credit, feature and daily caps inside the credit window;
-   after it, VIGIL_ALLOW_PAID, VIGIL_JUDGING_END and the $25 / $5-per-PT-day judging caps
-   (FR-043, NFR-036, NFR-037);
+3. budget guard pre-flight price, reserved atomically (pending money counts in every check,
+   so concurrent calls cannot both pass a check only one fits): credit, feature and daily
+   caps inside the credit window; after it, VIGIL_ALLOW_PAID, a durable ledger and the $25 /
+   $5-per-PT-day judging caps; no call at all from VIGIL_JUDGING_END on (FR-043, NFR-036,
+   NFR-037);
 4. send, with 2 retries on 429, 5xx, timeouts, network errors and malformed bodies,
    exponential backoff with jitter (``Retry-After`` honoured); any other 4xx is raised at
-   once with its body (NFR-010, spec section 3 ``test_client_retry``);
-5. one ledger row per call (vigil.models.ModelCall), in memory and optionally SQLite, tagged
-   with its budget ``feature`` and its ``funding`` (``credit`` or ``paid``, spec 9.3).
+   once with its body (NFR-010, spec section 3 ``test_client_retry``). Every billed attempt
+   (a 2xx whose body was malformed or failed) is charged at the estimate, and the budget is
+   re-checked before each retry, so a retry can never cross a cap;
+5. one ledger row per call (vigil.models.ModelCall), tagged with its budget ``feature`` and
+   its ``funding`` (``credit`` or ``paid``, spec 9.3). With ``VIGIL_LEDGER_PATH`` the ledger
+   is a SQLite file (WAL) shared by every guard in the process, so caps survive a restart.
 
 Wire format (https://dev.meta.ai/docs/models, /docs/api-reference/responses/schemas):
 base ``https://api.meta.ai/v1``, ``Authorization: Bearer $MODEL_API_KEY``,
@@ -26,6 +31,7 @@ ledger row and repr.
 
 from __future__ import annotations
 
+import contextlib
 import json
 import logging
 import mimetypes
@@ -49,6 +55,8 @@ from vigil.meta.budget import (
     VOICE,
     BudgetExceeded,
     BudgetGuard,
+    Reservation,
+    SpendBook,
     check_model,
     estimate,
     feature_for,
@@ -76,6 +84,8 @@ SCHEMA_SQL = REPO_ROOT / "vigil" / "store" / "schema.sql"
 
 class MetaError(RuntimeError):
     fallback: bool = True
+    billed_attempts: int = 0
+    """Attempts that may have been billed (a 2xx with a malformed or failed body)."""
 
 
 class ModelNotAllowed(MetaError, ValueError):
@@ -171,26 +181,65 @@ class CallLedger:
     """Every model call, in memory and optionally in SQLite (``model_calls``, spec 9.3).
 
     ``total()`` is the sum of ``cost_usd`` over the rows, so the panel total always matches
-    the ledger (FR-023). Opening an existing database loads its rows.
+    the ledger (FR-023). With ``db_path`` the rows persist (WAL journal, synchronous FULL,
+    ``created_at`` stored in UTC) and opening an existing database loads them, so the spend
+    caps survive a restart. ``book`` indexes the spend of every row for the budget guards.
+
+    A path that cannot be opened or written never raises: the ledger stays in memory and
+    ``durable`` is False, which makes the budget guards refuse paid calls (fail closed).
     """
 
     def __init__(self, db_path: Path | str | None = None):
         self._lock = threading.Lock()
         self._rows: list[ModelCall] = []
+        self._ids: set[str] = set()
         self._features: dict[str, str] = {}
         self._con: sqlite3.Connection | None = None
         self._columns: list[str] = []
+        self.path = Path(db_path) if db_path is not None else None
+        self.book = SpendBook(durable=False)
         if db_path is not None:
-            Path(db_path).parent.mkdir(parents=True, exist_ok=True)
-            self._con = sqlite3.connect(str(db_path), check_same_thread=False)
-            self._con.execute(_model_calls_ddl())
-            self._columns = [r[1] for r in self._con.execute("PRAGMA table_info(model_calls)")]
-            for col, sql_type in _ADDED_COLUMNS.items():
-                if col not in self._columns:
-                    self._con.execute(f"ALTER TABLE model_calls ADD COLUMN {col} {sql_type}")
-                    self._columns.append(col)
-            self._con.commit()
-            self._rows = list(self._load())
+            try:
+                self._open(Path(db_path))
+            except (OSError, sqlite3.Error) as exc:
+                log.error(
+                    "spend ledger %s is not writable (%s): kept in memory; paid live calls "
+                    "are refused (fail closed)",
+                    db_path,
+                    type(exc).__name__,
+                )
+                self._close_quietly()
+                self._rows, self._ids, self._features = [], set(), {}
+                self.book = SpendBook(durable=False)
+
+    def _open(self, path: Path) -> None:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        self._con = sqlite3.connect(str(path), check_same_thread=False)
+        self._con.execute("PRAGMA journal_mode=WAL")
+        self._con.execute("PRAGMA synchronous=FULL")
+        self._con.execute(_model_calls_ddl())
+        self._columns = [r[1] for r in self._con.execute("PRAGMA table_info(model_calls)")]
+        for col, sql_type in _ADDED_COLUMNS.items():
+            if col not in self._columns:
+                self._con.execute(f"ALTER TABLE model_calls ADD COLUMN {col} {sql_type}")
+                self._columns.append(col)
+        self._con.commit()
+        for row in self._load():
+            self._rows.append(row)
+            self._ids.add(row.id)
+            self.book.add_row(row)
+        self.book.durable = True
+
+    @property
+    def durable(self) -> bool:
+        """True while every row is persisted to SQLite (paid calls need this)."""
+        return self.book.durable
+
+    def _close_quietly(self) -> None:
+        if self._con is not None:
+            with contextlib.suppress(sqlite3.Error):
+                self._con.close()
+            self._con = None
 
     def _load(self) -> Iterator[ModelCall]:
         assert self._con is not None
@@ -206,22 +255,50 @@ class CallLedger:
             yield ModelCall.model_validate(raw)
 
     def add(self, row: ModelCall, feature: str | None = None) -> ModelCall:
+        """Append (and persist) one row, then commit its spend to the book.
+
+        The book's lock is never taken while the ledger's is held (no lock-order deadlock).
+        A failed write keeps the row in memory and marks the ledger not durable.
+        """
+        feature = feature or row.feature or feature_for(row.purpose)
         with self._lock:
             self._rows.append(row)
-            self._features[row.id] = feature or row.feature or feature_for(row.purpose)
+            self._ids.add(row.id)
+            self._features[row.id] = feature
             if self._con is not None:
-                data = row.model_dump()
-                data["cached"] = int(row.cached)
-                data["ok"] = int(row.ok)
-                data["created_at"] = row.created_at.isoformat() if row.created_at else None
-                cols = [c for c in self._columns if c in data]
-                self._con.execute(
-                    f"INSERT INTO model_calls({', '.join(cols)}) "  # noqa: S608 (fixed columns)
-                    f"VALUES ({', '.join('?' for _ in cols)})",
-                    [data[c] for c in cols],
-                )
-                self._con.commit()
+                try:
+                    self._persist(row)
+                except sqlite3.Error as exc:
+                    log.error(
+                        "spend ledger write failed (%s): paid live calls are refused from now "
+                        "on (fail closed)",
+                        type(exc).__name__,
+                    )
+                    self._close_quietly()
+                    self.book.durable = False
+        self.book.add_row(row, feature)
         return row
+
+    def _persist(self, row: ModelCall) -> None:
+        assert self._con is not None
+        data = row.model_dump()
+        data["cached"] = int(row.cached)
+        data["ok"] = int(row.ok)
+        created = row.created_at
+        if created is not None:
+            created = created.replace(tzinfo=UTC) if created.tzinfo is None else created
+            data["created_at"] = created.astimezone(UTC).isoformat()
+        cols = [c for c in self._columns if c in data]
+        self._con.execute(
+            f"INSERT INTO model_calls({', '.join(cols)}) "  # noqa: S608 (fixed columns)
+            f"VALUES ({', '.join('?' for _ in cols)})",
+            [data[c] for c in cols],
+        )
+        self._con.commit()
+
+    def has(self, call_id: str) -> bool:
+        with self._lock:
+            return call_id in self._ids
 
     def rows(self) -> list[ModelCall]:
         with self._lock:
@@ -262,9 +339,46 @@ class CallLedger:
         return out
 
     def close(self) -> None:
-        if self._con is not None:
-            self._con.close()
-            self._con = None
+        """Close the database. The ledger stays readable but is no longer durable."""
+        with self._lock:
+            if self._con is not None:
+                self._close_quietly()
+                self.book.durable = False
+
+
+_SHARED: dict[str, CallLedger] = {}
+_SHARED_LOCK = threading.Lock()
+
+
+def shared_ledger(path: Path | str | None) -> CallLedger:
+    """The process-wide ledger for ``path`` (``VIGIL_LEDGER_PATH``).
+
+    Every client and guard in one process that names the same file gets the same ledger and
+    so the same spend book: their caps, totals and reservations agree (single replica; see
+    the Dockerfile). ``None`` gives a fresh in-memory ledger (tests, dev), which never admits
+    paid calls.
+    """
+    if path is None:
+        return CallLedger()
+    try:
+        key = str(Path(path).resolve())
+    except OSError:
+        key = str(path)
+    with _SHARED_LOCK:
+        ledger = _SHARED.get(key)
+        if ledger is None:
+            ledger = CallLedger(path)
+            _SHARED[key] = ledger
+        return ledger
+
+
+def reset_shared_ledgers() -> None:
+    """Close and forget every shared ledger (a process restart, in tests)."""
+    with _SHARED_LOCK:
+        ledgers = list(_SHARED.values())
+        _SHARED.clear()
+    for ledger in ledgers:
+        ledger.close()
 
 
 # ---------------------------------------------------------------------------
@@ -377,13 +491,19 @@ class MetaClient:
         use_cache: bool = True,
     ):
         self.settings = settings or get_settings()
-        self.ledger = ledger if ledger is not None else CallLedger()
+        self.ledger = (
+            ledger
+            if ledger is not None
+            else shared_ledger(getattr(self.settings, "ledger_path", None))
+        )
         self.cache = cache if cache is not None else ResponseCache(self.settings.cache_dir / "meta")
         self._clock = clock or (lambda: datetime.now(UTC))
+        # The default guard reads its spent totals from the ledger's book (durable when the
+        # ledger is): one source of truth, shared with every guard over the same ledger.
         self.budget = (
             budget
             if budget is not None
-            else BudgetGuard(self.settings, clock=self._clock, spent=self.ledger.rows())
+            else BudgetGuard(self.settings, clock=self._clock, ledger=self.ledger)
         )
         self._sleep = sleep or time.sleep
         self._rng = rng or random.Random()  # noqa: S311 (jitter, not crypto)
@@ -458,7 +578,7 @@ class MetaClient:
             return self._send_json("POST", "/files", files=files, data={"purpose": "user_data"})
 
         try:
-            data = self._with_retries(send)
+            data, _ = self._with_retries(send)
         except MetaError as exc:
             log.warning("upload of %s failed: %s", path.name, exc)
             raise
@@ -580,40 +700,86 @@ class MetaClient:
         if self.cache_only:
             raise CacheMiss(f"cache-only mode: no cached {model} response for {purpose}")
         try:
-            self.budget.check(est)
+            res = self._reserve(est)
         except BudgetExceeded as exc:
             self._log(
                 model, purpose, visit_id, req_hash, feature,
                 ok=False, error=str(exc), funding=funding,
             )  # fmt: skip
             raise
+        if res is not None:
+            funding = res.funding
+
+        def before_retry(previous_billed: bool) -> None:
+            # The billed attempt's estimate stays held; the next attempt needs its own.
+            self._extend(res, est, est.usd if previous_billed else 0.0)
 
         t0 = time.perf_counter()
         try:
-            data = self._with_retries(send)
-        except MetaError as exc:
+            try:
+                data, billed = self._with_retries(send, before_retry)
+            except (MetaError, BudgetExceeded) as exc:
+                latency = int((time.perf_counter() - t0) * 1000)
+                billed = int(getattr(exc, "billed_attempts", 0) or 0)
+                cost = billed * est.usd
+                error = str(exc)
+                if billed:
+                    error += f" ({billed} billed attempt{'s' if billed > 1 else ''} charged)"
+                self._log(
+                    model, purpose, visit_id, req_hash, feature,
+                    ok=False, error=error, latency_ms=latency, cost=cost,
+                    units=self._units(model, est), funding=funding,
+                )  # fmt: skip
+                raise
             latency = int((time.perf_counter() - t0) * 1000)
-            cost = est.usd if getattr(exc, "billed", False) else 0.0
-            if cost:
-                self.budget.record(cost, feature, funding=funding)
-            self._log(
+            in_t, out_t, cost = self._actual_cost(model, feature, data, est)
+            cost += billed * est.usd  # failed attempts before the success were billed too
+            row = self._log(
                 model, purpose, visit_id, req_hash, feature,
-                ok=False, error=str(exc), latency_ms=latency, cost=cost,
+                latency_ms=latency, cost=cost, in_tokens=in_t, out_tokens=out_t,
                 units=self._units(model, est), funding=funding,
             )  # fmt: skip
-            raise
-        latency = int((time.perf_counter() - t0) * 1000)
-
-        in_t, out_t, cost = self._actual_cost(model, feature, data, est)
-        self.budget.record(cost, feature, funding=funding)
-        row = self._log(
-            model, purpose, visit_id, req_hash, feature,
-            latency_ms=latency, cost=cost, in_tokens=in_t, out_tokens=out_t,
-            units=self._units(model, est), funding=funding,
-        )  # fmt: skip
+        finally:
+            # The ledger row has committed the spend (if any): stop holding the estimate.
+            self._release(res)
         if self.use_cache:
             self._cache_put(key, data, model, cache_filter)
         return self._annotate(data, row)
+
+    # -- budget --------------------------------------------------------------------------
+
+    def _shares_book(self) -> bool:
+        """True when the guard reads the ledger's book (a ledger row commits the spend)."""
+        return getattr(self.budget, "book", None) is self.ledger.book
+
+    def _reserve(self, est: CostEstimate) -> Reservation | None:
+        reserve = getattr(self.budget, "reserve", None)
+        if callable(reserve):
+            return reserve(est)
+        self.budget.check(est)
+        return None
+
+    def _extend(self, res: Reservation | None, est: CostEstimate, usd: float) -> None:
+        if res is not None:
+            self.budget.extend(res, usd)
+        else:
+            self.budget.check(est)
+
+    def _release(self, res: Reservation | None) -> None:
+        if res is not None:
+            self.budget.release(res)
+
+    def _commit(self, row: ModelCall, feature: str) -> None:
+        """Add the row to the ledger; a guard on another book is charged directly."""
+        self.ledger.add(row, feature)
+        if row.cached or not row.cost_usd:
+            return
+        if self._shares_book():
+            warn = getattr(self.budget, "warn", None)
+            if callable(warn):
+                warn(feature, row.funding)
+        else:
+            self.budget.record(row.cost_usd, feature, when=row.created_at, funding=row.funding)
 
     def _funding(self) -> Funding:
         """The ledger tag for a call made now (``credit`` unless the guard says ``paid``)."""
@@ -707,7 +873,8 @@ class MetaClient:
             funding=funding,
             created_at=self._clock(),
         )
-        return self.ledger.add(row, feature)
+        self._commit(row, feature)
+        return row
 
     # -- transport -----------------------------------------------------------------------
 
@@ -718,23 +885,50 @@ class MetaClient:
             delay = max(delay, min(retry_after, self.backoff_cap_s * 3))
         return delay
 
-    def _with_retries(self, send: Callable[[], dict]) -> dict:
+    def _with_retries(
+        self,
+        send: Callable[[], dict],
+        before_retry: Callable[[bool], None] | None = None,
+    ) -> tuple[dict, int]:
+        """Send with retries; return the body and the number of billed failed attempts.
+
+        Every attempt whose 2xx body was malformed or failed counts as billed (F5).
+        ``before_retry(previous_billed)`` runs before each retry and may raise
+        ``BudgetExceeded`` to stop retrying before a cap is crossed. Every error raised
+        carries ``billed_attempts``.
+        """
         last: _Retryable | None = None
         attempts = 0
+        billed = 0
         for attempt in range(self.max_retries + 1):
+            if attempt and before_retry is not None:
+                assert last is not None
+                try:
+                    before_retry(last.billed)
+                except BudgetExceeded as exc:
+                    exc.billed_attempts = billed  # type: ignore[attr-defined]
+                    exc.attempts = attempts  # type: ignore[attr-defined]
+                    log.warning("Meta call retry refused by the budget guard: %s", exc)
+                    raise
             attempts += 1
             try:
-                return send()
+                return send(), billed
             except _Retryable as exc:
                 last = exc
+                billed += int(exc.billed)
                 log.info("Meta call attempt %d failed (%s)", attempts, self._scrub(exc.detail))
                 if attempt < self.max_retries:
                     self._sleep(self._backoff(attempt, exc.retry_after))
+            except MetaError as exc:
+                # A failed 2xx response (non-retryable code) was billed; 4xx and auth were not.
+                exc.billed_attempts = billed + int(isinstance(exc, MetaResponseFailed))
+                raise
         assert last is not None
         msg = self._scrub(f"{last.kind} after {attempts} attempts: {last.detail}")
         cls = MalformedResponse if last.kind == "malformed" else MetaUnavailable
         err = cls(msg, status=last.status, attempts=attempts)
-        err.billed = last.billed  # type: ignore[attr-defined]
+        err.billed = billed > 0  # type: ignore[attr-defined]
+        err.billed_attempts = billed
         raise err
 
     def _raise_for_status(self, resp: httpx.Response) -> None:

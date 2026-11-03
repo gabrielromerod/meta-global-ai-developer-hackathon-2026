@@ -7,6 +7,15 @@
 #
 # Behind a reverse proxy, set FORWARDED_ALLOW_IPS to the proxy address so the per-IP rate
 # limit sees real clients (uvicorn --proxy-headers only trusts listed proxies).
+#
+# Spend ledger: every live call is ledgered in SQLite at VIGIL_LEDGER_PATH=/data/ledger.db,
+# on the /data volume, so a restart or redeploy does not reset the $25 judging cap, the $5 per
+# PT day cap or the $140 credit cap. Mount a named volume to keep it across containers:
+#   docker run ... -v vigil-ledger:/data vigil-sandbox
+# Deploy as a single replica (one container, one uvicorn worker): spend reservations are held
+# in process, so two replicas sharing one ledger could each admit the last dollar. If /data is
+# not writable the sandbox still starts; the ledger stays in memory and paid live calls are
+# refused (fail closed) while cached results keep working.
 
 FROM python:3.12-slim
 
@@ -32,11 +41,17 @@ COPY config ./config
 COPY demo ./demo
 COPY eval ./eval
 RUN uv sync --locked --no-dev \
- && useradd --system --uid 10001 --no-create-home --home-dir /nonexistent vigil
+ && useradd --system --uid 10001 --no-create-home --home-dir /nonexistent vigil \
+ && mkdir -p /data \
+ && chown vigil /data
+
+# The durable spend ledger lives here (single replica; see the header comment).
+VOLUME ["/data"]
 
 USER vigil
 
 ENV VIGIL_MODE=sandbox \
+    VIGIL_LEDGER_PATH=/data/ledger.db \
     PATH="/app/.venv/bin:$PATH"
 
 EXPOSE 8000

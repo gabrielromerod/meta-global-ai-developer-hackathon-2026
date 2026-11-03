@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import threading
 from datetime import UTC, datetime, timedelta
 from zoneinfo import ZoneInfo
 
@@ -14,7 +15,10 @@ from vigil.meta.budget import (
     BudgetExceeded,
     BudgetGuard,
     ConfirmRequired,
+    JudgingEnded,
+    LedgerNotDurable,
     PaidCallsDisabled,
+    SpendBook,
     estimate,
     feature_for,
     preflight,
@@ -95,6 +99,11 @@ def test_feature_caps_encode_spec_11_4():
     assert feature_for("something_new") == "other"
 
 
+def test_landmark_proposal_is_charged_to_rule_compile():
+    """SAM image calls for landmark proposals share the rule_compile budget (spec 11.4)."""
+    assert feature_for("landmark_proposal") == "rule_compile"
+
+
 # --- caps (test_spend_cap) ---------------------------------------------------------------
 
 
@@ -161,7 +170,7 @@ def test_window_end_switch():
     assert exc.value.cap == "credit_window"
     assert isinstance(exc.value, BudgetExceeded)
 
-    approved = _guard(settings=_settings(credit_window_end=end, allow_paid=True))
+    approved = _guard(settings=_settings(credit_window_end=end, allow_paid=True), book=_durable())
     approved.check(_est(0.01))
 
     before = _guard(settings=_settings(credit_window_end=NOW + timedelta(hours=1)))
@@ -212,11 +221,16 @@ JUDGING_END = datetime(2026, 11, 10, 23, 59, tzinfo=PT)
 JUDGING_NOW = datetime(2026, 11, 6, 12, 0, tzinfo=PT)
 
 
+def _durable() -> SpendBook:
+    """A spend book backed by a durable ledger: paid calls need one (fail closed otherwise)."""
+    return SpendBook(durable=True)
+
+
 def _judging_guard(now: datetime = JUDGING_NOW, **settings_kw) -> BudgetGuard:
     settings_kw.setdefault("credit_window_end", WINDOW_END)
     settings_kw.setdefault("allow_paid", True)
     settings_kw.setdefault("judging_end", JUDGING_END)
-    return BudgetGuard(_settings(**settings_kw), clock=lambda: now)
+    return BudgetGuard(_settings(**settings_kw), clock=lambda: now, book=_durable())
 
 
 def _row(cost: float, funding: str, when: datetime, i: int = 0) -> ModelCall:
@@ -263,6 +277,7 @@ def test_judging_cap_refuses_a_call_that_would_cross_25_total():
         _settings(credit_window_end=WINDOW_END, allow_paid=True, judging_end=JUDGING_END),
         clock=lambda: JUDGING_NOW + timedelta(days=1),  # a fresh PT day: daily cap has room
         spent=rows,
+        book=_durable(),
     )
     assert g.spent_paid == pytest.approx(24.99)
     g.check(_est(0.01, feature="sandbox"))  # reaching $25 exactly is allowed
@@ -323,6 +338,7 @@ def test_post_window_spend_is_judged_by_the_judging_cap_not_credit_caps():
         _settings(credit_window_end=WINDOW_END, allow_paid=True, judging_end=JUDGING_END),
         clock=lambda: JUDGING_NOW,
         spent=rows,
+        book=_durable(),
     )
     g.check(_est(4.5, feature="story"))  # story feature cap is $4, credit cap is spent
     assert g.remaining("story") == pytest.approx(5.0)
@@ -355,3 +371,112 @@ def test_credit_daily_cap_uses_pacific_calendar_days():
                     feature_caps={"sandbox": 1000.0})  # fmt: skip
     g.record(9.99, "sandbox", when=late)
     g.check(_est(1.0, feature="sandbox"))  # new PT day although the same UTC day
+
+
+# --- F4: VIGIL_JUDGING_END applies even when the credit window end is unset --------------
+
+
+def test_judging_end_refuses_every_live_call_without_a_credit_window_end():
+    """With VIGIL_CREDIT_WINDOW_END unset every call is tagged credit, but none may run after
+    VIGIL_JUDGING_END (Nov 10, 23:59 PT)."""
+    after = datetime(2026, 11, 12, 20, 0, tzinfo=UTC)
+    g = BudgetGuard(_settings(credit_window_end=None), clock=lambda: after)
+    assert g.funding_now() == "credit"
+    assert g.judging_over is True
+    with pytest.raises(JudgingEnded) as exc:
+        g.check(_est(0.01))
+    assert exc.value.cap == "judging_end"
+    with pytest.raises(JudgingEnded):
+        g.reserve(_est(0.01))
+    with pytest.raises(JudgingEnded):
+        g.check_batch([_est(0.01)])
+    # Before the judging end the credit regime is unchanged.
+    BudgetGuard(_settings(credit_window_end=None), clock=lambda: NOW).check(_est(0.01))
+
+
+# --- F1: paid calls need a durable ledger (fail closed) ----------------------------------
+
+
+def test_paid_calls_refused_without_a_durable_ledger():
+    in_memory = BudgetGuard(
+        _settings(credit_window_end=WINDOW_END, allow_paid=True, judging_end=JUDGING_END),
+        clock=lambda: JUDGING_NOW,
+    )
+    with pytest.raises(LedgerNotDurable) as exc:
+        in_memory.check(_est(0.01, feature="sandbox"))
+    assert exc.value.cap == "ledger"
+    assert isinstance(exc.value, BudgetExceeded)
+    assert "VIGIL_LEDGER_PATH" in str(exc.value)
+    # Credit-window calls may stay in memory (tests, dev).
+    BudgetGuard(_settings(), clock=lambda: NOW).check(_est(0.01))
+    _judging_guard().check(_est(0.01, feature="sandbox"))
+
+
+def test_guards_sharing_one_book_see_each_others_spend():
+    book = _durable()
+    settings = _settings(credit_window_end=WINDOW_END, allow_paid=True, judging_end=JUDGING_END)
+    a = BudgetGuard(settings, clock=lambda: JUDGING_NOW, book=book)
+    b = BudgetGuard(settings, clock=lambda: JUDGING_NOW, book=book)
+    a.record(4.99, "sandbox")
+    assert b.spent_paid_today() == pytest.approx(4.99)
+    with pytest.raises(BudgetExceeded) as exc:
+        b.check(_est(0.02, feature="sandbox"))
+    assert exc.value.cap == "judging_daily"
+
+
+# --- F6: reservations close the check-then-send race -------------------------------------
+
+
+def test_reservation_admits_at_most_what_fits_under_concurrency():
+    """40 threads, $4.95 of today's $5 paid cap spent, $0.04 each: at most one admitted."""
+    g = _judging_guard()
+    g.record(4.95, "sandbox")
+    admitted: list[object] = []
+    refused: list[BaseException] = []
+    barrier = threading.Barrier(40)
+
+    def worker() -> None:
+        barrier.wait()
+        try:
+            admitted.append(g.reserve(_est(0.04, feature="sandbox")))
+        except BudgetExceeded as exc:
+            refused.append(exc)
+
+    threads = [threading.Thread(target=worker) for _ in range(40)]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+    assert len(admitted) == 1  # floor((5 - 4.95) / 0.04) = 1
+    assert len(refused) == 39
+    assert all(e.cap == "judging_daily" for e in refused)
+    # A plain check also counts the pending reservation: 4.95 + 0.04 held, so 0.02 > room.
+    with pytest.raises(BudgetExceeded):
+        g.check(_est(0.02, feature="sandbox"))
+    g.check(_est(0.01, feature="sandbox"))  # exactly $5.00 still fits
+
+
+def test_reservation_settles_to_actual_cost_or_releases():
+    g = _judging_guard()
+    res = g.reserve(_est(1.0, feature="sandbox"))
+    assert g.spent_paid == 0.0  # pending is not spend
+    assert g.judging_remaining() == pytest.approx(5.0)
+    g.settle(res, 0.25)
+    assert g.spent_paid == pytest.approx(0.25)
+    res2 = g.reserve(_est(4.75, feature="sandbox"))
+    with pytest.raises(BudgetExceeded):
+        g.reserve(_est(0.01, feature="sandbox"))
+    g.release(res2)  # unbilled failure: nothing spent, room again
+    g.reserve(_est(0.01, feature="sandbox"))
+    assert g.spent_paid == pytest.approx(0.25)
+
+
+def test_reservation_extend_rechecks_the_caps():
+    g = _judging_guard()
+    g.record(4.90, "sandbox")
+    res = g.reserve(_est(0.04, feature="sandbox"))
+    g.extend(res, 0.04)  # 4.90 + 0.08 = 4.98: fits
+    with pytest.raises(BudgetExceeded) as exc:
+        g.extend(res, 0.04)  # 4.90 + 0.12 > 5
+    assert exc.value.cap == "judging_daily"
+    assert res.usd == pytest.approx(0.08)

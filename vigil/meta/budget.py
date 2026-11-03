@@ -7,20 +7,27 @@ tagged ``credit`` or ``paid`` (paid = from ``VIGIL_CREDIT_WINDOW_END`` on, spec 
 * Credit-funded calls are refused when they *would* cross the $140 credit cap (credit spend
   only, NFR-036), their feature budget (spec 11.4) or the daily cap.
 * After the window, paid calls are refused unless the owner set ``VIGIL_ALLOW_PAID=1``,
-  refused from ``VIGIL_JUDGING_END`` (Nov 10, 23:59 PT) on, and refused when they would
-  cross the judging cap ($25 in total) or its daily cap ($5 per PT calendar day) (NFR-037).
+  refused without a durable ledger (``VIGIL_LEDGER_PATH``, fail closed), and refused when
+  they would cross the judging cap ($25 in total) or its daily cap ($5 per PT calendar day)
+  (NFR-037).
+* No live call of any funding is admitted from ``VIGIL_JUDGING_END`` (Nov 10, 23:59 PT) on.
 
-Every refusal names the cap. Warnings fire once each at 50, 75 and 90% of every cap.
+Spend is read from a :class:`SpendBook` that indexes the durable call ledger, so caps survive
+a restart. A call reserves its estimate before it is sent (pending money counts in every
+check) and settles to its actual cost after. Every refusal names the cap. Warnings fire once
+each at 50, 75 and 90% of every cap.
 """
 
 from __future__ import annotations
 
+import itertools
 import logging
 import math
 import threading
 from collections.abc import Callable, Iterable
 from dataclasses import dataclass
-from datetime import UTC, date, datetime
+from datetime import UTC, date, datetime, timedelta
+from typing import Any
 from zoneinfo import ZoneInfo
 
 from pydantic import BaseModel, Field
@@ -96,6 +103,7 @@ _PURPOSE_FEATURES: tuple[tuple[str, str], ...] = (
     ("protect", "rule_compile"),
     ("segment_point", "rule_compile"),
     ("tap", "rule_compile"),
+    ("landmark", "rule_compile"),  # SAM image calls on a still (FR-037), like tap-to-protect
     ("voice", "voice"),
     ("transcribe", "voice"),
     ("asr", "voice"),
@@ -191,6 +199,7 @@ CAP_LABELS: dict[str, str] = {
     "daily": "daily cap",
     "judging": "judging cap (VIGIL_JUDGING_CAP_USD, post-window paid spend)",
     "judging_daily": "judging daily cap (paid spend per PT calendar day)",
+    "ledger": "durable spend ledger (VIGIL_LEDGER_PATH)",
 }
 """Human names used in refusal messages, so every refusal names the cap it hit."""
 
@@ -236,7 +245,8 @@ class PaidCallsDisabled(BudgetExceeded):
 
 
 class JudgingEnded(BudgetExceeded):
-    """VIGIL_JUDGING_END has passed: no paid call after it, whatever VIGIL_ALLOW_PAID says."""
+    """VIGIL_JUDGING_END has passed: no live call after it, whatever the funding tag or
+    VIGIL_ALLOW_PAID say (F4: with the window end unset, every call is tagged credit)."""
 
     def __init__(self, judging_end: datetime, requested: float):
         super().__init__(
@@ -244,10 +254,26 @@ class JudgingEnded(BudgetExceeded):
             0.0,
             0.0,
             requested,
-            f"VIGIL_JUDGING_END ({judging_end.isoformat()}) has passed; no paid call after it "
-            "(NFR-037); cached mode continues",
+            f"VIGIL_JUDGING_END ({judging_end.isoformat()}) has passed; no live call (paid or "
+            "credit) after it (NFR-037); cached mode continues",
         )
         self.judging_end = judging_end
+
+
+class LedgerNotDurable(BudgetExceeded):
+    """No durable spend ledger (VIGIL_LEDGER_PATH unset or not writable): paid calls are
+    refused, because a restart would forget their spend (NFR-037, fail closed)."""
+
+    def __init__(self, requested: float):
+        super().__init__(
+            "ledger",
+            0.0,
+            0.0,
+            requested,
+            "no durable spend ledger (VIGIL_LEDGER_PATH unset or not writable): paid live "
+            "calls are refused so a restart cannot reset the caps (NFR-037); cached mode "
+            "continues",
+        )
 
 
 class ConfirmRequired(RuntimeError):
@@ -287,20 +313,149 @@ def pt_day(when: datetime) -> date:
     return _utc(when).astimezone(BUDGET_TZ).date()
 
 
+@dataclass
+class Reservation:
+    """Money held for a call that is admitted but not yet settled (F6).
+
+    Every cap check counts pending reservations, so two concurrent calls cannot both pass a
+    check that only one of them fits. ``expires`` (UTC) lets an admission that never settles
+    (its caller failed before recording) stop holding the money.
+    """
+
+    id: int
+    usd: float
+    feature: str
+    funding: Funding
+    day: date
+    expires: datetime | None = None
+
+
+class SpendBook:
+    """Committed spend by funding tag, PT day and feature, plus pending reservations.
+
+    One book indexes one call ledger: every non-cached ledger row with a cost is committed
+    here (``add_row``), so every guard built over the same ledger (the Meta client's and the
+    sandbox's) reads the same totals. ``durable`` is True only while the ledger persists to
+    SQLite; paid calls are refused otherwise (fail closed, NFR-037). ``lock`` is re-entrant
+    and makes check-and-reserve one step.
+    """
+
+    def __init__(self, durable: bool = False) -> None:
+        self.lock = threading.RLock()
+        self.durable = durable
+        self._total: dict[str, float] = {"credit": 0.0, "paid": 0.0}
+        self._by_day: dict[tuple[str, date], float] = {}
+        self._by_feature: dict[str, float] = {}  # credit-funded only (spec 11.4 budgets)
+        self._pending: dict[int, Reservation] = {}
+        self._ids = itertools.count(1)
+        self._prerecorded = 0.0
+
+    # -- committed -----------------------------------------------------------------------
+
+    def commit(self, usd: float, feature: str, funding: Funding, day: date | None) -> None:
+        """Add actual spend. ``day`` None (a row without a timestamp) counts in totals only."""
+        if usd <= 0:
+            return
+        with self.lock:
+            self._total[funding] = self._total.get(funding, 0.0) + usd
+            if day is not None:
+                self._by_day[(funding, day)] = self._by_day.get((funding, day), 0.0) + usd
+            if funding == "credit":
+                self._by_feature[feature] = self._by_feature.get(feature, 0.0) + usd
+
+    def add_row(self, row: ModelCall, feature: str | None = None) -> None:
+        """Commit one ledger row (cached rows and zero-cost rows spend nothing)."""
+        if row.cached or not row.cost_usd:
+            return
+        day = pt_day(row.created_at) if row.created_at is not None else None
+        feature = feature or row.feature or feature_for(row.purpose)
+        self.commit(row.cost_usd, feature, row.funding, day)
+
+    # -- pending -------------------------------------------------------------------------
+
+    def live(self, now: datetime | None) -> list[Reservation]:
+        """Pending reservations, dropping those expired at ``now``."""
+        with self.lock:
+            if now is not None:
+                gone = [r.id for r in self._pending.values() if r.expires and r.expires <= now]
+                for rid in gone:
+                    del self._pending[rid]
+            return list(self._pending.values())
+
+    def hold(
+        self, usd: float, feature: str, funding: Funding, day: date, expires: datetime | None
+    ) -> Reservation:
+        with self.lock:
+            res = Reservation(next(self._ids), usd, feature, funding, day, expires)
+            self._pending[res.id] = res
+            return res
+
+    def drop(self, res: Reservation | None) -> None:
+        if res is not None:
+            with self.lock:
+                self._pending.pop(res.id, None)
+
+    # -- queries: ``now`` given -> reservations still live at ``now`` are included ------
+
+    def total(self, funding: Funding, now: datetime | None = None) -> float:
+        with self.lock:
+            out = self._total.get(funding, 0.0)
+            if now is not None:
+                out += sum(r.usd for r in self.live(now) if r.funding == funding)
+            return out
+
+    def day_total(self, funding: Funding, day: date, now: datetime | None = None) -> float:
+        with self.lock:
+            out = self._by_day.get((funding, day), 0.0)
+            if now is not None:
+                out += sum(r.usd for r in self.live(now) if r.funding == funding and r.day == day)
+            return out
+
+    def feature_total(self, feature: str, now: datetime | None = None) -> float:
+        with self.lock:
+            out = self._by_feature.get(feature, 0.0)
+            if now is not None:
+                out += sum(
+                    r.usd for r in self.live(now) if r.funding == "credit" and r.feature == feature
+                )
+            return out
+
+    # -- spend the Meta client has ledgered that a caller reports again ------------------
+
+    def offer_prerecorded(self, usd: float) -> None:
+        """Spend already in the ledger that a caller will report again: the sandbox route
+        records a live result's cost after the client has ledgered each of its calls."""
+        if usd > 0:
+            with self.lock:
+                self._prerecorded += usd
+
+    def claim_prerecorded(self, usd: float) -> float:
+        """Consume up to ``usd`` of pre-recorded spend; return the part still unrecorded."""
+        with self.lock:
+            taken = min(max(0.0, usd), self._prerecorded)
+            self._prerecorded -= taken
+            return max(0.0, usd - taken)
+
+
 class BudgetGuard:
-    """Prices and admits live calls; records actual spend by funding. Thread-safe.
+    """Prices, admits and reserves live calls; reads spend from a shared book. Thread-safe.
 
     Two regimes (NFR-036, NFR-037):
 
     * **credit** (before ``VIGIL_CREDIT_WINDOW_END``, or when it is unset): the $140 credit
       cap, the spec 11.4 feature budgets and the $10 daily cap, over credit-tagged spend only.
-    * **paid** (from the window end): refused unless ``VIGIL_ALLOW_PAID=1``; refused from
-      ``VIGIL_JUDGING_END`` on; otherwise only the judging caps apply ($25 in total and $5 per
-      PT calendar day of paid spend). Paid spend never counts toward the $140.
+    * **paid** (from the window end): refused unless ``VIGIL_ALLOW_PAID=1``; refused without a
+      durable ledger; otherwise only the judging caps apply ($25 in total and $5 per PT
+      calendar day of paid spend). Paid spend never counts toward the $140.
 
-    Days are Pacific calendar days. ``spent`` seeds the guard from existing ledger rows; each
-    row is counted under its own ``funding`` tag and ``feature`` (else one derived from the
-    purpose).
+    Whatever the funding tag, no live call is admitted from ``VIGIL_JUDGING_END`` on (F4: with
+    the window end unset every call is tagged credit, and the end date must still bind).
+
+    Spend lives in a :class:`SpendBook`: ``book`` when given, else the ``ledger``'s book (so
+    totals are derived from the durable ledger on start and shared with every guard over it),
+    else a private in-memory one. ``spent`` seeds extra rows; each is counted under its own
+    ``funding`` tag and ``feature`` (else one derived from the purpose). Days are Pacific
+    calendar days.
     """
 
     def __init__(
@@ -314,6 +469,8 @@ class BudgetGuard:
         judging_daily_cap: float | None = None,
         clock: Callable[[], datetime] | None = None,
         spent: Iterable[ModelCall] | None = None,
+        ledger: Any = None,
+        book: SpendBook | None = None,
     ):
         s = settings or get_settings()
         self.total_cap = s.total_cap_usd if total_cap is None else total_cap
@@ -324,23 +481,27 @@ class BudgetGuard:
             s.judging_daily_cap_usd if judging_daily_cap is None else judging_daily_cap
         )
         self.window_end = _utc(s.credit_window_end) if s.credit_window_end else None
-        self.judging_end = _utc(s.judging_end or DEFAULT_JUDGING_END)
+        self.judging_end = _utc(getattr(s, "judging_end", None) or DEFAULT_JUDGING_END)
         self.allow_paid = s.allow_paid
         self._clock = clock or _now
-        self._lock = threading.Lock()
-        self._total = 0.0
-        self._by_feature: dict[str, float] = {}
-        self._by_day: dict[date, float] = {}
-        self._paid_total = 0.0
-        self._paid_by_day: dict[date, float] = {}
+        ledger_book = getattr(ledger, "book", None) if ledger is not None else None
+        self.book: SpendBook = book or ledger_book or SpendBook()
         self._warned: set[tuple[str, int]] = set()
         self.warnings: list[str] = []
         for row in spent or ():
             if row.cost_usd and not row.cached:
                 feature = row.feature or feature_for(row.purpose)
-                self._add(row.cost_usd, feature, row.created_at, row.funding)
+                self._commit(row.cost_usd, feature, row.created_at, row.funding)
 
     # -- state ---------------------------------------------------------------------------
+
+    @property
+    def durable(self) -> bool:
+        """Spend is persisted (a restart keeps it); paid calls need this."""
+        return self.book.durable
+
+    def now(self) -> datetime:
+        return _utc(self._clock())
 
     def _today(self) -> date:
         return pt_day(self._clock())
@@ -357,51 +518,63 @@ class BudgetGuard:
     @property
     def spent_total(self) -> float:
         """Credit-funded spend (the $140 cap counts only this, NFR-036)."""
-        return self._total
+        return self.book.total("credit")
 
     @property
     def spent_paid(self) -> float:
         """Post-window paid spend (the $25 judging cap, NFR-037)."""
-        return self._paid_total
+        return self.book.total("paid")
 
     def spent_feature(self, feature: str) -> float:
-        return self._by_feature.get(feature, 0.0)
+        return self.book.feature_total(feature)
 
     def spent_credit_today(self) -> float:
-        return self._by_day.get(self._today(), 0.0)
+        return self.book.day_total("credit", self._today())
 
     def spent_paid_today(self) -> float:
-        return self._paid_by_day.get(self._today(), 0.0)
+        return self.book.day_total("paid", self._today())
 
     def spent_today(self) -> float:
         """All spend today (credit and paid), for the health endpoint and telemetry panel."""
         return self.spent_credit_today() + self.spent_paid_today()
+
+    def pending(self, funding: Funding | None = None) -> float:
+        """Money held by admitted, unsettled calls (every cap check counts it)."""
+        live = self.book.live(self.now())
+        return sum(r.usd for r in live if funding is None or r.funding == funding)
 
     def judging_remaining(self) -> float:
         """Room left for paid calls now: the tighter of the $25 total and today's $5."""
         return max(
             0.0,
             min(
-                self.judging_cap - self._paid_total,
+                self.judging_cap - self.spent_paid,
                 self.judging_daily_cap - self.spent_paid_today(),
             ),
         )
 
-    def _caps_for(self, feature: str, funding: Funding) -> list[tuple[str, float, float]]:
-        """(name, limit, spent) for every cap that applies to a call of this feature."""
+    def _caps_for(
+        self, feature: str, funding: Funding, *, pending: bool = True
+    ) -> list[tuple[str, float, float]]:
+        """(name, limit, spent) for every cap that applies to a call of this feature.
+
+        ``pending`` counts money held by admitted calls (admission); warnings pass False.
+        """
+        now = self.now() if pending else None
+        today = self._today()
         if funding == "paid":
             return [
-                ("judging", self.judging_cap, self._paid_total),
-                ("judging_daily", self.judging_daily_cap, self.spent_paid_today()),
+                ("judging", self.judging_cap, self.book.total("paid", now)),
+                ("judging_daily", self.judging_daily_cap, self.book.day_total("paid", today, now)),
             ]
         return [
-            ("total", self.total_cap, self._total),
+            ("total", self.total_cap, self.book.total("credit", now)),
             (
                 f"feature:{feature}",
                 self.feature_caps.get(feature, self.feature_caps["other"]),
-                self.spent_feature(feature),
+                self.book.feature_total(feature, now),
             ),
-            ("daily", self.daily_cap, self.spent_credit_today()),
+            ("daily", self.daily_cap, self.book.day_total("credit", today, now)),
         ]
 
     def remaining(self, feature: str) -> float:
@@ -414,91 +587,121 @@ class BudgetGuard:
 
     @property
     def judging_over(self) -> bool:
-        return self.funding_now() == "paid" and _utc(self._clock()) >= self.judging_end
+        """VIGIL_JUDGING_END has passed: no live call of any funding (F4)."""
+        return self.now() >= self.judging_end
 
     # -- admission -----------------------------------------------------------------------
 
-    def _admit_paid(self, usd: float) -> None:
-        if self.paid_disabled:
-            assert self.window_end is not None
-            raise PaidCallsDisabled(self.window_end, usd)
+    def _admit(self, usd: float, funding: Funding) -> None:
+        """Refusals that do not depend on spend: judging end, the paid switch, durability."""
         if self.judging_over:
             raise JudgingEnded(self.judging_end, usd)
+        if funding == "paid":
+            if not self.allow_paid:
+                assert self.window_end is not None
+                raise PaidCallsDisabled(self.window_end, usd)
+            if not self.book.durable:
+                raise LedgerNotDurable(usd)
+
+    def _check_locked(self, usd: float, feature: str, funding: Funding) -> None:
+        self._admit(usd, funding)
+        for name, limit, spent in self._caps_for(feature, funding):
+            if spent + usd > limit + _EPS:
+                raise BudgetExceeded(name, limit, spent, usd)
 
     def check(self, est: CostEstimate) -> None:
-        """Raise if this live call would cross any cap that applies to it now."""
-        with self._lock:
+        """Raise if this live call would cross any cap that applies to it now.
+
+        Pending reservations count as spent. Callers that send should :meth:`reserve`
+        instead, so a concurrent call cannot pass the same check (F6).
+        """
+        with self.book.lock:
+            self._check_locked(est.usd, est.feature, self.funding_now())
+
+    def reserve(self, est: CostEstimate, ttl_s: float | None = None) -> Reservation:
+        """Check and hold ``est.usd`` in one atomic step; settle or release it afterwards."""
+        with self.book.lock:
             funding = self.funding_now()
-            if funding == "paid":
-                self._admit_paid(est.usd)
-            for name, limit, spent in self._caps_for(est.feature, funding):
-                if spent + est.usd > limit + _EPS:
-                    raise BudgetExceeded(name, limit, spent, est.usd)
+            self._check_locked(est.usd, est.feature, funding)
+            expires = self.now() + timedelta(seconds=ttl_s) if ttl_s else None
+            return self.book.hold(est.usd, est.feature, funding, self._today(), expires)
+
+    def extend(self, res: Reservation, usd: float) -> None:
+        """Hold ``usd`` more on a reservation (a retry after a billed attempt), re-checking
+        every cap first, so a retry never crosses one (F5). Raises without changing ``res``."""
+        with self.book.lock:
+            self._check_locked(usd, res.feature, res.funding)
+            res.usd += usd
+
+    def release(self, res: Reservation | None) -> None:
+        """Stop holding a reservation (its spend, if any, is committed by its ledger row)."""
+        self.book.drop(res)
+
+    def settle(self, res: Reservation, usd: float, when: datetime | None = None) -> list[str]:
+        """Commit the actual cost of a reserved call to the book and release the hold.
+
+        Use this when no ledger row commits the spend (a guard without a ledger)."""
+        with self.book.lock:
+            self.book.drop(res)
+            return self.record(usd, res.feature, when, res.funding)
 
     def check_batch(self, estimates: Iterable[CostEstimate]) -> None:
         """Pre-flight: would the whole batch fit under every cap?"""
         ests = list(estimates)
         if not ests:
             return
-        with self._lock:
+        with self.book.lock:
             total = sum(e.usd for e in ests)
-            if self.funding_now() == "paid":
-                self._admit_paid(total)
+            funding = self.funding_now()
+            self._admit(total, funding)
+            now = self.now()
+            today = self._today()
+            if funding == "paid":
                 checks = [
-                    ("judging", self.judging_cap, self._paid_total, total),
-                    ("judging_daily", self.judging_daily_cap, self.spent_paid_today(), total),
+                    ("judging", self.judging_cap, self.book.total("paid", now), total),
+                    (
+                        "judging_daily",
+                        self.judging_daily_cap,
+                        self.book.day_total("paid", today, now),
+                        total,
+                    ),
                 ]
             else:
                 per_feature: dict[str, float] = {}
                 for e in ests:
                     per_feature[e.feature] = per_feature.get(e.feature, 0.0) + e.usd
-                checks = [("total", self.total_cap, self._total, total)]
+                checks = [("total", self.total_cap, self.book.total("credit", now), total)]
                 checks += [
                     (
                         f"feature:{f}",
                         self.feature_caps.get(f, self.feature_caps["other"]),
-                        self.spent_feature(f),
+                        self.book.feature_total(f, now),
                         usd,
                     )
                     for f, usd in per_feature.items()
                 ]
-                checks.append(("daily", self.daily_cap, self.spent_credit_today(), total))
+                checks.append(
+                    ("daily", self.daily_cap, self.book.day_total("credit", today, now), total)
+                )
             for name, limit, spent, usd in checks:
                 if spent + usd > limit + _EPS:
                     raise BudgetExceeded(name, limit, spent, usd)
 
     # -- recording -----------------------------------------------------------------------
 
-    def _add(
+    def _commit(
         self, usd: float, feature: str, when: datetime | None, funding: Funding | None = None
     ) -> Funding:
         when = when or self._clock()
         funding = funding or self.funding_at(when)
-        day = pt_day(when)
-        if funding == "paid":
-            self._paid_total += usd
-            self._paid_by_day[day] = self._paid_by_day.get(day, 0.0) + usd
-        else:
-            self._total += usd
-            self._by_feature[feature] = self._by_feature.get(feature, 0.0) + usd
-            self._by_day[day] = self._by_day.get(day, 0.0) + usd
+        self.book.commit(usd, feature, funding, pt_day(when))
         return funding
 
-    def record(
-        self,
-        usd: float,
-        feature: str,
-        when: datetime | None = None,
-        funding: Funding | None = None,
-    ) -> list[str]:
-        """Add actual spend; return the warnings newly crossed by this call (once each).
-
-        ``funding`` defaults to the tag for ``when`` (now when omitted).
-        """
+    def warn(self, feature: str, funding: Funding) -> list[str]:
+        """The 50/75/90% warnings newly crossed by committed spend (once each)."""
         new: list[str] = []
-        with self._lock:
-            funding = self._add(usd, feature, when, funding)
-            for name, limit, spent in self._caps_for(feature, funding):
+        with self.book.lock:
+            for name, limit, spent in self._caps_for(feature, funding, pending=False):
                 if limit <= 0:
                     continue
                 pct = spent / limit * 100.0
@@ -513,6 +716,22 @@ class BudgetGuard:
         for w in new:
             log.warning(w)
         return new
+
+    def record(
+        self,
+        usd: float,
+        feature: str,
+        when: datetime | None = None,
+        funding: Funding | None = None,
+    ) -> list[str]:
+        """Add actual spend to the book; return the warnings newly crossed (once each).
+
+        ``funding`` defaults to the tag for ``when`` (now when omitted). A guard over a call
+        ledger does not need this for ledgered calls: adding the ledger row commits it.
+        """
+        with self.book.lock:
+            funding = self._commit(usd, feature, when, funding)
+            return self.warn(feature, funding)
 
 
 # ---------------------------------------------------------------------------

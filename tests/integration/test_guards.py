@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import io
 import json
+import threading
 import wave
 from collections.abc import Iterator
 from datetime import UTC, datetime, timedelta
@@ -28,11 +29,14 @@ from tests.integration.test_api import (
     make_settings,
 )
 from vigil.api.guards import (
+    Guards,
     ModelNotAllowedError,
     RateLimiter,
+    check_live_allowed,
     check_model_allowed,
     is_lan_request,
 )
+from vigil.meta.client import reset_shared_ledgers
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CONTRIBUTOR = "-" + "contributor"
@@ -43,6 +47,21 @@ LIVE_PROTECT = {"camera_id": "side_right", "point": {"x": 640, "y": 500}, "live"
 def _no_network() -> Iterator[None]:
     with respx.mock(assert_all_called=False):
         yield
+
+
+_LEDGER_DIR: list[Path] = []
+
+
+@pytest.fixture(autouse=True)
+def _ledger_dir(tmp_path: Path) -> Iterator[None]:
+    """Paid (judging) settings need a durable ledger: one fresh SQLite file per test."""
+    _LEDGER_DIR[:] = [tmp_path]
+    yield
+    reset_shared_ledgers()
+
+
+def _ledger_path(name: str = "ledger.db") -> Path:
+    return _LEDGER_DIR[0] / name
 
 
 NOTICE_BUDGET = "Live budget for today used; recorded result shown"
@@ -68,7 +87,7 @@ def _judging(clock: FakeClock, **kw):
     """Settings for the judging period: credit window over, VIGIL_ALLOW_PAID=1, end ahead."""
     now = datetime.fromtimestamp(clock.t, tz=UTC)
     base = {"credit_window_end": now - timedelta(days=1), "allow_paid": True,
-            "judging_end": now + timedelta(days=10)}  # fmt: skip
+            "judging_end": now + timedelta(days=10), "ledger_path": _ledger_path()}  # fmt: skip
     base.update(kw)
     return make_settings(**base)
 
@@ -174,8 +193,59 @@ def test_credit_window_end_disables_live() -> None:
     assert body["notice"] == NOTICE_BUDGET  # one notice everywhere (spec 11.6 item 6)
     assert client.get("/api/health").json()["live"]["reason"] == "credit_window_ended"
     assert backend.calls == []
-    _, paid = build(make_settings(credit_window_end=ended, allow_paid=True), clock=clock)
+    paid_settings = make_settings(
+        credit_window_end=ended, allow_paid=True, ledger_path=_ledger_path()
+    )
+    _, paid = build(paid_settings, clock=clock)
     assert paid.post("/api/protect", json=LIVE_PROTECT).json()["live"] is True
+    # Without a durable ledger the paid phase fails closed with the same notice.
+    _, volatile = build(make_settings(credit_window_end=ended, allow_paid=True), clock=clock)
+    body = volatile.post("/api/protect", json=LIVE_PROTECT).json()
+    assert body["live"] is False
+    assert body["notice"] == NOTICE_BUDGET
+    assert volatile.get("/api/health").json()["live"]["reason"] == "ledger_not_durable"
+
+
+def test_judging_end_refuses_live_without_credit_window_end() -> None:
+    """F4: VIGIL_CREDIT_WINDOW_END unset still closes live calls at VIGIL_JUDGING_END."""
+    clock = FakeClock(datetime(2026, 11, 12, 20, 0, tzinfo=UTC).timestamp())
+    backend = FakeBackend()
+    _, client = build(make_settings(credit_window_end=None), backend=backend, clock=clock)
+    body = client.post("/api/protect", json=LIVE_PROTECT).json()
+    assert body["live"] is False
+    assert body["notice"] == NOTICE_BUDGET
+    health = client.get("/api/health").json()
+    assert health["live"]["reason"] == "judging_ended"
+    assert health["phase"] == "closed"
+    assert backend.calls == []
+
+
+def test_concurrent_admissions_cannot_cross_the_daily_cap() -> None:
+    """F6: 40 concurrent live requests, $4.95 of today's $5 spent, $0.04 each: one admitted."""
+    clock = FakeClock()
+    guards = Guards(_judging(clock), clock=clock)
+    guards.record_spend(4.95, "paid")
+    barrier = threading.Barrier(40)
+    results: list[bool] = []
+    lock = threading.Lock()
+
+    def worker(i: int) -> None:
+        barrier.wait()
+        status = check_live_allowed(guards, f"198.51.100.{i}", 0.04)
+        with lock:
+            results.append(status.available)
+
+    threads = [threading.Thread(target=worker, args=(i,)) for i in range(40)]
+    for t in threads:
+        t.start()
+    for t in threads:
+        t.join()
+    assert results.count(True) == 1
+    assert guards.live_status(0.04).reason == "judging_daily_cap"
+    # The admitted request records its actual cost; the reservation is then released.
+    guards.record_spend(0.01, "paid")
+    assert guards.spend_today("paid") == pytest.approx(4.96)
+    assert check_live_allowed(guards, "198.51.100.200", 0.04).available is True
 
 
 def test_no_key_means_cached_with_notice() -> None:
@@ -430,15 +500,19 @@ def test_key_never_appears_in_any_served_file_or_response() -> None:
 
 def test_live_routes_reject_public_clients() -> None:
     pair = {"camera_id": "side_left", "pixel": [640, 500], "world": [6.0, 0.0, 3.0]}
-    app, public = build(make_settings(mode="edge"), ip="203.0.113.9")
+    token = "owner-test-token-guards"  # spatial pairs are an owner endpoint too (F2)
+    auth = {"authorization": f"Bearer {token}"}
+    app, public = build(make_settings(mode="edge", owner_token=token), ip="203.0.113.9")
     assert public.get("/api/live/stream").status_code == 403
-    assert public.post("/api/spatial/pairs", json=pair).status_code == 403
+    assert public.post("/api/spatial/pairs", json=pair, headers=auth).status_code == 403
     lan = client_for(app, "192.168.1.20")
-    r = lan.post("/api/spatial/pairs", json=pair)
+    r = lan.post("/api/spatial/pairs", json=pair, headers=auth)
     assert r.status_code == 200
     assert r.json()["pairs"] == 1
     assert r.json()["needed"] == 6
-    spoofed = lan.post("/api/spatial/pairs", json=pair, headers={"x-forwarded-for": "8.8.8.8"})
+    spoofed = lan.post(
+        "/api/spatial/pairs", json=pair, headers={**auth, "x-forwarded-for": "8.8.8.8"}
+    )
     assert spoofed.status_code == 403
     # The hosted sandbox never serves LAN routes, even to a private address.
     _, sandbox = build(make_settings(mode="sandbox"), ip="192.168.1.20")

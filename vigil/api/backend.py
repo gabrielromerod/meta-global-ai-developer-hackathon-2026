@@ -65,7 +65,12 @@ def _ledger_len(client: Any) -> int:
 
 
 def _calls_since(client: Any, before: int) -> list[ModelCall]:
-    """Ledger rows the Meta client recorded during one live action, if it exposes them."""
+    """Ledger rows the Meta client recorded during one live action, if it exposes them.
+
+    When the client's ledger keeps a spend book (MetaClient's ``CallLedger``), their cost is
+    offered to it as already recorded: the sandbox route reports the action's spend again,
+    and the shared durable ledger must not count it twice.
+    """
     ledger = _ledger(client)
     if ledger is None:
         return []
@@ -75,15 +80,27 @@ def _calls_since(client: Any, before: int) -> list[ModelCall]:
         rows = ledger[before:]
     else:
         return []
-    return [row if isinstance(row, ModelCall) else ModelCall.model_validate(row) for row in rows]
+    calls = [row if isinstance(row, ModelCall) else ModelCall.model_validate(row) for row in rows]
+    book = getattr(ledger, "book", None)
+    offer = getattr(book, "offer_prerecorded", None)
+    if callable(offer):
+        offer(sum(c.cost_usd for c in calls if not c.cached))
+    return calls
 
 
 class MetaLiveBackend:
-    """Adapter over vigil.meta (B1). Imports lazily; every failure is LiveUnavailableError."""
+    """Adapter over vigil.meta (B1). Imports lazily; every failure is LiveUnavailableError.
 
-    def __init__(self, settings: Any, stills_dir: Any = None) -> None:
+    The client is built from settings, so with ``VIGIL_LEDGER_PATH`` it uses the process's
+    shared durable ledger, the same one the sandbox guards read (one source of truth for the
+    caps; paid calls fail closed without it).
+    """
+
+    def __init__(self, settings: Any, stills_dir: Any = None, *, ledger: Any = None) -> None:
         self._settings = settings
         self._stills_dir = stills_dir
+        self._ledger = ledger
+        """The sandbox guards' ledger, so both keep one book even without a ledger path."""
         self._client: Any = None
 
     def _meta_client(self) -> Any:
@@ -93,7 +110,10 @@ class MetaLiveBackend:
             except ImportError as exc:  # pragma: no cover - module always present in repo
                 raise LiveUnavailableError("Meta client module unavailable") from exc
             try:
-                self._client = MetaClient(settings=self._settings)
+                if self._ledger is not None:
+                    self._client = MetaClient(settings=self._settings, ledger=self._ledger)
+                else:
+                    self._client = MetaClient(settings=self._settings)
             except TypeError:
                 self._client = MetaClient()
         return self._client

@@ -292,7 +292,7 @@
       "story": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
       "role_label": "Household",
       "role_basis": "came out of the house (front door egress)",
-      "reason": "9.4 case 2: every rule in force on po_side_gate excludes household_insider, so the touch keeps the floor normal.",
+      "reason": "The side-gate rule excludes household activity.",
       "thumbnail_url": null,
       "clip_url": null,
       "evidence_kind": "fixture"

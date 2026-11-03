@@ -87,7 +87,9 @@ jobs:
       - name: Privacy scan (NFR-001, NFR-002)
         run: uv run python scripts/privacy_scan.py demo
       - name: Metadata scan (NFR-032)
-        run: bash scripts/metadata_scan.sh demo
+        run: uv run python scripts/metadata_scan.py demo
+      - name: Metadata scan regression (real generated EXIF, missing tool fails closed)
+        run: uv run pytest -q tests/unit/test_metadata_scan.py
       - name: Repository-wide audio allowlist (NFR-002) — only consented voice fixtures
         run: |
           uv run python - <<'PY'

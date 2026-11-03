@@ -7,3 +7,5 @@
 
 - 2026-11-03: Use drei OrbitControls, Line and Html; custom R3F scene composition expresses the input site plan and cited paths because component libraries do not supply Vigil geometry.
 - 2026-11-03: CSS media queries use 640px and 1180px literals matching the named breakpoint tokens because native media queries cannot consume CSS variables.
+
+- 2026-11-03: ExifTool 13.59 was already installed. Metadata scanning now fails closed; GLB public massing uses a validated JSON-chunk scan with textures/external resources refused because ExifTool does not parse GLB.

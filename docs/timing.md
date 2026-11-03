@@ -39,3 +39,5 @@ Initial baseline wall times are approximate; durations come from pytest. Later f
 
 | Clips/Media field boundary regression (FIXTURE) | 2026-11-03T13:12:54.966Z | 2026-11-03T13:13:03.298Z | source 8f4ca05; 8 cases, 96 measurements; 0 failures; unchanged >=3:1 threshold |
 | Clips/Media boundary-fix frontend suite/build (FIXTURE) | 2026-11-03T05:12:54.6827332-08:00 | 2026-11-03T05:13:01.1689054-08:00 | 56 tests and production build passed |
+
+| Offline HTTP backstop and point privacy full regression | 2026-11-03T05:39:59.266719-08:00 | 2026-11-03T05:43:10.709972-08:00 | exit 0; captured command output |

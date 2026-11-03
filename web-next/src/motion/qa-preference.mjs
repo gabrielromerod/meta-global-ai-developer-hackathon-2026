@@ -15,6 +15,8 @@ try {
    await page.goto(`http://127.0.0.1:8107/next/src/motion/preview.html?theme=${theme}`);await page.waitForFunction(()=>document.body.dataset.ready==='1');await page.evaluate(()=>document.fonts.ready);
    // Preview readiness precedes the first asynchronous WebGL draw; capture rendered geometry.
    await page.waitForFunction(async()=>{const fiber=await import('/next/node_modules/.vite/deps/@react-three_fiber.js');return [...fiber._roots.values()].some(root=>root.store.getState().gl.info.render.calls>0);});
+   await page.locator('.twin-canvas button').first().waitFor({state:'attached'});
+   await page.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
    await page.evaluate(()=>window.preferenceCanvas=document.querySelector('canvas'));
    const states=[];
    for(const preference of ['no-preference','reduce','no-preference']){

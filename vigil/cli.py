@@ -666,13 +666,14 @@ def spatial_build(
     typer.echo(f"model built: {result}")
 
 
-def _load_pairs(path: Path) -> list:
+def _load_pairs(path: Path, key: str = "pairs", model: Any = None) -> list:
     from vigil.spatial.calibrate import MarkerPair
 
+    model = model or MarkerPair
     raw = _read_json(path)
-    items = raw.get("pairs", []) if isinstance(raw, dict) else raw
+    items = raw.get(key, []) if isinstance(raw, dict) else raw
     try:
-        return [MarkerPair.model_validate(p) for p in items]
+        return [model.model_validate(p) for p in items]
     except (TypeError, ValueError) as err:
         _fail(f"{path}: marker pairs are malformed: {err}")
 
@@ -684,12 +685,20 @@ def spatial_calibrate(
         Path | None, typer.Option(help="Checkerboard views (*.png, *.jpg) for intrinsics.")
     ] = None,
     pairs: Annotated[
-        Path | None, typer.Option(help="Marker pairs JSON from the LAN calibration tool.")
+        Path | None,
+        typer.Option(help="Landmark pairs JSON (6 accepted landmarks) from the LAN tool."),
+    ] = None,
+    audit: Annotated[
+        Path | None,
+        typer.Option(help="Surveyed audit markers JSON (benchmark only, never solved on)."),
     ] = None,
     fisheye: Annotated[bool, typer.Option(help="Fisheye lens model.")] = False,
     pattern: Annotated[str, typer.Option(help="Inner corners, columns x rows.")] = "9x6",
     square_m: Annotated[float, typer.Option(help="Checkerboard square size (m).")] = 0.025,
-    hfov: Annotated[float, typer.Option(help="Lens horizontal FOV for the fallback.")] = 90.0,
+    hfov: Annotated[
+        float | None,
+        typer.Option(help="Nominal horizontal FOV (default: the camera's hfov_deg, else 90)."),
+    ] = None,
     method: Annotated[str, typer.Option(help="pnp_ransac or homography.")] = "pnp_ransac",
     config: ConfigOpt = None,
     out: Annotated[
@@ -698,17 +707,24 @@ def spatial_calibrate(
 ) -> None:
     """Calibrate one camera into the model (FR-036, FR-037) and write the report (NFR-024).
 
-    Intrinsics from --frames (RMS under 1 px), else the FOV fallback (flagged). Extrinsics
-    from --pairs: PnP with RANSAC on 6 markers, 2 held out.
+    Intrinsics: nominal FOV from the datasheet (--hfov, else the camera's ``hfov_deg``),
+    the primary path; or a lens profile from checkerboard --frames (RMS under 1 px).
+    Extrinsics from --pairs: PnP with RANSAC on every landmark (6 in the product path, none
+    held out). Accuracy is measured only by --audit: surveyed markers that never enter the
+    solve; their mean ground error is stored and used by locate() for r95.
     """
     from vigil.models import Calibration
     from vigil.spatial.calibrate import (
+        DEFAULT_HFOV_DEG,
+        SurveyedMarker,
+        audit_error,
         calibrate_extrinsics,
         calibrate_intrinsics,
         calibration_report,
-        fov_intrinsics,
+        intrinsics_from_fov,
         load_calibrations,
         save_calibrations,
+        with_audit,
     )
 
     cfg_path = _config_path(config)
@@ -729,6 +745,10 @@ def spatial_calibrate(
     except ValueError:
         _fail(f"--pattern must look like 9x6, got {pattern!r}")
     marker_pairs = _load_pairs(pairs)
+    markers = _load_pairs(audit, "markers", SurveyedMarker) if audit is not None else []
+    hfov_deg = hfov if hfov is not None else (cam.hfov_deg or DEFAULT_HFOV_DEG)
+    if not 0.0 < hfov_deg < 180.0:
+        _fail(f"--hfov must be in (0, 180) degrees, got {hfov_deg}")
 
     size = (cam.width, cam.height)
     if frames is not None:
@@ -738,16 +758,22 @@ def spatial_calibrate(
             p for p in Path(frames).iterdir() if p.suffix.lower() in (".png", ".jpg", ".jpeg")
         )
         k = calibrate_intrinsics(
-            views, fisheye, pattern=(cols, rows), square_m=square_m, hfov_deg=hfov,
+            views, fisheye, pattern=(cols, rows), square_m=square_m, hfov_deg=hfov_deg,
             image_size=size,
         )  # fmt: skip
     else:
-        k = fov_intrinsics(size[0], size[1], hfov)
+        k = intrinsics_from_fov(hfov_deg, size[0], size[1])
     try:
-        ext = calibrate_extrinsics(marker_pairs, k, method=method)
+        ext = calibrate_extrinsics(marker_pairs, k, method=method, holdout=0)
     except ValueError as err:
         _fail(f"extrinsics: {err}")
     cal = Calibration(camera_id=camera, intrinsics=k, extrinsics=ext, date=date.today().isoformat())
+    if markers:
+        try:
+            report = audit_error(cal, markers, landmarks=marker_pairs)
+        except ValueError as err:
+            _fail(f"audit: {err}")
+        cal = with_audit(cal, report)
 
     out_path = Path(out) if out is not None else cfg_path.parent / "calibration.json"
     existing = []

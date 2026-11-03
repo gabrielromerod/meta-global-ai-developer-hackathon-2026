@@ -3,11 +3,15 @@
 ``run_scenario`` composes the real modules over already-produced perception inputs:
 
     windows -> SAM objects (injected source, or recorded wire text parsed by vigil.meta.sam)
-    -> perception.tracks.stitch -> perception.events.build_events -> appearance notes
+    -> perception.tracks.stitch -> perception.events.build_events (events, plus each track's
+    FR-008 ``origin_zone`` from the observed spans of the windows) -> appearance notes
     -> optional 3D positions (vigil.spatial.locate, when calibrations and ground are given)
-    -> reasoning.visits.assemble_visits -> reasoning.rules.evaluate_rules
+    -> reasoning.visits.assemble_visits (links, gaps and the FR-044 subject chains with their
+    ``actor_role``/``role_basis``, using the owner's Expected Windows and check-ins)
+    -> reasoning.rules.evaluate_rules (``applies_to`` against each event's role, 9.4 floor)
     -> reasoning.triage (forced by code, or the injected model) -> reasoning.story.run_story
-    (injected Wonder writer when escalated, else the template) -> reasoning.verdict.compose
+    (injected Wonder writer when escalated, else the template; the ledger carries the
+    visit's subjects for validator check 7) -> reasoning.verdict.compose
     -> reasoning.loop.accept_watches for the watch proposals of a validated draft.
 
 Every model call is injected, so tests replay recorded answers and nothing here touches the
@@ -39,8 +43,10 @@ from vigil.models import (
     Calibration,
     CameraAiEvent,
     CameraCfg,
+    CheckIn,
     Config,
     Event,
+    ExpectedWindow,
     Gap,
     Position,
     ProtectedObject,
@@ -48,6 +54,7 @@ from vigil.models import (
     RuleHit,
     SamObject,
     StoryDraft,
+    Subject,
     Track,
     TriageDecision,
     ValidationResult,
@@ -280,7 +287,56 @@ def _track_row(t: Track) -> dict[str, Any]:
         "window_ids": list(t.window_ids),
         "n_frames": len(t.frames),
         "masks": sum(1 for f in t.frames if f.mask_rle),
+        "origin_zone": t.origin_zone,
     }
+
+
+def _observation(windows: Sequence[Window], sam_missing: Sequence[str], outages: Sequence[Any]):
+    """Observed spans per camera for FR-008 origin tagging (None when no windows exist).
+
+    A window whose recorded SAM answer for a base phrase is missing was not processed, so it
+    counts as ``failed`` (not observed); idle windows were skipped by the motion gate.
+    """
+    from vigil.perception.events import Observation
+
+    if not windows:
+        return None
+    lacking = {m.split("/", 1)[0] for m in sam_missing if m.split("/", 1)[1] in BASE_PHRASES}
+    marked = [
+        w.model_copy(update={"status": "failed"}) if w.id in lacking and w.status != "idle" else w
+        for w in windows
+    ]
+    return Observation.from_windows(marked, outages)
+
+
+def _rules_excluded(
+    v_events: Sequence[Event],
+    rules: Sequence[Rule],
+    subjects: Mapping[str, Subject],
+    tz: str,
+    session_start: datetime,
+    watches: Sequence[Watch],
+) -> list[dict[str, Any]]:
+    """Rules in force on an event that did not fire because of ``applies_to`` (A′ trace)."""
+    from vigil.reasoning.rules import applies, in_force, role_of
+
+    out: list[dict[str, Any]] = []
+    for e in v_events:
+        for rule in rules:
+            if not in_force(rule, e, tz, session_start, watches) or applies(rule, e):
+                continue
+            s = subjects.get(e.subject_id or "")
+            out.append(
+                {
+                    "rule_id": rule.id,
+                    "event_id": e.id,
+                    "applies_to": rule.applies_to,
+                    "actor_role": role_of(e),
+                    "subject_id": e.subject_id,
+                    "role_basis": s.role_basis if s is not None else None,
+                }
+            )
+    return out
 
 
 # ---------------------------------------------------------------------------
@@ -303,14 +359,18 @@ def run_scenario(
     calibrations: Mapping[str, Calibration] | Sequence[Calibration] | None = None,
     ground: Any = None,
     allowlist: Iterable[str] | None = None,
+    expected_windows: Sequence[ExpectedWindow] = (),
+    checkins: Sequence[CheckIn] = (),
 ) -> dict[str, Any]:
     """Run the offline pipeline over one session's windows and return a JSON-able result.
 
-    ``session_start`` must be timezone-aware (rules with time windows need it). ``sam`` is a
-    ``(window, phrase) -> SamObjects`` source; without it, recorded ``inputs.sam_outputs`` are
-    parsed (a missing window/phrase is listed in ``result["sam_missing"]``). ``writer`` is the
-    Wonder stand-in, only called for escalated visits. ``allowlist`` defaults to
-    ``config/allowlist.json``.
+    ``session_start`` must be timezone-aware (rules with time windows, Expected Windows and
+    check-ins need it). ``sam`` is a ``(window, phrase) -> SamObjects`` source; without it,
+    recorded ``inputs.sam_outputs`` are parsed (a missing window/phrase is listed in
+    ``result["sam_missing"]``, and that window counts as unobserved for FR-008 origins).
+    ``writer`` is the Wonder stand-in, only called for escalated visits. ``allowlist``
+    defaults to ``config/allowlist.json``. ``expected_windows`` (FR-029) and ``checkins``
+    (FR-044 step 2) feed the role rules; without them steps 2 and 3 never match.
     """
     from vigil.perception.events import build_events
     from vigil.perception.tracks import stitch
@@ -331,16 +391,32 @@ def run_scenario(
     protected = sorted(protected, key=lambda p: p.id)
     watches = sorted(watches, key=lambda w: w.id)
     protected_ids = {p.id for p in protected}
+    expected_windows = sorted(expected_windows, key=lambda w: (w.start, w.id))
+    checkins = sorted(checkins, key=lambda c: (c.start, c.id))
 
     # perception ------------------------------------------------------------
     objs, sam_missing = _sam_objects(inp, windows, watches, session_start, sam)
     tracks = stitch(objs, frame_height={c.id: c.height for c in cfg.cameras})
-    events = build_events(tracks, cfg, list(protected), list(watches), exits_as_zones=True)
+    observation = _observation(windows, sam_missing, inp.outages)
+    events = build_events(
+        tracks, cfg, list(protected), list(watches), exits_as_zones=True, observation=observation
+    )
     appearance = _notes(notes, tracks)
     positions = _positions(tracks, calibrations, ground)
 
     # reasoning -------------------------------------------------------------
-    asm = assemble_visits(events, tracks, appearance, positions, cfg, outages=inp.outages)
+    asm = assemble_visits(
+        events,
+        tracks,
+        appearance,
+        positions,
+        cfg,
+        outages=inp.outages,
+        windows=expected_windows,
+        checkins=checkins,
+        session_start=session_start,
+    )
+    subjects_by_id = {s.id: s for s in asm.subjects}
     by_track = {t.id: t for t in tracks}
     camera_names = {c.id: c.name for c in cfg.cameras}
     region_names = region_names_from(cfg)
@@ -362,9 +438,15 @@ def run_scenario(
             protected_ids=protected_ids,
             watches=watches,
         )
+        # a 9.4 case-2 household touch (rr.scoped_out) neither raises the floor nor forces
+        # escalation; summarize() reads it from the RuleOutcome
         summary = summarize(v, asm.events, asm.gaps, rr, protected_ids=protected_ids, tracks=tracks)
         decision = decide(summary, triage_model)
         visit = v.model_copy(update={"floor": rr.floor, "scenario": inp.scenario})
+        v_subjects = [s for s in asm.subjects if s.visit_id == v.id]
+        excluded = _rules_excluded(
+            v_events, rules, subjects_by_id, cfg.timezone, session_start, watches
+        )
         ledger = VisitLedger(
             visit=visit,
             events=v_events,
@@ -374,6 +456,7 @@ def run_scenario(
             appearance={tid: appearance[tid] for tid in v.track_ids if tid in appearance},
             camera_names=camera_names,
             region_names=region_names,
+            subjects=v_subjects,
             timezone=cfg.timezone,
             session_start=session_start,
         )
@@ -442,6 +525,9 @@ def run_scenario(
                 "events": [e.model_dump(mode="json") for e in v_events],
                 "gaps": [g.model_dump(mode="json") for g in v_gaps],
                 "rule_hits": [h.model_dump(mode="json") for h in rr.hits],
+                "rules_excluded": excluded,
+                "scoped_out": list(rr.scoped_out),
+                "subjects": [s.model_dump(mode="json") for s in v_subjects],
                 "links": links,
                 "positions": [p.model_dump(mode="json") for p in v_positions],
                 "validations": [r.model_dump(mode="json") for r in outcome.validations],
@@ -483,6 +569,9 @@ def run_scenario(
         "tracks": [_track_row(t) for t in sorted(tracks, key=lambda t: t.id)],
         "events": [e.model_dump(mode="json") for e in asm.events],
         "gaps": [g.model_dump(mode="json") for g in asm.gaps],
+        "subjects": [s.model_dump(mode="json") for s in asm.subjects],
+        "expected_windows": [w.model_dump(mode="json") for w in expected_windows],
+        "checkins": [c.model_dump(mode="json") for c in asm.checkins],
         "positions": [p.model_dump(mode="json") for p in kept_positions],
         "camera_ai_events": [
             e.model_dump(mode="json") for e in sorted(inp.camera_ai_events, key=lambda e: e.id)
@@ -551,10 +640,15 @@ def _store(
                 window_ids=t.get("window_ids", []),
                 tag=t.get("tag"),
                 phrase=t.get("phrase"),
+                origin_zone=t.get("origin_zone"),
             ),
         )
     for p in result.get("positions", []):
         db.insert_position(conn, Position.model_validate(p))
+    for w in result.get("expected_windows", []):
+        db.insert_expected_window(conn, ExpectedWindow.model_validate(w))
+    for c in result.get("checkins", []):
+        db.insert_checkin(conn, CheckIn.model_validate(c))
     for po in protected:
         db.insert_protected_object(conn, po)
     for r in rules:
@@ -569,6 +663,8 @@ def _store(
     fields = set(Visit.model_fields)
     for v in result.get("visits", []):
         db.insert_visit(conn, Visit.model_validate({k: v[k] for k in fields if k in v}))
+        for s in v.get("subjects", []):
+            db.insert_subject(conn, Subject.model_validate(s))
         for h in v.get("rule_hits", []):
             db.insert_rule_hit(conn, RuleHit.model_validate(h))
         for r in v.get("validations", []):
@@ -585,6 +681,12 @@ def bundle_trace(result: Mapping[str, Any]) -> dict[str, Any]:
             "gap_sentences": [s["gap_id"] for s in v.get("story", []) if s.get("gap_id")],
             "verdict_inputs": v.get("verdict_inputs"),
             "watch_proposals": v.get("watch_proposals", []),
+            "subjects": [
+                {k: s[k] for k in ("id", "track_ids", "actor_role", "role_basis")}
+                for s in v.get("subjects", [])
+            ],
+            "rules_excluded": v.get("rules_excluded", []),
+            "scoped_out": v.get("scoped_out", []),
         }
     return out
 
@@ -647,8 +749,9 @@ def process_session(session: str, *, confirm: bool = False, settings: Any = None
 
     - ``windows/<session>/windows.json``: the cut windows (``vigil ingest``);
     - ``windows/<session>/session.json``: ``{"session_start": ISO-8601 with offset}`` plus
-      optional ``protected_objects``, ``rules`` (owner rules, added to the defaults) and
-      ``watches``;
+      optional ``protected_objects``, ``rules`` (owner rules, added to the defaults),
+      ``watches``, ``expected_windows`` (FR-029, set by the owner before they start) and
+      ``checkins`` (FR-044 step 2, "I'm outside" taps from the LAN app);
     - ``sam/<session>/<window id>/<phrase>.txt`` (wire text) or ``.json`` (Responses events):
       recorded SAM 3.1 answers.
 
@@ -700,6 +803,8 @@ def process_session(session: str, *, confirm: bool = False, settings: Any = None
     rules = [*load_rules(), *(Rule.model_validate(r) for r in meta.get("rules", []))]
     protected = [ProtectedObject.model_validate(p) for p in meta.get("protected_objects", [])]
     watches = [Watch.model_validate(w) for w in meta.get("watches", [])]
+    expected = [ExpectedWindow.model_validate(w) for w in meta.get("expected_windows", [])]
+    checkins = [CheckIn.model_validate(c) for c in meta.get("checkins", [])]
     result = run_scenario(
         {"scenario": session, "windows": windows, "sam_outputs": recorded},
         cfg=cfg,
@@ -707,6 +812,8 @@ def process_session(session: str, *, confirm: bool = False, settings: Any = None
         protected=protected,
         watches=watches,
         session_start=session_start,
+        expected_windows=expected,
+        checkins=checkins,
     )
     write_visits_json(result, data / "results" / session / "visits.json")
     return result

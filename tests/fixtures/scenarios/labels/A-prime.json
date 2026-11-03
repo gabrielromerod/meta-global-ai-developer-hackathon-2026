@@ -1,0 +1,30 @@
+{
+  "$comment": "Synthetic label for the golden pipeline test (tests/fixtures/scenarios/builders.py, scenario_a_prime). Written from the authored keyframes before the pipeline ran. Times are seconds on the session clock (t=0 is 18:02:00 PST, 2 Nov 2026, inside r7's 17:30-06:00 window). Roles are spatial origins (FR-044), never identities.",
+  "schema_version": 1,
+  "scenario": "A-prime",
+  "title": "Night: out of the front door, touches the side gate, back inside",
+  "session": "synthetic-golden",
+  "lighting": "night_ir",
+  "expected_verdict": "normal",
+  "expected_escalated": false,
+  "subjects": [
+    {
+      "id": "S1",
+      "class": "person",
+      "role": "household_insider",
+      "appearances": [
+        {"camera_id": "front", "t0": 2.0, "t1": 8.0},
+        {"camera_id": "side_left", "t0": 14.0, "t1": 25.0},
+        {"camera_id": "front", "t0": 31.0, "t1": 37.0}
+      ]
+    }
+  ],
+  "gaps": [],
+  "events": [
+    {"type": "touch", "camera_id": "side_left", "t": 18.0, "target": "po_side_gate"}
+  ],
+  "rules_fired": [],
+  "labelled_by": "integration agent",
+  "labelled_at": "2026-11-02T12:00:00-08:00",
+  "notes": "Synthetic scenario; no footage. r7 is in force but excluded by applies_to non_household."
+}

@@ -1,7 +1,7 @@
 """Determinism (spec 12.1 "Integration: determinism"; NFR-011).
 
-Two runs of the pipeline on the same recorded inputs give byte-identical ``visits.json``,
-whatever order the windows arrive in.
+Two runs of the pipeline on the same recorded inputs (A, A′, B, B′, C) give byte-identical
+``visits.json``, subjects and roles included, whatever order the windows arrive in.
 """
 
 from __future__ import annotations
@@ -18,7 +18,7 @@ from vigil.pipeline import FLOAT_DIGITS, write_visits_json
 from vigil.reasoning.rules import load_rules
 
 
-@pytest.mark.parametrize("sid", ["A", "B", "C"])
+@pytest.mark.parametrize("sid", ["A", "A-prime", "B", "B-prime", "C"])
 def test_two_runs_give_byte_identical_visits_json(
     sid: str,
     tmp_path: Path,
@@ -38,6 +38,7 @@ def test_two_runs_give_byte_identical_visits_json(
     assert a == b
     assert a.endswith(b"\n")
     assert b"\r\n" not in a
+    assert b'"role_basis"' in a  # FR-044 subjects are part of the reproducible result
 
 
 def test_visits_json_is_canonical(

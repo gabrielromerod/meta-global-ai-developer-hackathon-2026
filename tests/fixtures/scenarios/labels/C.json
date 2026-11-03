@@ -1,8 +1,8 @@
 {
-  "$comment": "Synthetic label for the golden pipeline test (tests/fixtures/scenarios/builders.py, scenario_c). Written from the authored keyframes before the pipeline ran. Session t=0 is 22:13:40 PDT.",
+  "$comment": "Synthetic label for the golden pipeline test (tests/fixtures/scenarios/builders.py, scenario_c). Written from the authored keyframes before the pipeline ran. Session t=0 is 18:13:45 PST, 2 Nov 2026 (the earlier 22:14 label is retired, spec 4). Roles are spatial origins (FR-044), never identities.",
   "schema_version": 1,
   "scenario": "C",
-  "title": "Night: side gate touched, 41 s behind the shed, leaves",
+  "title": "After dark: side gate touched, 41 s behind the shed, leaves",
   "session": "synthetic-golden",
   "lighting": "night_ir",
   "expected_verdict": "needs_attention",
@@ -11,6 +11,7 @@
     {
       "id": "S1",
       "class": "person",
+      "role": "external_visitor",
       "appearances": [
         {"camera_id": "side_left", "t0": 14.0, "t1": 40.0},
         {"camera_id": "side_left", "t0": 81.0, "t1": 95.0}

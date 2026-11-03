@@ -22,6 +22,14 @@ Definitions (pre-registered with the targets in EVAL.md):
   each within 1 s.
 - **Reolink/SAM agreement** (spec 6): share of Reolink person events overlapped by a SAM
   person track on the same camera.
+- **Roles** (FR-044): each labelled subject with a ``role`` is compared with every system
+  subject chain (``result["subjects"]``, else the visits' ``subjects``) whose tracks of the
+  same class overlap its appearances on the same camera. It is correct when all of them hold
+  the labelled role (a chain split at a gap counts every part). **Role miss rate** = labelled
+  ``household_insider`` subjects not assigned ``household_insider`` / labelled household
+  subjects, also split by lighting (day vs ``dusk``/``night_ir``). **Alerts caused** counts
+  missed household subjects with a non-household part inside an alert visit. A scenario with
+  no result counts every labelled role as missed (fails closed).
 """
 
 from __future__ import annotations
@@ -29,6 +37,8 @@ from __future__ import annotations
 from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
+
+from vigil.models import ActorRole
 
 LABEL_SCHEMA_VERSION = 1
 ALERT_VERDICTS: tuple[str, ...] = ("needs_attention",)
@@ -64,6 +74,8 @@ class LabelSubject(_Strict):
     id: str
     class_: Literal["person", "vehicle", "package", "object"] = Field(alias="class")
     appearances: list[Appearance] = Field(default_factory=list)
+    role: ActorRole | None = None
+    """The spatial-origin role the subject should get (FR-044), never an identity."""
 
 
 class LabelGap(_Strict):
@@ -152,6 +164,83 @@ def _check(name: str, value: Any, n: int | None = None) -> bool | None:
 # ---------------------------------------------------------------------------
 
 
+NIGHT_LIGHTING = frozenset({"dusk", "night_ir"})
+TRACK_CLASS = {"vehicle": "car"}
+"""Label class -> pipeline track class, where they differ (a person stays a person)."""
+
+
+def _role_rows(label: ScenarioLabel, result: dict, visits: list[dict]) -> list[dict]:
+    """Labelled vs assigned role per labelled subject (FR-044 role miss rate)."""
+    tracks = {t["id"]: t for t in result.get("tracks") or [] if "id" in t}
+    subjects = list(result.get("subjects") or []) or [
+        s for v in visits for s in v.get("subjects") or []
+    ]
+    alert_tracks = {
+        tid
+        for v in visits
+        if (v.get("verdict") or "normal") in ALERT_VERDICTS
+        for tid in v.get("track_ids") or []
+    }
+    rows = []
+    for ls in label.subjects:
+        if ls.role is None:
+            continue
+        hits: list[tuple[float, str, dict]] = []
+        cls = TRACK_CLASS.get(ls.class_, ls.class_)
+        for s in subjects:
+            ov = 0.0
+            for tid in s.get("track_ids") or []:
+                t = tracks.get(tid)
+                if t is None or t.get("cls", cls) != cls:
+                    continue
+                for ap in ls.appearances:
+                    if ap.camera_id == t.get("camera_id"):
+                        ov += _overlap(float(t["t_first"]), float(t["t_last"]), ap.t0, ap.t1)
+            if ov > 0:
+                hits.append((ov, str(s.get("id")), s))
+        hits.sort(key=lambda h: (-h[0], h[1]))
+        roles = sorted({str(s.get("actor_role") or "unknown") for _, _, s in hits})
+        correct = roles == [ls.role]
+        alert = any(
+            str(s.get("actor_role") or "unknown") != ls.role
+            and bool(set(s.get("track_ids") or []) & alert_tracks)
+            for _, _, s in hits
+        )
+        rows.append(
+            {
+                "subject": ls.id,
+                "labelled": ls.role,
+                "assigned": str(hits[0][2].get("actor_role") or "unknown") if hits else None,
+                "assigned_roles": roles,
+                "role_basis": hits[0][2].get("role_basis") if hits else None,
+                "correct": correct,
+                "alert": alert and not correct,
+            }
+        )
+    return rows
+
+
+def _role_counts(label: ScenarioLabel, roles: list[dict] | None) -> dict[str, int]:
+    labelled = [s for s in label.subjects if s.role is not None]
+    household = [s for s in labelled if s.role == "household_insider"]
+    if roles is None:  # no result: every labelled role counts as missed
+        return {
+            "roles_labelled": len(labelled),
+            "roles_correct": 0,
+            "household_subjects": len(household),
+            "household_missed": len(household),
+            "role_miss_alerts": 0,
+        }
+    hh = [r for r in roles if r["labelled"] == "household_insider"]
+    return {
+        "roles_labelled": len(roles),
+        "roles_correct": sum(1 for r in roles if r["correct"]),
+        "household_subjects": len(hh),
+        "household_missed": sum(1 for r in hh if not r["correct"]),
+        "role_miss_alerts": sum(1 for r in hh if r["alert"]),
+    }
+
+
 def _scenario_row(label: ScenarioLabel, result: dict | None) -> dict:
     row: dict[str, Any] = {
         "scenario": label.scenario,
@@ -165,7 +254,8 @@ def _scenario_row(label: ScenarioLabel, result: dict | None) -> dict:
             status="missing", verdict=None, correct=False, motion_triggers=0, alerts=0,
             visits=0, escalated=0, links=0, links_correct=0, claims_inside_gaps=0,
             uncited_sentences_shipped=0, positions_inside_gaps=0, sentences=0,
-            gaps_matched=0, reolink_person_events=0, reolink_matched_by_sam=0,
+            gaps_matched=0, reolink_person_events=0, reolink_matched_by_sam=0, roles=[],
+            **_role_counts(label, None),
         )  # fmt: skip
         return row
 
@@ -256,6 +346,8 @@ def _scenario_row(label: ScenarioLabel, result: dict | None) -> dict:
         reolink_person_events=len(reolink),
         reolink_matched_by_sam=matched,
     )
+    roles = _role_rows(label, result, visits)
+    row.update(roles=roles, **_role_counts(label, roles))
     return row
 
 
@@ -263,6 +355,8 @@ _SUMS = (
     "motion_triggers", "alerts", "visits", "escalated", "links", "links_correct",
     "claims_inside_gaps", "uncited_sentences_shipped", "positions_inside_gaps", "sentences",
     "gaps_labelled", "gaps_matched", "reolink_person_events", "reolink_matched_by_sam",
+    "roles_labelled", "roles_correct", "household_subjects", "household_missed",
+    "role_miss_alerts",
 )  # fmt: skip
 
 
@@ -293,6 +387,15 @@ def compute_metrics(labels: list[dict], results: list[dict]) -> dict:
     totals["reolink_sam_agreement"] = _ratio(
         totals["reolink_matched_by_sam"], totals["reolink_person_events"]
     )
+    totals["role_accuracy"] = _ratio(totals["roles_correct"], totals["roles_labelled"])
+    totals["role_miss_rate"] = _ratio(totals["household_missed"], totals["household_subjects"])
+    for part, keep in (("day", lambda lt: lt == "day"), ("night", NIGHT_LIGHTING.__contains__)):
+        mine = [r for r in rows if keep(r["lighting"])]
+        hh = sum(int(r["household_subjects"]) for r in mine)
+        missed = sum(int(r["household_missed"]) for r in mine)
+        totals[f"household_subjects_{part}"] = hh
+        totals[f"household_missed_{part}"] = missed
+        totals[f"role_miss_rate_{part}"] = _ratio(missed, hh)
 
     met = {
         "alert_reduction": _check("alert_reduction", totals["alert_reduction"]),

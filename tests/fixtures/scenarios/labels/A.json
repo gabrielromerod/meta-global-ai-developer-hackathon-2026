@@ -1,5 +1,5 @@
 {
-  "$comment": "Synthetic label for the golden pipeline test (tests/fixtures/scenarios/builders.py, scenario_a). Written from the authored keyframes before the pipeline ran. Times are seconds on the session clock.",
+  "$comment": "Synthetic label for the golden pipeline test (tests/fixtures/scenarios/builders.py, scenario_a). Written from the authored keyframes before the pipeline ran. Times are seconds on the session clock (t=0 is 14:42:00 PST, 2 Nov 2026). Roles are spatial origins (FR-044), never identities.",
   "schema_version": 1,
   "scenario": "A",
   "title": "Routine: a person leaves by the front door and drives off",
@@ -8,12 +8,12 @@
   "expected_verdict": "normal",
   "expected_escalated": false,
   "subjects": [
-    {"id": "S1", "class": "person", "appearances": [{"camera_id": "front", "t0": 2.0, "t1": 11.0}]},
+    {"id": "S1", "class": "person", "role": "household_insider", "appearances": [{"camera_id": "front", "t0": 2.0, "t1": 11.0}]},
     {"id": "V1", "class": "vehicle", "appearances": [{"camera_id": "front", "t0": 0.0, "t1": 22.0}]}
   ],
   "gaps": [],
   "events": [
-    {"type": "enter", "camera_id": "front", "t": 2.0, "target": "porch"},
+    {"type": "enter", "camera_id": "front", "t": 2.0, "target": "front_door_egress"},
     {"type": "exit", "camera_id": "front", "t": 19.6, "target": "driveway"}
   ],
   "rules_fired": [],

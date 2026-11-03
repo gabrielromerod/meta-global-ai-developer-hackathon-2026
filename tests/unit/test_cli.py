@@ -8,6 +8,7 @@ with exit code 2 (never a traceback), and fakes stand in for reolink-aio and the
 from __future__ import annotations
 
 import json
+import math
 import sys
 import types
 from datetime import UTC, datetime
@@ -37,6 +38,7 @@ cameras:
     name: Front entrance
     source: {host_env: VIGIL_TEST_FRONT_HOST, channel: null}
     offset_s: 0.0
+    hfov_deg: 100.0
     privacy:
       - [[0, 0], [1280, 0], [1280, 80], [0, 80]]   # street
   - id: side_left
@@ -609,14 +611,14 @@ def test_cli_spatial_build_blocked(tmp_path: Path) -> None:
     assert "blocked:" in r.output
 
 
-def _true_front() -> Calibration:
-    k = fov_intrinsics(1280, 720, 90.0)
+def _true_front(hfov: float = 90.0) -> Calibration:
+    k = fov_intrinsics(1280, 720, hfov)
     ext = look_at_extrinsics((0.0, 2.6, 0.0), (0.0, 0.0, 6.0))
     return Calibration(camera_id="front", intrinsics=k, extrinsics=ext)
 
 
-def _marker_pairs() -> list[dict]:
-    cal = _true_front()
+def _marker_pairs(hfov: float = 90.0) -> list[dict]:
+    cal = _true_front(hfov)
     pts = np.array([[-1.5, 0, 3.0], [1.5, 0, 3.5], [0, 0, 5.5], [2.0, 0, 6.5], [-2.0, 0, 7.0],
                     [1.0, 0, 8.5], [-1.0, 0, 9.5], [0.5, 0, 10.0]], float)  # fmt: skip
     uv, front = CameraGeom.from_calibration(cal).project(pts)
@@ -646,13 +648,18 @@ def test_cli_spatial_calibrate_unknown_camera(cfg_path: Path, tmp_path: Path) ->
 
 
 def test_cli_spatial_calibrate_fov_fallback_and_pnp(cfg_path: Path, tmp_path: Path) -> None:
+    """FR-036/FR-037 (Nov 2): nominal-FOV intrinsics, the 6 landmarks all used in the solve
+    (none held out), accuracy measured only by the separate audit markers (NFR-024)."""
+    marks = _marker_pairs()
     pairs = tmp_path / "pairs.json"
-    pairs.write_text(json.dumps({"pairs": _marker_pairs()}), encoding="utf-8")
+    pairs.write_text(json.dumps({"pairs": marks[:6]}), encoding="utf-8")
+    audit = tmp_path / "audit.json"
+    audit.write_text(json.dumps({"markers": marks[6:]}), encoding="utf-8")
     frames = tmp_path / "frames"
     frames.mkdir()  # no checkerboard views -> FOV fallback (FR-036), flagged
     out = tmp_path / "calibration.json"
     r = run("spatial", "calibrate", "front", "--frames", frames, "--pairs", pairs,
-            "--hfov", "90", "--config", cfg_path, "--out", out)  # fmt: skip
+            "--audit", audit, "--hfov", "90", "--config", cfg_path, "--out", out)  # fmt: skip
     assert_clean(r)
     assert r.exit_code == 0, r.output
     data = json.loads(out.read_text(encoding="utf-8"))
@@ -662,6 +669,7 @@ def test_cli_spatial_calibrate_fov_fallback_and_pnp(cfg_path: Path, tmp_path: Pa
     rep = report["cameras"][0]
     assert rep["camera_id"] == "front"
     assert rep["reproj_ok"] is True
+    assert rep["audit_measured"] is True
     assert rep["heldout_ok"] is True
     assert "fov_fallback" in r.output
     # re-running for another camera keeps the first one
@@ -670,6 +678,44 @@ def test_cli_spatial_calibrate_fov_fallback_and_pnp(cfg_path: Path, tmp_path: Pa
     assert r.exit_code == 0, r.output
     data = json.loads(out.read_text(encoding="utf-8"))
     assert sorted(c["camera_id"] for c in data) == ["front", "side_left"]
+
+
+def test_cli_spatial_calibrate_uses_all_landmarks_and_camera_hfov(
+    cfg_path: Path, tmp_path: Path
+) -> None:
+    """Without --hfov the camera's hfov_deg from cameras.yaml sets the nominal intrinsics;
+    every landmark pair goes into the solve (no hold-out), so no audit means not measured."""
+    pairs = tmp_path / "pairs.json"
+    pairs.write_text(json.dumps(_marker_pairs(100.0)), encoding="utf-8")  # 8, all landmarks
+    out = tmp_path / "calibration.json"
+    r = run("spatial", "calibrate", "front", "--pairs", pairs, "--config", cfg_path,
+            "--out", out)  # fmt: skip
+    assert_clean(r)
+    assert r.exit_code == 0, r.output
+    (cal,) = json.loads(out.read_text(encoding="utf-8"))
+    assert cal["intrinsics"]["source"] == "fov_nominal"
+    f = 640.0 / math.tan(math.radians(100.0 / 2))  # front's hfov_deg 100 at 1280 px
+    assert cal["intrinsics"]["k"][0][0] == pytest.approx(f)
+    rep = json.loads((tmp_path / "calibration_report.json").read_text(encoding="utf-8"))
+    (rep,) = rep["cameras"]
+    assert rep["audit_measured"] is False
+    assert rep["heldout_ground_m"] is None
+    assert rep["reproj_ok"] is True
+
+
+def test_cli_spatial_calibrate_refuses_audit_marker_reused_as_landmark(
+    cfg_path: Path, tmp_path: Path
+) -> None:
+    marks = _marker_pairs()
+    pairs = tmp_path / "pairs.json"
+    pairs.write_text(json.dumps(marks[:6]), encoding="utf-8")
+    audit = tmp_path / "audit.json"
+    audit.write_text(json.dumps(marks[5:]), encoding="utf-8")  # m5 is also a landmark
+    r = run("spatial", "calibrate", "front", "--pairs", pairs, "--audit", audit,
+            "--config", cfg_path, "--out", tmp_path / "calibration.json")  # fmt: skip
+    assert_clean(r)
+    assert r.exit_code == 1
+    assert "audit" in r.output
 
 
 SITE_PLAN = {

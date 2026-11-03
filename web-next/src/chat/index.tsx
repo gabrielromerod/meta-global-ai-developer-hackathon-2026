@@ -59,7 +59,7 @@ function HintButton({label,explanation,disabled,onClick,children}: {label:string
 
 function ThreadView({thread,props,draft,onDraftChange}: {thread:Thread;props:ChatSurfaceProps;draft:string;onDraftChange:(text:string)=>void}) {
   const fieldId=useId();
-  const endRef=useRef<HTMLLIElement>(null);
+  const historyRef=useRef<HTMLDivElement>(null);
   const lastSent=useRef('');
   const [submitting,setSubmitting]=useState(false);
   const [localError,setLocalError]=useState<string|null>(null);
@@ -68,7 +68,19 @@ function ThreadView({thread,props,draft,onDraftChange}: {thread:Thread;props:Cha
   const canSend=supported&&typeof props.onSend==='function';
   const snapshot=props.capabilities.snapshot&&Boolean(props.onSnapshot);
   const record=props.capabilities.recording&&Boolean(props.onRecord);
-  useEffect(()=>{endRef.current?.scrollIntoView?.({block:'end'});},[thread.id,thread.messages.length,props.pending]);
+  useEffect(()=>{
+    const history=historyRef.current;
+    if(!history||(!thread.messages.length&&!sending))return;
+    const scrollToLatest=()=>{history.scrollTop=history.scrollHeight;};
+    scrollToLatest();
+    // Font loading and popup layout can change the measured content after mount.
+    // Observe both the scroll panel and its contents so pending feedback stays visible.
+    if(typeof ResizeObserver==='undefined')return;
+    const observer=new ResizeObserver(scrollToLatest);
+    observer.observe(history);
+    for(const child of history.children)observer.observe(child);
+    return ()=>observer.disconnect();
+  },[thread.id,thread.messages.length,sending]);
   useEffect(()=>{
     if(props.error&&lastSent.current&&!draft)onDraftChange(lastSent.current);
   },[props.error]); // Restore a failed submission; lead may keep this draft controlled.
@@ -91,9 +103,9 @@ function ThreadView({thread,props,draft,onDraftChange}: {thread:Thread;props:Cha
   }
   return <section className="v-chat-thread" aria-label={thread.title}>
     <header className="v-chat-thread-header"><span className="v-chat-avatar"><ThreadIcon thread={thread}/></span><div><h2>{thread.title}</h2><p>{thread.kind==='local_mock'?'Local to this browser':'Cached visit evidence'}</p></div></header>
-    <div className="v-chat-history" role="log" aria-label={`${thread.title} messages`} aria-live="polite" tabIndex={0}>
-      {thread.messages.length===0?<div className="v-chat-empty"><span className="v-chat-empty-icon"><ThreadIcon thread={thread}/></span><h3>{thread.kind==='assistant'?'Ask about a visit':'No messages yet'}</h3><p>{thread.kind==='assistant'?'Search what the cameras recorded. Answers link to the visit evidence.':'Share a note or a clip with this local household thread.'}</p>{thread.kind==='local_mock'&&<p>Messages stay in this browser. They are not delivered to anyone.</p>}</div>:<ol className="v-chat-message-list">{thread.messages.map(message=><Message key={message.id} message={message} onOpenVisit={props.onOpenVisit} onOpenClip={props.onOpenClip}/>)}<li ref={endRef} className="v-chat-scroll-end" aria-hidden="true"/></ol>}
-      {sending&&<p className="v-chat-pending" role="status">{thread.kind==='assistant'?'Searching the visit ledgerâ€¦':'Saving your local messageâ€¦'}</p>}
+    <div ref={historyRef} className="v-chat-history" role="log" aria-label={`${thread.title} messages`} aria-live="polite" tabIndex={0}>
+      {thread.messages.length===0&&!sending?<div className="v-chat-empty"><span className="v-chat-empty-icon"><ThreadIcon thread={thread}/></span><h3>{thread.kind==='assistant'?'Ask about a visit':'No messages yet'}</h3><p>{thread.kind==='assistant'?'Search what the cameras recorded. Answers link to the visit evidence.':'Share a note or a clip with this local household thread.'}</p>{thread.kind==='local_mock'&&<p>Messages stay in this browser. They are not delivered to anyone.</p>}</div>:thread.messages.length>0&&<ol className="v-chat-message-list">{thread.messages.map(message=><Message key={message.id} message={message} onOpenVisit={props.onOpenVisit} onOpenClip={props.onOpenClip}/>)}</ol>}
+      {sending&&<p className="v-chat-pending" role="status">{thread.kind==='assistant'?'Searching the visit ledger\u2026':'Saving your local message\u2026'}</p>}
     </div>
     <form className="v-chat-composer" onSubmit={event=>void submit(event)}>
       {(props.error||localError)&&<p className="v-chat-error" role="alert">{props.error||localError}</p>}
@@ -101,7 +113,7 @@ function ThreadView({thread,props,draft,onDraftChange}: {thread:Thread;props:Cha
       <label className="v-chat-visually-hidden" htmlFor={fieldId}>Message</label>
       <div className="v-chat-input-row"><textarea id={fieldId} value={draft} onChange={event=>onDraftChange(event.target.value)} onKeyDown={onKeyDown} rows={2} disabled={!canSend||sending} maxLength={4000} placeholder={thread.kind==='assistant'?'Ask about your home':'Write a local message'} aria-describedby={`${fieldId}-help`}/><button type="submit" className="v-chat-send" aria-label="Send message" disabled={!canSend||sending||!draft.trim()}><Send aria-hidden="true"/></button></div>
       <div className="v-chat-composer-tools"><div className="v-chat-attachments"><DropdownMenu.Root><DropdownMenu.Trigger asChild><button type="button" className="v-chat-icon-button" aria-label="Share options"><Plus aria-hidden="true"/><ChevronDown aria-hidden="true"/></button></DropdownMenu.Trigger><DropdownMenu.Portal><DropdownMenu.Content className="v-chat-menu" side="top" align="start" sideOffset={visualNumber('--v-space-1')}><DropdownMenu.Label className="v-chat-menu-label">Share evidence</DropdownMenu.Label><DropdownMenu.Item className="v-chat-menu-item" disabled={!canSend||!props.onShareClip} onSelect={()=>{if(canSend)props.onShareClip?.(thread.id);}}><FileVideo aria-hidden="true"/><span>Share a clip{!canSend?<small>Messaging unavailable for this session</small>:!props.onShareClip&&<small>Clip sharing unavailable</small>}</span></DropdownMenu.Item><DropdownMenu.Item className="v-chat-menu-item" disabled={!snapshot} onSelect={()=>props.onSnapshot?.()}><Camera aria-hidden="true"/><span>Take snapshot{!snapshot&&<small>Unavailable for this session</small>}</span></DropdownMenu.Item><DropdownMenu.Item className="v-chat-menu-item" disabled={!record} onSelect={()=>props.onRecord?.()}><Video aria-hidden="true"/><span>Record clip{!record&&<small>Unavailable for this session</small>}</span></DropdownMenu.Item></DropdownMenu.Content></DropdownMenu.Portal></DropdownMenu.Root>
-      <HintButton label="Take snapshot" explanation={snapshot?'Capture the selected camera frame':'Snapshots are unavailable for this session'} disabled={!snapshot} onClick={props.onSnapshot}><Camera aria-hidden="true"/></HintButton><HintButton label="Record clip" explanation={record?'Record the selected camera clip':'Recording is unavailable for this session'} disabled={!record} onClick={props.onRecord}><Video aria-hidden="true"/></HintButton></div><p id={`${fieldId}-help`}>Enter to send Â· Shift+Enter for a new line</p></div>
+      <HintButton label="Take snapshot" explanation={snapshot?'Capture the selected camera frame':'Snapshots are unavailable for this session'} disabled={!snapshot} onClick={props.onSnapshot}><Camera aria-hidden="true"/></HintButton><HintButton label="Record clip" explanation={record?'Record the selected camera clip':'Recording is unavailable for this session'} disabled={!record} onClick={props.onRecord}><Video aria-hidden="true"/></HintButton></div><p id={`${fieldId}-help`}>{'Enter to send \u00b7 Shift+Enter for a new line'}</p></div>
       {!snapshot&&!record&&<p className="v-chat-capability">Snapshots and recording are unavailable for this session.</p>}
     </form>
   </section>;

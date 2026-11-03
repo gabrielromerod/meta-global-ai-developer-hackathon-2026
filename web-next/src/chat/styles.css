@@ -40,7 +40,6 @@
 .v-chat-citation svg, .v-chat-shared-clip svg, .v-chat-menu-item svg { width: var(--v-icon-sm); height: var(--v-icon-sm); flex-shrink: var(--v-zero); }
 .v-chat-shared-clip { margin-top: var(--v-space-2); width: var(--v-full); text-align: left; }
 .v-chat-clip-id { display: block; font-size: var(--v-text-xs); color: var(--v-muted); }
-.v-chat-scroll-end { height: var(--v-zero); }
 .v-chat-pending { color: var(--v-muted); font-size: var(--v-text-xs); padding-top: var(--v-space-2); }
 .v-chat-composer { padding: var(--v-space-2) var(--v-space-3); border-top: var(--v-line) solid var(--v-border); flex-shrink: var(--v-zero); }
 .v-chat-input-row { display: flex; align-items: flex-end; gap: var(--v-space-1); }
@@ -105,6 +104,10 @@
 @media (max-height: 730px) {
   .v-chat-page .v-chat-empty { padding: var(--v-space-1); gap: var(--v-space-1); }
   .v-chat-page .v-chat-empty-icon { width: var(--v-target); height: var(--v-target); border-radius: var(--v-radius-md); }
+  .v-chat-popup-header { padding: var(--v-space-1); }
+  .v-chat-workspace--popup .v-chat-history { padding: var(--v-space-1); }
+  .v-chat-workspace--popup .v-chat-empty { padding: var(--v-zero); }
+  .v-chat-workspace--popup .v-chat-empty-icon { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .v-chat-history { scroll-behavior: auto; }

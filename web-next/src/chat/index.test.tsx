@@ -128,4 +128,9 @@ describe('Messages',()=>{
     await user.click(screen.getByRole('button',{name:'Share options'}));
     expect(screen.getByRole('menuitem',{name:/Share a clip/})).toHaveAttribute('aria-disabled','true');
   });
+  it('renders keyboard help and pending punctuation as valid Unicode',()=>{
+    render(<MessagesPage {...base} pending/>);
+    expect(screen.getByRole('status').textContent).toBe('Searching the visit ledger\u2026');
+    expect(screen.getByText('Enter to send \u00b7 Shift+Enter for a new line')).toBeVisible();
+  });
 });

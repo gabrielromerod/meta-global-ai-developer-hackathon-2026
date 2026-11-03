@@ -14,3 +14,14 @@ regexes = [
   '''sk-vigil-contract-sentinel''',
   '''sk-test-NEVER-LOG-ME-123''',
 ]
+
+# PNG digest entries are independently recomputed by scripts/scan_ui_evidence.py.
+# Some screenshot names contain "token", which triggers generic-api-key on their
+# SHA-256 digest. Match only that complete JSON entry AND its provenance path.
+[[allowlists]]
+description = "Verified UI screenshot SHA-256 entries"
+targetRules = ["generic-api-key"]
+condition = "AND"
+paths = ['''^qa/.*privacy\.json$''']
+regexTarget = "line"
+regexes = ['''^\s*"[^"\r\n]+\.png":\s*"[a-f0-9]{64}",?\s*$''']

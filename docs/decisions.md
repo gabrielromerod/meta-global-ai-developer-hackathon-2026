@@ -27,3 +27,5 @@
 - 2026-11-03: Use React Router HashRouter for addressable pages/visits and browser history on both FastAPI static mounts; it avoids reinventing navigation or requiring catch-all server routes. Official API: https://reactrouter.com/api/declarative-routers/HashRouter .
 
 - 2026-11-03: CI/container use Node24.15.0 because installed jsdom30 requires at least that Node24 patch. The existing host Node24.14.0 was left unchanged; local tests passed there, and container tests provide supported-runtime evidence.
+
+- 2026-11-03: Gitleaks ignores only complete PNG SHA-256 JSON entries in tracked QA privacy manifests (generic-api-key, path AND line match); token-named screenshots caused 22 false positives. The provenance gate independently recomputes these hashes. Scope probe still detects a credential field in the same manifest and the same digest-shaped token outside it.

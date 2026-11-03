@@ -50,3 +50,5 @@ Initial baseline wall times are approximate; durations come from pytest. Later f
 | Wave 2 controls round 1 scope reproduction | 2026-11-03T13:40:24.831Z | 2026-11-03T13:40:27.340Z | FIXTURE: unchanged production source 8e74611a; zone-only scope falsely shows All configured cameras in all 4 viewport/theme pairs; 16 of 20 new explicit-label checks fail. New unit cases RED: 3 failed, 20 passed. |
 | Wave 2 controls scope repair browser check | 2026-11-03T13:41:48.270Z | 2026-11-03T13:41:51.049Z | FIXTURE: source 612c9ea0; all 20 scope checks pass at 1280x600 and 390x844 in both themes, top/bottom list capture, 0 console/network errors and no desktop document scroll. |
 | Wave 2 controls round 2 full frontend verification | 2026-11-03T13:42:37.7403842Z | 2026-11-03T13:42:45.8629707Z | FIXTURE: 85 tests passed including 23 controls tests; build passed; no tests weakened. Unchanged Python suite not rerun, per assignment. |
+
+- REAL: 2026-11-03 05:55 PT local Docker Gitleaks v8.30.1: 133 commits, 8.92 MB, 8.73 seconds, no leaks after narrowly scoped PNG-digest correction; separate scope probe retained both expected secret findings.

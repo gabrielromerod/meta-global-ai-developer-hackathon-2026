@@ -419,3 +419,37 @@ def test_react_popup_is_opaque_in_ordinary_motion_and_preserves_live_preference_
         expect(field).to_have_value("Keep this draft")
         expect(field).to_be_focused()
         assert field.evaluate("(e,old)=>e===old", element)
+
+
+def test_react_home_tabpanel_has_a_visible_keyboard_focus_indicator(page, server_url):
+    page.goto(server_url + "/next/")
+    wait_ready(page)
+    page.get_by_role("tab", name="Overview", exact=True).focus()
+    page.keyboard.press("Tab")
+    panel = page.locator(".home-view-tabs>.v-tab-panel")
+    expect(panel).to_be_focused()
+    focus = panel.evaluate("""element=>{
+      const style=getComputedStyle(element);
+      return {visible:element.matches(':focus-visible'),style:style.outlineStyle,
+              width:parseFloat(style.outlineWidth),color:style.outlineColor};
+    }""")
+    assert focus["visible"]
+    assert focus["style"] != "none"
+    assert focus["width"] >= 2
+
+
+def test_react_roving_tablist_remains_visible_if_entry_focus_stays_on_its_wrapper(page, server_url):
+    page.goto(server_url + "/next/")
+    wait_ready(page)
+    page.keyboard.press("Tab")
+    tablist = page.get_by_role("tablist", name="House views", exact=True)
+    tablist.evaluate("""element=>{
+      element.addEventListener('rovingFocusGroup.onEntryFocus',event=>event.preventDefault());
+      element.focus();
+    }""")
+    expect(tablist).to_be_focused()
+    focus = tablist.evaluate("""element=>({visible:element.matches(':focus-visible'),
+      shadow:getComputedStyle(element).boxShadow})""")
+    assert focus["visible"]
+    assert "inset" in focus["shadow"]
+    assert "2px" in focus["shadow"]

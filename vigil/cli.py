@@ -571,6 +571,28 @@ def demo_synthetic(
 
 
 @app.command()
+def doctor(config: ConfigOpt = None, env_file: EnvFileOpt = Path(".env")) -> None:
+    """Check handover prerequisites offline; no Meta authentication or camera connections."""
+    from vigil.doctor import check_readiness
+    from vigil.settings import Settings
+
+    overrides = {"config_path": config} if config is not None else {}
+    try:
+        settings = Settings(_env_file=env_file, **overrides)
+        checks = check_readiness(settings, env_file)
+    except ValueError:
+        _fail("MISSING settings: invalid environment value; check .env (secrets are not printed)")
+    for check in checks:
+        typer.echo(f"{'READY' if check.ready else 'MISSING'} {check.name}: {check.detail}")
+    if not all(c.ready for c in checks):
+        typer.echo("MISSING prerequisites above. No network checks or model calls were made.")
+        raise typer.Exit(code=1)
+    typer.echo(
+        "READY configuration only. API authentication and real-data acceptance are not verified."
+    )
+
+
+@app.command()
 def serve(host: str = "127.0.0.1", port: int = 8000) -> None:
     """Serve the web app and API (sandbox or LAN)."""
     import uvicorn

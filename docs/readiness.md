@@ -1,5 +1,13 @@
 # Readiness checklist
 
+**Nov 3 offline handover:** the requested cloud path, media export/player, owner UI,
+Wi-Fi profile, removal handling, GLB import and `vigil doctor` are implemented with
+FIXTURE evidence. See [the handover runbook](runbooks/offline-handover.md) and
+[commit/progress ledger](plans/2026-11-03-offline-handover.md). No live Meta call or camera
+connection was made, and nothing was upgraded to real-data Verified. The doctor currently
+flags owner inputs/configuration, including missing backyard privacy. Metadata scanning
+is unavailable locally because exiftool is absent; gitleaks is also absent.
+
 **Date: 2026-11-02** (Mon Nov 2, after the Nov 2 spec revision). Spec: [section 13](spec/vigil-spec.md#13-final-readiness). Vigil is ready to submit when every row of the [traceability matrix](requirements/functional.md#traceability-matrix-spec-131) has a green test and the demo evidence it names, on real data.
 
 Everything below is evidenced by a command run on this date, or by a file in the repo. **Nothing has been verified on real data yet**: no footage, scan, calibration, voice fixture or billed Meta API call exists.

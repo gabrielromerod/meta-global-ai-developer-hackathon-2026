@@ -23,8 +23,12 @@ are the durable progress record. Existing recorded-input contracts remain suppor
 | 8 | smoke script upload/schema/voice contract tests; never run live | Complete: 52942d0; 1445 default tests passed; no live smoke run |
 | 9 | Wi-Fi source profile, stream/filter, probe telemetry and battery refusal; pinned reolink-aio and fake tests | Complete: 3a87d55; 1452 default tests passed |
 | 10 | removal absence/containment/cross-window state; three regressions | Complete: 83a677c; 1455 default tests passed |
-| 11 | Only after 1–10: GLB locate/coverage, world_frame, export, errors/limit, generated GLB tests | Pending |
-| doctor | CLI offline READY/MISSING key/window/ledger/privacy/dependency/hosts/ffmpeg | Pending |
+| 11 | Only after 1–10: GLB locate/coverage, world_frame, export, errors/limit, generated GLB tests | Complete: 4b03858; 1461 default and 24 browser tests passed |
+| doctor | CLI offline READY/MISSING key/window/ledger/privacy/dependency/hosts/ffmpeg | Complete offline; test_doctor.py; final suite 1471 default + 24 browser tests passed |
+
+Final independent review findings were fixed in `078c740`: omitted upload context,
+temporal watch eligibility, lawful same-session check-in replay, and calibrated twin
+poses/coverage export. New regressions were observed failing before their fixes.
 
 Review focus: omitted privacy must fail before any upload; split/tag transforms must retain
 black polygons; fixture data must never be called a live recording; new watches must not

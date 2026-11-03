@@ -97,9 +97,9 @@ def find_binary(name: str, override: str | None = None) -> str:
     raise FileNotFoundError(f"{name} not found; install ffmpeg or set VIGIL_{name.upper()}")
 
 
-def ffmpeg_bin() -> str:
-    return find_binary("ffmpeg", get_settings().ffmpeg)
+def ffmpeg_bin(settings: Settings | None = None) -> str:
+    return find_binary("ffmpeg", (settings or get_settings()).ffmpeg)
 
 
-def ffprobe_bin() -> str:
-    return find_binary("ffprobe", get_settings().ffprobe)
+def ffprobe_bin(settings: Settings | None = None) -> str:
+    return find_binary("ffprobe", (settings or get_settings()).ffprobe)

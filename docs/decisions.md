@@ -58,3 +58,5 @@
 
 - 2026-11-03: After both fresh final APPROVED reviews, mount the exact React dist at `/` and `/next/` without changing Vite asset URLs, preserving reviewed bytes; remove `web/`, retain only the standalone LAN calibration worksheet in `tools/field-calibration/` because field calibration still needs it.
 - 2026-11-03: Replace obsolete Preact/vendor integrity checks with the committed npm lock and built-asset HTTP checks; npm `inBundle` records inherit the nearest parent tarball SHA-512 integrity (https://docs.npmjs.com/cli/v11/configuring-npm/package-lock-json/).
+
+- 2026-11-03: Publish reviewed QA history through fast-forward batches below GitHub's 2 GiB push limit (https://docs.github.com/en/get-started/using-git/troubleshooting-the-2-gb-push-limit). Stored-size estimates underestimated a 2.07 GiB wire pack; that push failed HTTP 500, and a smaller chunked push failed HTTP 408. Per-command HTTP/1.1 with a 1.5 GiB postBuffer disables chunked transfer (https://git-scm.com/docs/git-config#Documentation/git-config.txt-httppostBuffer); the bounded fixed-length batch was accepted. Assets/history and persistent Git configuration remain unchanged.

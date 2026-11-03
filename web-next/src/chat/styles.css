@@ -102,6 +102,10 @@
   .v-chat-composer-tools p { display: none; }
   .v-chat-popup { right: var(--v-space-2); bottom: var(--v-space-10); }
 }
+@media (max-height: 730px) {
+  .v-chat-page .v-chat-empty { padding: var(--v-space-1); gap: var(--v-space-1); }
+  .v-chat-page .v-chat-empty-icon { width: var(--v-target); height: var(--v-target); border-radius: var(--v-radius-md); }
+}
 @media (prefers-reduced-motion: reduce) {
   .v-chat-history { scroll-behavior: auto; }
   .v-chat-page *, .v-chat-popup * { transition: none; }

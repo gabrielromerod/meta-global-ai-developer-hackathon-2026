@@ -23,3 +23,6 @@ Initial baseline wall times are approximate; durations come from pytest. Later f
 
 | Wave 1 twin: 20 UI tests, build and 11-viewport browser QA | 2026-11-03T03:29:31-08:00 | 2026-11-03T03:30:41-08:00 | PASS; source 4a1120e, 109 screenshots, dark/light, zero console/network/overflow/annotation-overlap errors |
 | Wave 1 twin: full offline Python branch regression | Invocation timestamp not captured; duration 202.31 s | 2026-11-03T03:17:13-08:00 (pytest cache write timestamp) | 1474 passed, 24 E2E deselected, 1 existing Starlette deprecation warning; this is not a main-merge timing record |
+
+| Wave 1 chat full offline suite | 2026-11-03T03:12:25-08:00 | 2026-11-03T03:15:54-08:00 | 1474 passed, 24 deselected, 208.79 s; one existing Starlette warning; ruff check/format passed |
+| Wave 1 chat final npm tests/build | 2026-11-03T03:17:27-08:00 | 2026-11-03T03:17:35-08:00 | 14 tests passed, TypeScript/Vite build passed |

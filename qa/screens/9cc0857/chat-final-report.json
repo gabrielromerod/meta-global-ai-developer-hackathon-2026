@@ -1,0 +1,159 @@
+{
+  "sha": "9cc0857",
+  "runs": [
+    {
+      "name": "mac-air",
+      "width": 1470,
+      "height": 870,
+      "theme": "dark",
+      "errors": []
+    },
+    {
+      "name": "mac-air",
+      "width": 1470,
+      "height": 870,
+      "theme": "light",
+      "errors": []
+    },
+    {
+      "name": "mac-pro-14",
+      "width": 1512,
+      "height": 895,
+      "theme": "dark",
+      "errors": []
+    },
+    {
+      "name": "mac-pro-14",
+      "width": 1512,
+      "height": 895,
+      "theme": "light",
+      "errors": []
+    },
+    {
+      "name": "mac-pro-16",
+      "width": 1728,
+      "height": 1030,
+      "theme": "dark",
+      "errors": []
+    },
+    {
+      "name": "mac-pro-16",
+      "width": 1728,
+      "height": 1030,
+      "theme": "light",
+      "errors": []
+    },
+    {
+      "name": "windows-100",
+      "width": 1920,
+      "height": 960,
+      "theme": "dark",
+      "errors": []
+    },
+    {
+      "name": "windows-100",
+      "width": 1920,
+      "height": 960,
+      "theme": "light",
+      "errors": []
+    },
+    {
+      "name": "windows-125",
+      "width": 1536,
+      "height": 730,
+      "theme": "dark",
+      "errors": []
+    },
+    {
+      "name": "windows-125",
+      "width": 1536,
+      "height": 730,
+      "theme": "light",
+      "errors": []
+    },
+    {
+      "name": "windows-150",
+      "width": 1280,
+      "height": 600,
+      "theme": "dark",
+      "errors": []
+    },
+    {
+      "name": "windows-150",
+      "width": 1280,
+      "height": 600,
+      "theme": "light",
+      "errors": []
+    },
+    {
+      "name": "laptop",
+      "width": 1366,
+      "height": 650,
+      "theme": "dark",
+      "errors": []
+    },
+    {
+      "name": "laptop",
+      "width": 1366,
+      "height": 650,
+      "theme": "light",
+      "errors": []
+    },
+    {
+      "name": "four-three",
+      "width": 1024,
+      "height": 768,
+      "theme": "dark",
+      "errors": []
+    },
+    {
+      "name": "four-three",
+      "width": 1024,
+      "height": 768,
+      "theme": "light",
+      "errors": []
+    },
+    {
+      "name": "tablet",
+      "width": 1180,
+      "height": 820,
+      "theme": "dark",
+      "errors": []
+    },
+    {
+      "name": "tablet",
+      "width": 1180,
+      "height": 820,
+      "theme": "light",
+      "errors": []
+    },
+    {
+      "name": "ultrawide",
+      "width": 2560,
+      "height": 1000,
+      "theme": "dark",
+      "errors": []
+    },
+    {
+      "name": "ultrawide",
+      "width": 2560,
+      "height": 1000,
+      "theme": "light",
+      "errors": []
+    },
+    {
+      "name": "phone",
+      "width": 390,
+      "height": 844,
+      "theme": "dark",
+      "errors": []
+    },
+    {
+      "name": "phone",
+      "width": 390,
+      "height": 844,
+      "theme": "light",
+      "errors": []
+    }
+  ]
+}

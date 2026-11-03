@@ -1,0 +1,182 @@
+{
+  "states": [
+    {
+      "label": "1470x870/dark",
+      "file": "review-chat-r2-dark-local-flow.png",
+      "focus": {
+        "tag": "BUTTON",
+        "outline": "solid"
+      }
+    },
+    {
+      "label": "1470x870/light",
+      "file": "review-chat-r2-light-local-flow.png",
+      "focus": {
+        "tag": "BUTTON",
+        "outline": "solid"
+      }
+    },
+    {
+      "label": "1512x895/dark",
+      "file": "review-chat-r2-dark-local-flow.png",
+      "focus": {
+        "tag": "BUTTON",
+        "outline": "solid"
+      }
+    },
+    {
+      "label": "1512x895/light",
+      "file": "review-chat-r2-light-local-flow.png",
+      "focus": {
+        "tag": "BUTTON",
+        "outline": "solid"
+      }
+    },
+    {
+      "label": "1728x1030/dark",
+      "file": "review-chat-r2-dark-local-flow.png",
+      "focus": {
+        "tag": "BUTTON",
+        "outline": "solid"
+      }
+    },
+    {
+      "label": "1728x1030/light",
+      "file": "review-chat-r2-light-local-flow.png",
+      "focus": {
+        "tag": "BUTTON",
+        "outline": "solid"
+      }
+    },
+    {
+      "label": "1920x960/dark",
+      "file": "review-chat-r2-dark-local-flow.png",
+      "focus": {
+        "tag": "BUTTON",
+        "outline": "solid"
+      }
+    },
+    {
+      "label": "1920x960/light",
+      "file": "review-chat-r2-light-local-flow.png",
+      "focus": {
+        "tag": "BUTTON",
+        "outline": "solid"
+      }
+    },
+    {
+      "label": "1536x730/dark",
+      "file": "review-chat-r2-dark-local-flow.png",
+      "focus": {
+        "tag": "BUTTON",
+        "outline": "solid"
+      }
+    },
+    {
+      "label": "1536x730/light",
+      "file": "review-chat-r2-light-local-flow.png",
+      "focus": {
+        "tag": "BUTTON",
+        "outline": "solid"
+      }
+    },
+    {
+      "label": "1280x600/dark",
+      "file": "review-chat-r2-dark-local-flow.png",
+      "focus": {
+        "tag": "BUTTON",
+        "outline": "solid"
+      }
+    },
+    {
+      "label": "1280x600/light",
+      "file": "review-chat-r2-light-local-flow.png",
+      "focus": {
+        "tag": "BUTTON",
+        "outline": "solid"
+      }
+    },
+    {
+      "label": "1366x650/dark",
+      "file": "review-chat-r2-dark-local-flow.png",
+      "focus": {
+        "tag": "BUTTON",
+        "outline": "solid"
+      }
+    },
+    {
+      "label": "1366x650/light",
+      "file": "review-chat-r2-light-local-flow.png",
+      "focus": {
+        "tag": "BUTTON",
+        "outline": "solid"
+      }
+    },
+    {
+      "label": "1024x768/dark",
+      "file": "review-chat-r2-dark-local-flow.png",
+      "focus": {
+        "tag": "BUTTON",
+        "outline": "solid"
+      }
+    },
+    {
+      "label": "1024x768/light",
+      "file": "review-chat-r2-light-local-flow.png",
+      "focus": {
+        "tag": "BUTTON",
+        "outline": "solid"
+      }
+    },
+    {
+      "label": "1180x820/dark",
+      "file": "review-chat-r2-dark-local-flow.png",
+      "focus": {
+        "tag": "BUTTON",
+        "outline": "solid"
+      }
+    },
+    {
+      "label": "1180x820/light",
+      "file": "review-chat-r2-light-local-flow.png",
+      "focus": {
+        "tag": "BUTTON",
+        "outline": "solid"
+      }
+    },
+    {
+      "label": "2560x1000/dark",
+      "file": "review-chat-r2-dark-local-flow.png",
+      "focus": {
+        "tag": "BUTTON",
+        "outline": "solid"
+      }
+    },
+    {
+      "label": "2560x1000/light",
+      "file": "review-chat-r2-light-local-flow.png",
+      "focus": {
+        "tag": "BUTTON",
+        "outline": "solid"
+      }
+    },
+    {
+      "label": "390x844/dark",
+      "file": "review-chat-r2-dark-local-flow.png",
+      "focus": {
+        "tag": "BUTTON",
+        "outline": "solid"
+      }
+    },
+    {
+      "label": "390x844/light",
+      "file": "review-chat-r2-light-local-flow.png",
+      "focus": {
+        "tag": "BUTTON",
+        "outline": "solid"
+      }
+    }
+  ],
+  "errors": [],
+  "failures": []
+}

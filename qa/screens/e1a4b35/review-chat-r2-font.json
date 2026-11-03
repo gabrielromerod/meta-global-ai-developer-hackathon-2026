@@ -1,0 +1,1502 @@
+{
+  "states": [
+    {
+      "label": "1470x870/dark",
+      "id": "ask-home",
+      "file": "review-chat-r2-dark-font-reflow-ask-home.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 1087,
+          "y": 460.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 460.796875,
+          "right": 1445,
+          "bottom": 638,
+          "left": 1087
+        },
+        "status": {
+          "x": 1103,
+          "y": 587.796875,
+          "width": 311,
+          "height": 34,
+          "top": 587.796875,
+          "right": 1414,
+          "bottom": 621.796875,
+          "left": 1103
+        },
+        "top": 2133,
+        "total": 2310,
+        "height": 177,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "1470x870/dark",
+      "id": "household",
+      "file": "review-chat-r2-dark-font-reflow-household.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 1087,
+          "y": 460.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 460.796875,
+          "right": 1445,
+          "bottom": 638,
+          "left": 1087
+        },
+        "status": {
+          "x": 1103,
+          "y": 587.796875,
+          "width": 311,
+          "height": 34,
+          "top": 587.796875,
+          "right": 1414,
+          "bottom": 621.796875,
+          "left": 1103
+        },
+        "top": 1629,
+        "total": 1806,
+        "height": 177,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "1470x870/light",
+      "id": "ask-home",
+      "file": "review-chat-r2-light-font-reflow-ask-home.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 1087,
+          "y": 460.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 460.796875,
+          "right": 1445,
+          "bottom": 638,
+          "left": 1087
+        },
+        "status": {
+          "x": 1103,
+          "y": 587.796875,
+          "width": 311,
+          "height": 34,
+          "top": 587.796875,
+          "right": 1414,
+          "bottom": 621.796875,
+          "left": 1103
+        },
+        "top": 2133,
+        "total": 2310,
+        "height": 177,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "1470x870/light",
+      "id": "household",
+      "file": "review-chat-r2-light-font-reflow-household.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 1087,
+          "y": 460.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 460.796875,
+          "right": 1445,
+          "bottom": 638,
+          "left": 1087
+        },
+        "status": {
+          "x": 1103,
+          "y": 587.796875,
+          "width": 311,
+          "height": 34,
+          "top": 587.796875,
+          "right": 1414,
+          "bottom": 621.796875,
+          "left": 1103
+        },
+        "top": 1629,
+        "total": 1806,
+        "height": 177,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "1512x895/dark",
+      "id": "ask-home",
+      "file": "review-chat-r2-dark-font-reflow-ask-home.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 1129,
+          "y": 485.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 485.796875,
+          "right": 1487,
+          "bottom": 663,
+          "left": 1129
+        },
+        "status": {
+          "x": 1145,
+          "y": 612.796875,
+          "width": 311,
+          "height": 34,
+          "top": 612.796875,
+          "right": 1456,
+          "bottom": 646.796875,
+          "left": 1145
+        },
+        "top": 2133,
+        "total": 2310,
+        "height": 177,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "1512x895/dark",
+      "id": "household",
+      "file": "review-chat-r2-dark-font-reflow-household.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 1129,
+          "y": 485.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 485.796875,
+          "right": 1487,
+          "bottom": 663,
+          "left": 1129
+        },
+        "status": {
+          "x": 1145,
+          "y": 612.796875,
+          "width": 311,
+          "height": 34,
+          "top": 612.796875,
+          "right": 1456,
+          "bottom": 646.796875,
+          "left": 1145
+        },
+        "top": 1629,
+        "total": 1806,
+        "height": 177,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "1512x895/light",
+      "id": "ask-home",
+      "file": "review-chat-r2-light-font-reflow-ask-home.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 1129,
+          "y": 485.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 485.796875,
+          "right": 1487,
+          "bottom": 663,
+          "left": 1129
+        },
+        "status": {
+          "x": 1145,
+          "y": 612.796875,
+          "width": 311,
+          "height": 34,
+          "top": 612.796875,
+          "right": 1456,
+          "bottom": 646.796875,
+          "left": 1145
+        },
+        "top": 2133,
+        "total": 2310,
+        "height": 177,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "1512x895/light",
+      "id": "household",
+      "file": "review-chat-r2-light-font-reflow-household.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 1129,
+          "y": 485.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 485.796875,
+          "right": 1487,
+          "bottom": 663,
+          "left": 1129
+        },
+        "status": {
+          "x": 1145,
+          "y": 612.796875,
+          "width": 311,
+          "height": 34,
+          "top": 612.796875,
+          "right": 1456,
+          "bottom": 646.796875,
+          "left": 1145
+        },
+        "top": 1629,
+        "total": 1806,
+        "height": 177,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "1728x1030/dark",
+      "id": "ask-home",
+      "file": "review-chat-r2-dark-font-reflow-ask-home.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 1345,
+          "y": 620.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 620.796875,
+          "right": 1703,
+          "bottom": 798,
+          "left": 1345
+        },
+        "status": {
+          "x": 1361,
+          "y": 747.796875,
+          "width": 311,
+          "height": 34,
+          "top": 747.796875,
+          "right": 1672,
+          "bottom": 781.796875,
+          "left": 1361
+        },
+        "top": 2133,
+        "total": 2310,
+        "height": 177,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "1728x1030/dark",
+      "id": "household",
+      "file": "review-chat-r2-dark-font-reflow-household.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 1345,
+          "y": 620.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 620.796875,
+          "right": 1703,
+          "bottom": 798,
+          "left": 1345
+        },
+        "status": {
+          "x": 1361,
+          "y": 747.796875,
+          "width": 311,
+          "height": 34,
+          "top": 747.796875,
+          "right": 1672,
+          "bottom": 781.796875,
+          "left": 1361
+        },
+        "top": 1629,
+        "total": 1806,
+        "height": 177,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "1728x1030/light",
+      "id": "ask-home",
+      "file": "review-chat-r2-light-font-reflow-ask-home.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 1345,
+          "y": 620.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 620.796875,
+          "right": 1703,
+          "bottom": 798,
+          "left": 1345
+        },
+        "status": {
+          "x": 1361,
+          "y": 747.796875,
+          "width": 311,
+          "height": 34,
+          "top": 747.796875,
+          "right": 1672,
+          "bottom": 781.796875,
+          "left": 1361
+        },
+        "top": 2133,
+        "total": 2310,
+        "height": 177,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "1728x1030/light",
+      "id": "household",
+      "file": "review-chat-r2-light-font-reflow-household.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 1345,
+          "y": 620.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 620.796875,
+          "right": 1703,
+          "bottom": 798,
+          "left": 1345
+        },
+        "status": {
+          "x": 1361,
+          "y": 747.796875,
+          "width": 311,
+          "height": 34,
+          "top": 747.796875,
+          "right": 1672,
+          "bottom": 781.796875,
+          "left": 1361
+        },
+        "top": 1629,
+        "total": 1806,
+        "height": 177,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "1920x960/dark",
+      "id": "ask-home",
+      "file": "review-chat-r2-dark-font-reflow-ask-home.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 1537,
+          "y": 550.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 550.796875,
+          "right": 1895,
+          "bottom": 728,
+          "left": 1537
+        },
+        "status": {
+          "x": 1553,
+          "y": 677.796875,
+          "width": 311,
+          "height": 34,
+          "top": 677.796875,
+          "right": 1864,
+          "bottom": 711.796875,
+          "left": 1553
+        },
+        "top": 2133,
+        "total": 2310,
+        "height": 177,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "1920x960/dark",
+      "id": "household",
+      "file": "review-chat-r2-dark-font-reflow-household.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 1537,
+          "y": 550.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 550.796875,
+          "right": 1895,
+          "bottom": 728,
+          "left": 1537
+        },
+        "status": {
+          "x": 1553,
+          "y": 677.796875,
+          "width": 311,
+          "height": 34,
+          "top": 677.796875,
+          "right": 1864,
+          "bottom": 711.796875,
+          "left": 1553
+        },
+        "top": 1629,
+        "total": 1806,
+        "height": 177,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "1920x960/light",
+      "id": "ask-home",
+      "file": "review-chat-r2-light-font-reflow-ask-home.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 1537,
+          "y": 550.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 550.796875,
+          "right": 1895,
+          "bottom": 728,
+          "left": 1537
+        },
+        "status": {
+          "x": 1553,
+          "y": 677.796875,
+          "width": 311,
+          "height": 34,
+          "top": 677.796875,
+          "right": 1864,
+          "bottom": 711.796875,
+          "left": 1553
+        },
+        "top": 2133,
+        "total": 2310,
+        "height": 177,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "1920x960/light",
+      "id": "household",
+      "file": "review-chat-r2-light-font-reflow-household.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 1537,
+          "y": 550.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 550.796875,
+          "right": 1895,
+          "bottom": 728,
+          "left": 1537
+        },
+        "status": {
+          "x": 1553,
+          "y": 677.796875,
+          "width": 311,
+          "height": 34,
+          "top": 677.796875,
+          "right": 1864,
+          "bottom": 711.796875,
+          "left": 1553
+        },
+        "top": 1629,
+        "total": 1806,
+        "height": 177,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "1536x730/dark",
+      "id": "ask-home",
+      "file": "review-chat-r2-dark-font-reflow-ask-home.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 1153,
+          "y": 304.796875,
+          "width": 358,
+          "height": 193.203125,
+          "top": 304.796875,
+          "right": 1511,
+          "bottom": 498,
+          "left": 1153
+        },
+        "status": {
+          "x": 1161,
+          "y": 455.796875,
+          "width": 327,
+          "height": 34,
+          "top": 455.796875,
+          "right": 1488,
+          "bottom": 489.796875,
+          "left": 1161
+        },
+        "top": 2101,
+        "total": 2294,
+        "height": 193,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "1536x730/dark",
+      "id": "household",
+      "file": "review-chat-r2-dark-font-reflow-household.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 1153,
+          "y": 304.796875,
+          "width": 358,
+          "height": 193.203125,
+          "top": 304.796875,
+          "right": 1511,
+          "bottom": 498,
+          "left": 1153
+        },
+        "status": {
+          "x": 1161,
+          "y": 455.796875,
+          "width": 327,
+          "height": 34,
+          "top": 455.796875,
+          "right": 1488,
+          "bottom": 489.796875,
+          "left": 1161
+        },
+        "top": 1597,
+        "total": 1790,
+        "height": 193,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "1536x730/light",
+      "id": "ask-home",
+      "file": "review-chat-r2-light-font-reflow-ask-home.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 1153,
+          "y": 304.796875,
+          "width": 358,
+          "height": 193.203125,
+          "top": 304.796875,
+          "right": 1511,
+          "bottom": 498,
+          "left": 1153
+        },
+        "status": {
+          "x": 1161,
+          "y": 455.796875,
+          "width": 327,
+          "height": 34,
+          "top": 455.796875,
+          "right": 1488,
+          "bottom": 489.796875,
+          "left": 1161
+        },
+        "top": 2101,
+        "total": 2294,
+        "height": 193,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "1536x730/light",
+      "id": "household",
+      "file": "review-chat-r2-light-font-reflow-household.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 1153,
+          "y": 304.796875,
+          "width": 358,
+          "height": 193.203125,
+          "top": 304.796875,
+          "right": 1511,
+          "bottom": 498,
+          "left": 1153
+        },
+        "status": {
+          "x": 1161,
+          "y": 455.796875,
+          "width": 327,
+          "height": 34,
+          "top": 455.796875,
+          "right": 1488,
+          "bottom": 489.796875,
+          "left": 1161
+        },
+        "top": 1597,
+        "total": 1790,
+        "height": 193,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "1280x600/dark",
+      "id": "ask-home",
+      "file": "review-chat-r2-dark-font-reflow-ask-home.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 897,
+          "y": 230.796875,
+          "width": 358,
+          "height": 137.203125,
+          "top": 230.796875,
+          "right": 1255,
+          "bottom": 368,
+          "left": 897
+        },
+        "status": {
+          "x": 905,
+          "y": 325.796875,
+          "width": 327,
+          "height": 34,
+          "top": 325.796875,
+          "right": 1232,
+          "bottom": 359.796875,
+          "left": 905
+        },
+        "top": 2157,
+        "total": 2294,
+        "height": 137,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "1280x600/dark",
+      "id": "household",
+      "file": "review-chat-r2-dark-font-reflow-household.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 897,
+          "y": 230.796875,
+          "width": 358,
+          "height": 137.203125,
+          "top": 230.796875,
+          "right": 1255,
+          "bottom": 368,
+          "left": 897
+        },
+        "status": {
+          "x": 905,
+          "y": 325.796875,
+          "width": 327,
+          "height": 34,
+          "top": 325.796875,
+          "right": 1232,
+          "bottom": 359.796875,
+          "left": 905
+        },
+        "top": 1653,
+        "total": 1790,
+        "height": 137,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "1280x600/light",
+      "id": "ask-home",
+      "file": "review-chat-r2-light-font-reflow-ask-home.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 897,
+          "y": 230.796875,
+          "width": 358,
+          "height": 137.203125,
+          "top": 230.796875,
+          "right": 1255,
+          "bottom": 368,
+          "left": 897
+        },
+        "status": {
+          "x": 905,
+          "y": 325.796875,
+          "width": 327,
+          "height": 34,
+          "top": 325.796875,
+          "right": 1232,
+          "bottom": 359.796875,
+          "left": 905
+        },
+        "top": 2157,
+        "total": 2294,
+        "height": 137,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "1280x600/light",
+      "id": "household",
+      "file": "review-chat-r2-light-font-reflow-household.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 897,
+          "y": 230.796875,
+          "width": 358,
+          "height": 137.203125,
+          "top": 230.796875,
+          "right": 1255,
+          "bottom": 368,
+          "left": 897
+        },
+        "status": {
+          "x": 905,
+          "y": 325.796875,
+          "width": 327,
+          "height": 34,
+          "top": 325.796875,
+          "right": 1232,
+          "bottom": 359.796875,
+          "left": 905
+        },
+        "top": 1653,
+        "total": 1790,
+        "height": 137,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "1366x650/dark",
+      "id": "ask-home",
+      "file": "review-chat-r2-dark-font-reflow-ask-home.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 983,
+          "y": 230.796875,
+          "width": 358,
+          "height": 187.203125,
+          "top": 230.796875,
+          "right": 1341,
+          "bottom": 418,
+          "left": 983
+        },
+        "status": {
+          "x": 991,
+          "y": 375.796875,
+          "width": 327,
+          "height": 34,
+          "top": 375.796875,
+          "right": 1318,
+          "bottom": 409.796875,
+          "left": 991
+        },
+        "top": 2107,
+        "total": 2294,
+        "height": 187,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "1366x650/dark",
+      "id": "household",
+      "file": "review-chat-r2-dark-font-reflow-household.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 983,
+          "y": 230.796875,
+          "width": 358,
+          "height": 187.203125,
+          "top": 230.796875,
+          "right": 1341,
+          "bottom": 418,
+          "left": 983
+        },
+        "status": {
+          "x": 991,
+          "y": 375.796875,
+          "width": 327,
+          "height": 34,
+          "top": 375.796875,
+          "right": 1318,
+          "bottom": 409.796875,
+          "left": 991
+        },
+        "top": 1603,
+        "total": 1790,
+        "height": 187,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "1366x650/light",
+      "id": "ask-home",
+      "file": "review-chat-r2-light-font-reflow-ask-home.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 983,
+          "y": 230.796875,
+          "width": 358,
+          "height": 187.203125,
+          "top": 230.796875,
+          "right": 1341,
+          "bottom": 418,
+          "left": 983
+        },
+        "status": {
+          "x": 991,
+          "y": 375.796875,
+          "width": 327,
+          "height": 34,
+          "top": 375.796875,
+          "right": 1318,
+          "bottom": 409.796875,
+          "left": 991
+        },
+        "top": 2107,
+        "total": 2294,
+        "height": 187,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "1366x650/light",
+      "id": "household",
+      "file": "review-chat-r2-light-font-reflow-household.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 983,
+          "y": 230.796875,
+          "width": 358,
+          "height": 187.203125,
+          "top": 230.796875,
+          "right": 1341,
+          "bottom": 418,
+          "left": 983
+        },
+        "status": {
+          "x": 991,
+          "y": 375.796875,
+          "width": 327,
+          "height": 34,
+          "top": 375.796875,
+          "right": 1318,
+          "bottom": 409.796875,
+          "left": 991
+        },
+        "top": 1603,
+        "total": 1790,
+        "height": 187,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "1024x768/dark",
+      "id": "ask-home",
+      "file": "review-chat-r2-dark-font-reflow-ask-home.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 641,
+          "y": 358.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 358.796875,
+          "right": 999,
+          "bottom": 536,
+          "left": 641
+        },
+        "status": {
+          "x": 657,
+          "y": 485.796875,
+          "width": 311,
+          "height": 34,
+          "top": 485.796875,
+          "right": 968,
+          "bottom": 519.796875,
+          "left": 657
+        },
+        "top": 2133,
+        "total": 2310,
+        "height": 177,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "1024x768/dark",
+      "id": "household",
+      "file": "review-chat-r2-dark-font-reflow-household.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 641,
+          "y": 358.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 358.796875,
+          "right": 999,
+          "bottom": 536,
+          "left": 641
+        },
+        "status": {
+          "x": 657,
+          "y": 485.796875,
+          "width": 311,
+          "height": 34,
+          "top": 485.796875,
+          "right": 968,
+          "bottom": 519.796875,
+          "left": 657
+        },
+        "top": 1629,
+        "total": 1806,
+        "height": 177,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "1024x768/light",
+      "id": "ask-home",
+      "file": "review-chat-r2-light-font-reflow-ask-home.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 641,
+          "y": 358.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 358.796875,
+          "right": 999,
+          "bottom": 536,
+          "left": 641
+        },
+        "status": {
+          "x": 657,
+          "y": 485.796875,
+          "width": 311,
+          "height": 34,
+          "top": 485.796875,
+          "right": 968,
+          "bottom": 519.796875,
+          "left": 657
+        },
+        "top": 2133,
+        "total": 2310,
+        "height": 177,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "1024x768/light",
+      "id": "household",
+      "file": "review-chat-r2-light-font-reflow-household.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 641,
+          "y": 358.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 358.796875,
+          "right": 999,
+          "bottom": 536,
+          "left": 641
+        },
+        "status": {
+          "x": 657,
+          "y": 485.796875,
+          "width": 311,
+          "height": 34,
+          "top": 485.796875,
+          "right": 968,
+          "bottom": 519.796875,
+          "left": 657
+        },
+        "top": 1629,
+        "total": 1806,
+        "height": 177,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "1180x820/dark",
+      "id": "ask-home",
+      "file": "review-chat-r2-dark-font-reflow-ask-home.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 797,
+          "y": 410.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 410.796875,
+          "right": 1155,
+          "bottom": 588,
+          "left": 797
+        },
+        "status": {
+          "x": 813,
+          "y": 537.796875,
+          "width": 311,
+          "height": 34,
+          "top": 537.796875,
+          "right": 1124,
+          "bottom": 571.796875,
+          "left": 813
+        },
+        "top": 2133,
+        "total": 2310,
+        "height": 177,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "1180x820/dark",
+      "id": "household",
+      "file": "review-chat-r2-dark-font-reflow-household.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 797,
+          "y": 410.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 410.796875,
+          "right": 1155,
+          "bottom": 588,
+          "left": 797
+        },
+        "status": {
+          "x": 813,
+          "y": 537.796875,
+          "width": 311,
+          "height": 34,
+          "top": 537.796875,
+          "right": 1124,
+          "bottom": 571.796875,
+          "left": 813
+        },
+        "top": 1629,
+        "total": 1806,
+        "height": 177,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "1180x820/light",
+      "id": "ask-home",
+      "file": "review-chat-r2-light-font-reflow-ask-home.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 797,
+          "y": 410.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 410.796875,
+          "right": 1155,
+          "bottom": 588,
+          "left": 797
+        },
+        "status": {
+          "x": 813,
+          "y": 537.796875,
+          "width": 311,
+          "height": 34,
+          "top": 537.796875,
+          "right": 1124,
+          "bottom": 571.796875,
+          "left": 813
+        },
+        "top": 2133,
+        "total": 2310,
+        "height": 177,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "1180x820/light",
+      "id": "household",
+      "file": "review-chat-r2-light-font-reflow-household.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 797,
+          "y": 410.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 410.796875,
+          "right": 1155,
+          "bottom": 588,
+          "left": 797
+        },
+        "status": {
+          "x": 813,
+          "y": 537.796875,
+          "width": 311,
+          "height": 34,
+          "top": 537.796875,
+          "right": 1124,
+          "bottom": 571.796875,
+          "left": 813
+        },
+        "top": 1629,
+        "total": 1806,
+        "height": 177,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "2560x1000/dark",
+      "id": "ask-home",
+      "file": "review-chat-r2-dark-font-reflow-ask-home.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 2177,
+          "y": 590.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 590.796875,
+          "right": 2535,
+          "bottom": 768,
+          "left": 2177
+        },
+        "status": {
+          "x": 2193,
+          "y": 717.796875,
+          "width": 311,
+          "height": 34,
+          "top": 717.796875,
+          "right": 2504,
+          "bottom": 751.796875,
+          "left": 2193
+        },
+        "top": 2133,
+        "total": 2310,
+        "height": 177,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "2560x1000/dark",
+      "id": "household",
+      "file": "review-chat-r2-dark-font-reflow-household.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 2177,
+          "y": 590.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 590.796875,
+          "right": 2535,
+          "bottom": 768,
+          "left": 2177
+        },
+        "status": {
+          "x": 2193,
+          "y": 717.796875,
+          "width": 311,
+          "height": 34,
+          "top": 717.796875,
+          "right": 2504,
+          "bottom": 751.796875,
+          "left": 2193
+        },
+        "top": 1629,
+        "total": 1806,
+        "height": 177,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "2560x1000/light",
+      "id": "ask-home",
+      "file": "review-chat-r2-light-font-reflow-ask-home.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 2177,
+          "y": 590.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 590.796875,
+          "right": 2535,
+          "bottom": 768,
+          "left": 2177
+        },
+        "status": {
+          "x": 2193,
+          "y": 717.796875,
+          "width": 311,
+          "height": 34,
+          "top": 717.796875,
+          "right": 2504,
+          "bottom": 751.796875,
+          "left": 2193
+        },
+        "top": 2133,
+        "total": 2310,
+        "height": 177,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "2560x1000/light",
+      "id": "household",
+      "file": "review-chat-r2-light-font-reflow-household.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 2177,
+          "y": 590.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 590.796875,
+          "right": 2535,
+          "bottom": 768,
+          "left": 2177
+        },
+        "status": {
+          "x": 2193,
+          "y": 717.796875,
+          "width": 311,
+          "height": 34,
+          "top": 717.796875,
+          "right": 2504,
+          "bottom": 751.796875,
+          "left": 2193
+        },
+        "top": 1629,
+        "total": 1806,
+        "height": 177,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "390x844/dark",
+      "id": "ask-home",
+      "file": "review-chat-r2-dark-font-reflow-ask-home.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 17,
+          "y": 434.796875,
+          "width": 356,
+          "height": 177.203125,
+          "top": 434.796875,
+          "right": 373,
+          "bottom": 612,
+          "left": 17
+        },
+        "status": {
+          "x": 33,
+          "y": 561.796875,
+          "width": 309,
+          "height": 34,
+          "top": 561.796875,
+          "right": 342,
+          "bottom": 595.796875,
+          "left": 33
+        },
+        "top": 2133,
+        "total": 2310,
+        "height": 177,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "390x844/dark",
+      "id": "household",
+      "file": "review-chat-r2-dark-font-reflow-household.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 17,
+          "y": 434.796875,
+          "width": 356,
+          "height": 177.203125,
+          "top": 434.796875,
+          "right": 373,
+          "bottom": 612,
+          "left": 17
+        },
+        "status": {
+          "x": 33,
+          "y": 561.796875,
+          "width": 309,
+          "height": 34,
+          "top": 561.796875,
+          "right": 342,
+          "bottom": 595.796875,
+          "left": 33
+        },
+        "top": 1629,
+        "total": 1806,
+        "height": 177,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "390x844/light",
+      "id": "ask-home",
+      "file": "review-chat-r2-light-font-reflow-ask-home.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 17,
+          "y": 434.796875,
+          "width": 356,
+          "height": 177.203125,
+          "top": 434.796875,
+          "right": 373,
+          "bottom": 612,
+          "left": 17
+        },
+        "status": {
+          "x": 33,
+          "y": 561.796875,
+          "width": 309,
+          "height": 34,
+          "top": 561.796875,
+          "right": 342,
+          "bottom": 595.796875,
+          "left": 33
+        },
+        "top": 2133,
+        "total": 2310,
+        "height": 177,
+        "font": "ReviewerLateInter, monospace"
+      }
+    },
+    {
+      "label": "390x844/light",
+      "id": "household",
+      "file": "review-chat-r2-light-font-reflow-household.png",
+      "before": "loading",
+      "delayedFontRequests": 4,
+      "after": "loaded",
+      "metrics": {
+        "history": {
+          "x": 17,
+          "y": 434.796875,
+          "width": 356,
+          "height": 177.203125,
+          "top": 434.796875,
+          "right": 373,
+          "bottom": 612,
+          "left": 17
+        },
+        "status": {
+          "x": 33,
+          "y": 561.796875,
+          "width": 309,
+          "height": 34,
+          "top": 561.796875,
+          "right": 342,
+          "bottom": 595.796875,
+          "left": 33
+        },
+        "top": 1629,
+        "total": 1806,
+        "height": 177,
+        "font": "ReviewerLateInter, monospace"
+      }
+    }
+  ],
+  "errors": [],
+  "failures": []
+}

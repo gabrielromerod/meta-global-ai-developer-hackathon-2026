@@ -1,0 +1,405 @@
+{
+  "results": [
+    {
+      "check": "edge owner without callback token disabled",
+      "pass": true
+    },
+    {
+      "check": "edge owner without callback checkin disabled",
+      "pass": true
+    },
+    {
+      "check": "edge owner without callback creation disabled",
+      "pass": true
+    },
+    {
+      "check": "token clears",
+      "pass": true
+    },
+    {
+      "check": "no token in URL/localStorage/sessionStorage",
+      "pass": true
+    },
+    {
+      "check": "cancellation receives exact mutable window ID",
+      "pass": true
+    },
+    {
+      "check": "recorded B-prime cannot cancel",
+      "pass": true
+    },
+    {
+      "check": "zone-only window exposes actual supplied zone scope",
+      "pass": true
+    },
+    {
+      "check": "server supplied countdown visible",
+      "pass": true
+    },
+    {
+      "check": "countdown expires without mutating props",
+      "pass": true
+    },
+    {
+      "check": "empty native date validation",
+      "pass": true
+    },
+    {
+      "check": "12h boundary sends browser timezone as correct UTC instant",
+      "pass": true
+    },
+    {
+      "check": "matching recorded row does not acknowledge create",
+      "pass": true
+    },
+    {
+      "check": "unrelated server prop does not acknowledge create",
+      "pass": true
+    },
+    {
+      "check": "matching new server owned prop closes create",
+      "pass": true
+    },
+    {
+      "check": "pending disables checkin",
+      "pass": true
+    },
+    {
+      "check": "pending disables create",
+      "pass": true
+    },
+    {
+      "check": "exact true only review approval",
+      "pass": true
+    },
+    {
+      "check": "compile receives trimmed draft text",
+      "pass": true
+    },
+    {
+      "check": "phone sample and recording callbacks remain separate",
+      "pass": true
+    },
+    {
+      "check": "confirmation passes supplied draft ID",
+      "pass": true
+    },
+    {
+      "check": "confirmation disabled after owner revoked",
+      "pass": true
+    },
+    {
+      "check": "revoked confirmation has exact guard",
+      "pass": true
+    },
+    {
+      "check": "unmeasured metrics suppressed",
+      "pass": true
+    },
+    {
+      "check": "measured branch uses exact provided metric",
+      "pass": true
+    },
+    {
+      "check": "edge owner without callback token disabled",
+      "pass": true
+    },
+    {
+      "check": "edge owner without callback checkin disabled",
+      "pass": true
+    },
+    {
+      "check": "edge owner without callback creation disabled",
+      "pass": true
+    },
+    {
+      "check": "token clears",
+      "pass": true
+    },
+    {
+      "check": "no token in URL/localStorage/sessionStorage",
+      "pass": true
+    },
+    {
+      "check": "cancellation receives exact mutable window ID",
+      "pass": true
+    },
+    {
+      "check": "recorded B-prime cannot cancel",
+      "pass": true
+    },
+    {
+      "check": "zone-only window exposes actual supplied zone scope",
+      "pass": true
+    },
+    {
+      "check": "server supplied countdown visible",
+      "pass": true
+    },
+    {
+      "check": "countdown expires without mutating props",
+      "pass": true
+    },
+    {
+      "check": "empty native date validation",
+      "pass": true
+    },
+    {
+      "check": "12h boundary sends browser timezone as correct UTC instant",
+      "pass": true
+    },
+    {
+      "check": "matching recorded row does not acknowledge create",
+      "pass": true
+    },
+    {
+      "check": "unrelated server prop does not acknowledge create",
+      "pass": true
+    },
+    {
+      "check": "matching new server owned prop closes create",
+      "pass": true
+    },
+    {
+      "check": "pending disables checkin",
+      "pass": true
+    },
+    {
+      "check": "pending disables create",
+      "pass": true
+    },
+    {
+      "check": "exact true only review approval",
+      "pass": true
+    },
+    {
+      "check": "compile receives trimmed draft text",
+      "pass": true
+    },
+    {
+      "check": "phone sample and recording callbacks remain separate",
+      "pass": true
+    },
+    {
+      "check": "confirmation passes supplied draft ID",
+      "pass": true
+    },
+    {
+      "check": "confirmation disabled after owner revoked",
+      "pass": true
+    },
+    {
+      "check": "revoked confirmation has exact guard",
+      "pass": true
+    },
+    {
+      "check": "unmeasured metrics suppressed",
+      "pass": true
+    },
+    {
+      "check": "measured branch uses exact provided metric",
+      "pass": true
+    },
+    {
+      "check": "edge owner without callback token disabled",
+      "pass": true
+    },
+    {
+      "check": "edge owner without callback checkin disabled",
+      "pass": true
+    },
+    {
+      "check": "edge owner without callback creation disabled",
+      "pass": true
+    },
+    {
+      "check": "token clears",
+      "pass": true
+    },
+    {
+      "check": "no token in URL/localStorage/sessionStorage",
+      "pass": true
+    },
+    {
+      "check": "cancellation receives exact mutable window ID",
+      "pass": true
+    },
+    {
+      "check": "recorded B-prime cannot cancel",
+      "pass": true
+    },
+    {
+      "check": "zone-only window exposes actual supplied zone scope",
+      "pass": true
+    },
+    {
+      "check": "server supplied countdown visible",
+      "pass": true
+    },
+    {
+      "check": "countdown expires without mutating props",
+      "pass": true
+    },
+    {
+      "check": "empty native date validation",
+      "pass": true
+    },
+    {
+      "check": "12h boundary sends browser timezone as correct UTC instant",
+      "pass": true
+    },
+    {
+      "check": "matching recorded row does not acknowledge create",
+      "pass": true
+    },
+    {
+      "check": "unrelated server prop does not acknowledge create",
+      "pass": true
+    },
+    {
+      "check": "matching new server owned prop closes create",
+      "pass": true
+    },
+    {
+      "check": "pending disables checkin",
+      "pass": true
+    },
+    {
+      "check": "pending disables create",
+      "pass": true
+    },
+    {
+      "check": "exact true only review approval",
+      "pass": true
+    },
+    {
+      "check": "compile receives trimmed draft text",
+      "pass": true
+    },
+    {
+      "check": "phone sample and recording callbacks remain separate",
+      "pass": true
+    },
+    {
+      "check": "confirmation passes supplied draft ID",
+      "pass": true
+    },
+    {
+      "check": "confirmation disabled after owner revoked",
+      "pass": true
+    },
+    {
+      "check": "revoked confirmation has exact guard",
+      "pass": true
+    },
+    {
+      "check": "unmeasured metrics suppressed",
+      "pass": true
+    },
+    {
+      "check": "measured branch uses exact provided metric",
+      "pass": true
+    },
+    {
+      "check": "edge owner without callback token disabled",
+      "pass": true
+    },
+    {
+      "check": "edge owner without callback checkin disabled",
+      "pass": true
+    },
+    {
+      "check": "edge owner without callback creation disabled",
+      "pass": true
+    },
+    {
+      "check": "token clears",
+      "pass": true
+    },
+    {
+      "check": "no token in URL/localStorage/sessionStorage",
+      "pass": true
+    },
+    {
+      "check": "cancellation receives exact mutable window ID",
+      "pass": true
+    },
+    {
+      "check": "recorded B-prime cannot cancel",
+      "pass": true
+    },
+    {
+      "check": "zone-only window exposes actual supplied zone scope",
+      "pass": true
+    },
+    {
+      "check": "server supplied countdown visible",
+      "pass": true
+    },
+    {
+      "check": "countdown expires without mutating props",
+      "pass": true
+    },
+    {
+      "check": "empty native date validation",
+      "pass": true
+    },
+    {
+      "check": "12h boundary sends browser timezone as correct UTC instant",
+      "pass": true
+    },
+    {
+      "check": "matching recorded row does not acknowledge create",
+      "pass": true
+    },
+    {
+      "check": "unrelated server prop does not acknowledge create",
+      "pass": true
+    },
+    {
+      "check": "matching new server owned prop closes create",
+      "pass": true
+    },
+    {
+      "check": "pending disables checkin",
+      "pass": true
+    },
+    {
+      "check": "pending disables create",
+      "pass": true
+    },
+    {
+      "check": "exact true only review approval",
+      "pass": true
+    },
+    {
+      "check": "compile receives trimmed draft text",
+      "pass": true
+    },
+    {
+      "check": "phone sample and recording callbacks remain separate",
+      "pass": true
+    },
+    {
+      "check": "confirmation passes supplied draft ID",
+      "pass": true
+    },
+    {
+      "check": "confirmation disabled after owner revoked",
+      "pass": true
+    },
+    {
+      "check": "revoked confirmation has exact guard",
+      "pass": true
+    },
+    {
+      "check": "unmeasured metrics suppressed",
+      "pass": true
+    },
+    {
+      "check": "measured branch uses exact provided metric",
+      "pass": true
+    }
+  ],
+  "failures": []
+}

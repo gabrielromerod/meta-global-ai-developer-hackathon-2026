@@ -1,0 +1,4015 @@
+{
+  "cases": [
+    {
+      "width": 1470,
+      "height": 870,
+      "theme": "dark",
+      "layout": {
+        "width": 1470,
+        "height": 870,
+        "sw": 1470,
+        "sh": 870,
+        "gutter": "stable"
+      }
+    },
+    {
+      "width": 1470,
+      "height": 870,
+      "theme": "light",
+      "layout": {
+        "width": 1470,
+        "height": 870,
+        "sw": 1470,
+        "sh": 870,
+        "gutter": "stable"
+      }
+    },
+    {
+      "width": 1512,
+      "height": 895,
+      "theme": "dark",
+      "layout": {
+        "width": 1512,
+        "height": 895,
+        "sw": 1512,
+        "sh": 895,
+        "gutter": "stable"
+      }
+    },
+    {
+      "width": 1512,
+      "height": 895,
+      "theme": "light",
+      "layout": {
+        "width": 1512,
+        "height": 895,
+        "sw": 1512,
+        "sh": 895,
+        "gutter": "stable"
+      }
+    },
+    {
+      "width": 1728,
+      "height": 1030,
+      "theme": "dark",
+      "layout": {
+        "width": 1728,
+        "height": 1030,
+        "sw": 1728,
+        "sh": 1030,
+        "gutter": "stable"
+      }
+    },
+    {
+      "width": 1728,
+      "height": 1030,
+      "theme": "light",
+      "layout": {
+        "width": 1728,
+        "height": 1030,
+        "sw": 1728,
+        "sh": 1030,
+        "gutter": "stable"
+      }
+    },
+    {
+      "width": 1920,
+      "height": 960,
+      "theme": "dark",
+      "layout": {
+        "width": 1920,
+        "height": 960,
+        "sw": 1920,
+        "sh": 960,
+        "gutter": "stable"
+      }
+    },
+    {
+      "width": 1920,
+      "height": 960,
+      "theme": "light",
+      "layout": {
+        "width": 1920,
+        "height": 960,
+        "sw": 1920,
+        "sh": 960,
+        "gutter": "stable"
+      }
+    },
+    {
+      "width": 1536,
+      "height": 730,
+      "theme": "dark",
+      "layout": {
+        "width": 1536,
+        "height": 730,
+        "sw": 1536,
+        "sh": 730,
+        "gutter": "stable"
+      }
+    },
+    {
+      "width": 1536,
+      "height": 730,
+      "theme": "light",
+      "layout": {
+        "width": 1536,
+        "height": 730,
+        "sw": 1536,
+        "sh": 730,
+        "gutter": "stable"
+      }
+    },
+    {
+      "width": 1280,
+      "height": 600,
+      "theme": "dark",
+      "layout": {
+        "width": 1280,
+        "height": 600,
+        "sw": 1280,
+        "sh": 600,
+        "gutter": "stable"
+      }
+    },
+    {
+      "width": 1280,
+      "height": 600,
+      "theme": "light",
+      "layout": {
+        "width": 1280,
+        "height": 600,
+        "sw": 1280,
+        "sh": 600,
+        "gutter": "stable"
+      }
+    },
+    {
+      "width": 1366,
+      "height": 650,
+      "theme": "dark",
+      "layout": {
+        "width": 1366,
+        "height": 650,
+        "sw": 1366,
+        "sh": 650,
+        "gutter": "stable"
+      }
+    },
+    {
+      "width": 1366,
+      "height": 650,
+      "theme": "light",
+      "layout": {
+        "width": 1366,
+        "height": 650,
+        "sw": 1366,
+        "sh": 650,
+        "gutter": "stable"
+      }
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "theme": "dark",
+      "layout": {
+        "width": 1024,
+        "height": 768,
+        "sw": 1024,
+        "sh": 768,
+        "gutter": "stable"
+      }
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "theme": "light",
+      "layout": {
+        "width": 1024,
+        "height": 768,
+        "sw": 1024,
+        "sh": 768,
+        "gutter": "stable"
+      }
+    },
+    {
+      "width": 1180,
+      "height": 820,
+      "theme": "dark",
+      "layout": {
+        "width": 1180,
+        "height": 820,
+        "sw": 1180,
+        "sh": 820,
+        "gutter": "stable"
+      }
+    },
+    {
+      "width": 1180,
+      "height": 820,
+      "theme": "light",
+      "layout": {
+        "width": 1180,
+        "height": 820,
+        "sw": 1180,
+        "sh": 820,
+        "gutter": "stable"
+      }
+    },
+    {
+      "width": 2560,
+      "height": 1000,
+      "theme": "dark",
+      "layout": {
+        "width": 2560,
+        "height": 1000,
+        "sw": 2560,
+        "sh": 1000,
+        "gutter": "stable"
+      }
+    },
+    {
+      "width": 2560,
+      "height": 1000,
+      "theme": "light",
+      "layout": {
+        "width": 2560,
+        "height": 1000,
+        "sw": 2560,
+        "sh": 1000,
+        "gutter": "stable"
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "dark",
+      "layout": {
+        "width": 390,
+        "height": 844,
+        "sw": 390,
+        "sh": 3009,
+        "gutter": "stable"
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "light",
+      "layout": {
+        "width": 390,
+        "height": 844,
+        "sw": 390,
+        "sh": 3009,
+        "gutter": "stable"
+      }
+    }
+  ],
+  "checks": [
+    {
+      "pass": true,
+      "label": "1470/dark/Authored zone-only window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "1470/dark/Authored zone-only window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "1470/dark/Authored zone-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1470/dark/Authored camera-only window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "1470/dark/Authored camera-only window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "1470/dark/Authored camera-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1470/dark/Authored camera and zone window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "1470/dark/Authored camera and zone window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "1470/dark/Authored camera and zone window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1470/dark/Authored unrestricted window includes All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1470/dark/Authored unrestricted window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "1470/dark/Authored unrestricted window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "exact CSS viewport"
+    },
+    {
+      "pass": true,
+      "label": "no horizontal document overflow"
+    },
+    {
+      "pass": true,
+      "label": "no desktop document scroll"
+    },
+    {
+      "pass": true,
+      "label": "stable panel gutter"
+    },
+    {
+      "pass": true,
+      "label": "1470/dark/deliveries: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1470/dark/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1470/dark/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1470/dark/Authored zone-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1470/dark/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1470/dark/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1470/dark/Authored camera-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1470/dark/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1470/dark/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1470/dark/Authored camera and zone window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1470/dark/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1470/dark/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1470/dark/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1470/dark/Authored unrestricted window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1470/dark/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1470/dark/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1470/dark/Authored long multiple-zone scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1470/dark/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1470/dark/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1470/dark/Authored long combined scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1470/dark/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1470/dark/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1470/dark/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "complete internal wheel scroll"
+    },
+    {
+      "pass": true,
+      "label": "1470/light/Authored zone-only window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "1470/light/Authored zone-only window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "1470/light/Authored zone-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1470/light/Authored camera-only window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "1470/light/Authored camera-only window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "1470/light/Authored camera-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1470/light/Authored camera and zone window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "1470/light/Authored camera and zone window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "1470/light/Authored camera and zone window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1470/light/Authored unrestricted window includes All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1470/light/Authored unrestricted window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "1470/light/Authored unrestricted window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "exact CSS viewport"
+    },
+    {
+      "pass": true,
+      "label": "no horizontal document overflow"
+    },
+    {
+      "pass": true,
+      "label": "no desktop document scroll"
+    },
+    {
+      "pass": true,
+      "label": "stable panel gutter"
+    },
+    {
+      "pass": true,
+      "label": "1470/light/deliveries: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1470/light/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1470/light/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1470/light/Authored zone-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1470/light/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1470/light/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1470/light/Authored camera-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1470/light/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1470/light/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1470/light/Authored camera and zone window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1470/light/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1470/light/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1470/light/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1470/light/Authored unrestricted window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1470/light/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1470/light/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1470/light/Authored long multiple-zone scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1470/light/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1470/light/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1470/light/Authored long combined scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1470/light/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1470/light/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1470/light/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "complete internal wheel scroll"
+    },
+    {
+      "pass": true,
+      "label": "1512/dark/Authored zone-only window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "1512/dark/Authored zone-only window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "1512/dark/Authored zone-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1512/dark/Authored camera-only window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "1512/dark/Authored camera-only window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "1512/dark/Authored camera-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1512/dark/Authored camera and zone window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "1512/dark/Authored camera and zone window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "1512/dark/Authored camera and zone window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1512/dark/Authored unrestricted window includes All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1512/dark/Authored unrestricted window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "1512/dark/Authored unrestricted window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "exact CSS viewport"
+    },
+    {
+      "pass": true,
+      "label": "no horizontal document overflow"
+    },
+    {
+      "pass": true,
+      "label": "no desktop document scroll"
+    },
+    {
+      "pass": true,
+      "label": "stable panel gutter"
+    },
+    {
+      "pass": true,
+      "label": "1512/dark/deliveries: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1512/dark/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1512/dark/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1512/dark/Authored zone-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1512/dark/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1512/dark/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1512/dark/Authored camera-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1512/dark/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1512/dark/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1512/dark/Authored camera and zone window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1512/dark/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1512/dark/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1512/dark/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1512/dark/Authored unrestricted window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1512/dark/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1512/dark/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1512/dark/Authored long multiple-zone scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1512/dark/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1512/dark/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1512/dark/Authored long combined scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1512/dark/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1512/dark/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1512/dark/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "complete internal wheel scroll"
+    },
+    {
+      "pass": true,
+      "label": "1512/light/Authored zone-only window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "1512/light/Authored zone-only window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "1512/light/Authored zone-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1512/light/Authored camera-only window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "1512/light/Authored camera-only window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "1512/light/Authored camera-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1512/light/Authored camera and zone window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "1512/light/Authored camera and zone window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "1512/light/Authored camera and zone window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1512/light/Authored unrestricted window includes All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1512/light/Authored unrestricted window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "1512/light/Authored unrestricted window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "exact CSS viewport"
+    },
+    {
+      "pass": true,
+      "label": "no horizontal document overflow"
+    },
+    {
+      "pass": true,
+      "label": "no desktop document scroll"
+    },
+    {
+      "pass": true,
+      "label": "stable panel gutter"
+    },
+    {
+      "pass": true,
+      "label": "1512/light/deliveries: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1512/light/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1512/light/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1512/light/Authored zone-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1512/light/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1512/light/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1512/light/Authored camera-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1512/light/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1512/light/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1512/light/Authored camera and zone window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1512/light/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1512/light/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1512/light/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1512/light/Authored unrestricted window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1512/light/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1512/light/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1512/light/Authored long multiple-zone scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1512/light/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1512/light/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1512/light/Authored long combined scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1512/light/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1512/light/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1512/light/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "complete internal wheel scroll"
+    },
+    {
+      "pass": true,
+      "label": "1728/dark/Authored zone-only window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "1728/dark/Authored zone-only window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "1728/dark/Authored zone-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1728/dark/Authored camera-only window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "1728/dark/Authored camera-only window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "1728/dark/Authored camera-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1728/dark/Authored camera and zone window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "1728/dark/Authored camera and zone window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "1728/dark/Authored camera and zone window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1728/dark/Authored unrestricted window includes All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1728/dark/Authored unrestricted window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "1728/dark/Authored unrestricted window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "exact CSS viewport"
+    },
+    {
+      "pass": true,
+      "label": "no horizontal document overflow"
+    },
+    {
+      "pass": true,
+      "label": "no desktop document scroll"
+    },
+    {
+      "pass": true,
+      "label": "stable panel gutter"
+    },
+    {
+      "pass": true,
+      "label": "1728/dark/deliveries: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1728/dark/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1728/dark/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1728/dark/Authored zone-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1728/dark/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1728/dark/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1728/dark/Authored camera-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1728/dark/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1728/dark/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1728/dark/Authored camera and zone window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1728/dark/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1728/dark/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1728/dark/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1728/dark/Authored unrestricted window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1728/dark/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1728/dark/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1728/dark/Authored long multiple-zone scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1728/dark/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1728/dark/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1728/dark/Authored long combined scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1728/dark/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1728/dark/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1728/dark/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "complete internal wheel scroll"
+    },
+    {
+      "pass": true,
+      "label": "1728/light/Authored zone-only window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "1728/light/Authored zone-only window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "1728/light/Authored zone-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1728/light/Authored camera-only window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "1728/light/Authored camera-only window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "1728/light/Authored camera-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1728/light/Authored camera and zone window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "1728/light/Authored camera and zone window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "1728/light/Authored camera and zone window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1728/light/Authored unrestricted window includes All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1728/light/Authored unrestricted window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "1728/light/Authored unrestricted window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "exact CSS viewport"
+    },
+    {
+      "pass": true,
+      "label": "no horizontal document overflow"
+    },
+    {
+      "pass": true,
+      "label": "no desktop document scroll"
+    },
+    {
+      "pass": true,
+      "label": "stable panel gutter"
+    },
+    {
+      "pass": true,
+      "label": "1728/light/deliveries: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1728/light/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1728/light/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1728/light/Authored zone-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1728/light/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1728/light/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1728/light/Authored camera-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1728/light/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1728/light/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1728/light/Authored camera and zone window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1728/light/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1728/light/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1728/light/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1728/light/Authored unrestricted window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1728/light/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1728/light/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1728/light/Authored long multiple-zone scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1728/light/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1728/light/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1728/light/Authored long combined scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1728/light/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1728/light/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1728/light/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "complete internal wheel scroll"
+    },
+    {
+      "pass": true,
+      "label": "1920/dark/Authored zone-only window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "1920/dark/Authored zone-only window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "1920/dark/Authored zone-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1920/dark/Authored camera-only window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "1920/dark/Authored camera-only window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "1920/dark/Authored camera-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1920/dark/Authored camera and zone window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "1920/dark/Authored camera and zone window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "1920/dark/Authored camera and zone window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1920/dark/Authored unrestricted window includes All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1920/dark/Authored unrestricted window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "1920/dark/Authored unrestricted window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "exact CSS viewport"
+    },
+    {
+      "pass": true,
+      "label": "no horizontal document overflow"
+    },
+    {
+      "pass": true,
+      "label": "no desktop document scroll"
+    },
+    {
+      "pass": true,
+      "label": "stable panel gutter"
+    },
+    {
+      "pass": true,
+      "label": "1920/dark/deliveries: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1920/dark/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1920/dark/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1920/dark/Authored zone-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1920/dark/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1920/dark/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1920/dark/Authored camera-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1920/dark/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1920/dark/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1920/dark/Authored camera and zone window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1920/dark/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1920/dark/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1920/dark/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1920/dark/Authored unrestricted window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1920/dark/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1920/dark/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1920/dark/Authored long multiple-zone scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1920/dark/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1920/dark/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1920/dark/Authored long combined scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1920/dark/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1920/dark/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1920/dark/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "complete internal wheel scroll"
+    },
+    {
+      "pass": true,
+      "label": "1920/light/Authored zone-only window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "1920/light/Authored zone-only window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "1920/light/Authored zone-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1920/light/Authored camera-only window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "1920/light/Authored camera-only window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "1920/light/Authored camera-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1920/light/Authored camera and zone window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "1920/light/Authored camera and zone window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "1920/light/Authored camera and zone window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1920/light/Authored unrestricted window includes All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1920/light/Authored unrestricted window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "1920/light/Authored unrestricted window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "exact CSS viewport"
+    },
+    {
+      "pass": true,
+      "label": "no horizontal document overflow"
+    },
+    {
+      "pass": true,
+      "label": "no desktop document scroll"
+    },
+    {
+      "pass": true,
+      "label": "stable panel gutter"
+    },
+    {
+      "pass": true,
+      "label": "1920/light/deliveries: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1920/light/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1920/light/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1920/light/Authored zone-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1920/light/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1920/light/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1920/light/Authored camera-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1920/light/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1920/light/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1920/light/Authored camera and zone window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1920/light/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1920/light/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1920/light/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1920/light/Authored unrestricted window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1920/light/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1920/light/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1920/light/Authored long multiple-zone scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1920/light/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1920/light/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1920/light/Authored long combined scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1920/light/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1920/light/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1920/light/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "complete internal wheel scroll"
+    },
+    {
+      "pass": true,
+      "label": "1536/dark/Authored zone-only window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "1536/dark/Authored zone-only window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "1536/dark/Authored zone-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1536/dark/Authored camera-only window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "1536/dark/Authored camera-only window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "1536/dark/Authored camera-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1536/dark/Authored camera and zone window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "1536/dark/Authored camera and zone window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "1536/dark/Authored camera and zone window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1536/dark/Authored unrestricted window includes All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1536/dark/Authored unrestricted window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "1536/dark/Authored unrestricted window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "exact CSS viewport"
+    },
+    {
+      "pass": true,
+      "label": "no horizontal document overflow"
+    },
+    {
+      "pass": true,
+      "label": "no desktop document scroll"
+    },
+    {
+      "pass": true,
+      "label": "stable panel gutter"
+    },
+    {
+      "pass": true,
+      "label": "1536/dark/deliveries: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1536/dark/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1536/dark/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1536/dark/Authored zone-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1536/dark/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1536/dark/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1536/dark/Authored camera-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1536/dark/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1536/dark/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1536/dark/Authored camera and zone window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1536/dark/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1536/dark/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1536/dark/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1536/dark/Authored unrestricted window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1536/dark/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1536/dark/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1536/dark/Authored long multiple-zone scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1536/dark/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1536/dark/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1536/dark/Authored long combined scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1536/dark/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1536/dark/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1536/dark/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "complete internal wheel scroll"
+    },
+    {
+      "pass": true,
+      "label": "1536/light/Authored zone-only window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "1536/light/Authored zone-only window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "1536/light/Authored zone-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1536/light/Authored camera-only window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "1536/light/Authored camera-only window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "1536/light/Authored camera-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1536/light/Authored camera and zone window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "1536/light/Authored camera and zone window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "1536/light/Authored camera and zone window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1536/light/Authored unrestricted window includes All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1536/light/Authored unrestricted window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "1536/light/Authored unrestricted window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "exact CSS viewport"
+    },
+    {
+      "pass": true,
+      "label": "no horizontal document overflow"
+    },
+    {
+      "pass": true,
+      "label": "no desktop document scroll"
+    },
+    {
+      "pass": true,
+      "label": "stable panel gutter"
+    },
+    {
+      "pass": true,
+      "label": "1536/light/deliveries: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1536/light/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1536/light/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1536/light/Authored zone-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1536/light/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1536/light/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1536/light/Authored camera-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1536/light/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1536/light/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1536/light/Authored camera and zone window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1536/light/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1536/light/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1536/light/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1536/light/Authored unrestricted window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1536/light/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1536/light/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1536/light/Authored long multiple-zone scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1536/light/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1536/light/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1536/light/Authored long combined scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1536/light/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1536/light/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1536/light/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "complete internal wheel scroll"
+    },
+    {
+      "pass": true,
+      "label": "1280/dark/Authored zone-only window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "1280/dark/Authored zone-only window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "1280/dark/Authored zone-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1280/dark/Authored camera-only window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "1280/dark/Authored camera-only window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "1280/dark/Authored camera-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1280/dark/Authored camera and zone window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "1280/dark/Authored camera and zone window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "1280/dark/Authored camera and zone window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1280/dark/Authored unrestricted window includes All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1280/dark/Authored unrestricted window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "1280/dark/Authored unrestricted window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "exact CSS viewport"
+    },
+    {
+      "pass": true,
+      "label": "no horizontal document overflow"
+    },
+    {
+      "pass": true,
+      "label": "no desktop document scroll"
+    },
+    {
+      "pass": true,
+      "label": "stable panel gutter"
+    },
+    {
+      "pass": true,
+      "label": "1280/dark/deliveries: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1280/dark/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1280/dark/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1280/dark/Authored zone-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1280/dark/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1280/dark/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1280/dark/Authored camera-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1280/dark/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1280/dark/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1280/dark/Authored camera and zone window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1280/dark/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1280/dark/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1280/dark/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1280/dark/Authored unrestricted window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1280/dark/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1280/dark/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1280/dark/Authored long multiple-zone scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1280/dark/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1280/dark/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1280/dark/Authored long combined scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1280/dark/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1280/dark/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1280/dark/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "complete internal wheel scroll"
+    },
+    {
+      "pass": true,
+      "label": "owner callback allows mutable row"
+    },
+    {
+      "pass": true,
+      "label": "owner callback allows mutable row"
+    },
+    {
+      "pass": true,
+      "label": "owner callback allows mutable row"
+    },
+    {
+      "pass": true,
+      "label": "owner callback allows mutable row"
+    },
+    {
+      "pass": true,
+      "label": "all four actual cancellation IDs"
+    },
+    {
+      "pass": true,
+      "label": "recorded row remains immutable"
+    },
+    {
+      "pass": true,
+      "label": "pending disables each scoped row"
+    },
+    {
+      "pass": true,
+      "label": "pending disables each scoped row"
+    },
+    {
+      "pass": true,
+      "label": "pending disables each scoped row"
+    },
+    {
+      "pass": true,
+      "label": "pending disables each scoped row"
+    },
+    {
+      "pass": true,
+      "label": "revoked owner cannot create"
+    },
+    {
+      "pass": true,
+      "label": "revoked owner cannot cancel scope"
+    },
+    {
+      "pass": true,
+      "label": "revoked owner cannot cancel scope"
+    },
+    {
+      "pass": true,
+      "label": "revoked owner cannot cancel scope"
+    },
+    {
+      "pass": true,
+      "label": "revoked owner cannot cancel scope"
+    },
+    {
+      "pass": true,
+      "label": "1280/light/Authored zone-only window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "1280/light/Authored zone-only window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "1280/light/Authored zone-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1280/light/Authored camera-only window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "1280/light/Authored camera-only window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "1280/light/Authored camera-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1280/light/Authored camera and zone window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "1280/light/Authored camera and zone window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "1280/light/Authored camera and zone window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1280/light/Authored unrestricted window includes All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1280/light/Authored unrestricted window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "1280/light/Authored unrestricted window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "exact CSS viewport"
+    },
+    {
+      "pass": true,
+      "label": "no horizontal document overflow"
+    },
+    {
+      "pass": true,
+      "label": "no desktop document scroll"
+    },
+    {
+      "pass": true,
+      "label": "stable panel gutter"
+    },
+    {
+      "pass": true,
+      "label": "1280/light/deliveries: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1280/light/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1280/light/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1280/light/Authored zone-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1280/light/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1280/light/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1280/light/Authored camera-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1280/light/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1280/light/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1280/light/Authored camera and zone window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1280/light/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1280/light/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1280/light/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1280/light/Authored unrestricted window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1280/light/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1280/light/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1280/light/Authored long multiple-zone scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1280/light/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1280/light/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1280/light/Authored long combined scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1280/light/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1280/light/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1280/light/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "complete internal wheel scroll"
+    },
+    {
+      "pass": true,
+      "label": "owner callback allows mutable row"
+    },
+    {
+      "pass": true,
+      "label": "owner callback allows mutable row"
+    },
+    {
+      "pass": true,
+      "label": "owner callback allows mutable row"
+    },
+    {
+      "pass": true,
+      "label": "owner callback allows mutable row"
+    },
+    {
+      "pass": true,
+      "label": "all four actual cancellation IDs"
+    },
+    {
+      "pass": true,
+      "label": "recorded row remains immutable"
+    },
+    {
+      "pass": true,
+      "label": "pending disables each scoped row"
+    },
+    {
+      "pass": true,
+      "label": "pending disables each scoped row"
+    },
+    {
+      "pass": true,
+      "label": "pending disables each scoped row"
+    },
+    {
+      "pass": true,
+      "label": "pending disables each scoped row"
+    },
+    {
+      "pass": true,
+      "label": "revoked owner cannot create"
+    },
+    {
+      "pass": true,
+      "label": "revoked owner cannot cancel scope"
+    },
+    {
+      "pass": true,
+      "label": "revoked owner cannot cancel scope"
+    },
+    {
+      "pass": true,
+      "label": "revoked owner cannot cancel scope"
+    },
+    {
+      "pass": true,
+      "label": "revoked owner cannot cancel scope"
+    },
+    {
+      "pass": true,
+      "label": "1366/dark/Authored zone-only window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "1366/dark/Authored zone-only window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "1366/dark/Authored zone-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1366/dark/Authored camera-only window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "1366/dark/Authored camera-only window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "1366/dark/Authored camera-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1366/dark/Authored camera and zone window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "1366/dark/Authored camera and zone window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "1366/dark/Authored camera and zone window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1366/dark/Authored unrestricted window includes All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1366/dark/Authored unrestricted window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "1366/dark/Authored unrestricted window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "exact CSS viewport"
+    },
+    {
+      "pass": true,
+      "label": "no horizontal document overflow"
+    },
+    {
+      "pass": true,
+      "label": "no desktop document scroll"
+    },
+    {
+      "pass": true,
+      "label": "stable panel gutter"
+    },
+    {
+      "pass": true,
+      "label": "1366/dark/deliveries: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1366/dark/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1366/dark/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1366/dark/Authored zone-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1366/dark/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1366/dark/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1366/dark/Authored camera-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1366/dark/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1366/dark/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1366/dark/Authored camera and zone window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1366/dark/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1366/dark/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1366/dark/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1366/dark/Authored unrestricted window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1366/dark/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1366/dark/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1366/dark/Authored long multiple-zone scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1366/dark/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1366/dark/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1366/dark/Authored long combined scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1366/dark/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1366/dark/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1366/dark/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "complete internal wheel scroll"
+    },
+    {
+      "pass": true,
+      "label": "1366/light/Authored zone-only window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "1366/light/Authored zone-only window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "1366/light/Authored zone-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1366/light/Authored camera-only window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "1366/light/Authored camera-only window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "1366/light/Authored camera-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1366/light/Authored camera and zone window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "1366/light/Authored camera and zone window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "1366/light/Authored camera and zone window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1366/light/Authored unrestricted window includes All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1366/light/Authored unrestricted window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "1366/light/Authored unrestricted window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "exact CSS viewport"
+    },
+    {
+      "pass": true,
+      "label": "no horizontal document overflow"
+    },
+    {
+      "pass": true,
+      "label": "no desktop document scroll"
+    },
+    {
+      "pass": true,
+      "label": "stable panel gutter"
+    },
+    {
+      "pass": true,
+      "label": "1366/light/deliveries: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1366/light/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1366/light/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1366/light/Authored zone-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1366/light/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1366/light/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1366/light/Authored camera-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1366/light/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1366/light/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1366/light/Authored camera and zone window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1366/light/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1366/light/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1366/light/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1366/light/Authored unrestricted window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1366/light/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1366/light/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1366/light/Authored long multiple-zone scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1366/light/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1366/light/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1366/light/Authored long combined scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1366/light/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1366/light/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1366/light/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "complete internal wheel scroll"
+    },
+    {
+      "pass": true,
+      "label": "1024/dark/Authored zone-only window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "1024/dark/Authored zone-only window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "1024/dark/Authored zone-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1024/dark/Authored camera-only window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "1024/dark/Authored camera-only window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "1024/dark/Authored camera-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1024/dark/Authored camera and zone window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "1024/dark/Authored camera and zone window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "1024/dark/Authored camera and zone window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1024/dark/Authored unrestricted window includes All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1024/dark/Authored unrestricted window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "1024/dark/Authored unrestricted window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "exact CSS viewport"
+    },
+    {
+      "pass": true,
+      "label": "no horizontal document overflow"
+    },
+    {
+      "pass": true,
+      "label": "no desktop document scroll"
+    },
+    {
+      "pass": true,
+      "label": "stable panel gutter"
+    },
+    {
+      "pass": true,
+      "label": "1024/dark/deliveries: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1024/dark/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1024/dark/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1024/dark/Authored zone-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1024/dark/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1024/dark/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1024/dark/Authored camera-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1024/dark/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1024/dark/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1024/dark/Authored camera and zone window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1024/dark/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1024/dark/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1024/dark/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1024/dark/Authored unrestricted window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1024/dark/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1024/dark/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1024/dark/Authored long multiple-zone scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1024/dark/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1024/dark/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1024/dark/Authored long combined scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1024/dark/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1024/dark/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1024/dark/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "complete internal wheel scroll"
+    },
+    {
+      "pass": true,
+      "label": "1024/light/Authored zone-only window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "1024/light/Authored zone-only window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "1024/light/Authored zone-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1024/light/Authored camera-only window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "1024/light/Authored camera-only window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "1024/light/Authored camera-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1024/light/Authored camera and zone window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "1024/light/Authored camera and zone window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "1024/light/Authored camera and zone window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1024/light/Authored unrestricted window includes All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1024/light/Authored unrestricted window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "1024/light/Authored unrestricted window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "exact CSS viewport"
+    },
+    {
+      "pass": true,
+      "label": "no horizontal document overflow"
+    },
+    {
+      "pass": true,
+      "label": "no desktop document scroll"
+    },
+    {
+      "pass": true,
+      "label": "stable panel gutter"
+    },
+    {
+      "pass": true,
+      "label": "1024/light/deliveries: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1024/light/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1024/light/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1024/light/Authored zone-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1024/light/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1024/light/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1024/light/Authored camera-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1024/light/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1024/light/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1024/light/Authored camera and zone window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1024/light/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1024/light/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1024/light/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1024/light/Authored unrestricted window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1024/light/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1024/light/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1024/light/Authored long multiple-zone scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1024/light/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1024/light/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1024/light/Authored long combined scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1024/light/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1024/light/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1024/light/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "complete internal wheel scroll"
+    },
+    {
+      "pass": true,
+      "label": "1180/dark/Authored zone-only window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "1180/dark/Authored zone-only window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "1180/dark/Authored zone-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1180/dark/Authored camera-only window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "1180/dark/Authored camera-only window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "1180/dark/Authored camera-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1180/dark/Authored camera and zone window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "1180/dark/Authored camera and zone window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "1180/dark/Authored camera and zone window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1180/dark/Authored unrestricted window includes All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1180/dark/Authored unrestricted window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "1180/dark/Authored unrestricted window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "exact CSS viewport"
+    },
+    {
+      "pass": true,
+      "label": "no horizontal document overflow"
+    },
+    {
+      "pass": true,
+      "label": "no desktop document scroll"
+    },
+    {
+      "pass": true,
+      "label": "stable panel gutter"
+    },
+    {
+      "pass": true,
+      "label": "1180/dark/deliveries: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1180/dark/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1180/dark/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1180/dark/Authored zone-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1180/dark/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1180/dark/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1180/dark/Authored camera-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1180/dark/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1180/dark/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1180/dark/Authored camera and zone window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1180/dark/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1180/dark/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1180/dark/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1180/dark/Authored unrestricted window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1180/dark/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1180/dark/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1180/dark/Authored long multiple-zone scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1180/dark/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1180/dark/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1180/dark/Authored long combined scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1180/dark/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1180/dark/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1180/dark/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "complete internal wheel scroll"
+    },
+    {
+      "pass": true,
+      "label": "1180/light/Authored zone-only window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "1180/light/Authored zone-only window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "1180/light/Authored zone-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1180/light/Authored camera-only window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "1180/light/Authored camera-only window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "1180/light/Authored camera-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1180/light/Authored camera and zone window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "1180/light/Authored camera and zone window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "1180/light/Authored camera and zone window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1180/light/Authored unrestricted window includes All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "1180/light/Authored unrestricted window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "1180/light/Authored unrestricted window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "exact CSS viewport"
+    },
+    {
+      "pass": true,
+      "label": "no horizontal document overflow"
+    },
+    {
+      "pass": true,
+      "label": "no desktop document scroll"
+    },
+    {
+      "pass": true,
+      "label": "stable panel gutter"
+    },
+    {
+      "pass": true,
+      "label": "1180/light/deliveries: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1180/light/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1180/light/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1180/light/Authored zone-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1180/light/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1180/light/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1180/light/Authored camera-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1180/light/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1180/light/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1180/light/Authored camera and zone window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1180/light/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1180/light/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1180/light/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1180/light/Authored unrestricted window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1180/light/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1180/light/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1180/light/Authored long multiple-zone scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1180/light/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1180/light/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1180/light/Authored long combined scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "1180/light/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1180/light/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "1180/light/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "complete internal wheel scroll"
+    },
+    {
+      "pass": true,
+      "label": "2560/dark/Authored zone-only window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "2560/dark/Authored zone-only window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "2560/dark/Authored zone-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "2560/dark/Authored camera-only window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "2560/dark/Authored camera-only window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "2560/dark/Authored camera-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "2560/dark/Authored camera and zone window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "2560/dark/Authored camera and zone window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "2560/dark/Authored camera and zone window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "2560/dark/Authored unrestricted window includes All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "2560/dark/Authored unrestricted window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "2560/dark/Authored unrestricted window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "exact CSS viewport"
+    },
+    {
+      "pass": true,
+      "label": "no horizontal document overflow"
+    },
+    {
+      "pass": true,
+      "label": "no desktop document scroll"
+    },
+    {
+      "pass": true,
+      "label": "stable panel gutter"
+    },
+    {
+      "pass": true,
+      "label": "2560/dark/deliveries: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "2560/dark/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "2560/dark/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "2560/dark/Authored zone-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "2560/dark/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "2560/dark/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "2560/dark/Authored camera-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "2560/dark/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "2560/dark/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "2560/dark/Authored camera and zone window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "2560/dark/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "2560/dark/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "2560/dark/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "2560/dark/Authored unrestricted window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "2560/dark/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "2560/dark/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "2560/dark/Authored long multiple-zone scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "2560/dark/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "2560/dark/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "2560/dark/Authored long combined scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "2560/dark/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "2560/dark/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "2560/dark/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "complete internal wheel scroll"
+    },
+    {
+      "pass": true,
+      "label": "2560/light/Authored zone-only window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "2560/light/Authored zone-only window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "2560/light/Authored zone-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "2560/light/Authored camera-only window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "2560/light/Authored camera-only window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "2560/light/Authored camera-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "2560/light/Authored camera and zone window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "2560/light/Authored camera and zone window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "2560/light/Authored camera and zone window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "2560/light/Authored unrestricted window includes All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "2560/light/Authored unrestricted window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "2560/light/Authored unrestricted window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "exact CSS viewport"
+    },
+    {
+      "pass": true,
+      "label": "no horizontal document overflow"
+    },
+    {
+      "pass": true,
+      "label": "no desktop document scroll"
+    },
+    {
+      "pass": true,
+      "label": "stable panel gutter"
+    },
+    {
+      "pass": true,
+      "label": "2560/light/deliveries: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "2560/light/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "2560/light/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "2560/light/Authored zone-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "2560/light/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "2560/light/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "2560/light/Authored camera-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "2560/light/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "2560/light/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "2560/light/Authored camera and zone window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "2560/light/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "2560/light/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "2560/light/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "2560/light/Authored unrestricted window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "2560/light/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "2560/light/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "2560/light/Authored long multiple-zone scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "2560/light/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "2560/light/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "2560/light/Authored long combined scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "2560/light/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "2560/light/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "2560/light/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "complete internal wheel scroll"
+    },
+    {
+      "pass": true,
+      "label": "390/dark/Authored zone-only window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "390/dark/Authored zone-only window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "390/dark/Authored zone-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "390/dark/Authored camera-only window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "390/dark/Authored camera-only window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "390/dark/Authored camera-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "390/dark/Authored camera and zone window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "390/dark/Authored camera and zone window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "390/dark/Authored camera and zone window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "390/dark/Authored unrestricted window includes All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "390/dark/Authored unrestricted window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "390/dark/Authored unrestricted window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "exact CSS viewport"
+    },
+    {
+      "pass": true,
+      "label": "no horizontal document overflow"
+    },
+    {
+      "pass": true,
+      "label": "390/dark/deliveries: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "390/dark/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "390/dark/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "390/dark/Authored zone-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "390/dark/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "390/dark/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "390/dark/Authored camera-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "390/dark/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "390/dark/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "390/dark/Authored camera and zone window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "390/dark/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "390/dark/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "390/dark/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "390/dark/Authored unrestricted window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "390/dark/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "390/dark/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "390/dark/Authored long multiple-zone scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "390/dark/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "390/dark/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "390/dark/Authored long combined scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "390/dark/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "390/dark/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "390/dark/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "complete phone scroll"
+    },
+    {
+      "pass": true,
+      "label": "owner callback allows mutable row"
+    },
+    {
+      "pass": true,
+      "label": "owner callback allows mutable row"
+    },
+    {
+      "pass": true,
+      "label": "owner callback allows mutable row"
+    },
+    {
+      "pass": true,
+      "label": "owner callback allows mutable row"
+    },
+    {
+      "pass": true,
+      "label": "all four actual cancellation IDs"
+    },
+    {
+      "pass": true,
+      "label": "recorded row remains immutable"
+    },
+    {
+      "pass": true,
+      "label": "pending disables each scoped row"
+    },
+    {
+      "pass": true,
+      "label": "pending disables each scoped row"
+    },
+    {
+      "pass": true,
+      "label": "pending disables each scoped row"
+    },
+    {
+      "pass": true,
+      "label": "pending disables each scoped row"
+    },
+    {
+      "pass": true,
+      "label": "revoked owner cannot create"
+    },
+    {
+      "pass": true,
+      "label": "revoked owner cannot cancel scope"
+    },
+    {
+      "pass": true,
+      "label": "revoked owner cannot cancel scope"
+    },
+    {
+      "pass": true,
+      "label": "revoked owner cannot cancel scope"
+    },
+    {
+      "pass": true,
+      "label": "revoked owner cannot cancel scope"
+    },
+    {
+      "pass": true,
+      "label": "390/light/Authored zone-only window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "390/light/Authored zone-only window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "390/light/Authored zone-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "390/light/Authored camera-only window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "390/light/Authored camera-only window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "390/light/Authored camera-only window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "390/light/Authored camera and zone window includes Cameras: Doorbell"
+    },
+    {
+      "pass": true,
+      "label": "390/light/Authored camera and zone window includes Zones: Side alley"
+    },
+    {
+      "pass": true,
+      "label": "390/light/Authored camera and zone window omits All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "390/light/Authored unrestricted window includes All configured cameras"
+    },
+    {
+      "pass": true,
+      "label": "390/light/Authored unrestricted window omits Cameras:"
+    },
+    {
+      "pass": true,
+      "label": "390/light/Authored unrestricted window omits Zones:"
+    },
+    {
+      "pass": true,
+      "label": "exact CSS viewport"
+    },
+    {
+      "pass": true,
+      "label": "no horizontal document overflow"
+    },
+    {
+      "pass": true,
+      "label": "390/light/deliveries: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "390/light/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "390/light/deliveries: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "390/light/Authored zone-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "390/light/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "390/light/Authored zone-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "390/light/Authored camera-only window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "390/light/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "390/light/Authored camera-only window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "390/light/Authored camera and zone window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "390/light/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "390/light/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "390/light/Authored camera and zone window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "390/light/Authored unrestricted window: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "390/light/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "390/light/Authored unrestricted window: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "390/light/Authored long multiple-zone scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "390/light/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "390/light/Authored long multiple-zone scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "390/light/Authored long combined scope wrapping and scrolling review fixture: no row overflow"
+    },
+    {
+      "pass": true,
+      "label": "390/light/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "390/light/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "390/light/Authored long combined scope wrapping and scrolling review fixture: scope text wraps"
+    },
+    {
+      "pass": true,
+      "label": "complete phone scroll"
+    },
+    {
+      "pass": true,
+      "label": "owner callback allows mutable row"
+    },
+    {
+      "pass": true,
+      "label": "owner callback allows mutable row"
+    },
+    {
+      "pass": true,
+      "label": "owner callback allows mutable row"
+    },
+    {
+      "pass": true,
+      "label": "owner callback allows mutable row"
+    },
+    {
+      "pass": true,
+      "label": "all four actual cancellation IDs"
+    },
+    {
+      "pass": true,
+      "label": "recorded row remains immutable"
+    },
+    {
+      "pass": true,
+      "label": "pending disables each scoped row"
+    },
+    {
+      "pass": true,
+      "label": "pending disables each scoped row"
+    },
+    {
+      "pass": true,
+      "label": "pending disables each scoped row"
+    },
+    {
+      "pass": true,
+      "label": "pending disables each scoped row"
+    },
+    {
+      "pass": true,
+      "label": "revoked owner cannot create"
+    },
+    {
+      "pass": true,
+      "label": "revoked owner cannot cancel scope"
+    },
+    {
+      "pass": true,
+      "label": "revoked owner cannot cancel scope"
+    },
+    {
+      "pass": true,
+      "label": "revoked owner cannot cancel scope"
+    },
+    {
+      "pass": true,
+      "label": "revoked owner cannot cancel scope"
+    }
+  ],
+  "errors": []
+}

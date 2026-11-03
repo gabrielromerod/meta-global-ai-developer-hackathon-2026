@@ -46,11 +46,37 @@ try {
     assert.deepEqual(failed, [], `${name}: failed requests`);
     const folder = path.join(root, `${width}x${height}`);
     await mkdir(folder, { recursive: true });
-    const capture = async (state) =>
-      page.screenshot({
+    const capture = async (state) => {
+      const rectangles = await page
+        .locator(".twin-annotation:visible")
+        .evaluateAll((elements) =>
+          elements.map((element) => {
+            const box = element.getBoundingClientRect();
+            return {
+              id: element.getAttribute("data-label-id"),
+              left: box.left,
+              top: box.top,
+              right: box.right,
+              bottom: box.bottom,
+            };
+          }),
+        );
+      for (const rect of rectangles)
+        for (const other of rectangles.filter((item) => item.id !== rect.id))
+          assert.ok(
+            !(
+              rect.left < other.right - 0.5 &&
+              rect.right > other.left + 0.5 &&
+              rect.top < other.bottom - 0.5 &&
+              rect.bottom > other.top + 0.5
+            ),
+            `${name}/${state} annotations overlap: ${rect.id}, ${other.id}`,
+          );
+      return page.screenshot({
         path: path.join(folder, `twin-${state}.png`),
         fullPage: true,
       });
+    };
     for (const theme of ["dark", "light"]) {
       if (theme === "light")
         await page
@@ -73,6 +99,18 @@ try {
           size.height <= size.viewportHeight,
           `${name}/${theme}: page scroll ${JSON.stringify(size)}`,
         );
+    }
+    if (
+      await page
+        .getByRole("button", { name: "Select camera", exact: true })
+        .isVisible()
+    ) {
+      await page
+        .getByRole("button", { name: "Select camera", exact: true })
+        .click();
+      await capture("compact-camera-menu");
+      await page.getByRole("menuitemradio", { name: /Backyard 2/ }).click();
+      await capture("compact-camera-selected");
     }
     if (name === "air13" || name === "phone") {
       await page
@@ -122,6 +160,29 @@ try {
       );
       assert.ok(y >= 0.6, `downward drag went underground: ${y}`);
       await capture("drag-down");
+      await page.mouse.move(box.x + box.width * 0.5, box.y + box.height * 0.5);
+      await page.mouse.down({ button: "right" });
+      await page.mouse.move(box.x + box.width * 1.2, box.y + box.height * 1.2, {
+        steps: 10,
+      });
+      await page.mouse.up({ button: "right" });
+      await page.waitForTimeout(250);
+      const target = (
+        await page
+          .locator("[data-testid=twin-canvas]")
+          .getAttribute("data-target")
+      )
+        .split(",")
+        .map(Number);
+      assert.ok(
+        target[0] >= -9 &&
+          target[0] <= 9 &&
+          target[1] === 0 &&
+          target[2] >= -10 &&
+          target[2] <= 14,
+        `pan target outside ground: ${target}`,
+      );
+      await capture("pan-bound");
       await page.mouse.wheel(0, 10000);
       await page.waitForTimeout(300);
       const distance = Number(
@@ -165,7 +226,7 @@ try {
           return el instanceof HTMLElement
             ? {
                 tag: el.tagName,
-                html: el.outerHTML.slice(0,600),
+                html: el.outerHTML.slice(0, 600),
                 label: el.getAttribute("aria-label") ?? el.textContent,
                 outline: getComputedStyle(el).outlineStyle,
               }
@@ -191,6 +252,29 @@ try {
         el.scrollLeft = 0;
       });
     }
+    if (name === "windows150") {
+      await page.locator(".twin-preview-stage").evaluate((element) => {
+        element.style.flex = "none";
+        element.style.height = "266px";
+        element.style.display = "flex";
+      });
+      await page.waitForTimeout(300);
+      const panel = await page.locator(".house-view").boundingBox(),
+        canvas = await page.locator("canvas").boundingBox();
+      assert.ok(
+        panel && canvas && panel.width > 100 && canvas.height >= 175,
+        `compact hero collapsed ${JSON.stringify({ panel, canvas })}`,
+      );
+      await capture("compact-266px-parent");
+    }
+    await page
+      .getByRole("button", { name: "Hide 3D view", exact: true })
+      .click();
+    await page
+      .getByRole("button", { name: "Show 3D view", exact: true })
+      .click();
+    await page.locator("[data-webgl=ready]").waitFor();
+    await page.waitForTimeout(200);
     assert.deepEqual(errors, [], `${name}: console errors after interaction`);
     assert.deepEqual(failed, [], `${name}: failed requests after interaction`);
     results.push({

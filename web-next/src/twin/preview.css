@@ -1,6 +1,10 @@
 * {
   box-sizing: border-box;
 }
+.twin-preview-actions {
+  display: flex;
+  gap: var(--v-space-1);
+}
 body {
   margin: var(--v-zero);
   background: var(--v-bg);
@@ -61,6 +65,10 @@ body {
   accent-color: var(--v-accent);
 }
 @media (max-width: 640px) {
+  .twin-preview header,
+  .twin-preview-actions {
+    flex-wrap: wrap;
+  }
   .twin-preview {
     padding: var(--v-space-1);
     height: auto;

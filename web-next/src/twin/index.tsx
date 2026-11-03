@@ -245,6 +245,7 @@ function HouseAnnotations({
   activeCameraId,
   onCameraSelect,
   registry,
+  hoveredRegion,
 }: {
   model: TwinModel;
   palette: Palette;
@@ -252,6 +253,7 @@ function HouseAnnotations({
   activeCameraId?: string | null;
   onCameraSelect?: (id: string) => void;
   registry: Map<string, AnnotationEntry>;
+  hoveredRegion: string | null;
 }) {
   const [hovered, setHovered] = useState<string | null>(null);
   const labels: {
@@ -356,7 +358,7 @@ function HouseAnnotations({
       children: (
         <Tooltip.Provider delayDuration={0}>
           <Tooltip.Root
-            open={hovered === region.id}
+            open={hovered === region.id || hoveredRegion === region.id}
             onOpenChange={(open) => setHovered(open ? region.id : null)}
           >
             <Tooltip.Trigger asChild>
@@ -584,30 +586,24 @@ function CameraCone({
 function BlindRegions({
   model,
   palette,
+  onHover,
 }: {
   model: TwinModel;
   palette: Palette;
+  onHover: (id: string | null) => void;
 }) {
-  const [hovered, setHovered] = useState<string | null>(null);
   return (
     <group name="blind-regions">
       {model.blindRegions.map((region) => {
-        const lines = hatchSegments(region.polygon_m, palette.hatch),
-          center = region.polygon_m.reduce<Vec2>(
-            (s, p) => [
-              s[0] + p[0] / region.polygon_m.length,
-              s[1] + p[1] / region.polygon_m.length,
-            ],
-            [0, 0],
-          );
+        const lines = hatchSegments(region.polygon_m, palette.hatch);
         return (
           <group
             key={region.id}
             onPointerOver={(e) => {
               e.stopPropagation();
-              setHovered(region.id);
+              onHover(region.id);
             }}
-            onPointerOut={() => setHovered(null)}
+            onPointerOut={() => onHover(null)}
           >
             <GroundPolygon
               points={region.polygon_m}
@@ -816,6 +812,7 @@ export function HouseView({
     [reset, setReset] = useState(0),
     [zoom, setZoom] = useState({ factor: 1, serial: 0 }),
     [showCoverage, setShowCoverage] = useState(true);
+  const [hoveredRegion, setHoveredRegion] = useState<string | null>(null);
   const container = useRef<HTMLDivElement>(null!),
     registry = useRef(new Map<string, AnnotationEntry>()),
     evidence = useMemo(
@@ -966,7 +963,11 @@ export function HouseView({
                 intensity={palette.light}
               />
               <SitePlan model={model} palette={palette} />
-              <BlindRegions model={model} palette={palette} />
+              <BlindRegions
+                model={model}
+                palette={palette}
+                onHover={setHoveredRegion}
+              />
               {model.cameras.map((camera) => (
                 <CameraCone
                   key={camera.id}
@@ -1014,6 +1015,7 @@ export function HouseView({
           activeCameraId={activeCameraId}
           onCameraSelect={onCameraSelect}
           registry={registry.current}
+          hoveredRegion={hoveredRegion}
         />
         <span className="twin-map-note">
           Stylized property · approximate locations

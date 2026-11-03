@@ -2,7 +2,7 @@ import type {ReactNode} from 'react';
 export type Verdict = 'normal'|'noteworthy'|'needs_attention'|'cant_confirm';
 export type Route = 'home'|'attention'|'clips'|'media'|'messages'|'rules'|'benchmark'|'settings';
 export interface Evidence {kind:'fixture'|'real';label:string;source:string}
-export interface Camera {id:string;name:string;model:string|null;power_profile:string;stream:string;status:string;source_label:string;hub_present:boolean|null;wifi_signal_dbm:number|null;clock_offset_s:number|null;clip_url:string|null;thumbnail_url:string|null}
+export interface Camera {id:string;name:string;model:string|null;power_profile:string;stream:string;status:string;privacy_reviewed?:boolean;source_label:string;hub_present:boolean|null;wifi_signal_dbm:number|null;clock_offset_s:number|null;clip_url:string|null;thumbnail_url:string|null}
 export interface VisitRow {id:string;scenario:string;title:string;verdict:Verdict;verdict_label:string;escalated:boolean;first_sentence:string;story:string;t0:number;t1:number;clock:string;cameras:string[];gaps:string[];roles:string[];role_label:string;role_basis:string;reason:string;thumbnail_url:string|null;clip_url:string|null;evidence_kind:'fixture'|'real'}
 export interface Clip {id:string;visit_id:string;camera_id:string;verdict:Verdict;clock:string;t0:number;t1:number;title:string;kind:string;clip_url:string|null;thumbnail_url:string|null;source_label:string}
 export interface VisitEvent {event_id:string;t:number;t1:number;clip_t0:number;clip_t1:number;clock:string;camera_id:string;camera_name:string;type:string;target:string|null;track_id:string;subject_id:string;actor_role:string;visit_id:string}

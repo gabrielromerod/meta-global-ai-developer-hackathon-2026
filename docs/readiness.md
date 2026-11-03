@@ -17,7 +17,7 @@ Every change in the [Nov 2 change set](spec/changes/2026-11-02-business-correcti
 
 | Item | Evidence |
 | --- | --- |
-| CI | [Run 41587853241](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/actions/runs/41587853241): every job green on commit `46c5b68` ("fix(scan): limit metadata scan to media and scan exports"): ruff and the NFR-004 grep, gitleaks, the blocking P0 suites 1–4, the report-only suite and determinism run, the privacy, metadata and repository-wide audio scans, and the Docker sandbox with the blocking judge-path E2E. The working tree has uncommitted changes on top of `46c5b68`; CI for the final commit: `<CI run URL>` |
+| CI | [Run 41587853241](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/actions/runs/41587853241): every job green on commit `46c5b68` ("fix(scan): limit metadata scan to media and scan exports"): ruff and the NFR-004 grep, gitleaks, the blocking P0 suites 1–4, the report-only suite and determinism run, the privacy, metadata and repository-wide audio scans, and the Docker sandbox with the blocking judge-path E2E. Latest: [run 41604381135](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/actions/runs/41604381135) (every job and every step green, report-only steps included, on `6dee3bf`; 1418 passed locally, 18 E2E) |
 | Fix round (Nov 3) | `uv run pytest -q` after the defect fixes (durable ledger, reservations, owner token, trusted hosts, check 7 cues, removed events, NFR-003 schema test): **1394 passed, 18 deselected**, 0 failed, in 139 s |
 | Unit and integration suite | `uv run pytest -q` on the working tree: **1275 passed, 18 deselected** (e2e), 0 failed, in 105 s. 1043 unit tests in 31 files under `tests/unit/`, 232 integration tests in 8 files under `tests/integration/` (counts include parametrised cases) |
 | Browser E2E | `uv run pytest -m e2e tests/e2e -q`: **18 passed** in 13.7 s (Chromium), invalid key and unreachable live backend. One `PytestRemovedIn10Warning` about the session-scoped `base_url` fixture |
@@ -40,7 +40,6 @@ Every change in the [Nov 2 change set](spec/changes/2026-11-02-business-correcti
 - **Performance.** `tests/e2e/test_perf.py` does not exist (NFR-005, NFR-030, FR-040 frame rate and load time).
 - **NFR-022.** Mask badges are untested (sentence badges pass).
 - **NFR-021.** Timed clean-clone run not done.
-- **Final CI evidence.** Commit the working tree and record `<CI run URL>` here and in the checklists.
 - **Single replica only.** Budget reservations are held in memory per process, so the race-free cap check (FR-043) holds only with one sandbox replica on one ledger file. Several replicas would need SQLite-level reservations.
 - **Owner UI.** Only `web/calibrate/` sends the owner token; the main app (`web/app.js`) has no owner UI for check-in or windows yet. `GET /api/live/stream` stays LAN-only without the token (EventSource cannot send an `Authorization` header).
 
@@ -103,7 +102,6 @@ From [spec 13.4](spec/vigil-spec.md#134-blockers-to-clear-today), with the extra
 - [ ] **`MODEL_API_KEY` GitHub secret** for the sandbox key (CI never makes live calls; needed for T-28)
 - [ ] **Hosting account** for the sandbox deploy (T-28, Tue 23:00) and its judging env: `VIGIL_ALLOW_PAID=1` from window end, `VIGIL_JUDGING_CAP_USD=25`, `VIGIL_JUDGING_END` (default Nov 10, 23:59 PT)
 - [ ] **Sandbox ledger volume:** a named volume mounted at `/data` (`VIGIL_LEDGER_PATH=/data/ledger.db`), **one replica** only. Without a writable ledger, paid judging calls are refused
-- [ ] **Sandbox `VIGIL_TRUSTED_HOSTS`:** set to `["<public host>", "127.0.0.1", "localhost"]`, or judges get 400 "Invalid host header"
 - [ ] **Edge `VIGIL_OWNER_TOKEN`** (a long random secret, never committed) and, if the LAN app is opened by IP or mDNS name, `VIGIL_TRUSTED_HOSTS`. Without the token, check-in, windows and the calibration tool answer 403
 - [ ] **Make the repository public** before submission ([submission runbook](runbooks/submission.md))
 - [ ] **Accept the SAM 3.1 licence on Hugging Face** (H-02, H-04, FR-042)
@@ -116,7 +114,7 @@ From the revised [spec 9.7](spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks
 
 ### Monday Nov 2
 
-1. **Integrator, no blocker:** commit the working tree and record `<CI run URL>`.
+1. ~~Integrator: commit the working tree and record the CI run~~ Done Nov 3: [run 41604381135](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/actions/runs/41604381135) (every job and every step green, report-only steps included, on `6dee3bf`; 1418 passed locally, 18 E2E).
 2. **Owner, overdue (13:00):** T-01 remainder: claim credits, set the $140 limit, pick the track.
 3. **Daylight block (13:00–16:55):** **13:45** T-04 Reolink probe, privacy masks, audio off, zone `kind`s drawn (egress, perimeter); **14:30** T-05 capture running, T-03 smoke tests (credits); **15:45** T-06 LiDAR loops, 6 landmark pairs per camera, 6 audit markers per camera surveyed, 2 scale distances; **16:50** T-07a daytime A, B, B′ with consent, labels first, 3 consented WAV fixtures.
 4. **Night block (17:15 setup; filming after about 17:55 in IR, until 19:00):** T-07b A′ and C, labels first; optional take of a household member returning from the street without a check-in.

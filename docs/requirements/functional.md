@@ -8,7 +8,7 @@ Source: [spec section 1](../spec/vigil-spec.md#1-functional-requirements), inclu
 - Nov 3 fix round: `uv run pytest -q`: **1394 passed, 18 deselected**, 0 failed. Test names added in that round were checked with `uv run pytest --collect-only -q` on Nov 3.
 - `uv run pytest -m e2e tests/e2e -q`: **18 passed** in Chromium (`test_judge_path.py` 10 tests and `test_mobile.py` 2 tests; some are parametrised), served with an invalid key and an unreachable live backend.
 - `uv run ruff check .` and `uv run ruff format --check .`: clean.
-- CI: [run 41587853241](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/actions/runs/41587853241) was fully green on commit `46c5b68` ("fix(scan): limit metadata scan to media and scan exports"). The working tree above has uncommitted changes on top of it; CI for the final commit: `<CI run URL>`.
+- CI: [run 41587853241](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/actions/runs/41587853241) was fully green on commit `46c5b68` ("fix(scan): limit metadata scan to media and scan exports"). Latest: [run 41604381135](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/actions/runs/41604381135) (every job and every step green, report-only steps included, on `6dee3bf`; 1418 passed locally, 18 E2E).
 
 Full readiness: [readiness.md](../readiness.md).
 

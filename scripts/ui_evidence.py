@@ -26,6 +26,24 @@ def fixture_sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
 
 
+def pin_fixture(path: Path, manifest: Path) -> dict:
+    content = path.read_bytes().replace(b"\r\n", b"\n")
+    digest = hashlib.sha256(content).hexdigest()
+    snapshot = manifest.parent / "proof-fixtures" / f"{path.stem}-{digest[:16]}.json"
+    snapshot.parent.mkdir(parents=True, exist_ok=True)
+    if snapshot.exists() and fixture_sha(snapshot) != digest:
+        raise ValueError("existing capture fixture snapshot changed")
+    if not snapshot.exists():
+        snapshot.write_bytes(content)
+    return {
+        "path": snapshot.relative_to(manifest.parent).as_posix(),
+        "sha256": digest,
+        "original_path": Path(
+            os.path.relpath(path.resolve(), manifest.parent.resolve())
+        ).as_posix(),
+    }
+
+
 def validate_manifest(root: Path, manifest: Path) -> tuple[int, list[str]]:
     try:
         record = json.loads(manifest.read_text(encoding="utf-8"))
@@ -122,13 +140,7 @@ def main() -> int:
         "contains_camera_pixels": False,
         "authenticated": False,
         "fixture_hash_mode": "lf-normalized",
-        "fixtures": [
-            {
-                "path": Path(os.path.relpath(p.resolve(), manifest.parent.resolve())).as_posix(),
-                "sha256": fixture_sha(p),
-            }
-            for p in args.fixture
-        ],
+        "fixtures": [pin_fixture(p, manifest) for p in args.fixture],
         "files": {p.relative_to(args.root).as_posix(): sha(p) for p in files},
     }
     manifest.write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")

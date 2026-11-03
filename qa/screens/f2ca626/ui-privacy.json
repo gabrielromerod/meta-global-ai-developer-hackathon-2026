@@ -8,12 +8,14 @@
   "fixture_hash_mode": "lf-normalized",
   "fixtures": [
     {
-      "path": "../../../web-next/src/fixtures/state.json",
-      "sha256": "373b9a56ed9f6fa265947a10f605a2be9333a562cb26b9efa91837bfbf3c2ef8"
+      "path": "proof-fixtures/state-373b9a56ed9f6fa2.json",
+      "sha256": "373b9a56ed9f6fa265947a10f605a2be9333a562cb26b9efa91837bfbf3c2ef8",
+      "original_path": "../../../web-next/src/fixtures/state.json"
     },
     {
-      "path": "../../../web-next/src/fixtures/twin.json",
-      "sha256": "8e255862c06ac708fa55fb4d5b408684af359180ae259871ebaf731918c9480a"
+      "path": "proof-fixtures/twin-8e255862c06ac708.json",
+      "sha256": "8e255862c06ac708fa55fb4d5b408684af359180ae259871ebaf731918c9480a",
+      "original_path": "../../../web-next/src/fixtures/twin.json"
     }
   ],
   "files": {

@@ -90,6 +90,8 @@ jobs:
         run: uv run python scripts/metadata_scan.py demo
       - name: Metadata scan regression (real generated EXIF, missing tool fails closed)
         run: uv run pytest -q tests/unit/test_metadata_scan.py
+      - name: Tracked UI screenshot provenance, audio and metadata (no footage exceptions)
+        run: uv run python scripts/scan_ui_evidence.py
       - name: Repository-wide audio allowlist (NFR-002) — only consented voice fixtures
         run: |
           uv run python - <<'PY'

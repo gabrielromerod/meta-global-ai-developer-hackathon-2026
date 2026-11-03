@@ -87,3 +87,40 @@ def test_ui_fixture_hash_normalizes_only_line_endings(tmp_path):
     assert fixture_sha(a) == fixture_sha(b)
     b.write_bytes(b'{\n"evidence":{"kind":"real"}\n}')
     assert fixture_sha(a) != fixture_sha(b)
+
+
+def test_capture_manifest_pins_immutable_fixture_snapshot(tmp_path, monkeypatch):
+    import sys
+
+    from scripts import ui_evidence
+
+    root = tmp_path / "qa"
+    root.mkdir()
+    assert cv2.imwrite(str(root / "home.png"), np.zeros((8, 8, 3), dtype=np.uint8))
+    fixture = tmp_path / "state.json"
+    fixture.write_text(json.dumps({"evidence": {"kind": "fixture"}, "clip_url": None}))
+    original = fixture.read_bytes()
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "ui_evidence",
+            str(root),
+            "--source",
+            "http://localhost/preview",
+            "--reviewer",
+            "fixture",
+            "--fixture",
+            str(fixture),
+            "--reviewed",
+        ],
+    )
+    assert ui_evidence.main() == 0
+    record = json.loads((root / "ui-privacy.json").read_text())
+    snapshot = (root / record["fixtures"][0]["path"]).resolve()
+    assert snapshot != fixture
+    assert snapshot.read_bytes() == original
+    fixture.write_text("changed live fixture")
+    assert ui_evidence.validate_manifest(root, root / "ui-privacy.json")[1] == []
+    snapshot.write_text("tampered snapshot")
+    assert ui_evidence.validate_manifest(root, root / "ui-privacy.json")[1]

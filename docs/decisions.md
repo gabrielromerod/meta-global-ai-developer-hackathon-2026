@@ -39,3 +39,5 @@
 - 2026-11-03: Full Attention includes every supplied visit, with urgent IDs first and normal history available through its real filter. Home alone limits its preview. Server urgent IDs are not truncated.
 
 - 2026-11-03: Day/Night tabs change only tokenized schematic illumination. A visible note says recorded clips keep their original lighting; the app does not infer sunrise, weather or relabel recorded events. Camera/view selection retains the same scene and orbit.
+
+- 2026-11-03: Preserve a native SVG map when WebGL is unavailable or `?twin=2d` is requested. It reuses the existing generic geometry, occlusion, observed-path and gap selectors; domain SVG drawing has no suitable component-library substitute. The schematic faces its front downward and keeps the tree barrier on the right, without compass orientation or private geometry.

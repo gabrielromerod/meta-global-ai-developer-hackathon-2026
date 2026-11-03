@@ -51,6 +51,7 @@
   --v-scene-night-background: #131a23; --v-scene-night-ground: #202c30;
   --v-scene-night-house: #788492; --v-scene-night-roof: #465462;
   --v-scene-night-tree: #385e4b; --v-scene-night-light: 1.2;
+  --v-map-min: 180px; --v-map-marker: .25; --v-map-line: .06; --v-map-dash: .3 .2;
 }
 [data-theme="light"] {
   color-scheme: light;

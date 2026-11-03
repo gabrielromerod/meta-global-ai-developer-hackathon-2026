@@ -44,6 +44,7 @@ import {
   type Vec3,
 } from "./geometry";
 import "./twin.css";
+import {MapView} from './map';
 
 interface Palette {
   space: number;
@@ -143,13 +144,14 @@ function usePalette(lighting?:'day'|'night') {
 }
 
 class CanvasBoundary extends Component<
-  { children: ReactNode },
+  { children: ReactNode; onFailure?:()=>void },
   { failed: boolean }
 > {
   state = { failed: false };
   static getDerivedStateFromError() {
     return { failed: true };
   }
+  componentDidCatch() {this.props.onFailure?.();}
   render() {
     return this.state.failed ? (
       <div className="twin-unavailable" role="status">
@@ -915,6 +917,7 @@ export function HouseView({
   onCameraSelect,
   preset: controlledPreset,
   lighting,
+  forceMap,
 }: HouseViewProps) {
   const model = useMemo(() => parseTwin(twin), [twin]),
     palette = usePalette(lighting),
@@ -924,6 +927,7 @@ export function HouseView({
     [zoom, setZoom] = useState({ factor: 1, serial: 0 }),
     [showCoverage, setShowCoverage] = useState(true);
   const [hoveredRegion, setHoveredRegion] = useState<string | null>(null);
+  const [failed,setFailed]=useState(false);
   const container = useRef<HTMLDivElement>(null!),
     registry = useRef(new Map<string, AnnotationEntry>()),
     evidence = useMemo(
@@ -941,6 +945,7 @@ export function HouseView({
     }),
     [model.ground, palette.fov],
   );
+  if(forceMap||failed)return <MapView twin={twin} positions={positions} time={time} lighting={lighting} activeCameraId={activeCameraId} onCameraSelect={onCameraSelect}/>;
   return (
     <section
       className="house-view"
@@ -1050,7 +1055,7 @@ export function HouseView({
       </div>
       <div className="twin-canvas" ref={container} data-testid="twin-canvas">
         <AnnotationRegistry.Provider value={registry.current}>
-          <CanvasBoundary>
+          <CanvasBoundary onFailure={()=>setFailed(true)}>
             <Canvas
               camera={canvasCamera}
               dpr={[1, 2]}

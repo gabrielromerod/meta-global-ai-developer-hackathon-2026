@@ -77,6 +77,30 @@ def test_react_home_shows_household_and_external_gate_context(page: Page, server
     assert page.locator("body").evaluate("e=>e.scrollHeight<=innerHeight")
 
 
+def test_react_map_fallback_keeps_cameras_and_explicit_gaps(page: Page, server_url):
+    errors = []
+    page.on("pageerror", lambda error: errors.append(str(error)))
+    page.goto(server_url + "/next/?twin=2d#/visit/v_c")
+    wait_ready(page)
+    view = page.get_by_test_id("property-map")
+    expect(view.get_by_role("img", name="Property evidence map")).to_be_visible()
+    house = view.locator(".map-house").bounding_box()
+    trees = view.locator(".map-trees").bounding_box()
+    assert house is not None
+    assert trees is not None
+    assert trees["x"] > house["x"]
+    expect(view).to_contain_text("Not observed · 41 s")
+    expect(view.get_by_role("button", name="Select Left passage")).to_be_visible()
+    view.get_by_role("button", name="Select Left passage").click()
+    expect(view.get_by_role("button", name="Select Left passage")).to_have_attribute(
+        "aria-pressed", "true"
+    )
+    page.get_by_role("slider", name="Evidence time").fill("15280")
+    expect(view.get_by_label("Current estimated position")).to_have_count(0)
+    assert page.locator(".house-view canvas").count() == 0
+    assert not errors, errors
+
+
 def test_react_voice_sample_keeps_editable_text_and_server_scope_explanation(
     page: Page, server_url
 ):

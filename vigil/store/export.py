@@ -22,6 +22,7 @@ import shutil
 import sqlite3
 from dataclasses import dataclass, field
 from pathlib import Path
+from tempfile import TemporaryDirectory
 from typing import Any
 
 import yaml
@@ -206,6 +207,7 @@ def export_session(session: str, out: Path, *, settings=None, synthetic: bool = 
         )
     ]
     cfg = load_config(settings.config_path)
+    synthetic = synthetic or cfg.evidence_kind == "fixture"
     cfg = cfg.model_copy(
         update={
             "cameras": [
@@ -306,8 +308,18 @@ def export_bundle(
             f"no database at {db_path}; run `vigil process` first (or pass db_path)"
         )
     out = Path(out)
+    cfg = _load_config(config)
+    _validate_export_media(
+        out, media or {}, cfg, config.parent / "privacy" if isinstance(config, Path) else None
+    )
+    if cfg is not None and cfg.evidence_kind == "real":
+        from vigil.spatial.public import public_twin
+
+        twin = public_twin(cfg)
     out.mkdir(parents=True, exist_ok=True)
     meta = dict(meta or {})
+    if cfg is not None and cfg.evidence_kind == "fixture":
+        meta["synthetic"] = True
 
     src = db.connect(db_path)
     try:
@@ -377,6 +389,52 @@ def export_bundle(
         manifest["prefilter_counts"] = meta["prefilter_counts"]
     _write_json(out / MANIFEST, manifest)
     return out
+
+
+def _validate_export_media(
+    out: Path, media: dict[str, bytes | Path], cfg: Config | None, privacy_dir: Path | None
+) -> None:
+    """Validate every asset before mutating a directory a running app could publish."""
+    from vigil.ingest.config import camera_for, privacy_polygons
+    from vigil.ingest.media import IMAGE_EXTS, VIDEO_EXTS
+    from vigil.ingest.metadata import scan
+    from vigil.ingest.privacy import assert_uploadable
+    from vigil.ingest.review import require_privacy_review
+
+    root = out.resolve() / "media"
+    for relative, content in media.items():
+        target = (root / relative).resolve()
+        if not target.is_relative_to(root):
+            raise ValueError("export media path is outside its destination")
+        if target.suffix.lower() not in IMAGE_EXTS | VIDEO_EXTS | {".glb"}:
+            raise ValueError(
+                "unsupported public media asset type; voice fixtures use their separate allowlist"
+            )
+        if target.suffix.lower() == ".glb" and (cfg is None or cfg.evidence_kind != "fixture"):
+            raise ValueError("private GLB is not a public export asset")
+        with TemporaryDirectory(prefix="vigil-export-check-") as scratch:
+            if isinstance(content, Path):
+                source = content
+            else:
+                source = Path(scratch) / target.name
+                source.write_bytes(content)
+            if target.suffix.lower() in IMAGE_EXTS | VIDEO_EXTS:
+                if cfg is None:
+                    raise ValueError("camera config is required to export image/video")
+                cid = camera_for(target, root, [c.id for c in cfg.cameras])
+                if cid is None:
+                    raise ValueError("export image/video has no camera privacy context")
+                camera = cfg.camera(cid)
+                polygons = (
+                    privacy_polygons(cfg, cid, privacy_dir)
+                    if privacy_dir is not None
+                    else camera.privacy
+                )
+                require_privacy_review(camera, polygons)
+                assert_uploadable(source, polygons, ref_size=(camera.width, camera.height))
+            failures = scan(source, files=[source])
+            if failures:
+                raise ValueError("export metadata validation failed: " + "; ".join(failures))
 
 
 # ---------------------------------------------------------------------------

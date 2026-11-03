@@ -71,3 +71,37 @@ def test_ingest_audio_is_error_even_with_reviewed_masks(tmp_path):
     source = texture_clip(tmp_path / "audio.mp4", 0.3, size=(160, 90), audio=True)
     with pytest.raises(ValueError, match="audio stream"):
         require_silent_source(source)
+
+
+def test_upload_guard_checks_metadata_when_extension_is_disguised(tmp_path):
+    import subprocess
+
+    import cv2
+    import numpy as np
+
+    from vigil.ingest.privacy import PrivacyViolation, assert_uploadable
+
+    image = tmp_path / "generated.jpg"
+    assert cv2.imwrite(str(image), np.zeros((24, 24, 3), dtype=np.uint8))
+    subprocess.run(
+        ["exiftool", "-overwrite_original", "-GPSLatitude=1", str(image)],
+        capture_output=True,
+        check=True,
+    )
+    disguised = tmp_path / "generated.dat"
+    image.rename(disguised)
+    with pytest.raises(PrivacyViolation, match="GPS"):
+        assert_uploadable(disguised, [])
+
+
+def test_still_review_is_invalidated_when_role_zone_geometry_changes():
+    from vigil.ingest.review import privacy_digest, require_privacy_review
+
+    camera = load_config(ROOT / "config/cameras.yaml").camera("doorbell")
+    camera.privacy_reviewed = True
+    camera.privacy_still_sha256 = hashlib.sha256(b"generated still").hexdigest()
+    camera.privacy_polygons_sha256 = privacy_digest(camera, camera.privacy)
+    require_privacy_review(camera)
+    camera.zones["front_door_egress"][0] = (480, 250)
+    with pytest.raises(ValueError, match="changed"):
+        require_privacy_review(camera)

@@ -739,7 +739,14 @@ def reolink_guard(config: ConfigOpt = None, env_file: EnvFileOpt = Path(".env"))
     _load_env(env_file)
     cfg = _load_cfg(_config_path(config))
     try:
-        asyncio.run(run_event_capture(cfg.cameras, _settings().data_dir / "capture"))
+        settings = _settings()
+        asyncio.run(
+            run_event_capture(
+                cfg.cameras,
+                settings.data_dir / "capture",
+                destination=settings.data_dir / "windows",
+            )
+        )
     except KeyboardInterrupt:
         typer.echo("event capture stopped; pinned evidence retained")
     except (OSError, RuntimeError, ValueError) as err:

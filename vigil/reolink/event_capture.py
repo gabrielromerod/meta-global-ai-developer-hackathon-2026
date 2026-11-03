@@ -6,10 +6,12 @@ import hashlib
 import json
 import shutil
 import time
-from collections.abc import AsyncIterator
+from collections.abc import AsyncIterator, Callable
+from datetime import UTC, datetime
 from pathlib import Path
 
 from vigil.ingest.media import probe
+from vigil.ingest.panorama import illumination_mode
 from vigil.ingest.review import require_privacy_review, require_silent_source
 from vigil.ingest.windows import cut_window
 from vigil.models import CameraAiEvent, CameraCfg
@@ -20,18 +22,20 @@ from vigil.settings import ffmpeg_bin
 
 
 def event_clip_cmd(url: str, destination: Path, *, ffmpeg: str | None = None) -> list[str]:
+    input_options = (
+        ["-rtsp_transport", "tcp", "-allowed_media_types", "video", "-timeout", "5000000"]
+        if url.startswith(("rtsp://", "rtsps://"))
+        else ["-rw_timeout", "5000000"]
+        if url.startswith(("http://", "https://"))
+        else []
+    )
     return [
         ffmpeg or ffmpeg_bin(),
         "-hide_banner",
         "-nostdin",
         "-loglevel",
         "warning",
-        "-rtsp_transport",
-        "tcp",
-        "-allowed_media_types",
-        "video",
-        "-timeout",
-        "5000000",
+        *input_options,
         "-i",
         url,
         "-map",
@@ -39,7 +43,21 @@ def event_clip_cmd(url: str, destination: Path, *, ffmpeg: str | None = None) ->
         "-t",
         "120",
         "-c:v",
-        "copy",
+        "libx264",
+        "-preset",
+        "veryfast",
+        "-tune",
+        "zerolatency",
+        "-vf",
+        r"scale=-2:min(1440\,ih)",
+        "-b:v",
+        "3000000",
+        "-maxrate",
+        "4000000",
+        "-bufsize",
+        "6000000",
+        "-force_key_frames",
+        "expr:gte(t,n_forced*1)",
         "-an",
         "-dn",
         "-sn",
@@ -47,6 +65,10 @@ def event_clip_cmd(url: str, destination: Path, *, ffmpeg: str | None = None) ->
         "-1",
         "-movflags",
         "+frag_keyframe+empty_moov+default_base_moof",
+        "-frag_duration",
+        "100000",
+        "-flush_packets",
+        "1",
         str(destination),
     ]
 
@@ -75,14 +97,15 @@ class EventRecorder:
         self.pin(event, now=event.t1 or main_start)
         self.index.pin(event.id, [main])
         key = hashlib.sha256(event.id.encode()).hexdigest()[:20]
-        out = self.destination / key
+        attempt = hashlib.sha256(f"{main_start}|{main.name}".encode()).hexdigest()[:12]
+        out = self.destination / f"{self.camera.id}-{key}-{attempt}"
         out.mkdir(parents=True, exist_ok=True)
         sources = []
         for segment in list_segments(self.ring / self.camera.id):
             if segment.t0 < main_start and segment.t1 > event.t0 - self.pre_roll_s:
                 sources.append((segment.t0, segment.path, "sub"))
         sources.append((main_start, main, "main"))
-        parts, gaps = [], []
+        parts, gaps, windows = [], [], []
         desired_start = event.t0 - self.pre_roll_s
         covered = desired_start
         for index, (start, path, quality) in enumerate(sorted(sources)):
@@ -110,6 +133,7 @@ class EventRecorder:
                 ref_size=(self.camera.width, self.camera.height),
                 max_width=1920 if self.camera.frame_layout == "duo_panorama" else 2560,
             )
+            window.illumination = illumination_mode(window.path)
             parts.append(
                 {
                     "path": str(destination),
@@ -118,8 +142,25 @@ class EventRecorder:
                     "source_quality": quality,
                 }
             )
+            windows.append(
+                window.model_copy(
+                    update={
+                        "t0": round(window.t0 - desired_start, 6),
+                        "t1": round(window.t1 - desired_start, 6),
+                    }
+                )
+            )
             covered = max(covered, b)
         partial = event.t1 is None or covered < event.t1
+        if event.t1 is None:
+            gaps.append(
+                {
+                    "t0": covered,
+                    "t1": None,
+                    "reason": "recording ended while the camera event remained active",
+                    "resolved": False,
+                }
+            )
         if event.t1 is not None and covered < event.t1:
             gaps.append(
                 {
@@ -136,7 +177,29 @@ class EventRecorder:
             "partial": partial,
             "source_label": "Event clips",
             "camera_id": self.camera.id,
+            "session_id": out.name,
         }
+        relative_event = event.model_copy(
+            update={
+                "t0": round(event.t0 - desired_start, 6),
+                "t1": None if event.t1 is None else round(event.t1 - desired_start, 6),
+            }
+        )
+        metadata = {
+            "session_start": datetime.fromtimestamp(desired_start, UTC).isoformat(),
+            "camera_ai_events": [relative_event.model_dump(mode="json")],
+            "camera_ai_events_measured": True,
+            "source_label": "Event clips",
+            "truncated_after": {self.camera.id: round(covered - desired_start, 6)}
+            if partial
+            else {},
+            "capture_gaps": gaps,
+            "illumination_basis": "observed chroma heuristic; hardware IR state is not verified",
+        }
+        (out / "windows.json").write_text(
+            json.dumps([w.model_dump(mode="json") for w in windows], indent=2), encoding="utf-8"
+        )
+        (out / "session.json").write_text(json.dumps(metadata, indent=2), encoding="utf-8")
         (out / "capture.json").write_text(json.dumps(result, indent=2), encoding="utf-8")
         return result
 
@@ -149,6 +212,8 @@ async def run_event_capture(
     adapter=None,
     runner=None,
     free_floor_bytes: int = 2 * 1024**3,
+    destination: Path | None = None,
+    clock: Callable[[], float] = time.time,
 ) -> None:
     """Hardware entry point; invoked only by an explicit owner CLI command."""
     from vigil.reolink.ai_events import ReolinkAioPushAdapter, stream_ai_events
@@ -161,7 +226,8 @@ async def run_event_capture(
     root.mkdir(parents=True, exist_ok=True)
     ring = root / "ring"
     ring.mkdir(exist_ok=True)
-    recorders = {c.id: EventRecorder(ring, root / "events", c) for c in ac}
+    destination = destination or root / "events"
+    recorders = {c.id: EventRecorder(ring, destination, c) for c in ac}
     cleanup_ring(ring, free_floor_bytes=free_floor_bytes)
     if shutil.disk_usage(root).free < free_floor_bytes:
         raise RuntimeError("disk free-space floor reached; pinned event evidence retained")
@@ -173,6 +239,7 @@ async def run_event_capture(
     adapter = adapter or ReolinkAioAdapter()
     runner = runner or SubprocessRunner("event")
     active = {}
+    attempts = {}
     tasks = set()
     ring_task = asyncio.create_task(
         run_capture(sub_cameras, ring, via_restreamer=False, adapter=adapter)
@@ -194,13 +261,13 @@ async def run_event_capture(
     async def housekeeping():
         while True:
             for event, _, _, recorder in list(active.values()):
-                recorder.pin(event, now=time.time())
+                recorder.pin(event, now=clock())
             cleanup_ring(ring, free_floor_bytes=free_floor_bytes)
             if shutil.disk_usage(root).free < free_floor_bytes:
                 raise RuntimeError(
                     "disk floor reached; capture paused and pinned evidence retained"
                 )
-            cleanup_processing(root / "windows", 48 * 3600)
+            cleanup_processing(destination, 48 * 3600)
             cleanup_processing(root / "cache", 72 * 3600)
             await asyncio.sleep(1)
 
@@ -225,7 +292,7 @@ async def run_event_capture(
             }:
                 continue
             recorder = recorders[event.camera_id]
-            recorder.pin(event, now=time.time())
+            recorder.pin(event, now=clock())
             if event.id in active:
                 _, proc, source, _ = active[event.id]
                 active[event.id] = (event, proc, source, recorder)
@@ -244,9 +311,15 @@ async def run_event_capture(
             if url is None:
                 raise RuntimeError(f"camera {camera.id}: main stream unavailable")
             key = hashlib.sha256(event.id.encode()).hexdigest()[:20]
-            source = ring / f"event-{key}.mp4"
+            attempt = attempts.get(event.id, 0)
+            source = ring / f"event-{key}-{attempt:03d}.mp4"
+            while source.exists():
+                attempt += 1
+                source = ring / f"event-{key}-{attempt:03d}.mp4"
+            attempts[event.id] = attempt + 1
+            recorder.index.pin(event.id, [source])
             proc = await runner.start(event_clip_cmd(url.secret(), source))
-            started = time.time()
+            started = clock()
             active[event.id] = (event, proc, source, recorder)
             task = asyncio.create_task(watch(event.id, proc, source, started, recorder))
             tasks.add(task)

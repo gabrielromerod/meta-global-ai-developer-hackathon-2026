@@ -96,6 +96,7 @@ class ScenarioInputs(BaseModel):
     """SAM objects that were already parsed (added to whatever ``sam_outputs`` yield)."""
     camera_ai_events: list[CameraAiEvent] = Field(default_factory=list)
     camera_ai_events_measured: bool = False
+    truncated_after: dict[str, float] = Field(default_factory=dict)
     outages: list[Outage] = Field(default_factory=list)
 
 
@@ -445,6 +446,7 @@ def run_scenario(
         checkins=checkins,
         session_start=session_start,
         replay_bindings=replay_bindings,
+        truncated_after=inp.truncated_after,
     )
     subjects_by_id = {s.id: s for s in asm.subjects}
     by_track = {t.id: t for t in tracks}
@@ -1009,6 +1011,7 @@ def process_session(
                     CameraAiEvent.model_validate(e) for e in meta.get("camera_ai_events", [])
                 ],
                 camera_ai_events_measured=bool(meta.get("camera_ai_events_measured", False)),
+                truncated_after=meta.get("truncated_after", {}),
             )
         finally:
             if own_client:
@@ -1025,6 +1028,7 @@ def process_session(
             "sam_outputs": recorded,
             "camera_ai_events": meta.get("camera_ai_events", []),
             "camera_ai_events_measured": bool(meta.get("camera_ai_events_measured", False)),
+            "truncated_after": meta.get("truncated_after", {}),
         },
         cfg=cfg,
         rules=rules,

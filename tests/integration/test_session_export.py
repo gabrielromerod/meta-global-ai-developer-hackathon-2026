@@ -123,3 +123,71 @@ def test_public_real_session_never_exports_private_glb(tmp_path):
     assert not (out / "media/model.glb").exists()
     twin = json.loads((out / "twin.json").read_text())
     assert twin.get("glb_url") is None
+
+
+def test_bundle_export_rejects_unmasked_media_before_creating_public_directory(
+    tmp_path, sample_config
+):
+    from tests.fixtures.video.synth import texture_clip
+    from tests.integration.test_store import _tiny_db
+    from vigil.ingest.privacy import PrivacyViolation
+
+    path = tmp_path / "source.db"
+    conn = _tiny_db(path)
+    conn.commit()
+    conn.close()
+    raw = texture_clip(tmp_path / "raw.mp4", 0.2, size=(320, 180), audio=False)
+    out = tmp_path / "public"
+    with pytest.raises(PrivacyViolation):
+        export.export_bundle(out, path, config=sample_config, media={"clips/C/side_left.mp4": raw})
+    assert not out.exists()
+
+
+def test_bundle_export_media_path_cannot_escape_destination(tmp_path, sample_config):
+    from tests.integration.test_store import _tiny_db
+
+    path = tmp_path / "source.db"
+    conn = _tiny_db(path)
+    conn.commit()
+    conn.close()
+    with pytest.raises(ValueError, match="outside"):
+        export.export_bundle(
+            tmp_path / "public", path, config=sample_config, media={"../../outside.glb": b"bad"}
+        )
+    assert not (tmp_path / "outside.glb").exists()
+
+
+def test_bundle_export_rejects_audio_even_without_identifying_metadata(tmp_path, sample_config):
+    import wave
+
+    from tests.integration.test_store import _tiny_db
+
+    source = tmp_path / "audio.wav"
+    with wave.open(str(source), "wb") as stream:
+        stream.setnchannels(1)
+        stream.setsampwidth(2)
+        stream.setframerate(16000)
+        stream.writeframes(b"\0\0" * 1600)
+    path = tmp_path / "source.db"
+    conn = _tiny_db(path)
+    conn.commit()
+    conn.close()
+    with pytest.raises(ValueError, match="unsupported"):
+        export.export_bundle(
+            tmp_path / "public", path, config=sample_config, media={"audio.wav": source}
+        )
+
+
+def test_fixture_config_cannot_export_a_real_evidence_label(tmp_path, sample_config):
+    import json
+
+    from tests.integration.test_store import _tiny_db
+
+    path = tmp_path / "fixture.db"
+    conn = _tiny_db(path)
+    conn.commit()
+    conn.close()
+    out = export.export_bundle(
+        tmp_path / "bundle", path, config=sample_config, meta={"synthetic": False}
+    )
+    assert json.loads((out / "manifest.json").read_text())["synthetic"] is True

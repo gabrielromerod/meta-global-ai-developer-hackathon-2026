@@ -171,7 +171,7 @@ def assert_uploadable(
     if report.ok:
         from vigil.ingest.metadata import scan
 
-        report.reasons.extend(scan(Path(path)))
+        report.reasons.extend(scan(Path(path), files=[Path(path)]))
     if not report.ok:
         raise PrivacyViolation(report)
     return report

@@ -34,29 +34,12 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO_ROOT))
 
-from vigil.ingest.config import ConfigError, load_config, privacy_polygons  # noqa: E402
+from vigil.ingest.config import ConfigError, camera_for, load_config, privacy_polygons  # noqa: E402
 from vigil.ingest.media import IMAGE_EXTS, VIDEO_EXTS  # noqa: E402
 from vigil.ingest.privacy import PrivacyReport, scan_media  # noqa: E402
 from vigil.models import Config  # noqa: E402
 
 MEDIA_EXTS = VIDEO_EXTS | IMAGE_EXTS
-
-
-def camera_for(path: Path, root: Path, camera_ids: list[str]) -> str | None:
-    """Map ``path`` to a camera id by the documented path convention."""
-    rel = path.relative_to(root)
-    ids = set(camera_ids)
-    for part in reversed(rel.parts[:-1]):
-        if part in ids:
-            return part
-    stem = path.name
-    best: str | None = None
-    for cid in camera_ids:
-        if (path.stem == cid or any(stem.startswith(cid + sep) for sep in ("_", "-", "."))) and (
-            best is None or len(cid) > len(best)
-        ):
-            best = cid
-    return best
 
 
 def scan_tree(

@@ -25,7 +25,9 @@ VerdictProposal = Literal["normal", "noteworthy"]
 """Wonder may only propose these two (spec 9.4 Story contract)."""
 
 EventType = Literal["enter", "exit", "cross", "touch", "removed", "dwell"]
-GapKind = Literal["blind_spot", "ambiguous_link", "outage", "battery_wake", "clock_drift"]
+GapKind = Literal[
+    "blind_spot", "ambiguous_link", "outage", "battery_wake", "clock_drift", "clip_truncated"
+]
 RuleTrigger = Literal["touch", "cross", "enter", "removed", "dwell"]
 TargetKind = Literal["protected_object", "zone", "line", "watch"]
 RuleState = Literal["draft", "active", "disabled", "discarded"]

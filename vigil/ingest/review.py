@@ -18,6 +18,11 @@ def privacy_digest(camera: CameraCfg, polygons: list[Polygon]) -> str:
         "size": [camera.width, camera.height],
         "polygons": polygons,
         "regions": camera.privacy_regions,
+        "zones": camera.zones,
+        "zone_kinds": camera.zone_kinds,
+        "zone_rings": camera.zone_rings,
+        "lines": camera.lines,
+        "exits": camera.exits,
     }
     return hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
 

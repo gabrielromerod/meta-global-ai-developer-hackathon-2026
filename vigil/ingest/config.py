@@ -568,3 +568,20 @@ def _line_for(lines: dict[Loc, int], loc: Loc) -> int | None:
         if hit is not None:
             return hit
     return None
+
+
+def camera_for(path: Path, root: Path, camera_ids: list[str]) -> str | None:
+    """Map ``path`` to a camera id by the documented path convention."""
+    rel = path.relative_to(root)
+    ids = set(camera_ids)
+    for part in reversed(rel.parts[:-1]):
+        if part in ids:
+            return part
+    stem = path.name
+    best: str | None = None
+    for cid in camera_ids:
+        if (path.stem == cid or any(stem.startswith(cid + sep) for sep in ("_", "-", "."))) and (
+            best is None or len(cid) > len(best)
+        ):
+            best = cid
+    return best

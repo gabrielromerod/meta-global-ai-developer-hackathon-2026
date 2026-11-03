@@ -11,6 +11,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from vigil.api import views
 from vigil.api.owner import is_owner, windows_view
+from vigil.ingest.config import privacy_polygons
 from vigil.ingest.review import require_privacy_review
 
 VERSION = "vigil-ui/1"
@@ -169,7 +170,9 @@ def ui_state(request: Request) -> dict:
     cameras = []
     for cam in cfg.cameras if cfg else []:
         try:
-            require_privacy_review(cam)
+            require_privacy_review(
+                cam, privacy_polygons(cfg, cam.id, settings.config_path.parent / "privacy")
+            )
             status = "not_connected"
         except ValueError:
             status = "privacy_blocked"
@@ -179,9 +182,10 @@ def ui_state(request: Request) -> dict:
                 "id": cam.id,
                 "name": cam.name,
                 "model": cam.model,
-                "power_profile": "import" if imported else cam.power_profile,
+                "power_profile": cam.power_profile,
                 "stream": cam.source.stream if cam.source else "main",
                 "status": status,
+                "privacy_reviewed": status != "privacy_blocked" and cam.evidence_kind == "real",
                 "source_label": "Imported clips"
                 if imported
                 else "Privacy review required"

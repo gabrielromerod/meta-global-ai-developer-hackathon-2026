@@ -46,6 +46,7 @@ def run_cloud(
     replay_bindings=None,
     camera_ai_events=None,
     camera_ai_events_measured: bool = False,
+    truncated_after=None,
 ) -> dict:
     from vigil.ingest.windows import cut_window
     from vigil.meta import sam, spark, wonder
@@ -138,6 +139,7 @@ def run_cloud(
                 "windows": processed,
                 "camera_ai_events": camera_ai_events or [],
                 "camera_ai_events_measured": camera_ai_events_measured,
+                "truncated_after": truncated_after or {},
             },
             cfg=cfg,
             rules=rules,

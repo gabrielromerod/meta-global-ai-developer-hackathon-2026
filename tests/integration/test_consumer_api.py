@@ -23,6 +23,12 @@ def test_ui_state_seven_cameras_honest_counts_and_role_contrast():
         assert state["evidence"]["kind"] == "fixture"
         assert len(state["cameras"]) == 7
         assert all(c["status"] == "privacy_blocked" for c in state["cameras"])
+        assert all(not c["privacy_reviewed"] for c in state["cameras"])
+        assert all(
+            c["power_profile"] == "battery_wifi" and c["source_label"] == "Imported clips"
+            for c in state["cameras"]
+            if c["id"] in {"side_left", "backyard_1", "backyard_2"}
+        )
         assert state["summary"]["camera_events"] is None
         assert state["summary"]["street_events"] is None
         visits = {v["id"]: v for v in state["visits"]}

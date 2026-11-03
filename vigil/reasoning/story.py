@@ -75,7 +75,12 @@ def gap_sentence(
 ) -> StorySentence:
     """The code-written sentence for one gap (never produced by a model)."""
     dur = _duration(gap.duration_s)
-    if gap.kind in {"battery_wake", "clock_drift"}:
+    if gap.kind == "clip_truncated":
+        text = (
+            "The recording ended before the camera event closed. "
+            "Vigil can't confirm what happened afterward."
+        )
+    elif gap.kind in {"battery_wake", "clock_drift"}:
         reason = (
             "battery wake" if gap.kind == "battery_wake" else "camera clock drift above 2 seconds"
         )

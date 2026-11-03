@@ -291,6 +291,7 @@ def assemble_visits(
     checkins: Sequence[CheckIn] = (),
     session_start: datetime | None = None,
     replay_bindings: Mapping[str, tuple[str, float, str]] | None = None,
+    truncated_after: Mapping[str, float] | None = None,
 ) -> VisitAssembly:
     """Link tracks into visits, record every out-of-view interval as a gap, assign roles.
 
@@ -317,6 +318,9 @@ def assemble_visits(
         toward = _toward_region(t, positions, cfg) if exit_region is None else None
         headed[t.id] = toward or exit_leads_to_blind(cfg, t.camera_id, exit_region)
         rs = candidate_routes(cfg, t.camera_id, exit_region, toward)
+        truncated = (truncated_after or {}).get(t.camera_id)
+        if truncated is not None and t.t_first <= truncated <= t.t_last + OUTAGE_EPS_S:
+            rs = []
         via = [r.max_s for r in rs if r.via_region is not None and r.via_region == headed[t.id]]
         route_max[t.id] = max(via, default=DEFAULT_TRANSIT_MAX_S)
 
@@ -439,6 +443,24 @@ def assemble_visits(
             )
             raw_gaps.append((t.id, g))
             break
+
+    for t in subjects:
+        truncated = (truncated_after or {}).get(t.camera_id)
+        if truncated is not None and t.t_first <= truncated <= t.t_last + OUTAGE_EPS_S:
+            raw_gaps.append(
+                (
+                    t.id,
+                    Gap(
+                        id="",
+                        visit_id="",
+                        kind="clip_truncated",
+                        t0=truncated,
+                        t1=truncated,
+                        from_camera=t.camera_id,
+                        resolved=False,
+                    ),
+                )
+            )
 
     # --- 3. visits ------------------------------------------------------------
     uf = _UnionFind()

@@ -23,7 +23,7 @@ from vigil.store import db
 FIXTURES = Path(__file__).parents[1] / "fixtures" / "meta"
 
 
-def generated_session(tmp_path):
+def generated_session(tmp_path, *, camera_id="side_left", width=1280, panorama=False):
     raw = tmp_path / "generated.mp4"
     subprocess.run(
         [
@@ -34,7 +34,7 @@ def generated_session(tmp_path):
             "-f",
             "lavfi",
             "-i",
-            "testsrc=size=1280x720:rate=10:duration=4",
+            f"testsrc=size={width}x720:rate=10:duration=4",
             "-f",
             "lavfi",
             "-i",
@@ -51,7 +51,7 @@ def generated_session(tmp_path):
         check=True,
         capture_output=True,
     )
-    polys = [[(0, 0), (1280, 0), (1280, 60), (0, 60)]]
+    polys = [[(0, 0), (width, 0), (width, 60), (0, 60)]]
     config = tmp_path / "cameras.yaml"
     config.write_text(
         json.dumps(
@@ -59,10 +59,13 @@ def generated_session(tmp_path):
                 "evidence_kind": "fixture",
                 "cameras": [
                     {
-                        "id": "side_left",
+                        "id": camera_id,
                         "name": "Left side",
+                        "width": width,
+                        "height": 720,
+                        "frame_layout": "duo_panorama" if panorama else "planar",
                         "privacy": polys,
-                        "zones": {"yard": [[0, 0], [1280, 0], [1280, 720], [0, 720]]},
+                        "zones": {"yard": [[0, 0], [width, 0], [width, 720], [0, 720]]},
                     }
                 ],
             }
@@ -71,8 +74,17 @@ def generated_session(tmp_path):
     )
     wdir = tmp_path / "data" / "windows" / "generated"
     wdir.mkdir(parents=True)
-    clip = mask_clip(raw, wdir / "w.mp4", polys, ref_size=(1280, 720))
-    w = Window(id="w0", camera_id="side_left", t0=0, t1=4, path=str(clip), trigger="manual")
+    clip = mask_clip(raw, wdir / "w.mp4", polys, ref_size=(width, 720))
+    w = Window(
+        id="w0",
+        camera_id=camera_id,
+        t0=0,
+        t1=4,
+        path=str(clip),
+        trigger="manual",
+        width=width,
+        height=720,
+    )
     (wdir / "windows.json").write_text(json.dumps([w.model_dump()]), encoding="utf-8")
     (wdir / "session.json").write_text(
         json.dumps({"session_start": "2026-11-03T10:00:00-08:00"}), encoding="utf-8"
@@ -185,6 +197,36 @@ def test_process_cloud_end_to_end_generated_mp4(tmp_path):
     tagged = list((settings.data_dir / "results" / "generated" / "tagged").glob("*.mp4"))
     assert tagged
     assert all(verify_clean(p, polygons, ref_size=(1280, 720)) for p in tagged)
+    conn = db.connect(Path(result["db_path"]))
+    try:
+        assert db.rows(conn, "visits")[0]["verdict"] == "noteworthy"
+        assert db.rows(conn, "model_calls")
+        assert db.rows(conn, "appearance")
+    finally:
+        conn.close()
+
+
+def test_process_cloud_generated_duo_panorama_preserves_1920_frame(tmp_path):
+    settings, polygons = generated_session(
+        tmp_path, camera_id="front_left_duo", width=1920, panorama=True
+    )
+    with (
+        respx.mock as router,
+        MetaClient(
+            settings, clock=lambda: datetime(2026, 11, 3, tzinfo=UTC), sleep=lambda _: None
+        ) as client,
+    ):
+        calls = mock_models(router)
+        result = process_session("generated", settings=settings, client=client, confirm=True)
+    assert {c["model"] for c in calls} == {"sam-3.1", "muse-spark-1.3", "muse-wonder-1.0"}
+    assert result["tracks"]
+    assert all(t["camera_id"] == "front_left_duo" for t in result["tracks"])
+    windows = json.loads((settings.data_dir / "windows/generated/windows.json").read_text())
+    assert windows[0]["width"] == 1920
+    assert verify_clean(windows[0]["path"], polygons, ref_size=(1920, 720))
+    tagged = list((settings.data_dir / "results" / "generated" / "tagged").glob("*.mp4"))
+    assert tagged
+    assert all(verify_clean(p, polygons, ref_size=(1920, 720)) for p in tagged)
     conn = db.connect(Path(result["db_path"]))
     try:
         assert db.rows(conn, "visits")[0]["verdict"] == "noteworthy"

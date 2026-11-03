@@ -81,6 +81,8 @@ def region_names(bundle: Bundle) -> dict[str, str]:
 
 
 def gap_label(gap: Gap) -> str:
+    if gap.kind == "clip_truncated":
+        return "Recording ended; later activity unobserved"
     return f"Not observed · {round(gap.duration_s)} s"
 
 

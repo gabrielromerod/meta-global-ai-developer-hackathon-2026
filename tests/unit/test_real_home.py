@@ -132,3 +132,31 @@ def test_default_backyard_rule_covers_both_real_camera_lawns():
     rules = rules_for_config(load_rules(), cfg)
     targets = {r.target.id for r in rules if r.id.startswith("r_backyard_night")}
     assert targets == {"backyard_1_lawn", "backyard_2_lawn"}
+
+
+def test_truncated_recording_never_confirms_an_active_camera_event():
+    from datetime import UTC, datetime
+
+    from vigil.models import SamFrame, SamObject, Window
+    from vigil.pipeline import run_scenario
+
+    cfg = load_config(ROOT / "config/cameras.yaml")
+    frame = SamFrame(frame=0, t=2, box=Box(x1=600, y1=400, x2=650, y2=600))
+    obj = SamObject(window_id="w", camera_id="porch", phrase="person", obj_id=1, frames=[frame])
+    result = run_scenario(
+        {
+            "windows": [Window(id="w", camera_id="porch", t0=0, t1=2.1)],
+            "truncated_after": {"porch": 2.1},
+        },
+        cfg=cfg,
+        rules=[],
+        protected=[],
+        watches=[],
+        session_start=datetime(2026, 11, 3, tzinfo=UTC),
+        sam=lambda w, p: [obj] if p == "person" else [],
+    )
+    assert result["visits"][0]["verdict"] == "cant_confirm"
+    assert any(g["kind"] == "clip_truncated" and not g["resolved"] for g in result["gaps"])
+    assert any(
+        "recording ended" in sentence["text"].lower() for sentence in result["visits"][0]["story"]
+    )

@@ -95,6 +95,8 @@ class CameraCfg(_Model):
     exits: dict[str, Polygon] = Field(default_factory=dict)
     privacy: list[Polygon] = Field(default_factory=list)
     """Pixel polygons blacked out before anything is stored for upload (FR-003)."""
+    privacy_none_needed: bool = False
+    """Explicit owner declaration, accepted in YAML as ``privacy: none_needed``."""
     motion_threshold: float | None = None
     """Fraction in [0, 1] of unmasked pixels changed between 0.2 s samples (FR-005).
 
@@ -104,6 +106,13 @@ class CameraCfg(_Model):
     """Zone id -> kind (FR-008 origin tagging). Zones without an entry are interior_yard."""
     hfov_deg: float | None = None
     """Nominal horizontal field of view from the camera model's datasheet (FR-036)."""
+
+    @model_validator(mode="before")
+    @classmethod
+    def _privacy_declaration(cls, data: object) -> object:
+        if isinstance(data, dict) and data.get("privacy") == "none_needed":
+            return {**data, "privacy": [], "privacy_none_needed": True}
+        return data
 
     @model_validator(mode="before")
     @classmethod

@@ -43,6 +43,7 @@ cameras:
       - [[0, 0], [1280, 0], [1280, 80], [0, 80]]   # street
   - id: side_left
     name: Left side
+    privacy: none_needed
     source: {host_env: VIGIL_TEST_SIDE_HOST, channel: null}
     offset_s: 0.0
 """

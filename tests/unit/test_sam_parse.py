@@ -292,7 +292,9 @@ def test_sam_non_400_errors_propagate_unchanged() -> None:
 
 def test_track_concept_uploads_window_once(tmp_path: Path) -> None:
     clip = tmp_path / "w0.mp4"
-    clip.write_bytes(b"not really a video")
+    from tests.fixtures.video.synth import blob_clip
+
+    blob_clip(clip, 0.2, size=(160, 90))
     w = _window("w0", 0.0, path=str(clip))
     client = FakeClient([{"output_text": _text("sam_person_w0.txt")}, {"output_text": ""}])
     people = track_concept(client, w, "person")
@@ -340,7 +342,9 @@ def test_sam_window_split(tmp_path: Path) -> None:
     def cut(win: Window, t0: float, t1: float) -> Path:
         cuts.append((t0, t1))
         out = tmp_path / f"{win.id}_{t0:.1f}_{t1:.1f}.mp4"
-        out.write_bytes(b"x")
+        from tests.fixtures.video.synth import blob_clip
+
+        blob_clip(out, 0.2, size=(160, 90))
         return out
 
     client = FakeClient(

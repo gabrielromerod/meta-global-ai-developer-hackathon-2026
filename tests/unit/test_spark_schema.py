@@ -179,7 +179,9 @@ def test_appearance_request_shape():
 
 def test_appearance_notes_uploads_and_parses(tmp_path: Path):
     clip = tmp_path / "tagged.mp4"
-    clip.write_bytes(b"\x00" * 32)
+    from tests.fixtures.video.synth import blob_clip
+
+    blob_clip(clip, 0.2, size=(160, 90))
     fake = FakeClient({"tracks": [_track()]})
     notes = appearance_notes(fake, clip, ["T3"])
     assert notes["T3"].lower_color == "grey"
@@ -192,7 +194,9 @@ def test_appearance_notes_uploads_and_parses(tmp_path: Path):
 
 def test_appearance_notes_rejects_unknown_tag_from_model(tmp_path: Path):
     clip = tmp_path / "tagged.mp4"
-    clip.write_bytes(b"\x00" * 32)
+    from tests.fixtures.video.synth import blob_clip
+
+    blob_clip(clip, 0.2, size=(160, 90))
     with pytest.raises(AppearanceSchemaError):
         appearance_notes(FakeClient({"tracks": [_track(tag="T7")]}), clip, ["T3"])
 

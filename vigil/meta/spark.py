@@ -24,6 +24,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+from collections.abc import Sequence
 from pathlib import Path
 from typing import Any, get_args
 
@@ -38,6 +39,7 @@ from vigil.models import (
     Appearance,
     AppliesTo,
     Config,
+    Polygon,
     ProtectedObject,
     Rule,
     RuleTarget,
@@ -174,9 +176,18 @@ def parse_appearance(text: str, tags: list[str]) -> dict[str, Appearance]:
 
 
 def appearance_notes(
-    c, tagged_clip: Path, tags: list[str], visit_id: str | None = None
+    c,
+    tagged_clip: Path,
+    tags: list[str],
+    visit_id: str | None = None,
+    *,
+    polygons: Sequence[Polygon] = (),
+    ref_size: tuple[int, int] | None = None,
 ) -> dict[str, Appearance]:
     """Upload the tagged clip once, ask Spark for notes, and validate them (FR-009)."""
+    from vigil.ingest.privacy import assert_uploadable
+
+    assert_uploadable(tagged_clip, polygons, ref_size=ref_size)
     file_id = c.upload(Path(tagged_clip))
     body = build_appearance_request(file_id, tags)
     resp = c.responses(

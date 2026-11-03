@@ -233,6 +233,19 @@ def ingest(
     from vigil.ingest.sync import SyncError, apply_offsets, sync_session
     from vigil.ingest.windows import WindowError, cut_windows
 
+    # Fail before sync, directories, or derived media are written.
+    privacy_dir = cfg_path.parent / "privacy"
+    privacy_by_camera = {}
+    try:
+        for cam_id in clips:
+            cam = cfg.camera(cam_id)
+            polys = privacy_polygons(cfg, cam_id, privacy_dir=privacy_dir)
+            if not polys and not cam.privacy_none_needed:
+                _fail(f"camera {cam_id}: privacy polygons required, or set privacy: none_needed")
+            privacy_by_camera[cam_id] = polys
+    except ConfigError as err:
+        _fail(f"privacy: {err}")
+
     meta: dict[str, Any] = {
         "session": session,
         "clip_dir": str(clip_dir),
@@ -267,7 +280,7 @@ def ingest(
     try:
         for cam_id, clip in clips.items():
             cam = cfg.camera(cam_id)
-            polys = privacy_polygons(cfg, cam_id, privacy_dir=privacy_dir)
+            polys = privacy_by_camera[cam_id]
             cut = cut_windows(
                 clip,
                 session_dir,

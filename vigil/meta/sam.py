@@ -51,7 +51,7 @@ from meta_sam_parser import (
 )
 from pydantic import BaseModel, ConfigDict
 
-from vigil.models import Box, SamFrame, SamObject, Window
+from vigil.models import Box, Polygon, SamFrame, SamObject, Window
 from vigil.perception.rle import encode_rle, place_box_mask
 
 log = logging.getLogger(__name__)
@@ -565,12 +565,21 @@ def _call(c: SamClient, body: dict, purpose: str, visit_id: str | None = None) -
         raise
 
 
-def ensure_uploaded(c: SamClient, w: Window) -> str:
+def ensure_uploaded(
+    c: SamClient,
+    w: Window,
+    *,
+    polygons: Sequence[Polygon] = (),
+    ref_size: tuple[int, int] | None = None,
+) -> str:
     """Upload the window once and remember its file id on the window (spec 5.4)."""
     if w.file_id:
         return w.file_id
     if not w.path:
         raise SamRequestError(f"window {w.id} has neither a file_id nor a path")
+    from vigil.ingest.privacy import assert_uploadable
+
+    assert_uploadable(w.path, polygons, ref_size=ref_size or (w.width, w.height))
     w.file_id = c.upload(Path(w.path))
     return w.file_id
 
@@ -589,6 +598,8 @@ def track_concept(
     include_confidence: bool = True,
     decode_masks: bool = True,
     visit_id: str | None = None,
+    polygons: Sequence[Polygon] = (),
+    ref_size: tuple[int, int] | None = None,
     _depth: int = 0,
 ) -> list[SamObject]:
     """Track one noun phrase in one window (FR-006).
@@ -599,7 +610,9 @@ def track_concept(
     ``max_depth`` levels); without ``cut`` the saturated result is returned with a warning.
     """
     body = build_concept_request(
-        ensure_uploaded(c, w), phrase, include_confidence=include_confidence
+        ensure_uploaded(c, w, polygons=polygons, ref_size=ref_size),
+        phrase,
+        include_confidence=include_confidence,
     )
     raw = _call(c, body, TRACK_PURPOSE, visit_id)
     objs = parse_video_output(
@@ -629,6 +642,8 @@ def track_concept(
             include_confidence=include_confidence,
             decode_masks=decode_masks,
             visit_id=visit_id,
+            polygons=polygons,
+            ref_size=ref_size,
             _depth=_depth + 1,
         )
     return out

@@ -292,7 +292,7 @@
   color: var(--v-muted);
   border-top: var(--v-line) solid var(--v-border);
 }
-@container twin (max-height: 420px) {
+@container twin (max-height: 420px) or ((max-height: 520px) and (max-width: 600px)) {
   .twin-toolbar {
     padding: var(--v-space-1);
     gap: var(--v-zero);

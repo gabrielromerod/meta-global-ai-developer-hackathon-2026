@@ -38,7 +38,8 @@ lines to their unchanged world anchors. Labels with insufficient room are
 decluttered; the camera menu or camera row remains available.
 
 The component fills its parent, including a flex parent. Below 420 CSS pixels in
-height, container queries put presets and camera selection on one row, replace
+height, or below 520 pixels in height and 600 pixels in width, container queries
+put presets and camera selection on one row, replace
 the duplicate camera row with a Radix menu and omit the redundant legend. A
 266-pixel panel retains over 175 pixels of actual canvas with a gap summary.
 CSS requires literal media/container query thresholds; presentation properties

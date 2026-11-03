@@ -1,5 +1,14 @@
 # Functional requirements checklist
 
+Nov 3 seven-camera rebuild, REAL logic / FIXTURE acceptance (`3df3859c` and earlier backend commits):
+
+- FR-001/008/010/012/013/044: `test_real_home.py` proves seven Wi-Fi cameras, no route through the right tree barrier, no escalation from outer-ring-only activity, property-first visits, and both backyard rule scopes. `test_battery_wake_and_clock_drift_never_guess_links` rejects guessed handoffs; transit remains unmeasured.
+- FR-002/003/006/036/038: `test_panorama.py` and `test_cloud_process.py::test_process_cloud_generated_duo_panorama_preserves_1920_frame` cover generated panoramic input, full 1920-pixel detection, per-half geometry, nominal curved-section correction, seam/edge uncertainty and persisted colour/infrared inference. No plate OCR is enabled.
+- FR-030/031/032/033: `test_battery_import.py`, `test_event_capture.py` and retention tests cover no-Hub import, explicit timestamps, battery stream refusal, AC pre-roll pinning, partial clips, processable relative clocks and disk safety. SDK behavior is injected, not camera-verified.
+- FR-017/018/023/027/029/040: `test_consumer_api.py` covers canonical seven-camera UI state, A′/C role contrast, intersection search, historical dates, cached cited chat, notifications and generic public massing. Browser integration is tracked separately until the final pass.
+- No requirement status is upgraded to real-data Verified. Actual masks, camera telemetry, field calibration and approved model responses are still missing owner inputs.
+
+
 Nov 3 offline handover additions (FIXTURE, never real-data acceptance): FR-003 also has
 `tests/unit/test_upload_boundaries.py` covering both direct upload guards, malformed media,
 unmasked pixels, ingest refusal before writes, and explicit `privacy: none_needed`.

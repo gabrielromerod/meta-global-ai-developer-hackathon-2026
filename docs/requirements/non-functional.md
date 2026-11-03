@@ -1,5 +1,13 @@
 # Non-functional requirements checklist
 
+Nov 3 seven-camera rebuild, REAL logic / FIXTURE acceptance:
+
+- NFR-001/002/014: `test_duo_export_masks_sky_ridgeline_curb_every_frame`, `test_ingest_audio_is_error_even_with_reviewed_masks`, `test_upload_guard_checks_metadata_when_extension_is_disguised`, `test_privacy_review_bound_to_still_and_exact_polygons` and `test_still_review_is_invalidated_when_role_zone_geometry_changes` cover generated exports and fail-closed real-camera guards. `test_metadata_scan.py` covers ExifTool failures, forbidden metadata and Windows batching. Local Gitleaks scans branch history; tracked screenshot provenance independently validates exact PNG hashes and metadata.
+- NFR-009: `test_unmocked_default_http_is_blocked_before_transport` adds an offline test transport boundary. One invalid-key HTTP401 incident before this remediation is recorded in readiness; it was not successful model inference.
+- NFR-027/028/029: injected capture/import tests cover battery refusal, durable pins, retention, free-space floor and Wi-Fi partial clips. Hardware endurance, latency and real telemetry remain unmeasured.
+- No real-data acceptance or physical-device viewport measurements are claimed. Browser evidence uses the explicitly requested CSS dimensions in Chromium on Windows.
+
+
 Nov 3 FIXTURE evidence for NFR-010/FR-023 billing:
 `tests/integration/test_timeout_billing.py` covers unbilled ConnectTimeout, billed
 ReadTimeout/WriteTimeout with retries, a cut response stream charged at the estimate,

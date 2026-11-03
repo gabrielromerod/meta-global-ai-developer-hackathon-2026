@@ -1,0 +1,24 @@
+{
+  "contract_version": "vigil-ui/1",
+  "evidence": {
+    "kind": "fixture",
+    "label": "Demo data",
+    "source": "authored synthetic ledger; camera names adapted to seven-camera inventory"
+  },
+  "threads": [
+    {
+      "id": "ask-home",
+      "title": "Ask your home",
+      "kind": "assistant",
+      "note": "Answers use the cached visit ledger.",
+      "messages": []
+    },
+    {
+      "id": "household",
+      "title": "Household",
+      "kind": "local_mock",
+      "note": "Local demo thread; messages stay in this browser.",
+      "messages": []
+    }
+  ]
+}

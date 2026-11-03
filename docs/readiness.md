@@ -5,8 +5,28 @@ Wi-Fi profile, removal handling, GLB import and `vigil doctor` are implemented w
 FIXTURE evidence. See [the handover runbook](runbooks/offline-handover.md) and
 [commit/progress ledger](plans/2026-11-03-offline-handover.md). No live Meta call or camera
 connection was made, and nothing was upgraded to real-data Verified. The doctor currently
-flags owner inputs/configuration, including missing backyard privacy. Metadata scanning
-is unavailable locally because exiftool is absent; gitleaks is also absent.
+flags owner inputs/configuration, including missing backyard privacy. ExifTool 13.59 is
+now installed (owner approved): `EXIFTOOL=... bash scripts/metadata_scan.sh demo` reports
+PASS, no GPS/device metadata. The current demo contains zero media files; this is not
+real-footage acceptance. Gitleaks is absent locally; CI still supplies that check.
+
+## Consumer round in progress (Nov 3)
+
+These are MISSING until implemented and evidenced in the consumer-round plan:
+
+- Normalized UI state/search/chat API and shared hooks, new app entrypoint and sync:
+  lead-only Phase 2 after isolated visual workers land. Frozen fixtures are authored
+  synthetic data, not recordings of real Meta responses or real camera behaviour.
+- Seven-camera power/Hub inventory, battery import and on-demand Hub capture, AI event
+  clip closure/ring pinning/free-space retention: supersede the earlier four-camera
+  session-only profile. No IPs/Hub supplied; tests must use fakes/generated media.
+- Strict audio rejection at ingest, per-Duo privacy-region checklist/overlay removal,
+  outer-ring counting, battery-wake gaps, full-frame 1920 Duo perception and split-half
+  geometry uncertainty: requested now, pending backend items 2–4 and 10.
+- New shell/pages/chat/twin visual requirements and desktop no-scroll evidence:
+  pending visual workers and final browser integration.
+- Real field privacy polygons, real SDK telemetry/time-sync and Hub discovery, actual
+  Meta responses/credits/key and footage remain owner-dependent. No live calls allowed.
 
 **Date: 2026-11-02** (Mon Nov 2, after the Nov 2 spec revision). Spec: [section 13](spec/vigil-spec.md#13-final-readiness). Vigil is ready to submit when every row of the [traceability matrix](requirements/functional.md#traceability-matrix-spec-131) has a green test and the demo evidence it names, on real data.
 

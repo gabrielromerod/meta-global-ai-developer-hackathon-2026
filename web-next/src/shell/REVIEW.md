@@ -45,7 +45,7 @@ captures were preserved under the OS temp directory, not added to Git.
 Verification observed: npm test 39 passed; tsc/Vite build passed; ruff check and
 format check passed; default Python suite 1474 passed, 24 deselected, one existing
 Starlette httpx deprecation warning (212.80s). Shell text contrast 44 pairs passed,
-minimum 5.58:1. Human font choice is open in QA_NOTES.md with Inter default.
+minimum 5.58:1. The owner selected Inter (lead decision c0f4942). Font alternatives remain documented.
 
 Dependencies used for these screenshots: original Home commits 07effdd,5674ab3,
 b613fc1,4fc0631,7be158f; original Twin commits ed7f70d,90078de,58c7a7c. Later Twin

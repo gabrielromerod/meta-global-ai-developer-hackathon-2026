@@ -5,10 +5,14 @@ import {execFileSync} from 'node:child_process';
 
 const viewports=[[1470,870],[1512,895],[1728,1030],[1920,960],[1536,730],[1280,600],[1366,650],[1024,768],[1180,820],[2560,1000],[390,844]];
 const selected=process.env.MOTION_QA_VIEWPORT;
-const cases=selected?viewports.filter(([w,h])=>`${w}x${h}`===selected):viewports;
+const subset=selected?viewports.filter(([w,h])=>`${w}x${h}`===selected):viewports;
+const shard=process.env.MOTION_QA_SHARD?.split('/').map(Number);
+if(shard&&(!Number.isInteger(shard[0])||!Number.isInteger(shard[1])||shard[0]<0||shard[1]<1||shard[0]>=shard[1]))throw new Error('MOTION_QA_SHARD must be zero-based part/count');
+const cases=shard?subset.filter((_,index)=>index%shard[1]===shard[0]):subset;
 const sha=process.env.MOTION_QA_SHA||execFileSync('git',['rev-parse','--short','HEAD'],{encoding:'utf8'}).trim();
 const base=process.env.VIGIL_UI_BASE_URL||'http://127.0.0.1:8107';
 const output=path.resolve('../qa/screens',sha);
+const reportName=shard?`motion-results-shard-${shard[0]}.json`:'motion-results.json';
 await fs.mkdir(output,{recursive:true});
 const browser=await chromium.launch({headless:true,args:['--use-gl=angle','--use-angle=swiftshader','--enable-webgl','--ignore-gpu-blocklist']});
 const report={sha,started:new Date().toISOString(),cases:[],failures:[]};
@@ -104,6 +108,6 @@ for(const [width,height] of cases)for(const theme of ['dark','light'])for(const 
     console.log(`PASS ${name}: ${serial} states`);
   } catch(error) {
     const failure={name,error:String(error),errors,failed,screenshots:serial};report.failures.push(failure);await shot('FAILURE').catch(()=>{});console.log(`FAIL ${name}: ${error}`);
-  } finally {await context.close();await fs.writeFile(path.join(output,'motion-results.json'),JSON.stringify(report,null,2));}
+  } finally {await context.close();await fs.writeFile(path.join(output,reportName),JSON.stringify(report,null,2));}
 }
-report.finished=new Date().toISOString();await fs.writeFile(path.join(output,'motion-results.json'),JSON.stringify(report,null,2));await browser.close();if(report.failures.length)process.exitCode=1;
+report.finished=new Date().toISOString();await fs.writeFile(path.join(output,reportName),JSON.stringify(report,null,2));await browser.close();if(report.failures.length)process.exitCode=1;

@@ -91,6 +91,8 @@ Run `npm test` and `npm run build`. `node src/motion/qa.mjs` runs all eleven exa
 viewports, dark/light, ordinary/reduced motion, real controls and focus/scroll flows.
 An optional `MOTION_QA_VIEWPORT=1280x600` selects a focused case. `MOTION_QA_SHA`
 labels its output folder; production evidence must identify the exact source SHA.
+`MOTION_QA_SHARD=0/2` and `1/2` split disjoint viewport groups across independent
+browser contexts/processes; their reports are separate and every case remains required.
 Output is `qa/screens/<source-sha>/<width>x<height>/` plus a JSON result ledger.
 
 The first probe's Tab-from-last-control check reached browser chrome after correctly

@@ -84,11 +84,11 @@ interface AnnotationEntry {
 const AnnotationRegistry = createContext<Map<string, AnnotationEntry>>(
   new Map(),
 );
-function readPalette(): Palette {
+function readPalette(lighting?:'day'|'night'): Palette {
   const css = getComputedStyle(document.documentElement),
     color = (name: string) => css.getPropertyValue(name).trim();
   const numeric = (name: string) => parseFloat(color(name));
-  return {
+  const palette = {
     space: numeric("--v-space-1"),
     background: color("--v-surface"),
     ground: color("--v-twin-ground"),
@@ -119,17 +119,26 @@ function readPalette(): Palette {
     duration: numeric("--v-motion-view") / 1000,
     pulsePeriod: numeric("--v-motion-pulse") / 1000,
   };
+  return lighting ? {...palette,
+    background:color(`--v-scene-${lighting}-background`),
+    ground:color(`--v-scene-${lighting}-ground`),
+    house:color(`--v-scene-${lighting}-house`),
+    roof:color(`--v-scene-${lighting}-roof`),
+    tree:color(`--v-scene-${lighting}-tree`),
+    light:numeric(`--v-scene-${lighting}-light`),
+  }:palette;
 }
-function usePalette() {
-  const [palette, setPalette] = useState(readPalette);
+function usePalette(lighting?:'day'|'night') {
+  const [palette, setPalette] = useState(()=>readPalette(lighting));
   useEffect(() => {
-    const observer = new MutationObserver(() => setPalette(readPalette()));
+    setPalette(readPalette(lighting));
+    const observer = new MutationObserver(() => setPalette(readPalette(lighting)));
     observer.observe(document.documentElement, {
       attributes: true,
       attributeFilter: ["data-theme", "class", "style"],
     });
     return () => observer.disconnect();
-  }, []);
+  }, [lighting]);
   return palette;
 }
 
@@ -905,9 +914,10 @@ export function HouseView({
   activeCameraId,
   onCameraSelect,
   preset: controlledPreset,
+  lighting,
 }: HouseViewProps) {
   const model = useMemo(() => parseTwin(twin), [twin]),
-    palette = usePalette(),
+    palette = usePalette(lighting),
     reduced = useMotionPreference();
   const [preset, setPreset] = useState("front"),
     [reset, setReset] = useState(0),

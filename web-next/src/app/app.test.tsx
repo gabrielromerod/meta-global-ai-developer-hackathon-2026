@@ -28,4 +28,12 @@ describe('production API integration',()=>{
     expect(screen.getAllByText('Owner-only on the home box').length).toBeGreaterThan(0);
     expect(screen.getByRole('button',{name:"I'm outside"})).toBeDisabled();
   });
+  it('makes Day and Night explicit schematic previews without relabelling recorded activity',async()=>{
+    vi.stubGlobal('fetch',vi.fn(async(url:string)=>({ok:true,json:async()=>url.endsWith('/state')?fixture:url.endsWith('/chat')?chat:{cameras:[]}})));
+    mount();await screen.findByText('House model loaded');
+    await userEvent.click(screen.getByRole('tab',{name:'Day'}));
+    expect(screen.getByText('Day schematic preview. Recorded clips keep their original lighting.')).toBeInTheDocument();
+    await userEvent.click(screen.getByRole('tab',{name:'Night'}));
+    expect(screen.getByText('Night schematic preview. Recorded clips keep their original lighting.')).toBeInTheDocument();
+  });
 });

@@ -45,6 +45,12 @@
   --v-review-main-fr: 1.2fr; --v-snapshot-max: 70svh;
   --v-review-house-min: 180px; --v-review-house-phone: 400px;
   --v-review-player-min: 128px; --v-review-player-max: 40%;
+  --v-scene-day-background: #e8edf4; --v-scene-day-ground: #d5dfdc;
+  --v-scene-day-house: #9aa7b7; --v-scene-day-roof: #667789;
+  --v-scene-day-tree: #3c7254; --v-scene-day-light: 2;
+  --v-scene-night-background: #131a23; --v-scene-night-ground: #202c30;
+  --v-scene-night-house: #788492; --v-scene-night-roof: #465462;
+  --v-scene-night-tree: #385e4b; --v-scene-night-light: 1.2;
 }
 [data-theme="light"] {
   color-scheme: light;

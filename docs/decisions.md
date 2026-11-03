@@ -37,3 +37,5 @@
 - 2026-11-03: Reuse the existing Web Audio/PCM16 phone-speech path in TypeScript rather than add another recorder implementation. It emits exactly the server-required 16 kHz mono WAV, caps at 30 seconds and keeps speech only in RAM. Transcription and rule drafting explicitly request cached mode; no live-model control is exposed during this authorized offline rebuild.
 - 2026-11-03: Radix owns dialog/menu/tab/focus lifecycles, Motion owns animation scheduling, and the independently reviewed native preference bridge supplies current OS state. Chat stops active entrances; R3F uses the shared preference and tokenized event pulse period.
 - 2026-11-03: Full Attention includes every supplied visit, with urgent IDs first and normal history available through its real filter. Home alone limits its preview. Server urgent IDs are not truncated.
+
+- 2026-11-03: Day/Night tabs change only tokenized schematic illumination. A visible note says recorded clips keep their original lighting; the app does not infer sunrise, weather or relabel recorded events. Camera/view selection retains the same scene and orbit.

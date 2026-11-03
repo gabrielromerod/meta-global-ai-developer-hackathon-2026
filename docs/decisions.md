@@ -23,3 +23,5 @@
 - 2026-11-03: The default backyard policy expands into the two unique configured lawn-zone IDs; rules still solely determine attention and legacy synthetic fixtures retain their original geometry contract.
 - 2026-11-03: The Duo nominal half-FOV is 90 degrees, half the manufacturer's published180-degree panorama; section homography and measured uncertainty remain required, and this nominal projection is not field verification. Source: https://business.reolink.com/us/product/reolink-duo-floodlight-wifi/ .
 - 2026-11-03: A doorbell visitor push is retained as its own camera_ai event; it never invents a person track, role or position. Measured event counts retain classified sensor IDs and stay null when observation gaps prevent complete classification.
+
+- 2026-11-03: Use React Router HashRouter for addressable pages/visits and browser history on both FastAPI static mounts; it avoids reinventing navigation or requiring catch-all server routes. Official API: https://reactrouter.com/api/declarative-routers/HashRouter .

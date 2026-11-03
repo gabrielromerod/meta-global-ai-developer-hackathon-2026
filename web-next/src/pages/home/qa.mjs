@@ -27,6 +27,8 @@ for(const [label,width,height] of viewports) {
   if(width>640&&layout.docHeight>height)errors.push(`Desktop document scroll ${layout.docHeight}>${height}`);
   if(width>640&&layout.comparisonBottom>height)errors.push(`Comparison clipped at ${layout.comparisonBottom}`);
   if(width>640&&layout.twinHeight<184)errors.push(`House hero collapsed to ${layout.twinHeight}px`);
+  const slot=await page.locator('.home-twin').evaluate(element=>({width:element.clientWidth,childWidth:element.firstElementChild?.getBoundingClientRect().width ?? 0}));
+  if(slot.childWidth<slot.width-2)errors.push(`House slot child collapsed to ${slot.childWidth}px within ${slot.width}px`);
   const tabs=page.getByRole('tab');
   const tabCount=await tabs.count();
   for(let i=0;i<tabCount;i++) {

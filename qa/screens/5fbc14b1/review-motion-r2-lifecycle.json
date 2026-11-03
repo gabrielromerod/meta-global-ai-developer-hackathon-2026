@@ -1,0 +1,66 @@
+{
+  "source": "5fbc14b14f991c8f83d4e4026eba199e7c5c277d",
+  "baseline": [],
+  "mounted": [
+    {
+      "query": "(prefers-reduced-motion: reduce)",
+      "count": 1
+    }
+  ],
+  "preferences": [
+    {
+      "preference": "reduce",
+      "sameInput": true,
+      "focused": true,
+      "value": "Exact state 123 — preserved",
+      "listeners": [
+        {
+          "query": "(prefers-reduced-motion: reduce)",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "preference": "no-preference",
+      "sameInput": true,
+      "focused": true,
+      "value": "Exact state 123 — preserved",
+      "listeners": [
+        {
+          "query": "(prefers-reduced-motion: reduce)",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "preference": "reduce",
+      "sameInput": true,
+      "focused": true,
+      "value": "Exact state 123 — preserved",
+      "listeners": [
+        {
+          "query": "(prefers-reduced-motion: reduce)",
+          "count": 1
+        }
+      ]
+    },
+    {
+      "preference": "no-preference",
+      "sameInput": true,
+      "focused": true,
+      "value": "Exact state 123 — preserved",
+      "listeners": [
+        {
+          "query": "(prefers-reduced-motion: reduce)",
+          "count": 1
+        }
+      ]
+    }
+  ],
+  "unmounted": [
+    {
+      "query": "(prefers-reduced-motion: reduce)",
+      "count": 0
+    }
+  ]
+}

@@ -114,6 +114,22 @@ describe('Settings owner boundaries (FR-029, FR-044)',()=>{
     await userEvent.click(screen.getByRole('tab',{name:'Owner controls'}));
     expect(screen.getByText('Nov 2, 4:00 PM (UTC-08:00) – Nov 2, 4:45 PM (UTC-08:00)')).toBeVisible();
   });
+  it.each([
+    {name:'zone only',cameras:[],zones:['side_alley'],expected:['Zones: Side alley']},
+    {name:'camera only',cameras:['doorbell'],zones:[],expected:['Cameras: Doorbell']},
+    {name:'camera and zone',cameras:['doorbell'],zones:['side_alley'],expected:['Cameras: Doorbell','Zones: Side alley']},
+    {name:'unrestricted',cameras:[],zones:[],expected:['All configured cameras']},
+  ])('shows the actual expected-window scope: $name',async({cameras,zones,expected})=>{
+    const props=base();
+    props.state.owner.windows=[{...props.state.owner.windows[0],label:'Scope under review',cameras,zones}];
+    render(<SettingsPage {...props}/>);
+    await userEvent.click(screen.getByRole('tab',{name:'Owner controls'}));
+    const row=screen.getByRole('article',{name:'Scope under review'});
+    for(const text of expected)expect(within(row).getByText(text)).toBeVisible();
+    if(cameras.length||zones.length)expect(within(row).queryByText('All configured cameras')).not.toBeInTheDocument();
+    if(!cameras.length)expect(within(row).queryByText(/^Cameras:/)).not.toBeInTheDocument();
+    if(!zones.length)expect(within(row).queryByText(/^Zones:/)).not.toBeInTheDocument();
+  });
   it('closes window creation only after a matching server-owned window appears',async()=>{
     const props=base();props.state.mode='edge';props.state.owner.enabled=true;const createWindow=vi.fn();
     const view=render(<SettingsPage {...props} ownerActions={{createWindow}}/>);

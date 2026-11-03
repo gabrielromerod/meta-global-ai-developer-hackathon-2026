@@ -2,7 +2,7 @@ import {useEffect,useId,useRef,useState,type FormEvent} from 'react';
 import {Camera as CameraIcon,Clock3,House,LockKeyhole,Wifi} from 'lucide-react';
 import type {Camera,NewExpectedWindow,PageProps} from '../../contracts';
 import {Button,Card,Chip,EmptyState,Modal,Tabs} from '../../components/ui';
-import {Field,formatRecordedTime,PageHeading,StatusChip} from './controls';
+import {Field,formatRecordedTime,PageHeading,StatusChip,words} from './controls';
 import './controls.css';
 
 const tabs=[{id:'cameras',label:'Cameras'},{id:'privacy',label:'Privacy'},{id:'household',label:'Household'},{id:'owner',label:'Owner controls'}];
@@ -99,7 +99,9 @@ function OwnerControls({state,ownerActions}:PageProps){
         {state.owner.windows.length?<div className="controls-list">{state.owner.windows.map(window=><article className="controls-window" key={window.id} aria-label={window.label||'Expected window'}>
           <header><h3>{window.label||'Expected window'}</h3><div className="controls-inline"><StatusChip value={window.state}/>{window.recorded&&<Chip>Recorded example</Chip>}</div></header>
           <p>{formatRecordedTime(window.start)} – {formatRecordedTime(window.end)}</p>
-          <p>{window.cameras.length?window.cameras.map(cid=>state.cameras.find(c=>c.id===cid)?.name||cid).join(', '):'All configured cameras'}</p>
+          {window.cameras.length>0&&<p>Cameras: {window.cameras.map(cid=>state.cameras.find(c=>c.id===cid)?.name||words(cid)).join(', ')}</p>}
+          {window.zones.length>0&&<p>Zones: {window.zones.map(words).join(', ')}</p>}
+          {!window.cameras.length&&!window.zones.length&&<p>All configured cameras</p>}
           <Button variant="outline" onClick={()=>ownerActions?.cancelWindow?.(window.id)} disabled={!owner||!ownerActions?.cancelWindow||pending||!!window.recorded||!['scheduled','active'].includes(window.state)}>Cancel window</Button>
         </article>)}</div>:<EmptyState title="No expected windows" description="New windows appear after the owner saves them."/>}
       </Card>

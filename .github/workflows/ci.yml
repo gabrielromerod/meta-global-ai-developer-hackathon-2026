@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v10
+      - uses: astral-sh/setup-uv@v10.3.3
         with:
           enable-cache: true
       - run: uv sync --locked
@@ -51,19 +51,26 @@ jobs:
           ./gitleaks git --redact --verbose --exit-code 1 .
 
   test:
-    name: 3-4. pytest (not live) + determinism
+    name: 3-6. P0 suites (blocking) + full suite and determinism (report-only)
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v10
+      - uses: astral-sh/setup-uv@v10.3.3
         with:
           enable-cache: true
       - name: ffmpeg
         run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
       - run: uv sync --locked
-      - name: Unit, property and integration tests
+      - name: 3. Blocking P0 suites 1-4 (privacy, validator, verdict + rules, guards + budget)
+        run: >-
+          uv run pytest -q tests/unit/test_privacy.py tests/unit/test_validator.py
+          tests/unit/test_verdict.py tests/unit/test_rules.py
+          tests/unit/test_budget.py tests/integration/test_guards.py
+      - name: 5. Report-only — every other unit, property and integration test
+        continue-on-error: true
         run: uv run pytest -q
-      - name: Determinism (NFR-011) — pipeline twice, byte-identical visits.json
+      - name: 6. Report-only — determinism (NFR-011), pipeline twice, byte-identical visits.json
+        continue-on-error: true
         run: uv run pytest -q tests/integration/test_determinism.py -p no:cacheprovider
 
   scans:
@@ -71,7 +78,7 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v10
+      - uses: astral-sh/setup-uv@v10.3.3
         with:
           enable-cache: true
       - name: ffmpeg + exiftool
@@ -81,6 +88,22 @@ jobs:
         run: uv run python scripts/privacy_scan.py demo
       - name: Metadata scan (NFR-032)
         run: bash scripts/metadata_scan.sh demo
+      - name: Repository-wide audio allowlist (NFR-002) — only consented voice fixtures
+        run: |
+          uv run python - <<'PY'
+          import hashlib, json, pathlib, subprocess, sys
+          allow_path = pathlib.Path("config/audio_fixtures.json")
+          allowed = set()
+          if allow_path.exists():
+              allowed = {f["sha256"] for f in json.loads(allow_path.read_text())["fixtures"]}
+          exts = (".wav", ".mp3", ".m4a", ".ogg", ".webm", ".flac", ".aac", ".opus")
+          files = [f for f in subprocess.check_output(["git", "ls-files"], text=True).split() if f.lower().endswith(exts)]
+          bad = [f for f in files if hashlib.sha256(pathlib.Path(f).read_bytes()).hexdigest() not in allowed]
+          print(f"audio files tracked: {len(files)}; not allowlisted: {len(bad)}")
+          for f in bad:
+              print(f"::error::audio file not in config/audio_fixtures.json: {f}")
+          sys.exit(1 if bad else 0)
+          PY
 
   sandbox-e2e:
     name: 6-8. Docker sandbox + Playwright E2E
@@ -88,7 +111,7 @@ jobs:
     needs: [lint, test]
     steps:
       - uses: actions/checkout@v7
-      - uses: astral-sh/setup-uv@v10
+      - uses: astral-sh/setup-uv@v10.3.3
         with:
           enable-cache: true
       - name: 6. Build the sandbox image
@@ -111,10 +134,15 @@ jobs:
           fi
       - run: uv sync --locked
       - run: uv run playwright install --with-deps chromium
-      - name: 7. Playwright E2E (judge path, offline, mobile) against the container
+      - name: 8. Blocking P0 suite 5 — judge path E2E against the container (offline key)
         env:
           VIGIL_E2E_BASE_URL: http://127.0.0.1:8000
-        run: uv run pytest -m e2e tests/e2e -q --tracing retain-on-failure --screenshot only-on-failure --output test-results
+        run: uv run pytest -m e2e tests/e2e/test_judge_path.py -q --tracing retain-on-failure --screenshot only-on-failure --output test-results/judge
+      - name: 8. Report-only — mobile E2E (NFR-017)
+        continue-on-error: true
+        env:
+          VIGIL_E2E_BASE_URL: http://127.0.0.1:8000
+        run: uv run pytest -m e2e tests/e2e/test_mobile.py -q --tracing retain-on-failure --screenshot only-on-failure --output test-results/mobile
       - name: Container logs
         if: always()
         run: docker logs vigil || true

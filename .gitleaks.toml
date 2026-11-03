@@ -1,0 +1,16 @@
+# gitleaks config (NFR-014). Default rules, plus an allowlist of the deliberately fake
+# sentinel keys that tests and CI use to prove the real key is never served or logged.
+# Never add a real key here: rotate it instead.
+title = "vigil"
+
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Fake sentinel API keys used by tests and CI (not secrets)"
+regexes = [
+  '''ci-sentinel-invalid-key-7f3a''',
+  '''sk-vigil-sentinel-7f3a9c2e1d''',
+  '''sk-vigil-contract-sentinel''',
+  '''sk-test-NEVER-LOG-ME-123''',
+]

@@ -31,6 +31,16 @@
   --v-twin-tree: #385e4b; --v-twin-cone: #75aeff; --v-twin-cone-opacity: .12;
   --v-twin-path-width: 2; --v-twin-orbit-max: 1.48; --v-twin-orbit-min: .08;
   --v-twin-zoom-min: 8; --v-twin-zoom-max: 55; --v-twin-damping: .08;
+  --v-twin-ground-lift: .02; --v-twin-layer-step: .02; --v-twin-hatch-step: .45;
+  --v-twin-marker-radius: .15; --v-twin-cone-active-opacity: .24;
+  --v-twin-coverage-opacity: .1; --v-twin-light-intensity: 2; --v-twin-camera-fov: 42;
+  --v-twin-pan-bound: 8; --v-twin-camera-clearance: .6; --v-twin-marker-scale: 1.35;
+  --v-viewport-dynamic: 100dvh; --v-chat-thread-list: 280px; --v-chat-bubble-max: 85%;
+  --v-font-inter: Inter, "Segoe UI", system-ui, sans-serif;
+  --v-font-manrope: Manrope, "Segoe UI", system-ui, sans-serif;
+  --v-font-dm-sans: "DM Sans", "Segoe UI", system-ui, sans-serif;
+  --v-screen-dynamic: 100dvh; --v-screen-small: 100svh;
+  --v-breakpoint-phone: 640px; --v-breakpoint-rail: 1180px;
 }
 [data-theme="light"] {
   color-scheme: light;

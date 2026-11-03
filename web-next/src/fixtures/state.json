@@ -373,7 +373,7 @@
       "story": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
       "role_label": "Arrived from outside",
       "role_basis": "arrived from outside the property (side alley)",
-      "reason": "9.4 case 1: r7 is in force and applies to external_visitor.",
+      "reason": "The side-gate rule applies to arrivals from outside.",
       "thumbnail_url": null,
       "clip_url": null,
       "evidence_kind": "fixture"

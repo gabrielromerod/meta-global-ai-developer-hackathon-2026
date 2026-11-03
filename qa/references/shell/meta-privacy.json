@@ -1,0 +1,13 @@
+{
+  "kind": "public_reference",
+  "source": "https://www.meta.com/",
+  "reviewer": "w1-shell",
+  "reviewed": true,
+  "contains_camera_pixels": false,
+  "authenticated": false,
+  "fixture_hash_mode": "lf-normalized",
+  "fixtures": [],
+  "files": {
+    "meta-public.png": "2752f39d51f8501892af3906bc202a69817f6f80fdda4b8f7e83541442df0433"
+  }
+}

@@ -114,3 +114,25 @@ for five identical rendered poses before the preservation check, rather than ass
 
 No unchanged Python suite is rerun in this task per lead instruction. Full Python/E2E
 and exact pre-main timing remain lead-owned. Hardware GPU performance is unverified.
+
+## Final builder evidence
+
+Source `4fa2342`: 73 frontend tests and TypeScript/Vite build passed. The final
+motion matrix has 44 cases/4,704 captured states and the scene matrix has 44 cases,
+with zero failures, console errors, failed requests or desktop document overflow.
+The adaptive test passes live preference, canvas/orbit, draft/focus and active-tween
+checks. All 56 key-state inspection sheets and selected full-size states were opened.
+The root hash-bound UI evidence gate passed all 5,364 PNGs with zero failures.
+See `qa/screens/4fa2342/motion-review.md` and its JSON ledgers. This builder report
+does not replace the independent task review or final full-app review.
+
+Additional commands from web-next:
+
+```cmd
+set MOTION_QA_SHA=4fa2342
+node src/motion/qa-adaptive.mjs
+node src/motion/qa-scene.mjs
+```
+
+`contact_sheets.py <evidence-root> --key-states` indexes key states without modifying
+the original PNGs. Gitleaks is not installed locally; no local gitleaks success is claimed.

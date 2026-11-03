@@ -1,0 +1,171 @@
+{
+  "sha": "4fa2342",
+  "before": {
+    "position": [
+      15.285726116822689,
+      21.599395599858152,
+      28.58387150751773
+    ],
+    "target": [
+      0,
+      0,
+      2
+    ],
+    "nativeListeners": 1
+  },
+  "results": [
+    {
+      "preference": "reduce",
+      "sameCanvas": true,
+      "position": [
+        15.285726116822689,
+        21.599395599858152,
+        28.58387150751773
+      ],
+      "target": [
+        0,
+        0,
+        2
+      ],
+      "policy": {
+        "reduced": true,
+        "duration": 0,
+        "fastDuration": 0,
+        "viewDuration": 0,
+        "offset": 0,
+        "panelOffset": 0,
+        "ease": [
+          0.2,
+          0.7,
+          0.2,
+          1
+        ],
+        "zero": 0,
+        "one": 1
+      },
+      "nativeListeners": 1
+    },
+    {
+      "preference": "no-preference",
+      "sameCanvas": true,
+      "position": [
+        15.285726116822689,
+        21.599395599858152,
+        28.58387150751773
+      ],
+      "target": [
+        0,
+        0,
+        2
+      ],
+      "policy": {
+        "reduced": false,
+        "duration": 0.22,
+        "fastDuration": 0.12,
+        "viewDuration": 0.48,
+        "offset": 8,
+        "panelOffset": 16,
+        "ease": [
+          0.2,
+          0.7,
+          0.2,
+          1
+        ],
+        "zero": 0,
+        "one": 1
+      },
+      "nativeListeners": 1
+    },
+    {
+      "preference": "reduce",
+      "sameCanvas": true,
+      "position": [
+        15.285726116822689,
+        21.599395599858152,
+        28.58387150751773
+      ],
+      "target": [
+        0,
+        0,
+        2
+      ],
+      "policy": {
+        "reduced": true,
+        "duration": 0,
+        "fastDuration": 0,
+        "viewDuration": 0,
+        "offset": 0,
+        "panelOffset": 0,
+        "ease": [
+          0.2,
+          0.7,
+          0.2,
+          1
+        ],
+        "zero": 0,
+        "one": 1
+      },
+      "nativeListeners": 1
+    },
+    {
+      "preference": "no-preference",
+      "sameCanvas": true,
+      "position": [
+        15.285726116822689,
+        21.599395599858152,
+        28.58387150751773
+      ],
+      "target": [
+        0,
+        0,
+        2
+      ],
+      "policy": {
+        "reduced": false,
+        "duration": 0.22,
+        "fastDuration": 0.12,
+        "viewDuration": 0.48,
+        "offset": 8,
+        "panelOffset": 16,
+        "ease": [
+          0.2,
+          0.7,
+          0.2,
+          1
+        ],
+        "zero": 0,
+        "one": 1
+      },
+      "nativeListeners": 1
+    },
+    {
+      "preference": "reduce",
+      "sameField": true,
+      "focused": true,
+      "value": "The same draft and input node survive preference changes.",
+      "nativeListeners": 1
+    },
+    {
+      "preference": "no-preference",
+      "sameField": true,
+      "focused": true,
+      "value": "The same draft and input node survive preference changes.",
+      "nativeListeners": 1
+    }
+  ],
+  "churn": 20,
+  "inFlight": {
+    "moving": {
+      "y": 8,
+      "opacity": 1,
+      "frames": 0
+    },
+    "stopped": {
+      "transform": "none",
+      "opacity": 1
+    },
+    "stressDuration": "QA-only 1920ms override; source token file unchanged"
+  },
+  "errors": [],
+  "failedRequests": []
+}

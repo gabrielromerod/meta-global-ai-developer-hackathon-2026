@@ -1,0 +1,34 @@
+{
+  "kind": "generated_ui",
+  "source": "http://127.0.0.1:8102/next/src/twin/preview.html",
+  "reviewer": "w1-twin",
+  "reviewed": true,
+  "contains_camera_pixels": false,
+  "authenticated": false,
+  "fixture_hash_mode": "lf-normalized",
+  "fixtures": [
+    {
+      "path": "../../../web-next/src/fixtures/state.json",
+      "sha256": "db417019748a4da514d9b582a5444416d1e78f33a4f194399c8f69d0e6c42421"
+    },
+    {
+      "path": "../../../web-next/src/fixtures/twin.json",
+      "sha256": "8e255862c06ac708fa55fb4d5b408684af359180ae259871ebaf731918c9480a"
+    }
+  ],
+  "files": {
+    "twin-narrow-inspection.png": "da6e8285f137b1d2811545fc62d75c3825e02a88114aeac66186e0acc80a753e",
+    "twin-narrow-panels/486x440/twin-narrow-dark-menu.png": "abd99218f8eb6837da62459bab8325524dd59d0bcc3717629a64e2c0ee6681d0",
+    "twin-narrow-panels/486x440/twin-narrow-dark.png": "2df251ed9381097b4028b930b50042264822b8348825c15159af95ee92de8ddb",
+    "twin-narrow-panels/486x440/twin-narrow-light-menu.png": "5b67b22962e4ec93dc29ea064924669fcf1118381ebb3a3e682f035565d91315",
+    "twin-narrow-panels/486x440/twin-narrow-light.png": "43859f03372025400ff9e612b8f5d1e2a3b3bc1642ca4e99eafb5b8bcdf06b3f",
+    "twin-narrow-panels/486x524/twin-narrow-dark.png": "649717b90d8cc30c50eda6c184a60fb34d4414d4940dde2ba381954442829379",
+    "twin-narrow-panels/486x524/twin-narrow-light.png": "171ba9977d5eed09129e9120dc260088359735914a744599a575065401b4d50f",
+    "twin-narrow-panels/600x520/twin-narrow-dark-menu.png": "997fde0b7f4ed01874a9de255fb37784010c33eb0b9f9dbb3f05732400244b61",
+    "twin-narrow-panels/600x520/twin-narrow-dark.png": "f3d0237563fd0def9db5c2767cc498ab45f50b44031f1ff4a69ab0a2c3fd001d",
+    "twin-narrow-panels/600x520/twin-narrow-light-menu.png": "8f3dfa7313fab44d03840474247137cfe21e7a8dda3f6c38c8d02321027635e0",
+    "twin-narrow-panels/600x520/twin-narrow-light.png": "d46aac31ba4d1bbf790cfca6c1aa2f160e74d298af453a2110d85ee2c07a48c4",
+    "twin-narrow-panels/606x520/twin-narrow-dark.png": "26409afe13fdb703530af910b37361c622499790c1a03760225a7380722bf29c",
+    "twin-narrow-panels/606x520/twin-narrow-light.png": "a33789629eeb253f384e7c955978b06d24645d765732da9947269a85576fd0fc"
+  }
+}

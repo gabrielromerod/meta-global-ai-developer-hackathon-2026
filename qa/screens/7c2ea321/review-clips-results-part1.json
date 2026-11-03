@@ -1,0 +1,2493 @@
+{
+  "source": "http://127.0.0.1:8115/next/src/pages/clips/preview.html",
+  "sha": "7c2ea321bde6ff0e753be4c855f424d983ea2efb",
+  "started": "2026-11-03T13:26:12.204Z",
+  "cases": [
+    {
+      "width": 1728,
+      "height": 1030,
+      "theme": "dark",
+      "route": "clips",
+      "errors": [],
+      "requests": [],
+      "checks": [
+        {
+          "label": "initial",
+          "width": 1728,
+          "height": 1030,
+          "documentWidth": 1728,
+          "documentHeight": 1030,
+          "firstTitleBottom": 649.390625,
+          "firstVerdictBottom": 578.390625,
+          "clipped": 0
+        },
+        {
+          "label": "final",
+          "width": 1728,
+          "height": 1030,
+          "documentWidth": 1728,
+          "documentHeight": 1030,
+          "firstTitleBottom": 646.390625,
+          "firstVerdictBottom": 575.390625,
+          "clipped": 0
+        }
+      ],
+      "contrast": [
+        {
+          "label": "rest",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "hover",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "focus",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(117, 174, 255) solid 2px"
+        },
+        {
+          "label": "rest",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "hover",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "focus",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(117, 174, 255) solid 2px"
+        },
+        {
+          "label": "rest",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "hover",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "focus",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(117, 174, 255) solid 2px"
+        }
+      ],
+      "focus": [
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": ""
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Camera"
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Verdict"
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Apply filters"
+        }
+      ],
+      "screens": [
+        "review-clips-clips-dark-000-initial.png",
+        "review-clips-clips-dark-001-hover.png",
+        "review-clips-clips-dark-002-hover.png",
+        "review-clips-clips-dark-003-hover.png",
+        "review-clips-clips-dark-004-hover.png",
+        "review-clips-clips-dark-005-hover.png",
+        "review-clips-clips-dark-006-hover.png",
+        "review-clips-clips-dark-007-hover.png",
+        "review-clips-clips-dark-008-hover.png",
+        "review-clips-clips-dark-009-hover.png",
+        "review-clips-clips-dark-010-hover.png",
+        "review-clips-clips-dark-011-hover.png",
+        "review-clips-clips-dark-012-hover.png",
+        "review-clips-clips-dark-013-hover.png",
+        "review-clips-clips-dark-014-hover.png",
+        "review-clips-clips-dark-015-focus.png",
+        "review-clips-clips-dark-016-focus.png",
+        "review-clips-clips-dark-017-focus.png",
+        "review-clips-clips-dark-018-focus.png",
+        "review-clips-clips-dark-019-Camera-menu.png",
+        "review-clips-clips-dark-020-Camera-option-hover.png",
+        "review-clips-clips-dark-021-Camera-option-hover.png",
+        "review-clips-clips-dark-022-Camera-option-hover.png",
+        "review-clips-clips-dark-023-Camera-option-hover.png",
+        "review-clips-clips-dark-024-Camera-option-hover.png",
+        "review-clips-clips-dark-025-Camera-option-hover.png",
+        "review-clips-clips-dark-026-Camera-option-hover.png",
+        "review-clips-clips-dark-027-Camera-option-hover.png",
+        "review-clips-clips-dark-028-Verdict-menu.png",
+        "review-clips-clips-dark-029-Verdict-option-hover.png",
+        "review-clips-clips-dark-030-Verdict-option-hover.png",
+        "review-clips-clips-dark-031-Verdict-option-hover.png",
+        "review-clips-clips-dark-032-Verdict-option-hover.png",
+        "review-clips-clips-dark-033-Verdict-option-hover.png",
+        "review-clips-clips-dark-034-unavailable-category.png",
+        "review-clips-clips-dark-035-empty-query.png",
+        "review-clips-clips-dark-036-intersection.png",
+        "review-clips-clips-dark-037-clip-clip_v_c.png",
+        "review-clips-clips-dark-038-clip-0-scroll-bottom.png",
+        "review-clips-clips-dark-039-visit-evidence.png",
+        "review-clips-clips-dark-040-clip-clip_v_ap.png",
+        "review-clips-clips-dark-041-clip-1-scroll-bottom.png",
+        "review-clips-clips-dark-042-clip-clip_v_bp.png",
+        "review-clips-clips-dark-043-clip-2-scroll-bottom.png",
+        "review-clips-clips-dark-044-clip-clip_v_b.png",
+        "review-clips-clips-dark-045-clip-3-scroll-bottom.png",
+        "review-clips-clips-dark-046-clip-clip_v_a.png",
+        "review-clips-clips-dark-047-clip-4-scroll-bottom.png",
+        "review-clips-clips-dark-048-results-top.png",
+        "review-clips-clips-dark-049-results-bottom.png"
+      ],
+      "submitted": {
+        "q": "gate",
+        "camera": "doorbell",
+        "verdict": "needs_attention",
+        "kind": "person",
+        "start": "",
+        "end": ""
+      }
+    },
+    {
+      "width": 1728,
+      "height": 1030,
+      "theme": "dark",
+      "route": "media",
+      "errors": [],
+      "requests": [],
+      "checks": [
+        {
+          "label": "initial",
+          "width": 1728,
+          "height": 1030,
+          "documentWidth": 1728,
+          "documentHeight": 1030,
+          "firstTitleBottom": 649.390625,
+          "firstVerdictBottom": 578.390625,
+          "clipped": 0
+        },
+        {
+          "label": "final",
+          "width": 1728,
+          "height": 1030,
+          "documentWidth": 1728,
+          "documentHeight": 1030,
+          "firstTitleBottom": 646.390625,
+          "firstVerdictBottom": 575.390625,
+          "clipped": 0
+        }
+      ],
+      "contrast": [
+        {
+          "label": "rest",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "hover",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "focus",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(117, 174, 255) solid 2px"
+        },
+        {
+          "label": "rest",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "hover",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "focus",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(117, 174, 255) solid 2px"
+        },
+        {
+          "label": "rest",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "hover",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "focus",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(117, 174, 255) solid 2px"
+        },
+        {
+          "label": "date rest",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.66474692524494,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "date hover",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.66474692524494,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "date focus",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.66474692524494,
+          "outline": "rgb(117, 174, 255) solid 2px"
+        },
+        {
+          "label": "date rest",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.66474692524494,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "date hover",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.66474692524494,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "date focus",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.66474692524494,
+          "outline": "rgb(117, 174, 255) solid 2px"
+        }
+      ],
+      "focus": [
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": ""
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Camera"
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Verdict"
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Time range"
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Apply filters"
+        }
+      ],
+      "screens": [
+        "review-clips-media-dark-000-initial.png",
+        "review-clips-media-dark-001-hover.png",
+        "review-clips-media-dark-002-hover.png",
+        "review-clips-media-dark-003-hover.png",
+        "review-clips-media-dark-004-hover.png",
+        "review-clips-media-dark-005-hover.png",
+        "review-clips-media-dark-006-hover.png",
+        "review-clips-media-dark-007-hover.png",
+        "review-clips-media-dark-008-hover.png",
+        "review-clips-media-dark-009-hover.png",
+        "review-clips-media-dark-010-hover.png",
+        "review-clips-media-dark-011-hover.png",
+        "review-clips-media-dark-012-hover.png",
+        "review-clips-media-dark-013-hover.png",
+        "review-clips-media-dark-014-hover.png",
+        "review-clips-media-dark-015-hover.png",
+        "review-clips-media-dark-016-focus.png",
+        "review-clips-media-dark-017-focus.png",
+        "review-clips-media-dark-018-focus.png",
+        "review-clips-media-dark-019-focus.png",
+        "review-clips-media-dark-020-focus.png",
+        "review-clips-media-dark-021-Camera-menu.png",
+        "review-clips-media-dark-022-Camera-option-hover.png",
+        "review-clips-media-dark-023-Camera-option-hover.png",
+        "review-clips-media-dark-024-Camera-option-hover.png",
+        "review-clips-media-dark-025-Camera-option-hover.png",
+        "review-clips-media-dark-026-Camera-option-hover.png",
+        "review-clips-media-dark-027-Camera-option-hover.png",
+        "review-clips-media-dark-028-Camera-option-hover.png",
+        "review-clips-media-dark-029-Camera-option-hover.png",
+        "review-clips-media-dark-030-Verdict-menu.png",
+        "review-clips-media-dark-031-Verdict-option-hover.png",
+        "review-clips-media-dark-032-Verdict-option-hover.png",
+        "review-clips-media-dark-033-Verdict-option-hover.png",
+        "review-clips-media-dark-034-Verdict-option-hover.png",
+        "review-clips-media-dark-035-Verdict-option-hover.png",
+        "review-clips-media-dark-036-unavailable-category.png",
+        "review-clips-media-dark-037-empty-query.png",
+        "review-clips-media-dark-038-time-dialog.png",
+        "review-clips-media-dark-039-date-hover.png",
+        "review-clips-media-dark-040-date-focus.png",
+        "review-clips-media-dark-041-date-hover.png",
+        "review-clips-media-dark-042-date-focus.png",
+        "review-clips-media-dark-043-date-hover.png",
+        "review-clips-media-dark-044-date-focus.png",
+        "review-clips-media-dark-045-date-hover.png",
+        "review-clips-media-dark-046-date-hover.png",
+        "review-clips-media-dark-047-date-focus.png",
+        "review-clips-media-dark-048-intersection.png",
+        "review-clips-media-dark-049-reversed-range.png",
+        "review-clips-media-dark-050-clip-clip_v_c.png",
+        "review-clips-media-dark-051-clip-0-scroll-bottom.png",
+        "review-clips-media-dark-052-visit-evidence.png",
+        "review-clips-media-dark-053-clip-clip_v_ap.png",
+        "review-clips-media-dark-054-clip-1-scroll-bottom.png",
+        "review-clips-media-dark-055-clip-clip_v_bp.png",
+        "review-clips-media-dark-056-clip-2-scroll-bottom.png",
+        "review-clips-media-dark-057-clip-clip_v_b.png",
+        "review-clips-media-dark-058-clip-3-scroll-bottom.png",
+        "review-clips-media-dark-059-clip-clip_v_a.png",
+        "review-clips-media-dark-060-clip-4-scroll-bottom.png",
+        "review-clips-media-dark-061-results-top.png",
+        "review-clips-media-dark-062-results-bottom.png"
+      ],
+      "submitted": {
+        "q": "gate",
+        "camera": "doorbell",
+        "verdict": "needs_attention",
+        "kind": "person",
+        "start": "2026-11-03T02:00:00.000Z",
+        "end": "2026-11-03T02:15:00.000Z"
+      }
+    },
+    {
+      "width": 1728,
+      "height": 1030,
+      "theme": "light",
+      "route": "clips",
+      "errors": [],
+      "requests": [],
+      "checks": [
+        {
+          "label": "initial",
+          "width": 1728,
+          "height": 1030,
+          "documentWidth": 1728,
+          "documentHeight": 1030,
+          "firstTitleBottom": 649.390625,
+          "firstVerdictBottom": 578.390625,
+          "clipped": 0
+        },
+        {
+          "label": "final",
+          "width": 1728,
+          "height": 1030,
+          "documentWidth": 1728,
+          "documentHeight": 1030,
+          "firstTitleBottom": 646.390625,
+          "firstVerdictBottom": 575.390625,
+          "clipped": 0
+        }
+      ],
+      "contrast": [
+        {
+          "label": "rest",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "hover",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "focus",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(23, 91, 181) solid 2px"
+        },
+        {
+          "label": "rest",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "hover",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "focus",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(23, 91, 181) solid 2px"
+        },
+        {
+          "label": "rest",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "hover",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "focus",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(23, 91, 181) solid 2px"
+        }
+      ],
+      "focus": [
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": ""
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Camera"
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Verdict"
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Apply filters"
+        }
+      ],
+      "screens": [
+        "review-clips-clips-light-000-initial.png",
+        "review-clips-clips-light-001-hover.png",
+        "review-clips-clips-light-002-hover.png",
+        "review-clips-clips-light-003-hover.png",
+        "review-clips-clips-light-004-hover.png",
+        "review-clips-clips-light-005-hover.png",
+        "review-clips-clips-light-006-hover.png",
+        "review-clips-clips-light-007-hover.png",
+        "review-clips-clips-light-008-hover.png",
+        "review-clips-clips-light-009-hover.png",
+        "review-clips-clips-light-010-hover.png",
+        "review-clips-clips-light-011-hover.png",
+        "review-clips-clips-light-012-hover.png",
+        "review-clips-clips-light-013-hover.png",
+        "review-clips-clips-light-014-hover.png",
+        "review-clips-clips-light-015-focus.png",
+        "review-clips-clips-light-016-focus.png",
+        "review-clips-clips-light-017-focus.png",
+        "review-clips-clips-light-018-focus.png",
+        "review-clips-clips-light-019-Camera-menu.png",
+        "review-clips-clips-light-020-Camera-option-hover.png",
+        "review-clips-clips-light-021-Camera-option-hover.png",
+        "review-clips-clips-light-022-Camera-option-hover.png",
+        "review-clips-clips-light-023-Camera-option-hover.png",
+        "review-clips-clips-light-024-Camera-option-hover.png",
+        "review-clips-clips-light-025-Camera-option-hover.png",
+        "review-clips-clips-light-026-Camera-option-hover.png",
+        "review-clips-clips-light-027-Camera-option-hover.png",
+        "review-clips-clips-light-028-Verdict-menu.png",
+        "review-clips-clips-light-029-Verdict-option-hover.png",
+        "review-clips-clips-light-030-Verdict-option-hover.png",
+        "review-clips-clips-light-031-Verdict-option-hover.png",
+        "review-clips-clips-light-032-Verdict-option-hover.png",
+        "review-clips-clips-light-033-Verdict-option-hover.png",
+        "review-clips-clips-light-034-unavailable-category.png",
+        "review-clips-clips-light-035-empty-query.png",
+        "review-clips-clips-light-036-intersection.png",
+        "review-clips-clips-light-037-clip-clip_v_c.png",
+        "review-clips-clips-light-038-clip-0-scroll-bottom.png",
+        "review-clips-clips-light-039-visit-evidence.png",
+        "review-clips-clips-light-040-clip-clip_v_ap.png",
+        "review-clips-clips-light-041-clip-1-scroll-bottom.png",
+        "review-clips-clips-light-042-clip-clip_v_bp.png",
+        "review-clips-clips-light-043-clip-2-scroll-bottom.png",
+        "review-clips-clips-light-044-clip-clip_v_b.png",
+        "review-clips-clips-light-045-clip-3-scroll-bottom.png",
+        "review-clips-clips-light-046-clip-clip_v_a.png",
+        "review-clips-clips-light-047-clip-4-scroll-bottom.png",
+        "review-clips-clips-light-048-results-top.png",
+        "review-clips-clips-light-049-results-bottom.png"
+      ],
+      "submitted": {
+        "q": "gate",
+        "camera": "doorbell",
+        "verdict": "needs_attention",
+        "kind": "person",
+        "start": "",
+        "end": ""
+      }
+    },
+    {
+      "width": 1728,
+      "height": 1030,
+      "theme": "light",
+      "route": "media",
+      "errors": [],
+      "requests": [],
+      "checks": [
+        {
+          "label": "initial",
+          "width": 1728,
+          "height": 1030,
+          "documentWidth": 1728,
+          "documentHeight": 1030,
+          "firstTitleBottom": 649.390625,
+          "firstVerdictBottom": 578.390625,
+          "clipped": 0
+        },
+        {
+          "label": "final",
+          "width": 1728,
+          "height": 1030,
+          "documentWidth": 1728,
+          "documentHeight": 1030,
+          "firstTitleBottom": 646.390625,
+          "firstVerdictBottom": 575.390625,
+          "clipped": 0
+        }
+      ],
+      "contrast": [
+        {
+          "label": "rest",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "hover",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "focus",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(23, 91, 181) solid 2px"
+        },
+        {
+          "label": "rest",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "hover",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "focus",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(23, 91, 181) solid 2px"
+        },
+        {
+          "label": "rest",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "hover",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "focus",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(23, 91, 181) solid 2px"
+        },
+        {
+          "label": "date rest",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.695640376003043,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "date hover",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.695640376003043,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "date focus",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.695640376003043,
+          "outline": "rgb(23, 91, 181) solid 2px"
+        },
+        {
+          "label": "date rest",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.695640376003043,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "date hover",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.695640376003043,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "date focus",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.695640376003043,
+          "outline": "rgb(23, 91, 181) solid 2px"
+        }
+      ],
+      "focus": [
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": ""
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Camera"
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Verdict"
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Time range"
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Apply filters"
+        }
+      ],
+      "screens": [
+        "review-clips-media-light-000-initial.png",
+        "review-clips-media-light-001-hover.png",
+        "review-clips-media-light-002-hover.png",
+        "review-clips-media-light-003-hover.png",
+        "review-clips-media-light-004-hover.png",
+        "review-clips-media-light-005-hover.png",
+        "review-clips-media-light-006-hover.png",
+        "review-clips-media-light-007-hover.png",
+        "review-clips-media-light-008-hover.png",
+        "review-clips-media-light-009-hover.png",
+        "review-clips-media-light-010-hover.png",
+        "review-clips-media-light-011-hover.png",
+        "review-clips-media-light-012-hover.png",
+        "review-clips-media-light-013-hover.png",
+        "review-clips-media-light-014-hover.png",
+        "review-clips-media-light-015-hover.png",
+        "review-clips-media-light-016-focus.png",
+        "review-clips-media-light-017-focus.png",
+        "review-clips-media-light-018-focus.png",
+        "review-clips-media-light-019-focus.png",
+        "review-clips-media-light-020-focus.png",
+        "review-clips-media-light-021-Camera-menu.png",
+        "review-clips-media-light-022-Camera-option-hover.png",
+        "review-clips-media-light-023-Camera-option-hover.png",
+        "review-clips-media-light-024-Camera-option-hover.png",
+        "review-clips-media-light-025-Camera-option-hover.png",
+        "review-clips-media-light-026-Camera-option-hover.png",
+        "review-clips-media-light-027-Camera-option-hover.png",
+        "review-clips-media-light-028-Camera-option-hover.png",
+        "review-clips-media-light-029-Camera-option-hover.png",
+        "review-clips-media-light-030-Verdict-menu.png",
+        "review-clips-media-light-031-Verdict-option-hover.png",
+        "review-clips-media-light-032-Verdict-option-hover.png",
+        "review-clips-media-light-033-Verdict-option-hover.png",
+        "review-clips-media-light-034-Verdict-option-hover.png",
+        "review-clips-media-light-035-Verdict-option-hover.png",
+        "review-clips-media-light-036-unavailable-category.png",
+        "review-clips-media-light-037-empty-query.png",
+        "review-clips-media-light-038-time-dialog.png",
+        "review-clips-media-light-039-date-hover.png",
+        "review-clips-media-light-040-date-focus.png",
+        "review-clips-media-light-041-date-hover.png",
+        "review-clips-media-light-042-date-focus.png",
+        "review-clips-media-light-043-date-hover.png",
+        "review-clips-media-light-044-date-focus.png",
+        "review-clips-media-light-045-date-hover.png",
+        "review-clips-media-light-046-date-hover.png",
+        "review-clips-media-light-047-date-focus.png",
+        "review-clips-media-light-048-intersection.png",
+        "review-clips-media-light-049-reversed-range.png",
+        "review-clips-media-light-050-clip-clip_v_c.png",
+        "review-clips-media-light-051-clip-0-scroll-bottom.png",
+        "review-clips-media-light-052-visit-evidence.png",
+        "review-clips-media-light-053-clip-clip_v_ap.png",
+        "review-clips-media-light-054-clip-1-scroll-bottom.png",
+        "review-clips-media-light-055-clip-clip_v_bp.png",
+        "review-clips-media-light-056-clip-2-scroll-bottom.png",
+        "review-clips-media-light-057-clip-clip_v_b.png",
+        "review-clips-media-light-058-clip-3-scroll-bottom.png",
+        "review-clips-media-light-059-clip-clip_v_a.png",
+        "review-clips-media-light-060-clip-4-scroll-bottom.png",
+        "review-clips-media-light-061-results-top.png",
+        "review-clips-media-light-062-results-bottom.png"
+      ],
+      "submitted": {
+        "q": "gate",
+        "camera": "doorbell",
+        "verdict": "needs_attention",
+        "kind": "person",
+        "start": "2026-11-03T02:00:00.000Z",
+        "end": "2026-11-03T02:15:00.000Z"
+      }
+    },
+    {
+      "width": 1920,
+      "height": 960,
+      "theme": "dark",
+      "route": "clips",
+      "errors": [],
+      "requests": [],
+      "checks": [
+        {
+          "label": "initial",
+          "width": 1920,
+          "height": 960,
+          "documentWidth": 1920,
+          "documentHeight": 960,
+          "firstTitleBottom": 649.390625,
+          "firstVerdictBottom": 578.390625,
+          "clipped": 0
+        },
+        {
+          "label": "final",
+          "width": 1920,
+          "height": 960,
+          "documentWidth": 1920,
+          "documentHeight": 960,
+          "firstTitleBottom": 649.390625,
+          "firstVerdictBottom": 578.390625,
+          "clipped": 0
+        }
+      ],
+      "contrast": [
+        {
+          "label": "rest",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "hover",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "focus",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(117, 174, 255) solid 2px"
+        },
+        {
+          "label": "rest",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "hover",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "focus",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(117, 174, 255) solid 2px"
+        },
+        {
+          "label": "rest",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "hover",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "focus",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(117, 174, 255) solid 2px"
+        }
+      ],
+      "focus": [
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": ""
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Camera"
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Verdict"
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Apply filters"
+        }
+      ],
+      "screens": [
+        "review-clips-clips-dark-000-initial.png",
+        "review-clips-clips-dark-001-hover.png",
+        "review-clips-clips-dark-002-hover.png",
+        "review-clips-clips-dark-003-hover.png",
+        "review-clips-clips-dark-004-hover.png",
+        "review-clips-clips-dark-005-hover.png",
+        "review-clips-clips-dark-006-hover.png",
+        "review-clips-clips-dark-007-hover.png",
+        "review-clips-clips-dark-008-hover.png",
+        "review-clips-clips-dark-009-hover.png",
+        "review-clips-clips-dark-010-hover.png",
+        "review-clips-clips-dark-011-hover.png",
+        "review-clips-clips-dark-012-hover.png",
+        "review-clips-clips-dark-013-hover.png",
+        "review-clips-clips-dark-014-hover.png",
+        "review-clips-clips-dark-015-focus.png",
+        "review-clips-clips-dark-016-focus.png",
+        "review-clips-clips-dark-017-focus.png",
+        "review-clips-clips-dark-018-focus.png",
+        "review-clips-clips-dark-019-Camera-menu.png",
+        "review-clips-clips-dark-020-Camera-option-hover.png",
+        "review-clips-clips-dark-021-Camera-option-hover.png",
+        "review-clips-clips-dark-022-Camera-option-hover.png",
+        "review-clips-clips-dark-023-Camera-option-hover.png",
+        "review-clips-clips-dark-024-Camera-option-hover.png",
+        "review-clips-clips-dark-025-Camera-option-hover.png",
+        "review-clips-clips-dark-026-Camera-option-hover.png",
+        "review-clips-clips-dark-027-Camera-option-hover.png",
+        "review-clips-clips-dark-028-Verdict-menu.png",
+        "review-clips-clips-dark-029-Verdict-option-hover.png",
+        "review-clips-clips-dark-030-Verdict-option-hover.png",
+        "review-clips-clips-dark-031-Verdict-option-hover.png",
+        "review-clips-clips-dark-032-Verdict-option-hover.png",
+        "review-clips-clips-dark-033-Verdict-option-hover.png",
+        "review-clips-clips-dark-034-unavailable-category.png",
+        "review-clips-clips-dark-035-empty-query.png",
+        "review-clips-clips-dark-036-intersection.png",
+        "review-clips-clips-dark-037-clip-clip_v_c.png",
+        "review-clips-clips-dark-038-clip-0-scroll-bottom.png",
+        "review-clips-clips-dark-039-visit-evidence.png",
+        "review-clips-clips-dark-040-clip-clip_v_ap.png",
+        "review-clips-clips-dark-041-clip-1-scroll-bottom.png",
+        "review-clips-clips-dark-042-clip-clip_v_bp.png",
+        "review-clips-clips-dark-043-clip-2-scroll-bottom.png",
+        "review-clips-clips-dark-044-clip-clip_v_b.png",
+        "review-clips-clips-dark-045-clip-3-scroll-bottom.png",
+        "review-clips-clips-dark-046-clip-clip_v_a.png",
+        "review-clips-clips-dark-047-clip-4-scroll-bottom.png",
+        "review-clips-clips-dark-048-results-top.png",
+        "review-clips-clips-dark-049-results-bottom.png"
+      ],
+      "submitted": {
+        "q": "gate",
+        "camera": "doorbell",
+        "verdict": "needs_attention",
+        "kind": "person",
+        "start": "",
+        "end": ""
+      }
+    },
+    {
+      "width": 1920,
+      "height": 960,
+      "theme": "dark",
+      "route": "media",
+      "errors": [],
+      "requests": [],
+      "checks": [
+        {
+          "label": "initial",
+          "width": 1920,
+          "height": 960,
+          "documentWidth": 1920,
+          "documentHeight": 960,
+          "firstTitleBottom": 649.390625,
+          "firstVerdictBottom": 578.390625,
+          "clipped": 0
+        },
+        {
+          "label": "final",
+          "width": 1920,
+          "height": 960,
+          "documentWidth": 1920,
+          "documentHeight": 960,
+          "firstTitleBottom": 649.390625,
+          "firstVerdictBottom": 578.390625,
+          "clipped": 0
+        }
+      ],
+      "contrast": [
+        {
+          "label": "rest",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "hover",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "focus",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(117, 174, 255) solid 2px"
+        },
+        {
+          "label": "rest",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "hover",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "focus",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(117, 174, 255) solid 2px"
+        },
+        {
+          "label": "rest",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "hover",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "focus",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(117, 174, 255) solid 2px"
+        },
+        {
+          "label": "date rest",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.66474692524494,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "date hover",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.66474692524494,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "date focus",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.66474692524494,
+          "outline": "rgb(117, 174, 255) solid 2px"
+        },
+        {
+          "label": "date rest",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.66474692524494,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "date hover",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.66474692524494,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "date focus",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.66474692524494,
+          "outline": "rgb(117, 174, 255) solid 2px"
+        }
+      ],
+      "focus": [
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": ""
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Camera"
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Verdict"
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Time range"
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Apply filters"
+        }
+      ],
+      "screens": [
+        "review-clips-media-dark-000-initial.png",
+        "review-clips-media-dark-001-hover.png",
+        "review-clips-media-dark-002-hover.png",
+        "review-clips-media-dark-003-hover.png",
+        "review-clips-media-dark-004-hover.png",
+        "review-clips-media-dark-005-hover.png",
+        "review-clips-media-dark-006-hover.png",
+        "review-clips-media-dark-007-hover.png",
+        "review-clips-media-dark-008-hover.png",
+        "review-clips-media-dark-009-hover.png",
+        "review-clips-media-dark-010-hover.png",
+        "review-clips-media-dark-011-hover.png",
+        "review-clips-media-dark-012-hover.png",
+        "review-clips-media-dark-013-hover.png",
+        "review-clips-media-dark-014-hover.png",
+        "review-clips-media-dark-015-hover.png",
+        "review-clips-media-dark-016-focus.png",
+        "review-clips-media-dark-017-focus.png",
+        "review-clips-media-dark-018-focus.png",
+        "review-clips-media-dark-019-focus.png",
+        "review-clips-media-dark-020-focus.png",
+        "review-clips-media-dark-021-Camera-menu.png",
+        "review-clips-media-dark-022-Camera-option-hover.png",
+        "review-clips-media-dark-023-Camera-option-hover.png",
+        "review-clips-media-dark-024-Camera-option-hover.png",
+        "review-clips-media-dark-025-Camera-option-hover.png",
+        "review-clips-media-dark-026-Camera-option-hover.png",
+        "review-clips-media-dark-027-Camera-option-hover.png",
+        "review-clips-media-dark-028-Camera-option-hover.png",
+        "review-clips-media-dark-029-Camera-option-hover.png",
+        "review-clips-media-dark-030-Verdict-menu.png",
+        "review-clips-media-dark-031-Verdict-option-hover.png",
+        "review-clips-media-dark-032-Verdict-option-hover.png",
+        "review-clips-media-dark-033-Verdict-option-hover.png",
+        "review-clips-media-dark-034-Verdict-option-hover.png",
+        "review-clips-media-dark-035-Verdict-option-hover.png",
+        "review-clips-media-dark-036-unavailable-category.png",
+        "review-clips-media-dark-037-empty-query.png",
+        "review-clips-media-dark-038-time-dialog.png",
+        "review-clips-media-dark-039-date-hover.png",
+        "review-clips-media-dark-040-date-focus.png",
+        "review-clips-media-dark-041-date-hover.png",
+        "review-clips-media-dark-042-date-focus.png",
+        "review-clips-media-dark-043-date-hover.png",
+        "review-clips-media-dark-044-date-focus.png",
+        "review-clips-media-dark-045-date-hover.png",
+        "review-clips-media-dark-046-date-hover.png",
+        "review-clips-media-dark-047-date-focus.png",
+        "review-clips-media-dark-048-intersection.png",
+        "review-clips-media-dark-049-reversed-range.png",
+        "review-clips-media-dark-050-clip-clip_v_c.png",
+        "review-clips-media-dark-051-clip-0-scroll-bottom.png",
+        "review-clips-media-dark-052-visit-evidence.png",
+        "review-clips-media-dark-053-clip-clip_v_ap.png",
+        "review-clips-media-dark-054-clip-1-scroll-bottom.png",
+        "review-clips-media-dark-055-clip-clip_v_bp.png",
+        "review-clips-media-dark-056-clip-2-scroll-bottom.png",
+        "review-clips-media-dark-057-clip-clip_v_b.png",
+        "review-clips-media-dark-058-clip-3-scroll-bottom.png",
+        "review-clips-media-dark-059-clip-clip_v_a.png",
+        "review-clips-media-dark-060-clip-4-scroll-bottom.png",
+        "review-clips-media-dark-061-results-top.png",
+        "review-clips-media-dark-062-results-bottom.png"
+      ],
+      "submitted": {
+        "q": "gate",
+        "camera": "doorbell",
+        "verdict": "needs_attention",
+        "kind": "person",
+        "start": "2026-11-03T02:00:00.000Z",
+        "end": "2026-11-03T02:15:00.000Z"
+      }
+    },
+    {
+      "width": 1920,
+      "height": 960,
+      "theme": "light",
+      "route": "clips",
+      "errors": [],
+      "requests": [],
+      "checks": [
+        {
+          "label": "initial",
+          "width": 1920,
+          "height": 960,
+          "documentWidth": 1920,
+          "documentHeight": 960,
+          "firstTitleBottom": 649.390625,
+          "firstVerdictBottom": 578.390625,
+          "clipped": 0
+        },
+        {
+          "label": "final",
+          "width": 1920,
+          "height": 960,
+          "documentWidth": 1920,
+          "documentHeight": 960,
+          "firstTitleBottom": 649.390625,
+          "firstVerdictBottom": 578.390625,
+          "clipped": 0
+        }
+      ],
+      "contrast": [
+        {
+          "label": "rest",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "hover",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "focus",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(23, 91, 181) solid 2px"
+        },
+        {
+          "label": "rest",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "hover",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "focus",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(23, 91, 181) solid 2px"
+        },
+        {
+          "label": "rest",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "hover",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "focus",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(23, 91, 181) solid 2px"
+        }
+      ],
+      "focus": [
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": ""
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Camera"
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Verdict"
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Apply filters"
+        }
+      ],
+      "screens": [
+        "review-clips-clips-light-000-initial.png",
+        "review-clips-clips-light-001-hover.png",
+        "review-clips-clips-light-002-hover.png",
+        "review-clips-clips-light-003-hover.png",
+        "review-clips-clips-light-004-hover.png",
+        "review-clips-clips-light-005-hover.png",
+        "review-clips-clips-light-006-hover.png",
+        "review-clips-clips-light-007-hover.png",
+        "review-clips-clips-light-008-hover.png",
+        "review-clips-clips-light-009-hover.png",
+        "review-clips-clips-light-010-hover.png",
+        "review-clips-clips-light-011-hover.png",
+        "review-clips-clips-light-012-hover.png",
+        "review-clips-clips-light-013-hover.png",
+        "review-clips-clips-light-014-hover.png",
+        "review-clips-clips-light-015-focus.png",
+        "review-clips-clips-light-016-focus.png",
+        "review-clips-clips-light-017-focus.png",
+        "review-clips-clips-light-018-focus.png",
+        "review-clips-clips-light-019-Camera-menu.png",
+        "review-clips-clips-light-020-Camera-option-hover.png",
+        "review-clips-clips-light-021-Camera-option-hover.png",
+        "review-clips-clips-light-022-Camera-option-hover.png",
+        "review-clips-clips-light-023-Camera-option-hover.png",
+        "review-clips-clips-light-024-Camera-option-hover.png",
+        "review-clips-clips-light-025-Camera-option-hover.png",
+        "review-clips-clips-light-026-Camera-option-hover.png",
+        "review-clips-clips-light-027-Camera-option-hover.png",
+        "review-clips-clips-light-028-Verdict-menu.png",
+        "review-clips-clips-light-029-Verdict-option-hover.png",
+        "review-clips-clips-light-030-Verdict-option-hover.png",
+        "review-clips-clips-light-031-Verdict-option-hover.png",
+        "review-clips-clips-light-032-Verdict-option-hover.png",
+        "review-clips-clips-light-033-Verdict-option-hover.png",
+        "review-clips-clips-light-034-unavailable-category.png",
+        "review-clips-clips-light-035-empty-query.png",
+        "review-clips-clips-light-036-intersection.png",
+        "review-clips-clips-light-037-clip-clip_v_c.png",
+        "review-clips-clips-light-038-clip-0-scroll-bottom.png",
+        "review-clips-clips-light-039-visit-evidence.png",
+        "review-clips-clips-light-040-clip-clip_v_ap.png",
+        "review-clips-clips-light-041-clip-1-scroll-bottom.png",
+        "review-clips-clips-light-042-clip-clip_v_bp.png",
+        "review-clips-clips-light-043-clip-2-scroll-bottom.png",
+        "review-clips-clips-light-044-clip-clip_v_b.png",
+        "review-clips-clips-light-045-clip-3-scroll-bottom.png",
+        "review-clips-clips-light-046-clip-clip_v_a.png",
+        "review-clips-clips-light-047-clip-4-scroll-bottom.png",
+        "review-clips-clips-light-048-results-top.png",
+        "review-clips-clips-light-049-results-bottom.png"
+      ],
+      "submitted": {
+        "q": "gate",
+        "camera": "doorbell",
+        "verdict": "needs_attention",
+        "kind": "person",
+        "start": "",
+        "end": ""
+      }
+    },
+    {
+      "width": 1920,
+      "height": 960,
+      "theme": "light",
+      "route": "media",
+      "errors": [],
+      "requests": [],
+      "checks": [
+        {
+          "label": "initial",
+          "width": 1920,
+          "height": 960,
+          "documentWidth": 1920,
+          "documentHeight": 960,
+          "firstTitleBottom": 649.390625,
+          "firstVerdictBottom": 578.390625,
+          "clipped": 0
+        },
+        {
+          "label": "final",
+          "width": 1920,
+          "height": 960,
+          "documentWidth": 1920,
+          "documentHeight": 960,
+          "firstTitleBottom": 649.390625,
+          "firstVerdictBottom": 578.390625,
+          "clipped": 0
+        }
+      ],
+      "contrast": [
+        {
+          "label": "rest",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "hover",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "focus",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(23, 91, 181) solid 2px"
+        },
+        {
+          "label": "rest",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "hover",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "focus",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(23, 91, 181) solid 2px"
+        },
+        {
+          "label": "rest",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "hover",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "focus",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(23, 91, 181) solid 2px"
+        },
+        {
+          "label": "date rest",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.695640376003043,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "date hover",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.695640376003043,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "date focus",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.695640376003043,
+          "outline": "rgb(23, 91, 181) solid 2px"
+        },
+        {
+          "label": "date rest",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.695640376003043,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "date hover",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.695640376003043,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "date focus",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.695640376003043,
+          "outline": "rgb(23, 91, 181) solid 2px"
+        }
+      ],
+      "focus": [
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": ""
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Camera"
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Verdict"
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Time range"
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Apply filters"
+        }
+      ],
+      "screens": [
+        "review-clips-media-light-000-initial.png",
+        "review-clips-media-light-001-hover.png",
+        "review-clips-media-light-002-hover.png",
+        "review-clips-media-light-003-hover.png",
+        "review-clips-media-light-004-hover.png",
+        "review-clips-media-light-005-hover.png",
+        "review-clips-media-light-006-hover.png",
+        "review-clips-media-light-007-hover.png",
+        "review-clips-media-light-008-hover.png",
+        "review-clips-media-light-009-hover.png",
+        "review-clips-media-light-010-hover.png",
+        "review-clips-media-light-011-hover.png",
+        "review-clips-media-light-012-hover.png",
+        "review-clips-media-light-013-hover.png",
+        "review-clips-media-light-014-hover.png",
+        "review-clips-media-light-015-hover.png",
+        "review-clips-media-light-016-focus.png",
+        "review-clips-media-light-017-focus.png",
+        "review-clips-media-light-018-focus.png",
+        "review-clips-media-light-019-focus.png",
+        "review-clips-media-light-020-focus.png",
+        "review-clips-media-light-021-Camera-menu.png",
+        "review-clips-media-light-022-Camera-option-hover.png",
+        "review-clips-media-light-023-Camera-option-hover.png",
+        "review-clips-media-light-024-Camera-option-hover.png",
+        "review-clips-media-light-025-Camera-option-hover.png",
+        "review-clips-media-light-026-Camera-option-hover.png",
+        "review-clips-media-light-027-Camera-option-hover.png",
+        "review-clips-media-light-028-Camera-option-hover.png",
+        "review-clips-media-light-029-Camera-option-hover.png",
+        "review-clips-media-light-030-Verdict-menu.png",
+        "review-clips-media-light-031-Verdict-option-hover.png",
+        "review-clips-media-light-032-Verdict-option-hover.png",
+        "review-clips-media-light-033-Verdict-option-hover.png",
+        "review-clips-media-light-034-Verdict-option-hover.png",
+        "review-clips-media-light-035-Verdict-option-hover.png",
+        "review-clips-media-light-036-unavailable-category.png",
+        "review-clips-media-light-037-empty-query.png",
+        "review-clips-media-light-038-time-dialog.png",
+        "review-clips-media-light-039-date-hover.png",
+        "review-clips-media-light-040-date-focus.png",
+        "review-clips-media-light-041-date-hover.png",
+        "review-clips-media-light-042-date-focus.png",
+        "review-clips-media-light-043-date-hover.png",
+        "review-clips-media-light-044-date-focus.png",
+        "review-clips-media-light-045-date-hover.png",
+        "review-clips-media-light-046-date-hover.png",
+        "review-clips-media-light-047-date-focus.png",
+        "review-clips-media-light-048-intersection.png",
+        "review-clips-media-light-049-reversed-range.png",
+        "review-clips-media-light-050-clip-clip_v_c.png",
+        "review-clips-media-light-051-clip-0-scroll-bottom.png",
+        "review-clips-media-light-052-visit-evidence.png",
+        "review-clips-media-light-053-clip-clip_v_ap.png",
+        "review-clips-media-light-054-clip-1-scroll-bottom.png",
+        "review-clips-media-light-055-clip-clip_v_bp.png",
+        "review-clips-media-light-056-clip-2-scroll-bottom.png",
+        "review-clips-media-light-057-clip-clip_v_b.png",
+        "review-clips-media-light-058-clip-3-scroll-bottom.png",
+        "review-clips-media-light-059-clip-clip_v_a.png",
+        "review-clips-media-light-060-clip-4-scroll-bottom.png",
+        "review-clips-media-light-061-results-top.png",
+        "review-clips-media-light-062-results-bottom.png"
+      ],
+      "submitted": {
+        "q": "gate",
+        "camera": "doorbell",
+        "verdict": "needs_attention",
+        "kind": "person",
+        "start": "2026-11-03T02:00:00.000Z",
+        "end": "2026-11-03T02:15:00.000Z"
+      }
+    },
+    {
+      "width": 1536,
+      "height": 730,
+      "theme": "dark",
+      "route": "clips",
+      "errors": [],
+      "requests": [],
+      "checks": [
+        {
+          "label": "initial",
+          "width": 1536,
+          "height": 730,
+          "documentWidth": 1536,
+          "documentHeight": 730,
+          "firstTitleBottom": 572.390625,
+          "firstVerdictBottom": 501.390625,
+          "clipped": 0
+        },
+        {
+          "label": "final",
+          "width": 1536,
+          "height": 730,
+          "documentWidth": 1536,
+          "documentHeight": 730,
+          "firstTitleBottom": 346.390625,
+          "firstVerdictBottom": 275.390625,
+          "clipped": 0
+        }
+      ],
+      "contrast": [
+        {
+          "label": "rest",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "hover",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "focus",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(117, 174, 255) solid 2px"
+        },
+        {
+          "label": "rest",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "hover",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "focus",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(117, 174, 255) solid 2px"
+        },
+        {
+          "label": "rest",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "hover",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "focus",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(117, 174, 255) solid 2px"
+        }
+      ],
+      "focus": [
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": ""
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Camera"
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Verdict"
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Apply filters"
+        }
+      ],
+      "screens": [
+        "review-clips-clips-dark-000-initial.png",
+        "review-clips-clips-dark-001-hover.png",
+        "review-clips-clips-dark-002-hover.png",
+        "review-clips-clips-dark-003-hover.png",
+        "review-clips-clips-dark-004-hover.png",
+        "review-clips-clips-dark-005-hover.png",
+        "review-clips-clips-dark-006-hover.png",
+        "review-clips-clips-dark-007-hover.png",
+        "review-clips-clips-dark-008-hover.png",
+        "review-clips-clips-dark-009-hover.png",
+        "review-clips-clips-dark-010-hover.png",
+        "review-clips-clips-dark-011-hover.png",
+        "review-clips-clips-dark-012-hover.png",
+        "review-clips-clips-dark-013-hover.png",
+        "review-clips-clips-dark-014-hover.png",
+        "review-clips-clips-dark-015-focus.png",
+        "review-clips-clips-dark-016-focus.png",
+        "review-clips-clips-dark-017-focus.png",
+        "review-clips-clips-dark-018-focus.png",
+        "review-clips-clips-dark-019-Camera-menu.png",
+        "review-clips-clips-dark-020-Camera-option-hover.png",
+        "review-clips-clips-dark-021-Camera-option-hover.png",
+        "review-clips-clips-dark-022-Camera-option-hover.png",
+        "review-clips-clips-dark-023-Camera-option-hover.png",
+        "review-clips-clips-dark-024-Camera-option-hover.png",
+        "review-clips-clips-dark-025-Camera-option-hover.png",
+        "review-clips-clips-dark-026-Camera-option-hover.png",
+        "review-clips-clips-dark-027-Camera-option-hover.png",
+        "review-clips-clips-dark-028-Verdict-menu.png",
+        "review-clips-clips-dark-029-Verdict-option-hover.png",
+        "review-clips-clips-dark-030-Verdict-option-hover.png",
+        "review-clips-clips-dark-031-Verdict-option-hover.png",
+        "review-clips-clips-dark-032-Verdict-option-hover.png",
+        "review-clips-clips-dark-033-Verdict-option-hover.png",
+        "review-clips-clips-dark-034-unavailable-category.png",
+        "review-clips-clips-dark-035-empty-query.png",
+        "review-clips-clips-dark-036-intersection.png",
+        "review-clips-clips-dark-037-clip-clip_v_c.png",
+        "review-clips-clips-dark-038-clip-0-scroll-bottom.png",
+        "review-clips-clips-dark-039-visit-evidence.png",
+        "review-clips-clips-dark-040-clip-clip_v_ap.png",
+        "review-clips-clips-dark-041-clip-1-scroll-bottom.png",
+        "review-clips-clips-dark-042-clip-clip_v_bp.png",
+        "review-clips-clips-dark-043-clip-2-scroll-bottom.png",
+        "review-clips-clips-dark-044-clip-clip_v_b.png",
+        "review-clips-clips-dark-045-clip-3-scroll-bottom.png",
+        "review-clips-clips-dark-046-clip-clip_v_a.png",
+        "review-clips-clips-dark-047-clip-4-scroll-bottom.png",
+        "review-clips-clips-dark-048-results-top.png",
+        "review-clips-clips-dark-049-results-bottom.png"
+      ],
+      "submitted": {
+        "q": "gate",
+        "camera": "doorbell",
+        "verdict": "needs_attention",
+        "kind": "person",
+        "start": "",
+        "end": ""
+      }
+    },
+    {
+      "width": 1536,
+      "height": 730,
+      "theme": "dark",
+      "route": "media",
+      "errors": [],
+      "requests": [],
+      "checks": [
+        {
+          "label": "initial",
+          "width": 1536,
+          "height": 730,
+          "documentWidth": 1536,
+          "documentHeight": 730,
+          "firstTitleBottom": 572.390625,
+          "firstVerdictBottom": 501.390625,
+          "clipped": 0
+        },
+        {
+          "label": "final",
+          "width": 1536,
+          "height": 730,
+          "documentWidth": 1536,
+          "documentHeight": 730,
+          "firstTitleBottom": 346.390625,
+          "firstVerdictBottom": 275.390625,
+          "clipped": 0
+        }
+      ],
+      "contrast": [
+        {
+          "label": "rest",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "hover",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "focus",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(117, 174, 255) solid 2px"
+        },
+        {
+          "label": "rest",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "hover",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "focus",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(117, 174, 255) solid 2px"
+        },
+        {
+          "label": "rest",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "hover",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "focus",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.599219460247815,
+          "outline": "rgb(117, 174, 255) solid 2px"
+        },
+        {
+          "label": "date rest",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.66474692524494,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "date hover",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.66474692524494,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "date focus",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.66474692524494,
+          "outline": "rgb(117, 174, 255) solid 2px"
+        },
+        {
+          "label": "date rest",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.66474692524494,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "date hover",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.66474692524494,
+          "outline": "rgb(237, 243, 251) none 3px"
+        },
+        {
+          "label": "date focus",
+          "text": 13.86158125543277,
+          "inside": 7.600918310553705,
+          "outside": 8.66474692524494,
+          "outline": "rgb(117, 174, 255) solid 2px"
+        }
+      ],
+      "focus": [
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": ""
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Camera"
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Verdict"
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Time range"
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Apply filters"
+        }
+      ],
+      "screens": [
+        "review-clips-media-dark-000-initial.png",
+        "review-clips-media-dark-001-hover.png",
+        "review-clips-media-dark-002-hover.png",
+        "review-clips-media-dark-003-hover.png",
+        "review-clips-media-dark-004-hover.png",
+        "review-clips-media-dark-005-hover.png",
+        "review-clips-media-dark-006-hover.png",
+        "review-clips-media-dark-007-hover.png",
+        "review-clips-media-dark-008-hover.png",
+        "review-clips-media-dark-009-hover.png",
+        "review-clips-media-dark-010-hover.png",
+        "review-clips-media-dark-011-hover.png",
+        "review-clips-media-dark-012-hover.png",
+        "review-clips-media-dark-013-hover.png",
+        "review-clips-media-dark-014-hover.png",
+        "review-clips-media-dark-015-hover.png",
+        "review-clips-media-dark-016-focus.png",
+        "review-clips-media-dark-017-focus.png",
+        "review-clips-media-dark-018-focus.png",
+        "review-clips-media-dark-019-focus.png",
+        "review-clips-media-dark-020-focus.png",
+        "review-clips-media-dark-021-Camera-menu.png",
+        "review-clips-media-dark-022-Camera-option-hover.png",
+        "review-clips-media-dark-023-Camera-option-hover.png",
+        "review-clips-media-dark-024-Camera-option-hover.png",
+        "review-clips-media-dark-025-Camera-option-hover.png",
+        "review-clips-media-dark-026-Camera-option-hover.png",
+        "review-clips-media-dark-027-Camera-option-hover.png",
+        "review-clips-media-dark-028-Camera-option-hover.png",
+        "review-clips-media-dark-029-Camera-option-hover.png",
+        "review-clips-media-dark-030-Verdict-menu.png",
+        "review-clips-media-dark-031-Verdict-option-hover.png",
+        "review-clips-media-dark-032-Verdict-option-hover.png",
+        "review-clips-media-dark-033-Verdict-option-hover.png",
+        "review-clips-media-dark-034-Verdict-option-hover.png",
+        "review-clips-media-dark-035-Verdict-option-hover.png",
+        "review-clips-media-dark-036-unavailable-category.png",
+        "review-clips-media-dark-037-empty-query.png",
+        "review-clips-media-dark-038-time-dialog.png",
+        "review-clips-media-dark-039-date-hover.png",
+        "review-clips-media-dark-040-date-focus.png",
+        "review-clips-media-dark-041-date-hover.png",
+        "review-clips-media-dark-042-date-focus.png",
+        "review-clips-media-dark-043-date-hover.png",
+        "review-clips-media-dark-044-date-focus.png",
+        "review-clips-media-dark-045-date-hover.png",
+        "review-clips-media-dark-046-date-hover.png",
+        "review-clips-media-dark-047-date-focus.png",
+        "review-clips-media-dark-048-intersection.png",
+        "review-clips-media-dark-049-reversed-range.png",
+        "review-clips-media-dark-050-clip-clip_v_c.png",
+        "review-clips-media-dark-051-clip-0-scroll-bottom.png",
+        "review-clips-media-dark-052-visit-evidence.png",
+        "review-clips-media-dark-053-clip-clip_v_ap.png",
+        "review-clips-media-dark-054-clip-1-scroll-bottom.png",
+        "review-clips-media-dark-055-clip-clip_v_bp.png",
+        "review-clips-media-dark-056-clip-2-scroll-bottom.png",
+        "review-clips-media-dark-057-clip-clip_v_b.png",
+        "review-clips-media-dark-058-clip-3-scroll-bottom.png",
+        "review-clips-media-dark-059-clip-clip_v_a.png",
+        "review-clips-media-dark-060-clip-4-scroll-bottom.png",
+        "review-clips-media-dark-061-results-top.png",
+        "review-clips-media-dark-062-results-bottom.png"
+      ],
+      "submitted": {
+        "q": "gate",
+        "camera": "doorbell",
+        "verdict": "needs_attention",
+        "kind": "person",
+        "start": "2026-11-03T02:00:00.000Z",
+        "end": "2026-11-03T02:15:00.000Z"
+      }
+    },
+    {
+      "width": 1536,
+      "height": 730,
+      "theme": "light",
+      "route": "clips",
+      "errors": [],
+      "requests": [],
+      "checks": [
+        {
+          "label": "initial",
+          "width": 1536,
+          "height": 730,
+          "documentWidth": 1536,
+          "documentHeight": 730,
+          "firstTitleBottom": 572.390625,
+          "firstVerdictBottom": 501.390625,
+          "clipped": 0
+        },
+        {
+          "label": "final",
+          "width": 1536,
+          "height": 730,
+          "documentWidth": 1536,
+          "documentHeight": 730,
+          "firstTitleBottom": 346.390625,
+          "firstVerdictBottom": 275.390625,
+          "clipped": 0
+        }
+      ],
+      "contrast": [
+        {
+          "label": "rest",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "hover",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "focus",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(23, 91, 181) solid 2px"
+        },
+        {
+          "label": "rest",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "hover",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "focus",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(23, 91, 181) solid 2px"
+        },
+        {
+          "label": "rest",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "hover",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "focus",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(23, 91, 181) solid 2px"
+        }
+      ],
+      "focus": [
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": ""
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Camera"
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Verdict"
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Apply filters"
+        }
+      ],
+      "screens": [
+        "review-clips-clips-light-000-initial.png",
+        "review-clips-clips-light-001-hover.png",
+        "review-clips-clips-light-002-hover.png",
+        "review-clips-clips-light-003-hover.png",
+        "review-clips-clips-light-004-hover.png",
+        "review-clips-clips-light-005-hover.png",
+        "review-clips-clips-light-006-hover.png",
+        "review-clips-clips-light-007-hover.png",
+        "review-clips-clips-light-008-hover.png",
+        "review-clips-clips-light-009-hover.png",
+        "review-clips-clips-light-010-hover.png",
+        "review-clips-clips-light-011-hover.png",
+        "review-clips-clips-light-012-hover.png",
+        "review-clips-clips-light-013-hover.png",
+        "review-clips-clips-light-014-hover.png",
+        "review-clips-clips-light-015-focus.png",
+        "review-clips-clips-light-016-focus.png",
+        "review-clips-clips-light-017-focus.png",
+        "review-clips-clips-light-018-focus.png",
+        "review-clips-clips-light-019-Camera-menu.png",
+        "review-clips-clips-light-020-Camera-option-hover.png",
+        "review-clips-clips-light-021-Camera-option-hover.png",
+        "review-clips-clips-light-022-Camera-option-hover.png",
+        "review-clips-clips-light-023-Camera-option-hover.png",
+        "review-clips-clips-light-024-Camera-option-hover.png",
+        "review-clips-clips-light-025-Camera-option-hover.png",
+        "review-clips-clips-light-026-Camera-option-hover.png",
+        "review-clips-clips-light-027-Camera-option-hover.png",
+        "review-clips-clips-light-028-Verdict-menu.png",
+        "review-clips-clips-light-029-Verdict-option-hover.png",
+        "review-clips-clips-light-030-Verdict-option-hover.png",
+        "review-clips-clips-light-031-Verdict-option-hover.png",
+        "review-clips-clips-light-032-Verdict-option-hover.png",
+        "review-clips-clips-light-033-Verdict-option-hover.png",
+        "review-clips-clips-light-034-unavailable-category.png",
+        "review-clips-clips-light-035-empty-query.png",
+        "review-clips-clips-light-036-intersection.png",
+        "review-clips-clips-light-037-clip-clip_v_c.png",
+        "review-clips-clips-light-038-clip-0-scroll-bottom.png",
+        "review-clips-clips-light-039-visit-evidence.png",
+        "review-clips-clips-light-040-clip-clip_v_ap.png",
+        "review-clips-clips-light-041-clip-1-scroll-bottom.png",
+        "review-clips-clips-light-042-clip-clip_v_bp.png",
+        "review-clips-clips-light-043-clip-2-scroll-bottom.png",
+        "review-clips-clips-light-044-clip-clip_v_b.png",
+        "review-clips-clips-light-045-clip-3-scroll-bottom.png",
+        "review-clips-clips-light-046-clip-clip_v_a.png",
+        "review-clips-clips-light-047-clip-4-scroll-bottom.png",
+        "review-clips-clips-light-048-results-top.png",
+        "review-clips-clips-light-049-results-bottom.png"
+      ],
+      "submitted": {
+        "q": "gate",
+        "camera": "doorbell",
+        "verdict": "needs_attention",
+        "kind": "person",
+        "start": "",
+        "end": ""
+      }
+    },
+    {
+      "width": 1536,
+      "height": 730,
+      "theme": "light",
+      "route": "media",
+      "errors": [],
+      "requests": [],
+      "checks": [
+        {
+          "label": "initial",
+          "width": 1536,
+          "height": 730,
+          "documentWidth": 1536,
+          "documentHeight": 730,
+          "firstTitleBottom": 572.390625,
+          "firstVerdictBottom": 501.390625,
+          "clipped": 0
+        },
+        {
+          "label": "final",
+          "width": 1536,
+          "height": 730,
+          "documentWidth": 1536,
+          "documentHeight": 730,
+          "firstTitleBottom": 346.390625,
+          "firstVerdictBottom": 275.390625,
+          "clipped": 0
+        }
+      ],
+      "contrast": [
+        {
+          "label": "rest",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "hover",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "focus",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(23, 91, 181) solid 2px"
+        },
+        {
+          "label": "rest",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "hover",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "focus",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(23, 91, 181) solid 2px"
+        },
+        {
+          "label": "rest",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "hover",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "focus",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.737026268200678,
+          "outline": "rgb(23, 91, 181) solid 2px"
+        },
+        {
+          "label": "date rest",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.695640376003043,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "date hover",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.695640376003043,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "date focus",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.695640376003043,
+          "outline": "rgb(23, 91, 181) solid 2px"
+        },
+        {
+          "label": "date rest",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.695640376003043,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "date hover",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.695640376003043,
+          "outline": "rgb(22, 34, 52) none 3px"
+        },
+        {
+          "label": "date focus",
+          "text": 13.60076148577414,
+          "inside": 5.726846534152932,
+          "outside": 6.695640376003043,
+          "outline": "rgb(23, 91, 181) solid 2px"
+        }
+      ],
+      "focus": [
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": ""
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Camera"
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Verdict"
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Time range"
+        },
+        {
+          "outline": "solid",
+          "width": 2,
+          "name": "Apply filters"
+        }
+      ],
+      "screens": [
+        "review-clips-media-light-000-initial.png",
+        "review-clips-media-light-001-hover.png",
+        "review-clips-media-light-002-hover.png",
+        "review-clips-media-light-003-hover.png",
+        "review-clips-media-light-004-hover.png",
+        "review-clips-media-light-005-hover.png",
+        "review-clips-media-light-006-hover.png",
+        "review-clips-media-light-007-hover.png",
+        "review-clips-media-light-008-hover.png",
+        "review-clips-media-light-009-hover.png",
+        "review-clips-media-light-010-hover.png",
+        "review-clips-media-light-011-hover.png",
+        "review-clips-media-light-012-hover.png",
+        "review-clips-media-light-013-hover.png",
+        "review-clips-media-light-014-hover.png",
+        "review-clips-media-light-015-hover.png",
+        "review-clips-media-light-016-focus.png",
+        "review-clips-media-light-017-focus.png",
+        "review-clips-media-light-018-focus.png",
+        "review-clips-media-light-019-focus.png",
+        "review-clips-media-light-020-focus.png",
+        "review-clips-media-light-021-Camera-menu.png",
+        "review-clips-media-light-022-Camera-option-hover.png",
+        "review-clips-media-light-023-Camera-option-hover.png",
+        "review-clips-media-light-024-Camera-option-hover.png",
+        "review-clips-media-light-025-Camera-option-hover.png",
+        "review-clips-media-light-026-Camera-option-hover.png",
+        "review-clips-media-light-027-Camera-option-hover.png",
+        "review-clips-media-light-028-Camera-option-hover.png",
+        "review-clips-media-light-029-Camera-option-hover.png",
+        "review-clips-media-light-030-Verdict-menu.png",
+        "review-clips-media-light-031-Verdict-option-hover.png",
+        "review-clips-media-light-032-Verdict-option-hover.png",
+        "review-clips-media-light-033-Verdict-option-hover.png",
+        "review-clips-media-light-034-Verdict-option-hover.png",
+        "review-clips-media-light-035-Verdict-option-hover.png",
+        "review-clips-media-light-036-unavailable-category.png",
+        "review-clips-media-light-037-empty-query.png",
+        "review-clips-media-light-038-time-dialog.png",
+        "review-clips-media-light-039-date-hover.png",
+        "review-clips-media-light-040-date-focus.png",
+        "review-clips-media-light-041-date-hover.png",
+        "review-clips-media-light-042-date-focus.png",
+        "review-clips-media-light-043-date-hover.png",
+        "review-clips-media-light-044-date-focus.png",
+        "review-clips-media-light-045-date-hover.png",
+        "review-clips-media-light-046-date-hover.png",
+        "review-clips-media-light-047-date-focus.png",
+        "review-clips-media-light-048-intersection.png",
+        "review-clips-media-light-049-reversed-range.png",
+        "review-clips-media-light-050-clip-clip_v_c.png",
+        "review-clips-media-light-051-clip-0-scroll-bottom.png",
+        "review-clips-media-light-052-visit-evidence.png",
+        "review-clips-media-light-053-clip-clip_v_ap.png",
+        "review-clips-media-light-054-clip-1-scroll-bottom.png",
+        "review-clips-media-light-055-clip-clip_v_bp.png",
+        "review-clips-media-light-056-clip-2-scroll-bottom.png",
+        "review-clips-media-light-057-clip-clip_v_b.png",
+        "review-clips-media-light-058-clip-3-scroll-bottom.png",
+        "review-clips-media-light-059-clip-clip_v_a.png",
+        "review-clips-media-light-060-clip-4-scroll-bottom.png",
+        "review-clips-media-light-061-results-top.png",
+        "review-clips-media-light-062-results-bottom.png"
+      ],
+      "submitted": {
+        "q": "gate",
+        "camera": "doorbell",
+        "verdict": "needs_attention",
+        "kind": "person",
+        "start": "2026-11-03T02:00:00.000Z",
+        "end": "2026-11-03T02:15:00.000Z"
+      }
+    }
+  ],
+  "failures": [],
+  "finished": "2026-11-03T13:30:16.937Z"
+}

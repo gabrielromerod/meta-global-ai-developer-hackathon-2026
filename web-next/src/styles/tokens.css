@@ -23,7 +23,7 @@
   --v-content-min: 0; --v-screen: 100vh; --v-full: 100%; --v-half: 50%;
   --v-card-min: 240px; --v-panel-min: 288px; --v-twin-min: 280px;
   --v-grid-gap: var(--v-space-2); --v-video-ratio: 16 / 9;
-  --v-z-base: 0; --v-z-header: 10; --v-z-dropdown: 30; --v-z-chat: 40; --v-z-modal: 50;
+  --v-z-base: 0; --v-z-header: 10; --v-z-dropdown: 45; --v-z-chat: 40; --v-z-modal: 50;
   --v-motion-fast: 120ms; --v-motion: 220ms; --v-motion-view: 480ms;
   --v-motion-pulse: 1600ms; --v-ease: cubic-bezier(.2,.7,.2,1);
   --v-overlay-blur: 12px; --v-disabled-opacity: .55; --v-zero: 0; --v-one: 1;

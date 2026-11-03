@@ -28,6 +28,7 @@ def test_ui_state_seven_cameras_honest_counts_and_role_contrast():
         visits = {v["id"]: v for v in state["visits"]}
         assert visits["v_ap"]["verdict"] == "normal"
         assert visits["v_ap"]["role_label"] == "Household"
+        assert "came out of the house" in visits["v_ap"]["role_basis"]
         assert "excludes" in visits["v_ap"]["reason"]
         assert visits["v_c"]["verdict"] == "needs_attention"
         assert "rule" in visits["v_c"]["reason"].lower()

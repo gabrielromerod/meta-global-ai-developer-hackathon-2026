@@ -83,7 +83,7 @@ def visit_rows(bundle) -> list[dict]:
                 "story": " ".join(s.text for s in visit.story),
                 "role_label": role_label,
                 "role_basis": "; ".join(
-                    s.get("basis_note") or s.get("role_basis") or "" for s in subjects
+                    s.get("basis_label") or s.get("role_basis") or "" for s in subjects
                 ),
                 "reason": reason,
                 "thumbnail_url": None,

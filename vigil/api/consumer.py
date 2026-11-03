@@ -258,7 +258,7 @@ def ui_state(request: Request) -> dict:
             else "Counts from the recorded camera event ledger.",
         },
         "visits": visits,
-        "attention_ids": [v["id"] for v in attention if v["verdict"] != "normal"][:5],
+        "attention_ids": [v["id"] for v in attention if v["verdict"] != "normal"],
         "notifications": notifications,
         "clips": clips,
         "events": event_rows(bundle),

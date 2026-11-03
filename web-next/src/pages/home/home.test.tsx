@@ -13,6 +13,14 @@ const state = fixture as unknown as UIState;
 const callbacks = () => ({onOpenVisit:vi.fn(),onOpenClip:vi.fn()});
 afterEach(cleanup);
 
+it('full Attention can filter normal visits outside the urgent preview IDs',async()=>{
+  const current=structuredClone(state);current.attention_ids=current.visits.filter(v=>v.verdict!=='normal').map(v=>v.id);
+  render(<AttentionPage state={current} {...callbacks()}/>);
+  await userEvent.click(screen.getByRole('tab',{name:'Normal'}));
+  const list=screen.getByLabelText('Filtered visits');
+  expect(within(list).getAllByRole('button')).toHaveLength(current.visits.filter(v=>v.verdict==='normal').length);
+});
+
 describe('Home cards and selection (FR-017, FR-044)', () => {
   it('keeps verdict, spatial basis and supplied rule reason visible for both gate touches', () => {
     render(<HomePage state={state} {...callbacks()} />);

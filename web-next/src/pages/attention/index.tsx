@@ -14,11 +14,12 @@ const filters = [
 
 export function AttentionPage({state,onOpenVisit,visitSlot}: PageProps) {
   const [filter,setFilter] = useState<Verdict|'all'>('all');
-  const ranked = attentionVisits(state, state.attention_ids.length);
+  const urgent = attentionVisits(state, state.attention_ids.length);
+  const ranked = [...urgent,...state.visits.filter(visit=>!state.attention_ids.includes(visit.id)).sort((a,b)=>b.t0-a.t0)];
   const shown = ranked.filter(visit => filter === 'all' || visit.verdict === filter);
   return <div className="attention-page">
     <header className="attention-intro"><div><h2>Attention center</h2>
-      <p>Review the evidence behind each visit.</p></div><Chip>{ranked.length} to review</Chip></header>
+      <p>Review the evidence behind each visit.</p></div><Chip>{urgent.length} to review</Chip></header>
     <Tabs className="attention-tabs" items={filters} value={filter} label="Filter visits by verdict"
       onChange={value=>setFilter(value as Verdict|'all')}>
       <div className="attention-workspace">

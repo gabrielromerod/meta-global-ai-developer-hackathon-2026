@@ -1,4 +1,4 @@
-import React, {forwardRef, useRef, type ReactNode, type ButtonHTMLAttributes, type HTMLAttributes} from 'react';
+import React, {forwardRef, useId, useRef, type ReactNode, type ButtonHTMLAttributes, type HTMLAttributes} from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as TabsPrimitive from '@radix-ui/react-tabs';
 import {Slot} from '@radix-ui/react-slot';
@@ -18,7 +18,8 @@ export const Button=forwardRef<HTMLButtonElement,ButtonProps>(({className,varian
 });
 Button.displayName='Button';
 export function Card({title,actions,className,children,...props}:Omit<HTMLAttributes<HTMLElement>,'title'>&{title?:ReactNode;actions?:ReactNode}) {
-  return <section data-slot="card" className={cn('v-card',className)} {...props}>{(title||actions)&&<header className="v-card-heading">{title&&<h2>{title}</h2>}{actions}</header>}{children}</section>;
+  const headingId=useId();
+  return <section data-slot="card" aria-labelledby={title?headingId:undefined} className={cn('v-card',className)} {...props}>{(title||actions)&&<header className="v-card-heading">{title&&<h2 id={headingId}>{title}</h2>}{actions}</header>}{children}</section>;
 }
 export function Chip({children,tone='default',className}: {children:ReactNode;tone?:'default'|'success'|'danger'|'warning'|'unknown';className?:string}) {return <span className={cn('v-chip',`v-tone-${tone}`,className)}>{children}</span>;}
 const verdicts={normal:{label:'Normal',icon:Check,tone:'success'},noteworthy:{label:'Noteworthy',icon:CircleAlert,tone:'warning'},needs_attention:{label:'Needs attention',icon:AlertTriangle,tone:'danger'},cant_confirm:{label:"Can't confirm",icon:CircleHelp,tone:'unknown'}} as const;

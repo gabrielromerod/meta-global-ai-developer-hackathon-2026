@@ -42,6 +42,9 @@
   --v-screen-dynamic: 100dvh; --v-screen-small: 100svh;
   --v-breakpoint-phone: 640px; --v-breakpoint-rail: 1180px;
   --v-grid-fr: 1fr; --v-motion-seconds: .22;
+  --v-review-main-fr: 1.2fr; --v-snapshot-max: 70svh;
+  --v-review-house-min: 180px; --v-review-house-phone: 400px;
+  --v-review-player-min: 128px; --v-review-player-max: 40%;
 }
 [data-theme="light"] {
   color-scheme: light;

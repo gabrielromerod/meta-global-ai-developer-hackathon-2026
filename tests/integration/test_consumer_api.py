@@ -60,6 +60,15 @@ def test_ui_search_intersects_filters_and_rejects_bad_times():
         )
 
 
+def test_ui_attention_ids_do_not_truncate_the_full_attention_page():
+    with client() as api:
+        bundle = api.app.state.bundle
+        template = next(v for v in bundle.visits if v.verdict == "needs_attention")
+        bundle.visits.extend(template.model_copy(update={"id": f"added_{i}"}) for i in range(6))
+        state = api.get("/api/ui/state").json()
+        assert len(state["attention_ids"]) == 8
+
+
 def test_chat_answers_from_cited_cached_ledger_and_has_no_people_backend():
     with client() as api:
         result = api.post(

@@ -1,0 +1,11 @@
+import {useEffect,useRef,useState} from 'react';
+import {Button,Modal} from '../components/ui';
+import {Recorder} from './voice';
+import {readableError} from './model';
+export function VoiceDialog({open,onClose,onTranscript}:{open:boolean;onClose:()=>void;onTranscript:(text:string,notice:string)=>void}){
+  const recorder=useRef<Recorder|null>(null);const [recording,setRecording]=useState(false),[pending,setPending]=useState(false),[seconds,setSeconds]=useState(0),[error,setError]=useState<string|null>(null);
+  useEffect(()=>{if(!open){recorder.current?.dispose();recorder.current=null;setRecording(false);setSeconds(0);}return()=>{recorder.current?.dispose();};},[open]);
+  async function stop(){if(!recorder.current?.recording)return;setRecording(false);setPending(true);try{const audio=await recorder.current.stop();if(!audio)return;const response=await fetch('/api/voice/transcribe',{method:'POST',headers:{'Content-Type':'audio/wav'},body:audio.blob,credentials:'same-origin'});const result=await response.json();if(!response.ok)throw new Error(typeof result.detail==='string'?result.detail:'Voice transcription was refused.');onTranscript(result.result.transcript,result.notice||'Cached transcript shown. No model request was made.');onClose();}catch(error){setError(readableError(error));}finally{setPending(false);}}
+  async function start(){setError(null);setPending(true);try{recorder.current=new Recorder(setSeconds,()=>void stop());await recorder.current.start();setRecording(true);}catch(error){recorder.current?.dispose();setError(readableError(error));}finally{setPending(false);}}
+  return <Modal open={open} title="Voice rule" onClose={onClose} description="Uses this device's microphone only. Speech stays in memory and is never saved. Camera audio is never requested."><div className="app-voice"><p>Record up to 30 seconds, then review the editable transcript. This preview uses cached transcription only.</p><p role="status">{recording?`${seconds.toFixed(1)} s recorded`:pending?'Preparing transcription…':'Ready to record'}</p>{error&&<p role="alert">{error}</p>}<Button disabled={pending||(!recording&&!Recorder.supported())} onClick={()=>void(recording?stop():start())}>{recording?'Stop and transcribe':'Start microphone'}</Button>{!Recorder.supported()&&<p>A microphone is unavailable in this browser.</p>}</div></Modal>;
+}

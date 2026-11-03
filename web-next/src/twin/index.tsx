@@ -14,7 +14,7 @@ import * as RadixTabs from "@radix-ui/react-tabs";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { Camera, Eye, Layers3, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
-import { useReducedMotion } from "framer-motion";
+import { useMotionPreference } from "../motion";
 import {
   DoubleSide,
   PerspectiveCamera,
@@ -74,6 +74,7 @@ interface Palette {
   clearance: number;
   markerScale: number;
   duration: number;
+  pulsePeriod: number;
 }
 interface AnnotationEntry {
   element: HTMLDivElement;
@@ -116,6 +117,7 @@ function readPalette(): Palette {
     clearance: numeric("--v-twin-camera-clearance"),
     markerScale: numeric("--v-twin-marker-scale"),
     duration: numeric("--v-motion-view") / 1000,
+    pulsePeriod: numeric("--v-motion-pulse") / 1000,
   };
 }
 function usePalette() {
@@ -546,10 +548,10 @@ function CameraCone({
   useFrame(({ clock }) => {
     if (material.current)
       material.current.opacity =
-        pulse && !reduced
+        pulse && !reduced && palette.pulsePeriod > 0
           ? palette.opacity +
             (palette.activeOpacity - palette.opacity) *
-              (0.5 + 0.5 * Math.sin(clock.elapsedTime * Math.PI * 2))
+              (0.5 + 0.5 * Math.sin(clock.elapsedTime * Math.PI * 2 / palette.pulsePeriod))
           : selected || pulse
             ? palette.activeOpacity
             : palette.opacity;
@@ -906,7 +908,7 @@ export function HouseView({
 }: HouseViewProps) {
   const model = useMemo(() => parseTwin(twin), [twin]),
     palette = usePalette(),
-    reduced = Boolean(useReducedMotion());
+    reduced = useMotionPreference();
   const [preset, setPreset] = useState("front"),
     [reset, setReset] = useState(0),
     [zoom, setZoom] = useState({ factor: 1, serial: 0 }),

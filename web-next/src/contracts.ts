@@ -1,0 +1,19 @@
+import type {ReactNode} from 'react';
+export type Verdict = 'normal'|'noteworthy'|'needs_attention'|'cant_confirm';
+export type Route = 'home'|'attention'|'clips'|'media'|'messages'|'rules'|'benchmark'|'settings';
+export interface Evidence {kind:'fixture'|'real';label:string;source:string}
+export interface Camera {id:string;name:string;model:string|null;power_profile:string;stream:string;status:string;source_label:string;hub_present:boolean|null;wifi_signal_dbm:number|null;clock_offset_s:number|null;clip_url:string|null;thumbnail_url:string|null}
+export interface VisitRow {id:string;scenario:string;title:string;verdict:Verdict;verdict_label:string;escalated:boolean;first_sentence:string;story:string;t0:number;t1:number;clock:string;cameras:string[];gaps:string[];roles:string[];role_label:string;role_basis:string;reason:string;thumbnail_url:string|null;clip_url:string|null;evidence_kind:'fixture'|'real'}
+export interface Clip {id:string;visit_id:string;camera_id:string;verdict:Verdict;clock:string;t0:number;t1:number;title:string;kind:string;clip_url:string|null;thumbnail_url:string|null;source_label:string}
+export interface VisitEvent {event_id:string;t:number;t1:number;clip_t0:number;clip_t1:number;clock:string;camera_id:string;camera_name:string;type:string;target:string|null;track_id:string;subject_id:string;actor_role:string;visit_id:string}
+export interface Notification {id:string;visit_id:string;verdict:Verdict;story:string;clock:string;thumbnail_url:string|null;unread:boolean}
+export interface ExpectedWindow {id:string;label:string;start:string;end:string;cameras:string[];zones:string[];state:string;created_at:string;recorded?:boolean}
+export interface Rule {id:string;name:string;target:Record<string,unknown>;trigger:string;min_dwell_s:number;active:Record<string,unknown>;severity:string;applies_to:string;state:string;[key:string]:unknown}
+export interface Capabilities {ask_home:boolean;household_messaging:string;snapshot:boolean;recording:boolean;owner:boolean}
+export interface UIState {contract_version:string;evidence:Evidence;mode:string;household:{name:string;avatar_url:string|null};session:{id:string;start:string};cameras:Camera[];views:{id:string;label:string;camera_ids:string[]}[];summary:{camera_events:number|null;on_property:number|null;visits:number;needs_attention:number;street_events:number|null;note:string};visits:VisitRow[];attention_ids:string[];notifications:Notification[];clips:Clip[];events:VisitEvent[];rules:Rule[];protected_objects:Record<string,unknown>[];benchmark:{measured:boolean;metrics:Record<string,unknown>[];note:string};owner:{enabled:boolean;reason:string;checkin_duration_s:number;windows:ExpectedWindow[]};capabilities:Capabilities}
+export interface PageProps {state:UIState;onOpenVisit:(id:string)=>void;onOpenClip:(id:string)=>void;onViewChange?:(id:string)=>void;activeView?:string;twinSlot?:ReactNode;playerSlot?:ReactNode;visitSlot?:ReactNode;ownerSlot?:ReactNode;onSearch?:(filters:Record<string,string>)=>void;onRuleAction?:(id:string,action:string)=>void}
+export interface Citation {visit_id:string;event_id:string}
+export interface ChatMessage {id:string;author:'you'|'vigil'|'household';text:string;citations:Citation[];clip_id:string|null}
+export interface Thread {id:string;title:string;kind:'assistant'|'local_mock';note:string;messages:ChatMessage[]}
+export interface ChatProps {open?:boolean;onClose?:()=>void;threads:Thread[];selectedThreadId:string;onSelectThread:(id:string)=>void;onSend:(threadId:string,text:string)=>void;onShareClip?: (threadId:string)=>void;onSnapshot?:()=>void;onRecord?:()=>void;onOpenVisit?:(id:string)=>void;capabilities:Capabilities;pending?:boolean;error?:string|null}
+export interface HouseViewProps {twin:Record<string,unknown>;positions?:Record<string,unknown>;time?:number;activeCameraId?:string|null;onCameraSelect?:(id:string)=>void;preset?:string}

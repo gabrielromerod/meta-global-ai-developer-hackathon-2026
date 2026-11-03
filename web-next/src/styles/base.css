@@ -1,0 +1,9 @@
+@import "tailwindcss";
+@theme inline {
+  --color-background: var(--v-bg); --color-foreground: var(--v-text);
+  --color-card: var(--v-surface); --color-border: var(--v-border);
+  --color-primary: var(--v-accent); --color-muted-foreground: var(--v-muted);
+  --font-sans: var(--v-font); --radius-lg: var(--v-radius-lg);
+}
+* { box-sizing: border-box; }
+body { margin: var(--v-zero); background: var(--v-bg); color: var(--v-text); font-family: var(--v-font); }

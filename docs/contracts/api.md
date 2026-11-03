@@ -1,7 +1,7 @@
 # Vigil consumer UI: frozen contract vigil-ui/1
 
 Frozen for visual workers. Only the lead changes contracts, tokens or fixtures. JSON
-examples under web/fixtures are authoritative field examples, not live evidence.
+examples under web-next/src/fixtures are authoritative field examples, not live evidence.
 All requests are same-origin. Errors are non-2xx JSON `{detail: string}` and must be
 visible. No camera host, credentials or raw source URL is ever returned to a browser.
 The existing API remains compatible. **The normalized /api/ui and chat endpoints below

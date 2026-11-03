@@ -34,6 +34,7 @@ from vigil.settings import REPO_ROOT, Settings, get_settings
 from vigil.store.export import MANIFEST, load_bundle
 
 WEB_DIR = REPO_ROOT / "web"
+NEXT_WEB_DIR = REPO_ROOT / "web-next" / "dist"
 VOICE_DIR = REPO_ROOT / "demo" / "voice"
 AUDIO_FIXTURES = REPO_ROOT / "config" / "audio_fixtures.json"
 LAN_ONLY_PAGES = ("/calibrate",)
@@ -149,5 +150,7 @@ def create_app(
     media = bundle_root / "media"
     if media.exists():
         app.mount("/media", StaticFiles(directory=media), name="media")
+    if NEXT_WEB_DIR.is_dir():
+        app.mount("/next", StaticFiles(directory=NEXT_WEB_DIR, html=True), name="web-next")
     app.mount("/", StaticFiles(directory=WEB_DIR, html=True), name="web")
     return app

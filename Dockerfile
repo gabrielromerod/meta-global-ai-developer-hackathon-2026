@@ -17,7 +17,7 @@
 # not writable the sandbox still starts; the ledger stays in memory and paid live calls are
 # refused (fail closed) while cached results keep working.
 
-FROM node:24.14.0-alpine AS ui-build
+FROM node:24.15.0-alpine AS ui-build
 WORKDIR /ui
 COPY web-next/package.json web-next/package-lock.json ./
 RUN npm ci

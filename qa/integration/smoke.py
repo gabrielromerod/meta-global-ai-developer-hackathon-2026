@@ -1,14 +1,19 @@
 """FIXTURE: integrated API-backed React layout smoke at the owner's CSS sizes."""
 
 import json
+import os
+import subprocess
 from pathlib import Path
 
 import httpx
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parents[2]
-SOURCE = "e1d4a6e7"
-BASE = "http://127.0.0.1:8000"
+SOURCE = (
+    os.environ.get("QA_SHA")
+    or subprocess.check_output(["git", "rev-parse", "--short", "HEAD"], cwd=ROOT, text=True).strip()
+)
+BASE = os.environ.get("QA_BASE_URL", "http://127.0.0.1:8000")
 SIZES = [
     (1470, 870),
     (1512, 895),
@@ -41,6 +46,14 @@ def main():
                 errors = []
                 page.on("pageerror", lambda error, errors=errors: errors.append(str(error)))
                 page.on("requestfailed", lambda request, errors=errors: errors.append(request.url))
+                page.on(
+                    "response",
+                    lambda response, errors=errors: (
+                        errors.append(f"HTTP {response.status}: {response.url}")
+                        if response.status >= 400
+                        else None
+                    ),
+                )
                 page.add_init_script(f"localStorage.setItem('vigil_theme', '{theme}')")
                 for route in PAGES:
                     page.goto(BASE + "/next/#/" + route)

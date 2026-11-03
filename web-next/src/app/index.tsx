@@ -18,6 +18,7 @@ import {api} from './api';
 import {localThreads,readableError} from './model';
 import {VisitReview} from './visit';
 import {VoiceDialog} from './voice-dialog';
+import {ProtectionPanel} from './protection';
 import './app.css';
 
 const routes:Route[]=['home','attention','clips','media','messages','rules','benchmark','settings'];
@@ -77,6 +78,7 @@ function Workspace({state:original}:{state:UIState}){
   const props:PageProps={state,onOpenVisit:openVisit,onOpenClip:openClip,onViewChange:changeView,activeView:view,
     twinSlot:house?<HouseView forceMap={new URLSearchParams(window.location.search).get('twin')==='2d'} twin={house} lighting={view==='day'||view==='night'?view:undefined} activeCameraId={activeCamera} onCameraSelect={selectCamera} preset={view==='left-passage'?'left':view==='backyard'?'backyard':view==='front-garden'||view==='porch'?'front':undefined}/>:<EmptyState title={twin.isError?'House view unavailable':'Loading house view'} description={twin.isError?readableError(twin.error):undefined}/>,
     playerSlot:view==='day'||view==='night'?<p className="home-camera-hint">{view==='day'?'Day':'Night'} schematic preview. Recorded clips keep their original lighting.</p>:selectedCamera?<VideoTile camera={selectedCamera} clip={state.clips.find(c=>c.camera_id===selectedCamera.id)} onOpen={openClip}/>:undefined,
+    protectionSlot:<ProtectionPanel enabled={state.mode==='edge'&&state.owner.enabled}/>,
     onSearch:filters=>search.mutate(filters),
     ownerActions:{pending:owner.isPending,error:owner.isError?readableError(owner.error):null,checkinExpiresAt:expires,saveToken:token=>{sessionStorage.setItem('vigil_owner_token',token);void refresh();},checkIn:()=>owner.mutate({path:'/api/checkin',body:{}}),createWindow:window=>owner.mutate({path:'/api/windows',body:window}),cancelWindow:id=>owner.mutate({path:'/api/windows/'+encodeURIComponent(id),method:'DELETE'})},
     ruleActions:{explanation:ruleExplanation,draft:ruleDraft,transcript,notice:ruleNotice,pending:rules.isPending||voice.isPending,error:rules.isError?readableError(rules.error):voice.isError?readableError(voice.error):null,compile:text=>rules.mutate({path:'/api/rules/compile',body:{text,live:false}}),confirm:id=>rules.mutate({path:'/api/rules/'+encodeURIComponent(id)+'/confirm',body:{}}),voiceFixtures:(voices.data?.fixtures??[]).map(f=>({...f,url:f.wav_url})),transcribeFixture:id=>voice.mutate(id),recordVoice:()=>setVoiceOpen(true)},

@@ -171,3 +171,64 @@ def test_react_generated_video_decodes_seeks_overlays_and_snapshot(page: Page, v
     expect(snapshot).to_be_visible()
     page.wait_for_function("document.querySelector('.app-snapshot')?.naturalWidth===1280")
     assert not errors, errors
+
+
+def test_react_point_selection_uses_exported_still_and_explicit_mocked_model_approval(
+    page, tmp_path
+):
+    """FIXTURE: no Meta request; a strict injected FakeBackend returns the mask."""
+    from datetime import UTC, datetime
+
+    import respx
+    from pydantic import SecretStr
+
+    from tests.integration.test_api import FakeBackend
+    from tests.integration.test_cloud_process import generated_session, mock_models
+    from vigil.meta.client import MetaClient
+    from vigil.pipeline import process_session
+    from vigil.store.export import export_session
+
+    settings, _ = generated_session(tmp_path)
+    with (
+        respx.mock as router,
+        MetaClient(
+            settings, clock=lambda: datetime(2026, 11, 3, tzinfo=UTC), sleep=lambda _: None
+        ) as client,
+    ):
+        mock_models(router)
+        process_session("generated", settings=settings, client=client, confirm=True)
+    bundle = export_session("generated", tmp_path / "bundle", settings=settings, synthetic=True)
+    settings = settings.model_copy(
+        update={"mode": "edge", "owner_token": SecretStr("synthetic-owner-token")}
+    )
+    backend = FakeBackend()
+    app = create_app(settings, bundle_dir=bundle, live_backend=backend)
+    assert app.state.live_backend is backend
+    with running_app(app) as url:
+        page.goto(url + "/next/#/settings")
+        wait_ready(page)
+        page.get_by_role("tab", name="Owner controls").click()
+        page.get_by_role("textbox", name="Owner token").fill("synthetic-owner-token")
+        page.get_by_role("button", name="Save owner token").click()
+        page.get_by_role("button", name="Select an object", exact=True).click()
+        dialog = page.get_by_role("dialog", name="Select an object")
+        image = dialog.get_by_role("img", name="Left side exported still")
+        expect(image).to_be_visible()
+        page.wait_for_function(
+            "document.querySelector('.protection-frame img')?.naturalWidth===1280"
+        )
+        dialog.get_by_role("spinbutton", name="Pixel X").fill("160")
+        dialog.get_by_role("spinbutton", name="Pixel Y").fill("600")
+        dialog.get_by_role("textbox", name="Object label").fill("Fixture gate")
+        dialog.get_by_role("button", name="Request point model").click()
+        approval = page.get_by_role("dialog", name="Approve point model request")
+        expect(approval).to_contain_text("$0.0025")
+        assert backend.calls == []
+        approval.get_by_role("button", name="Approve and run").click()
+        expect(dialog.get_by_label("Point model mask")).to_be_visible()
+        expect(dialog).to_contain_text("Fixture gate")
+        expect(dialog).to_contain_text("Added to this server session")
+        assert backend.calls == ["protect"]
+        dialog.get_by_role("button", name="Close Select an object").click()
+        page.get_by_role("button", name="Rules and protected objects", exact=True).click()
+        expect(page.get_by_role("heading", name="Fixture gate", exact=True)).to_be_visible()

@@ -5,6 +5,7 @@ from datetime import UTC, datetime
 import pytest
 import respx
 from fastapi.testclient import TestClient
+from pydantic import SecretStr
 
 from tests.integration.test_cloud_process import generated_session, mock_models
 from vigil.api.app import create_app
@@ -57,6 +58,13 @@ def test_export_session_generated_mp4(tmp_path):
     grid = coverage(load_glb_scene(settings.data_dir / "spatial" / "model.glb"), [cal])
     (settings.data_dir / "coverage.json").write_text(json.dumps(grid.to_dict()))
     out = exporter("generated", tmp_path / "bundle", settings=settings, synthetic=True)
+    still = out / "media/stills/side_left.png"
+    assert still.is_file()
+    from vigil.ingest.metadata import scan
+    from vigil.ingest.privacy import scan_media
+
+    assert scan(still) == []
+    assert scan_media(still, [[(0, 0), (1280, 0), (1280, 60), (0, 60)]]).ok
     with TestClient(create_app(settings, bundle_dir=out)) as browser:
         scenario = browser.get("/api/scenarios/generated").json()
         assert scenario["t0"] == 0
@@ -72,6 +80,42 @@ def test_export_session_generated_mp4(tmp_path):
         assert twin["coverage"]
         assert browser.get(twin["glb_url"]).content.startswith(b"glTF")
     assert result["tracks"]
+    owner_settings = settings.model_copy(
+        update={
+            "mode": "edge",
+            "owner_token": SecretStr("synthetic-owner-token"),
+            "meta_cache_only": True,
+        }
+    )
+    with TestClient(create_app(owner_settings, bundle_dir=out), client=("127.0.0.1", 50000)) as api:
+        unauthenticated = api.get("/api/ui/protection-frames")
+        assert unauthenticated.status_code == 200
+        assert unauthenticated.json()["frames"] == []
+        frames = api.get(
+            "/api/ui/protection-frames", headers={"X-Vigil-Owner": "synthetic-owner-token"}
+        ).json()["frames"]
+        assert len(frames) == 1
+        assert frames[0]["camera_id"] == "side_left"
+        assert frames[0]["width"] == 1280
+        assert frames[0]["height"] == 720
+        assert frames[0]["frame_ts"] == 0
+        availability = api.get(
+            "/api/ui/protection-frames", headers={"X-Vigil-Owner": "synthetic-owner-token"}
+        ).json()["live"]
+        assert not availability["available"]
+        assert "Cache-only" in availability["reason"]
+        assert availability["estimate_usd"] > 0
+        assert api.get(frames[0]["url"]).content == still.read_bytes()
+        import cv2
+
+        tampered = cv2.imread(str(still))
+        tampered[:60] = 255
+        assert cv2.imwrite(str(still), tampered)
+        refused = api.get(
+            "/api/ui/protection-frames", headers={"X-Vigil-Owner": "synthetic-owner-token"}
+        )
+        assert refused.status_code == 200
+        assert refused.json()["frames"] == []
 
 
 def test_export_coverage_preserves_holes():

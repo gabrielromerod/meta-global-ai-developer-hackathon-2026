@@ -131,7 +131,9 @@ class MetaLiveBackend:
 
         if self._stills_dir is None:
             raise LiveUnavailableError("no still frames in this bundle for a live point prompt")
-        still = self._stills_dir / f"{camera_id}.jpg"
+        still = self._stills_dir / f"{camera_id}.png"
+        if not still.exists():
+            still = self._stills_dir / f"{camera_id}.jpg"
         if not still.exists():
             raise LiveUnavailableError(f"no still frame for camera {camera_id}")
         cfg = load_config(self._settings.config_path)

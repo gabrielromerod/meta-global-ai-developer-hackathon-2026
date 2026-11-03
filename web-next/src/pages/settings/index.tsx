@@ -23,7 +23,7 @@ function Privacy({cameras}:{cameras:Camera[]}){
 function Household({state}:PageProps){
   return <div className="controls-grid"><Card title="Household"><div className="controls-inline"><span className="controls-avatar">{state.household.avatar_url?<img src={state.household.avatar_url} alt=""/>:<House aria-hidden="true"/>}</span><strong>{state.household.name}</strong></div><p className="controls-note">Household messages stay local to this browser. No people-to-people messaging server is connected.</p></Card><Card title="Roles follow observed routes"><p className="controls-note">Vigil does not identify people. Household and visitor roles come from where a subject was observed to arrive, an owner check-in or an expected window.</p><p className="controls-hint">An unknown origin is treated as non-household. A later label does not change a recorded verdict.</p></Card></div>;
 }
-function OwnerControls({state,ownerActions}:PageProps){
+function OwnerControls({state,ownerActions,protectionSlot}:PageProps){
   const id=useId();
   const [token,setToken]=useState('');
   const [label,setLabel]=useState('');
@@ -106,6 +106,7 @@ function OwnerControls({state,ownerActions}:PageProps){
         </article>)}</div>:<EmptyState title="No expected windows" description="New windows appear after the owner saves them."/>}
       </Card>
     </div>
+    {protectionSlot}
     <Modal open={windowOpen} title="New expected window" onClose={()=>setWindowOpen(false)} description="Set a delivery or guest window in advance. Maximum duration: 12 hours.">
       <div className="controls-stack">{feedback}<form className="controls-form" onSubmit={create} noValidate>
         <Field label="Window label" id={`${id}-label`}><input id={`${id}-label`} className="controls-input" value={label} onChange={e=>setLabel(e.target.value)} maxLength={60} disabled={!createAllowed}/></Field>

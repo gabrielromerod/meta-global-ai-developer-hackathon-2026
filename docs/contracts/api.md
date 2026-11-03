@@ -122,3 +122,10 @@ Workers preview fixtures only; no backend edits, shared hooks or cross-boundary
 refactors. Lead implements normalized endpoints and state after all Part 5 items and
 worker merges. Keep current app usable. Any unsupported path is MISSING in readiness,
 not silently faked. Endpoint and field additions require lead contract revision.
+
+
+## Owner point selection integration (Nov 3)
+
+`GET /api/ui/protection-frames` returns `{frames:[{camera_id,name,url,frame_ts,width,height}],reason,live?:{available,reason,estimate_usd}}`. Non-owners receive an empty list and Owner-only on the home box. A still must be declared by the export manifest, contained in media/stills, pass the exact camera privacy review, pixel mask, audio and metadata checks. New exports include a PNG sampled from the first observed camera window, so selection never uses a fabricated camera view or a timeline hole.
+
+Settings point selection supports an image click and native pixel inputs. Requests pass the shown frame's actual dimensions to the existing full-frame `/api/protect` validation. Recorded result requests are always `live:false`; unbound recorded-example masks are labelled and never overlaid onto the current still. A point-model request requires owner access, a server that is not cache-only, budget availability and explicit cost confirmation. Tests use an injected FakeBackend only; no Meta request is authorized by this implementation work. Successful point results appear in the server-session object catalogue; this existing runtime catalogue is not represented as a permanent configuration save.

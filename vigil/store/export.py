@@ -224,6 +224,7 @@ def export_session(session: str, out: Path, *, settings=None, synthetic: bool = 
     )
     t0, t1 = min(w.t0 for w in windows), max(w.t1 for w in windows)
     media = {}
+    protection_frames = []
     for cam in cfg.cameras:
         if not any(w.camera_id == cam.id for w in windows):
             continue
@@ -231,6 +232,26 @@ def export_session(session: str, out: Path, *, settings=None, synthetic: bool = 
             raise ValueError(f"camera {cam.id}: missing privacy declaration")
         clip = session_clip(windows, cam, root / "clips" / f"{cam.id}.mp4", t0, t1)
         media[f"clips/{session}/{cam.id}.mp4"] = clip
+        # Point selection must show the same real exported frame SAM would receive.
+        # Pick an observed window rather than a black timeline hole before it.
+        import cv2
+
+        first = min(w.t0 for w in windows if w.camera_id == cam.id)
+        capture = cv2.VideoCapture(str(clip))
+        try:
+            capture.set(cv2.CAP_PROP_POS_MSEC, max(0, first - t0) * 1000)
+            ok, frame = capture.read()
+            if not ok:
+                raise ValueError(f"camera {cam.id}: could not decode protection still")
+            encoded, png = cv2.imencode(".png", frame)
+            if not encoded:
+                raise ValueError(f"camera {cam.id}: could not encode protection still")
+            media[f"stills/{cam.id}.png"] = png.tobytes()
+            protection_frames.append(
+                {"camera_id": cam.id, "url": f"/media/stills/{cam.id}.png", "frame_ts": first}
+            )
+        finally:
+            capture.release()
     twin_file = settings.data_dir / "spatial" / "twin.json"
     if not twin_file.exists():
         twin_file = settings.config_path.parent / "twin.json"
@@ -270,6 +291,7 @@ def export_session(session: str, out: Path, *, settings=None, synthetic: bool = 
             "session_start": result["session_start"],
             "timezone": result["timezone"],
             "prefilter_counts": result.get("prefilter_counts"),
+            "protection_frames": protection_frames,
         },
     )
 
@@ -387,6 +409,8 @@ def export_bundle(
     }
     if meta.get("prefilter_counts") is not None:
         manifest["prefilter_counts"] = meta["prefilter_counts"]
+    if meta.get("protection_frames"):
+        manifest["protection_frames"] = meta["protection_frames"]
     _write_json(out / MANIFEST, manifest)
     return out
 

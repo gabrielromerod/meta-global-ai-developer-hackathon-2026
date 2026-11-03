@@ -10,6 +10,7 @@ from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, ConfigDict, Field
 
 from vigil.api import views
+from vigil.api.guards import LIVE_ESTIMATE_USD
 from vigil.api.owner import is_owner, windows_view
 from vigil.ingest.config import privacy_polygons
 from vigil.ingest.review import require_privacy_review
@@ -264,7 +265,7 @@ def ui_state(request: Request) -> dict:
         "events": event_rows(bundle),
         "camera_events": camera_event_rows(bundle),
         "rules": _rules(runtime),
-        "protected_objects": bundle.protected_objects,
+        "protected_objects": bundle.protected_objects + runtime.protected,
         "benchmark": {
             "measured": False,
             "metrics": [],
@@ -304,6 +305,50 @@ def consumer_router() -> APIRouter:
     @r.get("/ui/state")
     def state(request: Request):
         return ui_state(request)
+
+    @r.get("/ui/protection-frames")
+    def protection_frames(request: Request):
+        from vigil.ingest.media import MediaError, probe
+        from vigil.ingest.privacy import PrivacyViolation, assert_uploadable
+
+        if not is_owner(request):
+            return {"frames": [], "reason": "Owner-only on the home box"}
+        bundle = request.app.state.bundle
+        cfg = request.app.state.config
+        frames = []
+        for row in bundle.manifest.get("protection_frames", []):
+            cid = row.get("camera_id")
+            try:
+                camera = cfg.camera(cid)
+                url = media_url(bundle, row.get("url"))
+                if url not in {f"/media/stills/{cid}.png", f"/media/stills/{cid}.jpg"}:
+                    continue
+                source = bundle.root / url.removeprefix("/")
+                polygons = privacy_polygons(
+                    cfg, cid, request.app.state.settings.config_path.parent / "privacy"
+                )
+                require_privacy_review(camera, polygons)
+                assert_uploadable(source, polygons, ref_size=(camera.width, camera.height))
+                info = probe(source)
+                frames.append(
+                    {**row, "name": camera.name, "width": info.width, "height": info.height}
+                )
+            except (AttributeError, KeyError, OSError, ValueError, MediaError, PrivacyViolation):
+                continue
+        return {
+            "frames": frames,
+            "reason": None
+            if frames
+            else "No reviewed exported still is available for point selection.",
+            "live": {
+                "available": not request.app.state.settings.meta_cache_only
+                and request.app.state.guards.live_status().available,
+                "reason": "Cache-only session. New model requests are disabled."
+                if request.app.state.settings.meta_cache_only
+                else request.app.state.guards.live_status().reason,
+                "estimate_usd": LIVE_ESTIMATE_USD["protect"],
+            },
+        }
 
     @r.get("/ui/twin")
     def twin(request: Request):

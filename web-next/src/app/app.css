@@ -17,3 +17,7 @@
 @media(prefers-reduced-motion:reduce){.visit-story-scroll,.visit-player-card,.visit-visuals{scroll-behavior:auto}}
 
 .app-snapshot{display:block;max-width:var(--v-full);max-height:var(--v-snapshot-max);object-fit:contain;margin-bottom:var(--v-space-2)}
+
+.protection-frame{position:relative}.protection-frame img{display:block;width:var(--v-full);height:auto;border-radius:var(--v-radius-sm);cursor:crosshair}.protection-frame svg{position:absolute;inset:var(--v-zero);width:var(--v-full);height:var(--v-full);pointer-events:none;fill:var(--v-accent);fill-opacity:var(--v-twin-cone-opacity);stroke:var(--v-accent);stroke-width:var(--v-focus-width)}
+
+.protection-request[aria-disabled="true"]{opacity:var(--v-disabled-opacity);cursor:wait}

@@ -17,6 +17,13 @@
 # not writable the sandbox still starts; the ledger stays in memory and paid live calls are
 # refused (fail closed) while cached results keep working.
 
+FROM node:24.14.0-alpine AS ui-build
+WORKDIR /ui
+COPY web-next/package.json web-next/package-lock.json ./
+RUN npm ci
+COPY web-next ./
+RUN npm run build
+
 FROM python:3.12-slim
 
 RUN apt-get update && apt-get install -y --no-install-recommends libimage-exiftool-perl \
@@ -40,6 +47,7 @@ RUN uv sync --locked --no-dev --no-install-project
 # Application code and the demo bundle.
 COPY vigil ./vigil
 COPY web ./web
+COPY --from=ui-build /ui/dist ./web-next/dist
 COPY config ./config
 COPY demo ./demo
 COPY eval ./eval
@@ -54,6 +62,7 @@ VOLUME ["/data"]
 USER vigil
 
 ENV VIGIL_MODE=sandbox \
+    VIGIL_META_CACHE_ONLY=true \
     VIGIL_LEDGER_PATH=/data/ledger.db \
     PATH="/app/.venv/bin:$PATH"
 

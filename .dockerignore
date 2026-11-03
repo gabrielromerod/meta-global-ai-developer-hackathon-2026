@@ -19,6 +19,9 @@ eval/cache/
 test-results/
 playwright-report/
 node_modules/
+**/node_modules/
+web-next/dist/
+qa/
 tests/
 docs/
 scripts/

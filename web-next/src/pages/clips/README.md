@@ -77,3 +77,21 @@ sheet were opened and inspected, with representative short-window and phone orig
 opened at full size. This is CSS-viewport testing in Chromium on Windows, not certification
 on physical Mac or phone hardware. It does not prove camera privacy polygons or live APIs.
 An independent reviewer must return APPROVED; the builder makes no approval claim.
+
+
+## Field boundary correction
+
+FIXTURE, source `8f4ca05`: the actual rendered enabled search, Camera, Verdict and date
+fields reproduced a non-text contrast regression against their inside surfaces
+(1.52:1 dark and 1.50:1 light; 64 failures in 96 rest/hover/focus measurements).
+The owned `.evidence-control` border now uses existing `--v-muted`; decorative cards
+keep their original borders. The unchanged >=3:1 browser assertion passes all 96
+measurements against both adjoining surfaces; minimum is 5.73:1. All measured field
+widths and heights match the pre-fix run. This supplements the original matrix;
+the earlier 6.16:1 text measurements did not test field boundaries.
+
+Targeted evidence: `qa/screens/8f4ca05/field-boundaries/` contains 96 screenshots,
+four inspected contact sheets and results.json. Both pages and themes were checked
+at 1280×600 and 390×844, including date-dialog fields. Full frontend suite (56 tests)
+and TypeScript/Vite build passed again. Run from web-next with
+`set VIGIL_QA_SHA=8f4ca05` then `node src/pages/clips/boundary-qa.mjs`.

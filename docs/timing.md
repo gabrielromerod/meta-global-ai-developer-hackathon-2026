@@ -36,3 +36,6 @@ Initial baseline wall times are approximate; durations come from pytest. Later f
 | Clips/Media full offline baseline (FIXTURE) | 2026-11-03T04:12:32.508097-08:00 | 2026-11-03T04:14:57.640011-08:00 | stopped on parent request after partial pytest progress; no final result; source c820bb4; full pre-main suites remain lead-owned |
 | Clips/Media browser matrix (FIXTURE) | 2026-11-03T12:11:57.622Z | 2026-11-03T12:18:17.077Z | source c820bb4; 44 viewport/theme/page cases; 0 failures |
 | Clips/Media final frontend suite/build (FIXTURE) | 2026-11-03T12:24Z | 2026-11-03T12:25Z | minute-resolution command interval; 56 tests passed; TypeScript/Vite build passed; Ruff check/format passed |
+
+| Clips/Media field boundary regression (FIXTURE) | 2026-11-03T13:12:54.966Z | 2026-11-03T13:13:03.298Z | source 8f4ca05; 8 cases, 96 measurements; 0 failures; unchanged >=3:1 threshold |
+| Clips/Media boundary-fix frontend suite/build (FIXTURE) | 2026-11-03T05:12:54.6827332-08:00 | 2026-11-03T05:13:01.1689054-08:00 | 56 tests and production build passed |

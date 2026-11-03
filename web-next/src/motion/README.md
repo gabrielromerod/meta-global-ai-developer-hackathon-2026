@@ -30,6 +30,8 @@ duration or offset fails to zero movement; content remains visible if styles are
 - `useMotionPreference()`: current reduced preference, including live OS changes.
 - `useMotionPolicy()`: current durations, offsets and easing parsed from tokens.
 - `useEntranceMotion('view'|'panel')`: props for an existing motion element.
+  Pass a second identity argument when a persistent hook drives a keyed child, e.g.
+  `useEntranceMotion('panel', selectedVisitId)`. The built-in wrappers handle this.
 - `PageTransition({viewKey,label,children})`: place inside the shell's main region.
   The new route is visible from its first frame; it enters by one spacing token.
   There is one route tree, no delayed outgoing interactive page. Stable navigation
@@ -99,6 +101,16 @@ The first probe's Tab-from-last-control check reached browser chrome after corre
 restoring popup focus. Its raw output remains untracked. The final harness starts its
 visible-focus traversal at a known navigation control, retains the same outline assertion
 and independently requires the popup to restore its actual opener.
+
+The adaptive stress test also caught a real in-flight bug: changing policy/config alone
+did not interrupt a tween whose target was unchanged (6.67px remained after two frames).
+The new unit regression failed at 5.95px. Motion's animation controls now stop and set
+the target on a live reduced preference, without remounting children. The strict browser
+regression starts above 7px and requires computed transform `none` after two frames.
+`qa-adaptive.mjs` checks actual R3F camera/target state, canvas/input identity, draft/focus,
+20 route changes without extra native subscriptions, and the interrupted tween. It waits
+for five identical rendered poses before the preservation check, rather than assuming a
+600ms wall-clock delay means a GPU pose has settled. The precision assertion is unchanged.
 
 No unchanged Python suite is rerun in this task per lead instruction. Full Python/E2E
 and exact pre-main timing remain lead-owned. Hardware GPU performance is unverified.

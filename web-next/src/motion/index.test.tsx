@@ -43,6 +43,14 @@ describe('Vigil motion policy',()=>{
     function Probe(){useMotionPreference();return null;}
     const {unmount}=render(<Probe/>);expect(listeners.size).toBe(1);unmount();expect(listeners.size).toBe(0);
   });
+  it('stops an in-flight transform when reduced motion becomes enabled',async()=>{
+    render(<MotionProvider><PageTransition viewKey="home" label="Home"><p>Visible evidence</p></PageTransition></MotionProvider>);
+    const animated=screen.getByRole('region',{name:'Home'}).firstElementChild!;
+    expect(getComputedStyle(animated).transform).toContain('translateY');
+    preference(true);
+    await act(async()=>{await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));});
+    expect(getComputedStyle(animated).transform).toBe('none');
+  });
 });
 
 describe('View and panel transitions',()=>{
@@ -80,5 +88,14 @@ describe('View and panel transitions',()=>{
     const {rerender}=render(<MotionProvider><PanelTransition open label="Evidence panel"><span>Closing evidence</span></PanelTransition></MotionProvider>);
     rerender(<MotionProvider><PanelTransition open={false} label="Evidence panel"><span>Closing evidence</span></PanelTransition></MotionProvider>);
     await waitFor(()=>expect(screen.queryByText('Closing evidence')).not.toBeInTheDocument());
+  });
+  it('shows one visible panel when reopened before an ordinary-motion exit finishes',async()=>{
+    const tree=(open:boolean)=><MotionProvider><PanelTransition open={open} label="Evidence panel"><button>Evidence action</button></PanelTransition></MotionProvider>;
+    const {rerender}=render(tree(true));
+    rerender(tree(false));
+    await act(async()=>{await new Promise(resolve=>requestAnimationFrame(resolve));});
+    rerender(tree(true));
+    await waitFor(()=>expect(screen.getByRole('button',{name:'Evidence action'})).toBeVisible());
+    expect(screen.getAllByRole('button',{name:'Evidence action'})).toHaveLength(1);
   });
 });

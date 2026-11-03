@@ -1,5 +1,5 @@
 import {createContext, useContext, useLayoutEffect, useRef, useSyncExternalStore, type ReactNode} from 'react';
-import {AnimatePresence, MotionConfig, motion, useIsPresent, useReducedMotion, type Transition} from 'framer-motion';
+import {AnimatePresence, MotionConfig, motion, useAnimationControls, useIsPresent, useReducedMotion, type Transition} from 'framer-motion';
 import './motion.css';
 
 const preferenceQuery='(prefers-reduced-motion: reduce)';
@@ -70,12 +70,21 @@ export function useMotionPolicy():MotionPolicy {
 }
 
 /** Spread onto an existing motion element; no data selection or repeated decoration. */
-export function useEntranceMotion(kind:'view'|'panel'='panel') {
+export function useEntranceMotion(kind:'view'|'panel'='panel',identity?:string) {
   const policy=useMotionPolicy();
+  const controls=useAnimationControls();
   // New route controls stay visible and focusable from the first committed frame.
   const initial=policy.reduced?false:{opacity:kind==='view'?policy.one:policy.zero,y:kind==='view'?policy.offset:policy.panelOffset};
   const transition:Transition={duration:kind==='view'?policy.viewDuration:policy.duration,ease:policy.ease};
-  return {initial,animate:{opacity:policy.one,y:policy.zero},transition};
+  const duration=transition.duration;
+  const ease=JSON.stringify(policy.ease);
+  useLayoutEffect(()=>{
+    const target={opacity:policy.one,y:policy.zero};
+    if(policy.reduced){controls.stop();controls.set(target);}
+    else void controls.start({...target,transition:{duration,ease:policy.ease}});
+    return ()=>controls.stop();
+  },[controls,identity,policy.reduced,policy.one,policy.zero,duration,ease]);
+  return {initial,animate:controls,transition};
 }
 
 export interface PageTransitionProps {viewKey:string;label?:string;className?:string;children:ReactNode}
@@ -83,7 +92,7 @@ export function PageTransition({viewKey,label,className='',children}:PageTransit
   const container=useRef<HTMLDivElement>(null);
   const previousKey=useRef(viewKey);
   const restoreFocus=previousKey.current!==viewKey&&Boolean(container.current?.contains(document.activeElement));
-  const entrance=useEntranceMotion('view');
+  const entrance=useEntranceMotion('view',viewKey);
   useLayoutEffect(()=>{
     previousKey.current=viewKey;
     // Keep a stable navigation trigger focused; recover only a removed route control.

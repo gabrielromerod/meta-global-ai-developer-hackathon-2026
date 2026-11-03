@@ -365,6 +365,24 @@ def test_protect_live_with_backend_records_call_and_spend() -> None:
     assert any(o["label"] == "bin" for o in twin["protected_objects"])
 
 
+def test_real_protect_does_not_invent_a_footprint_from_public_diagram():
+    backend = FakeBackend(cost=0.0025)
+    app, client = build(backend=backend)
+    app.state.bundle.manifest["synthetic"] = False
+    for camera in app.state.bundle.twin["cameras"]:
+        camera["placement_measured"] = False
+    body = client.post(
+        "/api/protect",
+        json={
+            "camera_id": "side_right",
+            "point": {"x": 640, "y": 500},
+            "label": "object",
+            "live": True,
+        },
+    ).json()
+    assert body["result"]["object"]["footprint"] is None
+
+
 def test_live_failure_falls_back_to_cached_with_visible_notice() -> None:
     backend = FakeBackend(error=RuntimeError("upstream 503"))
     _, client = build(backend=backend)

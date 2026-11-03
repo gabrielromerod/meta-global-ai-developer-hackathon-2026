@@ -124,6 +124,9 @@ class MetaLiveBackend:
     def protect(
         self, camera_id: str, frame_ts: float | None, x: float, y: float, label: str | None
     ) -> LiveResult:
+        from vigil.ingest.config import load_config, privacy_polygons
+        from vigil.ingest.media import probe
+        from vigil.ingest.review import require_privacy_review
         from vigil.meta.sam import segment_point
 
         if self._stills_dir is None:
@@ -131,10 +134,37 @@ class MetaLiveBackend:
         still = self._stills_dir / f"{camera_id}.jpg"
         if not still.exists():
             raise LiveUnavailableError(f"no still frame for camera {camera_id}")
+        cfg = load_config(self._settings.config_path)
+        try:
+            camera = cfg.camera(camera_id)
+        except KeyError:
+            raise LiveUnavailableError("camera privacy context is not configured") from None
+        polygons = privacy_polygons(cfg, camera_id, self._settings.config_path.parent / "privacy")
+        require_privacy_review(camera, polygons)
+        info = probe(still)
         client = self._meta_client()
         before = self._ledger_len(client)
-        mask = segment_point(client, still, int(x), int(y))
+        mask = segment_point(
+            client,
+            still,
+            int(x * info.width / camera.width),
+            int(y * info.height / camera.height),
+            polygons=polygons,
+            ref_size=(camera.width, camera.height),
+        )
         payload = mask.model_dump() if hasattr(mask, "model_dump") else dict(mask)
+        box = payload.get("box") or payload.get("bbox")
+        if box:
+            payload["bbox"] = {
+                key: float(value)
+                * (
+                    camera.width / info.width
+                    if key.startswith("x")
+                    else camera.height / info.height
+                )
+                for key, value in box.items()
+            }
+        payload["width"], payload["height"] = camera.width, camera.height
         return LiveResult(payload={"mask": payload}, calls=_calls_since(client, before))
 
     def compile_rule(self, text: str, catalog: dict[str, Any]) -> LiveResult:

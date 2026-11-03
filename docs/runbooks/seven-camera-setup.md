@@ -1,6 +1,6 @@
 # Seven-camera field handover (offline-prepared, not field-accepted)
 
-No camera or Meta API was contacted during this implementation. The owner confirmed no
+No camera was contacted. One invalid-key Meta authentication request occurred in a negative test; see the execution incident in docs/readiness.md. Real model acceptance remains unperformed. The owner confirmed no
 Home Hub. Keep `side_left`, `backyard_1`, `backyard_2` in imported-clip mode; never open
 continuous streams to the three battery cameras. Four AC cameras use a low-bitrate sub
 ring and bounded event-triggered main clips. Doorbell clips come from its stream.

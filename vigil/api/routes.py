@@ -102,8 +102,8 @@ class _Req(BaseModel):
 
 
 class PixelPoint(_Req):
-    x: float = Field(ge=0, le=W_MAX)
-    y: float = Field(ge=0, le=H_MAX)
+    x: float = Field(ge=0, le=32768)
+    y: float = Field(ge=0, le=32768)
 
 
 class ProtectRequest(_Req):
@@ -112,6 +112,8 @@ class ProtectRequest(_Req):
     point: PixelPoint
     label: str | None = Field(default=None, max_length=60)
     live: bool = False
+    frame_width: int | None = Field(default=None, ge=1, le=32768)
+    frame_height: int | None = Field(default=None, ge=1, le=32768)
 
 
 class CompileRequest(_Req):
@@ -440,6 +442,16 @@ def router() -> APIRouter:
         req: ProtectRequest = await _parse(request, ProtectRequest)
         if req.camera_id not in views.camera_names(bundle):
             raise HTTPException(422, f"unknown camera {req.camera_id!r}")
+        camera = next(c for c in bundle.cameras if c["id"] == req.camera_id)
+        ref_width, ref_height = camera.get("width", W_MAX), camera.get("height", H_MAX)
+        if (req.frame_width is None) != (req.frame_height is None):
+            raise HTTPException(422, "Both frame dimensions are required")
+        width, height = req.frame_width or ref_width, req.frame_height or ref_height
+        if req.point.x > width or req.point.y > height:
+            raise HTTPException(422, "Point is outside the full camera frame")
+        req.point = req.point.model_copy(
+            update={"x": req.point.x * ref_width / width, "y": req.point.y * ref_height / height}
+        )
         status = _live_gate(request, guards, req.live, "protect")
         notice, error = None, None
         if status is not None and status.available:
@@ -580,7 +592,9 @@ def _live_object(
             "camera_id": req.camera_id,
             "label": req.label or "object",
             "bbox": bbox,
-            "footprint": views.ground_footprint(cam, bbox),
+            "footprint": views.ground_footprint(cam, bbox)
+            if (bundle.manifest.get("synthetic") or cam.get("placement_measured") is True)
+            else None,
             "call_id": calls[0].id if calls else None,
         }
         runtime.protected.append(obj)

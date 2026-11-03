@@ -377,7 +377,7 @@ def test_segment_point_with_fake_client(tmp_path: Path) -> None:
     assert ok
     still.write_bytes(buf.tobytes())
     client = FakeClient([{"output_text": _text("sam_point_image.txt")}])
-    m = sam.segment_point(client, still, 840, 520)
+    m = sam.segment_point(client, still, 840, 520, polygons=[])
     text = client.calls[0]["body"]["input"][0]["content"][0]["text"]
     assert text == "<0f>1<|point;x=840;y=520;w=1280;h=720|>"
     image_url = client.calls[0]["body"]["input"][0]["content"][1]["image_url"]
@@ -393,7 +393,7 @@ def test_segment_point_no_mask_raises(tmp_path: Path) -> None:
     still.write_bytes(buf.tobytes())
     client = FakeClient([{"output_text": ""}])
     with pytest.raises(SamParseError):
-        sam.segment_point(client, still, 10, 10)
+        sam.segment_point(client, still, 10, 10, polygons=[])
 
 
 # ---------------------------------------------------------------------------

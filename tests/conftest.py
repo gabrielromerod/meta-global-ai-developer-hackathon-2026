@@ -9,12 +9,23 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
+import respx
 import yaml
 
 from vigil.models import ActiveWindow, Box, Config, ProtectedObject, Rule, RuleTarget
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 FIXTURES = REPO_ROOT / "tests" / "fixtures"
+
+
+@pytest.fixture(autouse=True)
+def offline_http_boundary(request):
+    """No default test may contact a real HTTP API, even with an invalid key."""
+    if request.node.get_closest_marker("live") or request.node.get_closest_marker("hardware"):
+        yield
+        return
+    with respx.mock(assert_all_called=False):
+        yield
 
 
 @pytest.fixture(scope="session")

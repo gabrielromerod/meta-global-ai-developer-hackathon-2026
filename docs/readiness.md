@@ -10,6 +10,12 @@ now installed (owner approved): `EXIFTOOL=... bash scripts/metadata_scan.sh demo
 PASS, no GPS/device metadata. The current demo contains zero media files; this is not
 real-footage acceptance. Gitleaks is absent locally; CI still supplies that check.
 
+## Execution incident during React rebuild (Nov 3)
+
+REAL — One unapproved HTTP POST to Meta /v1/responses occurred while a new negative test exercised the previously unguarded inline point-prompt path. It used the literal invalid key and generated all-black JPEG pixels, not camera footage. Meta returned HTTP401; no inference succeeded and no owner key was used. Exact wall-clock timestamp was not captured.
+
+REAL remediation / FIXTURE evidence — Default tests now have a strict autouse respx boundary; unmocked Python HTTP fails before transport. The negative point test also uses a rejecting client factory, cache-only mode and a closed loopback base URL. Inline SAM point prompts require explicit privacy context; production point prompts require exact camera review before client construction. Evidence: test_unmocked_default_http_is_blocked_before_transport, test_point_prompt_requires_explicit_privacy_context, test_point_backend_rejects_unreviewed_real_camera_before_model. The prior statement that this rebuild made no Meta request is superseded by this incident. No camera connection occurred.
+
 ## Consumer round in progress (Nov 3)
 
 These are MISSING until implemented and evidenced in the consumer-round plan:

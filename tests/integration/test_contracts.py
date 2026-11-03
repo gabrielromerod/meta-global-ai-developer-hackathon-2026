@@ -252,7 +252,11 @@ def test_contract_api_backend_reads_call_ledger(tmp_path: Path, monkeypatch) -> 
     from vigil.meta import sam as sam_mod
     from vigil.meta.client import CallLedger, MetaClient
 
-    settings = Settings(cache_dir=tmp_path / "cache", MODEL_API_KEY=SENTINEL_KEY)
+    settings = Settings(
+        cache_dir=tmp_path / "cache",
+        MODEL_API_KEY=SENTINEL_KEY,
+        config_path=Path(__file__).parents[1] / "fixtures/config/synthetic-cameras.yaml",
+    )
     client = MetaClient(settings=settings, ledger=CallLedger())
     try:
         old = ModelCall(id="call_old", model="sam-3.1", purpose="sam_track", req_hash="h0")
@@ -262,15 +266,22 @@ def test_contract_api_backend_reads_call_ledger(tmp_path: Path, monkeypatch) -> 
 
         stills = tmp_path / "stills"
         stills.mkdir()
-        (stills / "side_left.jpg").write_bytes(b"not decoded by the fake")
+        import cv2
+        import numpy as np
 
-        def fake_segment_point(c: Any, still: Path, x: int, y: int) -> PointMask:
+        assert cv2.imwrite(str(stills / "side_left.jpg"), np.zeros((720, 1280, 3), dtype=np.uint8))
+
+        def fake_segment_point(c: Any, still: Path, x: int, y: int, **privacy) -> PointMask:
             assert c is client
             c.ledger.add(
                 ModelCall(id="call_new", model="sam-3.1", purpose="segment_point", req_hash="h1")
             )
             return PointMask(
-                obj_id=1, box=Box(x1=800, y1=400, x2=880, y2=660), mask_rle="0", width=1, height=1
+                obj_id=1,
+                box=Box(x1=800, y1=400, x2=880, y2=660),
+                mask_rle="0",
+                width=1280,
+                height=720,
             )
 
         monkeypatch.setattr(sam_mod, "segment_point", fake_segment_point)

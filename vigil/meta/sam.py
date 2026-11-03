@@ -662,7 +662,14 @@ def _image_size(data: bytes) -> tuple[int, int]:
 
 
 def segment_point(
-    c: SamClient, still: Path, x: int, y: int, *, visit_id: str | None = None
+    c: SamClient,
+    still: Path,
+    x: int,
+    y: int,
+    *,
+    visit_id: str | None = None,
+    polygons: Sequence[Polygon] | None = None,
+    ref_size: tuple[int, int] | None = None,
 ) -> PointMask:
     """Tap-to-protect (FR-019): one positive point on a still; returns the object's mask.
 
@@ -670,6 +677,9 @@ def segment_point(
     base64 data URL. Raises ``SamParseError`` when SAM returns no mask.
     """
     path = Path(still)
+    from vigil.ingest.privacy import assert_uploadable
+
+    assert_uploadable(path, polygons, ref_size=ref_size)
     data = path.read_bytes()
     width, height = _image_size(data)
     mime = _MIME.get(path.suffix.lower(), "image/jpeg")

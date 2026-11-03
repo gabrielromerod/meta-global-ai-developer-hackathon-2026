@@ -2,7 +2,7 @@
 
 Current lead checkout: `C:/Users/lords/.codex/worktrees/ad9e/meta-global-ai-developer-hackathon-2026`.
 Branch `codex/react-seven-cameras`. Preserve the original ten Python line-ending edits;
-they are not task changes. No camera/Meta calls, paid flags, ML packages or go2rtc installs.
+they are not task changes. No camera calls, paid flags, ML packages or go2rtc installs. One invalid-key Meta authentication request occurred in a negative test; docs/readiness.md records the incident and strict offline HTTP backstop.
 Owner confirmed **no Home Hub**: all three battery cameras use imported clips.
 
 ## Lead commits

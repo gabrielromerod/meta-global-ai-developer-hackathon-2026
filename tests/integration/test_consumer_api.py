@@ -139,3 +139,26 @@ def test_doorbell_press_and_measured_street_count_stay_separate_from_visits():
         assert response["camera_events"][0]["layer"] == "camera_ai"
         assert "actor_role" not in response["camera_events"][0]
         assert api.get("/api/ui/state").json()["summary"]["camera_events"] == 2
+
+
+def test_duo_protect_coordinates_are_validated_against_full_frame():
+    with client() as api:
+        bundle = api.app.state.bundle
+        bundle.tables["cameras"][0].update(id="front_left_duo", width=1920, height=720)
+        allowed = {"camera_id": "front_left_duo", "point": {"x": 1600, "y": 600}}
+        assert api.post("/api/protect", json=allowed).status_code == 200
+        assert (
+            api.post("/api/protect", json={**allowed, "point": {"x": 1921, "y": 600}}).status_code
+            == 422
+        )
+        scaled = {
+            **allowed,
+            "point": {"x": 3200, "y": 1200},
+            "frame_width": 3840,
+            "frame_height": 1440,
+        }
+        assert api.post("/api/protect", json=scaled).status_code == 200
+        assert (
+            api.post("/api/protect", json={**scaled, "point": {"x": 3841, "y": 1200}}).status_code
+            == 422
+        )

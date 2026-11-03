@@ -1,10 +1,16 @@
-"""Budget guard: price first; total, feature, daily caps; window end (FR-043).
+"""Budget guard: price first; credit, feature, daily and judging caps (FR-043).
 
 Every live call is priced from the spec 11.3 table (confirmed against
-https://dev.meta.ai/docs/pricing-rate-limits on 2026-11-02) before it is sent. A call is
-refused when it *would* cross the total cap ($140), its feature budget (spec 11.4) or the
-daily cap, and every paid call is refused after the credit window ends unless the owner set
-``VIGIL_ALLOW_PAID=1`` (NFR-037). Warnings fire once each at 50, 75 and 90% of every cap.
+https://dev.meta.ai/docs/pricing-rate-limits on 2026-11-02) before it is sent. Spend is
+tagged ``credit`` or ``paid`` (paid = from ``VIGIL_CREDIT_WINDOW_END`` on, spec 9.3).
+
+* Credit-funded calls are refused when they *would* cross the $140 credit cap (credit spend
+  only, NFR-036), their feature budget (spec 11.4) or the daily cap.
+* After the window, paid calls are refused unless the owner set ``VIGIL_ALLOW_PAID=1``,
+  refused from ``VIGIL_JUDGING_END`` (Nov 10, 23:59 PT) on, and refused when they would
+  cross the judging cap ($25 in total) or its daily cap ($5 per PT calendar day) (NFR-037).
+
+Every refusal names the cap. Warnings fire once each at 50, 75 and 90% of every cap.
 """
 
 from __future__ import annotations
@@ -15,10 +21,11 @@ import threading
 from collections.abc import Callable, Iterable
 from dataclasses import dataclass
 from datetime import UTC, date, datetime
+from zoneinfo import ZoneInfo
 
 from pydantic import BaseModel, Field
 
-from vigil.models import CostEstimate, ModelCall
+from vigil.models import CostEstimate, Funding, ModelCall
 from vigil.settings import Settings, get_settings
 
 log = logging.getLogger(__name__)
@@ -179,6 +186,20 @@ def estimate(
 # Errors
 # ---------------------------------------------------------------------------
 
+CAP_LABELS: dict[str, str] = {
+    "total": "credit cap (credit-funded spend only)",
+    "daily": "daily cap",
+    "judging": "judging cap (VIGIL_JUDGING_CAP_USD, post-window paid spend)",
+    "judging_daily": "judging daily cap (paid spend per PT calendar day)",
+}
+"""Human names used in refusal messages, so every refusal names the cap it hit."""
+
+
+def cap_label(cap: str) -> str:
+    if cap.startswith("feature:"):
+        return f"feature budget {cap.split(':', 1)[1]!r} (spec 11.4)"
+    return CAP_LABELS.get(cap, cap)
+
 
 class BudgetExceeded(RuntimeError):
     """A live call was refused because it would cross a cap. Cached mode continues."""
@@ -193,7 +214,7 @@ class BudgetExceeded(RuntimeError):
         super().__init__(
             msg
             or (
-                f"budget cap {cap!r} would be crossed: spent ${spent:.4f} + "
+                f"budget cap {cap!r} ({cap_label(cap)}) would be crossed: spent ${spent:.4f} + "
                 f"${requested:.4f} > ${limit:.2f}; live call refused, cached mode continues"
             )
         )
@@ -209,9 +230,24 @@ class PaidCallsDisabled(BudgetExceeded):
             0.0,
             requested,
             f"credit window ended at {window_end.isoformat()}; paid calls are disabled "
-            "unless the owner sets VIGIL_ALLOW_PAID=1 (NFR-037)",
+            "unless the owner sets VIGIL_ALLOW_PAID=1 (NFR-037); cached mode continues",
         )
         self.window_end = window_end
+
+
+class JudgingEnded(BudgetExceeded):
+    """VIGIL_JUDGING_END has passed: no paid call after it, whatever VIGIL_ALLOW_PAID says."""
+
+    def __init__(self, judging_end: datetime, requested: float):
+        super().__init__(
+            "judging_end",
+            0.0,
+            0.0,
+            requested,
+            f"VIGIL_JUDGING_END ({judging_end.isoformat()}) has passed; no paid call after it "
+            "(NFR-037); cached mode continues",
+        )
+        self.judging_end = judging_end
 
 
 class ConfirmRequired(RuntimeError):
@@ -229,8 +265,16 @@ class ConfirmRequired(RuntimeError):
 # Guard
 # ---------------------------------------------------------------------------
 
+BUDGET_TZ = ZoneInfo("America/Los_Angeles")
+"""Daily caps reset at midnight Pacific time (NFR-013, NFR-037: "per PT calendar day")."""
+
+DEFAULT_JUDGING_END = datetime(2026, 11, 10, 23, 59, tzinfo=BUDGET_TZ)
+"""Spec 11.6 item 6: no paid call after Nov 10, 23:59 PT. Used when VIGIL_JUDGING_END is unset,
+so a missing setting fails closed rather than leaving paid calls open-ended."""
+
 
 def _utc(dt: datetime) -> datetime:
+    """Naive datetimes are read as UTC (the settings convention); aware ones are converted."""
     return dt.replace(tzinfo=UTC) if dt.tzinfo is None else dt.astimezone(UTC)
 
 
@@ -238,11 +282,25 @@ def _now() -> datetime:
     return datetime.now(UTC)
 
 
-class BudgetGuard:
-    """Prices and admits live calls; records actual spend. Thread-safe.
+def pt_day(when: datetime) -> date:
+    """The Pacific calendar day of an instant (naive instants are UTC)."""
+    return _utc(when).astimezone(BUDGET_TZ).date()
 
-    Days are UTC calendar days. ``spent`` seeds the guard from existing ledger rows (their
-    feature is derived from the purpose until ModelCall carries a feature field).
+
+class BudgetGuard:
+    """Prices and admits live calls; records actual spend by funding. Thread-safe.
+
+    Two regimes (NFR-036, NFR-037):
+
+    * **credit** (before ``VIGIL_CREDIT_WINDOW_END``, or when it is unset): the $140 credit
+      cap, the spec 11.4 feature budgets and the $10 daily cap, over credit-tagged spend only.
+    * **paid** (from the window end): refused unless ``VIGIL_ALLOW_PAID=1``; refused from
+      ``VIGIL_JUDGING_END`` on; otherwise only the judging caps apply ($25 in total and $5 per
+      PT calendar day of paid spend). Paid spend never counts toward the $140.
+
+    Days are Pacific calendar days. ``spent`` seeds the guard from existing ledger rows; each
+    row is counted under its own ``funding`` tag and ``feature`` (else one derived from the
+    purpose).
     """
 
     def __init__(
@@ -252,6 +310,8 @@ class BudgetGuard:
         total_cap: float | None = None,
         daily_cap: float | None = None,
         feature_caps: dict[str, float] | None = None,
+        judging_cap: float | None = None,
+        judging_daily_cap: float | None = None,
         clock: Callable[[], datetime] | None = None,
         spent: Iterable[ModelCall] | None = None,
     ):
@@ -259,36 +319,81 @@ class BudgetGuard:
         self.total_cap = s.total_cap_usd if total_cap is None else total_cap
         self.daily_cap = s.daily_cap_usd if daily_cap is None else daily_cap
         self.feature_caps = {**FEATURE_CAPS, **(feature_caps or {})}
+        self.judging_cap = s.judging_cap_usd if judging_cap is None else judging_cap
+        self.judging_daily_cap = (
+            s.judging_daily_cap_usd if judging_daily_cap is None else judging_daily_cap
+        )
         self.window_end = _utc(s.credit_window_end) if s.credit_window_end else None
+        self.judging_end = _utc(s.judging_end or DEFAULT_JUDGING_END)
         self.allow_paid = s.allow_paid
         self._clock = clock or _now
         self._lock = threading.Lock()
         self._total = 0.0
         self._by_feature: dict[str, float] = {}
         self._by_day: dict[date, float] = {}
+        self._paid_total = 0.0
+        self._paid_by_day: dict[date, float] = {}
         self._warned: set[tuple[str, int]] = set()
         self.warnings: list[str] = []
         for row in spent or ():
             if row.cost_usd and not row.cached:
-                self._add(row.cost_usd, feature_for(row.purpose), row.created_at)
+                feature = row.feature or feature_for(row.purpose)
+                self._add(row.cost_usd, feature, row.created_at, row.funding)
 
     # -- state ---------------------------------------------------------------------------
 
     def _today(self) -> date:
-        return _utc(self._clock()).date()
+        return pt_day(self._clock())
+
+    def funding_at(self, when: datetime) -> Funding:
+        """``paid`` from the credit window end on, else ``credit`` (ledger tag, spec 9.3)."""
+        if self.window_end is not None and _utc(when) >= self.window_end:
+            return "paid"
+        return "credit"
+
+    def funding_now(self) -> Funding:
+        return self.funding_at(self._clock())
 
     @property
     def spent_total(self) -> float:
+        """Credit-funded spend (the $140 cap counts only this, NFR-036)."""
         return self._total
+
+    @property
+    def spent_paid(self) -> float:
+        """Post-window paid spend (the $25 judging cap, NFR-037)."""
+        return self._paid_total
 
     def spent_feature(self, feature: str) -> float:
         return self._by_feature.get(feature, 0.0)
 
-    def spent_today(self) -> float:
+    def spent_credit_today(self) -> float:
         return self._by_day.get(self._today(), 0.0)
 
-    def _caps_for(self, feature: str) -> list[tuple[str, float, float]]:
+    def spent_paid_today(self) -> float:
+        return self._paid_by_day.get(self._today(), 0.0)
+
+    def spent_today(self) -> float:
+        """All spend today (credit and paid), for the health endpoint and telemetry panel."""
+        return self.spent_credit_today() + self.spent_paid_today()
+
+    def judging_remaining(self) -> float:
+        """Room left for paid calls now: the tighter of the $25 total and today's $5."""
+        return max(
+            0.0,
+            min(
+                self.judging_cap - self._paid_total,
+                self.judging_daily_cap - self.spent_paid_today(),
+            ),
+        )
+
+    def _caps_for(self, feature: str, funding: Funding) -> list[tuple[str, float, float]]:
         """(name, limit, spent) for every cap that applies to a call of this feature."""
+        if funding == "paid":
+            return [
+                ("judging", self.judging_cap, self._paid_total),
+                ("judging_daily", self.judging_daily_cap, self.spent_paid_today()),
+            ]
         return [
             ("total", self.total_cap, self._total),
             (
@@ -296,29 +401,37 @@ class BudgetGuard:
                 self.feature_caps.get(feature, self.feature_caps["other"]),
                 self.spent_feature(feature),
             ),
-            ("daily", self.daily_cap, self.spent_today()),
+            ("daily", self.daily_cap, self.spent_credit_today()),
         ]
 
     def remaining(self, feature: str) -> float:
-        return max(0.0, min(limit - spent for _, limit, spent in self._caps_for(feature)))
+        caps = self._caps_for(feature, self.funding_now())
+        return max(0.0, min(limit - spent for _, limit, spent in caps))
 
     @property
     def paid_disabled(self) -> bool:
-        return (
-            self.window_end is not None
-            and _utc(self._clock()) >= self.window_end
-            and not self.allow_paid
-        )
+        return self.funding_now() == "paid" and not self.allow_paid
+
+    @property
+    def judging_over(self) -> bool:
+        return self.funding_now() == "paid" and _utc(self._clock()) >= self.judging_end
 
     # -- admission -----------------------------------------------------------------------
 
+    def _admit_paid(self, usd: float) -> None:
+        if self.paid_disabled:
+            assert self.window_end is not None
+            raise PaidCallsDisabled(self.window_end, usd)
+        if self.judging_over:
+            raise JudgingEnded(self.judging_end, usd)
+
     def check(self, est: CostEstimate) -> None:
-        """Raise if this live call would cross any cap or the credit window has ended."""
+        """Raise if this live call would cross any cap that applies to it now."""
         with self._lock:
-            if self.paid_disabled:
-                assert self.window_end is not None
-                raise PaidCallsDisabled(self.window_end, est.usd)
-            for name, limit, spent in self._caps_for(est.feature):
+            funding = self.funding_now()
+            if funding == "paid":
+                self._admit_paid(est.usd)
+            for name, limit, spent in self._caps_for(est.feature, funding):
                 if spent + est.usd > limit + _EPS:
                     raise BudgetExceeded(name, limit, spent, est.usd)
 
@@ -328,42 +441,64 @@ class BudgetGuard:
         if not ests:
             return
         with self._lock:
-            if self.paid_disabled:
-                assert self.window_end is not None
-                raise PaidCallsDisabled(self.window_end, sum(e.usd for e in ests))
-            per_feature: dict[str, float] = {}
-            for e in ests:
-                per_feature[e.feature] = per_feature.get(e.feature, 0.0) + e.usd
-            total = sum(per_feature.values())
-            checks = [("total", self.total_cap, self._total, total)]
-            checks += [
-                (
-                    f"feature:{f}",
-                    self.feature_caps.get(f, self.feature_caps["other"]),
-                    self.spent_feature(f),
-                    usd,
-                )
-                for f, usd in per_feature.items()
-            ]
-            checks.append(("daily", self.daily_cap, self.spent_today(), total))
+            total = sum(e.usd for e in ests)
+            if self.funding_now() == "paid":
+                self._admit_paid(total)
+                checks = [
+                    ("judging", self.judging_cap, self._paid_total, total),
+                    ("judging_daily", self.judging_daily_cap, self.spent_paid_today(), total),
+                ]
+            else:
+                per_feature: dict[str, float] = {}
+                for e in ests:
+                    per_feature[e.feature] = per_feature.get(e.feature, 0.0) + e.usd
+                checks = [("total", self.total_cap, self._total, total)]
+                checks += [
+                    (
+                        f"feature:{f}",
+                        self.feature_caps.get(f, self.feature_caps["other"]),
+                        self.spent_feature(f),
+                        usd,
+                    )
+                    for f, usd in per_feature.items()
+                ]
+                checks.append(("daily", self.daily_cap, self.spent_credit_today(), total))
             for name, limit, spent, usd in checks:
                 if spent + usd > limit + _EPS:
                     raise BudgetExceeded(name, limit, spent, usd)
 
     # -- recording -----------------------------------------------------------------------
 
-    def _add(self, usd: float, feature: str, when: datetime | None) -> None:
-        day = _utc(when).date() if when else self._today()
-        self._total += usd
-        self._by_feature[feature] = self._by_feature.get(feature, 0.0) + usd
-        self._by_day[day] = self._by_day.get(day, 0.0) + usd
+    def _add(
+        self, usd: float, feature: str, when: datetime | None, funding: Funding | None = None
+    ) -> Funding:
+        when = when or self._clock()
+        funding = funding or self.funding_at(when)
+        day = pt_day(when)
+        if funding == "paid":
+            self._paid_total += usd
+            self._paid_by_day[day] = self._paid_by_day.get(day, 0.0) + usd
+        else:
+            self._total += usd
+            self._by_feature[feature] = self._by_feature.get(feature, 0.0) + usd
+            self._by_day[day] = self._by_day.get(day, 0.0) + usd
+        return funding
 
-    def record(self, usd: float, feature: str, when: datetime | None = None) -> list[str]:
-        """Add actual spend; return the warnings newly crossed by this call (once each)."""
+    def record(
+        self,
+        usd: float,
+        feature: str,
+        when: datetime | None = None,
+        funding: Funding | None = None,
+    ) -> list[str]:
+        """Add actual spend; return the warnings newly crossed by this call (once each).
+
+        ``funding`` defaults to the tag for ``when`` (now when omitted).
+        """
         new: list[str] = []
         with self._lock:
-            self._add(usd, feature, when)
-            for name, limit, spent in self._caps_for(feature):
+            funding = self._add(usd, feature, when, funding)
+            for name, limit, spent in self._caps_for(feature, funding):
                 if limit <= 0:
                     continue
                 pct = spent / limit * 100.0

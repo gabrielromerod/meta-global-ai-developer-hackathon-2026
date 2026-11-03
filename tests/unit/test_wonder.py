@@ -8,11 +8,13 @@ from datetime import datetime, timedelta, timezone
 import pytest
 
 from vigil.meta.wonder import (
+    ROLE_PHRASES,
     PixelLeakError,
     StoryFormatError,
     assert_no_media,
     build_story_request,
     parse_story,
+    role_phrase_for,
     story_schema,
     write_story,
 )
@@ -22,6 +24,7 @@ from vigil.models import (
     Gap,
     RuleHit,
     StoryDraft,
+    Subject,
     Visit,
     VisitLedger,
 )
@@ -222,3 +225,83 @@ def test_wonder_malformed(ledger, answer):
 def test_parse_story_is_pure():
     draft = parse_story(json.dumps(GOOD))
     assert draft.sentences[1].text.startswith("They touched")
+
+
+# --- roles in the ledger and validator check 7 (FR-044, spec 9.4) -------------------------
+
+
+ROLE_EXTERNAL = "someone who arrived from outside the property"
+
+
+def _subject(sid: str, role: str, basis: str) -> Subject:
+    return Subject(id=sid, visit_id="v3", track_ids=["t5"], actor_role=role, role_basis=basis)
+
+
+@pytest.mark.parametrize(
+    ("role", "basis", "phrase"),
+    [
+        ("household_insider", "egress:front_door_egress", "someone who came out of the house"),
+        ("household_insider", "checkin:c1", None),  # check-in subjects get no role phrase
+        ("household_insider", "group:household_insider", None),  # nor do group subjects
+        ("expected_visitor", "window:w3", "an expected visitor"),
+        ("external_visitor", "perimeter:side_alley", ROLE_EXTERNAL),
+        ("unknown", "origin_null:t5", None),
+        ("unknown", "gap_unresolved:g4", None),
+    ],
+)  # fmt: skip
+def test_role_phrase_for_subject(role, basis, phrase):
+    assert role_phrase_for(_subject("s1", role, basis)) == phrase
+
+
+def test_role_phrases_map_each_phrase_to_one_role():
+    assert ROLE_PHRASES == {
+        "someone who came out of the house": "household_insider",
+        "an expected visitor": "expected_visitor",
+        "someone who arrived from outside the property": "external_visitor",
+    }
+
+
+def test_story_request_carries_subjects_roles_and_allowed_phrases(ledger):
+    events = [
+        e.model_copy(update={"subject_id": "s1", "actor_role": "external_visitor"})
+        for e in ledger.events
+    ]
+    ledger = ledger.model_copy(
+        update={
+            "events": events,
+            "subjects": [_subject("s1", "external_visitor", "perimeter:side_alley")],
+        }
+    )
+    sent = json.loads(
+        build_story_request(ledger)["input"][0]["content"][0]["text"].split("\n", 1)[1]
+    )
+    [subject] = sent["subjects"]
+    assert subject["actor_role"] == "external_visitor"
+    assert subject["role_basis"] == "perimeter:side_alley"
+    assert subject["role_phrase"] == "someone who arrived from outside the property"
+    assert {e["subject_id"] for e in sent["events"]} == {"s1"}
+    assert {e["actor_role"] for e in sent["events"]} == {"external_visitor"}
+
+
+def test_story_request_subject_without_phrase_says_so(ledger):
+    ledger = ledger.model_copy(
+        update={"subjects": [_subject("s1", "household_insider", "checkin:c1")]}
+    )
+    sent = json.loads(
+        build_story_request(ledger)["input"][0]["content"][0]["text"].split("\n", 1)[1]
+    )
+    assert sent["subjects"][0]["role_phrase"] is None
+
+
+def test_story_prompt_states_the_role_phrase_rules():
+    from vigil.meta.prompts import load_prompt
+
+    text = load_prompt("story").text
+    for phrase in ROLE_PHRASES:
+        assert f'"{phrase}"' in text
+    lower = text.lower()
+    for word in ("household", "family", "guest", "visitor", "delivery", "stranger", "neighbour"):
+        assert word in lower
+    assert "role_phrase" in text
+    assert "capitalised" in lower
+    assert "different roles" in lower

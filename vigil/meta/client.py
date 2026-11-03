@@ -4,11 +4,14 @@ Every Meta Model API call in Vigil goes through :class:`MetaClient`, in this ord
 
 1. model allowlist (exactly the four Standard-mode IDs; Contributor IDs refused, NFR-004);
 2. cache lookup by request hash (a hit costs $0 and is ledgered as cached);
-3. budget guard pre-flight price (total, feature and daily caps; credit window, FR-043);
+3. budget guard pre-flight price: credit, feature and daily caps inside the credit window;
+   after it, VIGIL_ALLOW_PAID, VIGIL_JUDGING_END and the $25 / $5-per-PT-day judging caps
+   (FR-043, NFR-036, NFR-037);
 4. send, with 2 retries on 429, 5xx, timeouts, network errors and malformed bodies,
    exponential backoff with jitter (``Retry-After`` honoured); any other 4xx is raised at
    once with its body (NFR-010, spec section 3 ``test_client_retry``);
-5. one ledger row per call (vigil.models.ModelCall), in memory and optionally SQLite.
+5. one ledger row per call (vigil.models.ModelCall), in memory and optionally SQLite, tagged
+   with its budget ``feature`` and its ``funding`` (``credit`` or ``paid``, spec 9.3).
 
 Wire format (https://dev.meta.ai/docs/models, /docs/api-reference/responses/schemas):
 base ``https://api.meta.ai/v1``, ``Authorization: Bearer $MODEL_API_KEY``,
@@ -51,7 +54,7 @@ from vigil.meta.budget import (
     feature_for,
 )
 from vigil.meta.cache import ResponseCache, file_hash, request_hash
-from vigil.models import CostEstimate, ModelCall
+from vigil.models import CostEstimate, Funding, ModelCall
 from vigil.settings import REPO_ROOT, Settings, get_settings
 
 log = logging.getLogger(__name__)
@@ -147,7 +150,9 @@ class _Retryable(Exception):
 _FALLBACK_DDL = """CREATE TABLE IF NOT EXISTS model_calls(id TEXT PRIMARY KEY, model TEXT,
   purpose TEXT, visit_id TEXT, req_hash TEXT, latency_ms INT, in_tokens INT, out_tokens INT,
   units REAL, cost_usd REAL, cached INT, ok INT, error TEXT, backend TEXT, gpu_s REAL,
-  created_at TEXT)"""
+  feature TEXT, funding TEXT, created_at TEXT)"""
+_ADDED_COLUMNS = {"feature": "TEXT", "funding": "TEXT"}
+"""Columns added after the first schema; an older database gains them when opened."""
 
 
 def _model_calls_ddl() -> str:
@@ -179,8 +184,12 @@ class CallLedger:
             Path(db_path).parent.mkdir(parents=True, exist_ok=True)
             self._con = sqlite3.connect(str(db_path), check_same_thread=False)
             self._con.execute(_model_calls_ddl())
-            self._con.commit()
             self._columns = [r[1] for r in self._con.execute("PRAGMA table_info(model_calls)")]
+            for col, sql_type in _ADDED_COLUMNS.items():
+                if col not in self._columns:
+                    self._con.execute(f"ALTER TABLE model_calls ADD COLUMN {col} {sql_type}")
+                    self._columns.append(col)
+            self._con.commit()
             self._rows = list(self._load())
 
     def _load(self) -> Iterator[ModelCall]:
@@ -199,7 +208,7 @@ class CallLedger:
     def add(self, row: ModelCall, feature: str | None = None) -> ModelCall:
         with self._lock:
             self._rows.append(row)
-            self._features[row.id] = feature or feature_for(row.purpose)
+            self._features[row.id] = feature or row.feature or feature_for(row.purpose)
             if self._con is not None:
                 data = row.model_dump()
                 data["cached"] = int(row.cached)
@@ -236,6 +245,13 @@ class CallLedger:
 
     def total(self) -> float:
         return sum(r.cost_usd for r in self.rows())
+
+    def total_by_funding(self) -> dict[str, float]:
+        """Spend by ledger tag: ``credit`` (the $140 cap) and ``paid`` (the judging cap)."""
+        out: dict[str, float] = {"credit": 0.0, "paid": 0.0}
+        for r in self.rows():
+            out[r.funding] = out.get(r.funding, 0.0) + r.cost_usd
+        return out
 
     def total_by_feature(self) -> dict[str, float]:
         out: dict[str, float] = {}
@@ -508,8 +524,16 @@ class MetaClient:
         units: dict[str, float],
         visit_id: str | None = None,
         feature: str | None = None,
+        cache_key: str | None = None,
+        cache_filter: Callable[[dict], dict] | None = None,
     ) -> RawResponse:
-        """A multipart model call (Voice Transcribe) through the same pipeline."""
+        """A multipart model call (Voice Transcribe) through the same pipeline.
+
+        ``files`` are sent from memory and never written anywhere. ``cache_key`` replaces the
+        request hash as the response-cache key (Voice Transcribe keys by the audio SHA-256),
+        and ``cache_filter`` reduces the response to what may be cached (only the transcript,
+        NFR-002). The request bytes are never cached.
+        """
         try:
             check_model(model)
         except ValueError as exc:
@@ -524,7 +548,10 @@ class MetaClient:
         def send() -> dict:
             return self._send_json("POST", path, files=form)
 
-        return self._execute(model, purpose, visit_id, feature, req_hash, est, send)
+        return self._execute(
+            model, purpose, visit_id, feature, req_hash, est, send,
+            cache_key=cache_key, cache_filter=cache_filter,
+        )  # fmt: skip
 
     # -- pipeline ------------------------------------------------------------------------
 
@@ -537,18 +564,28 @@ class MetaClient:
         req_hash: str,
         est: CostEstimate,
         send: Callable[[], dict],
+        *,
+        cache_key: str | None = None,
+        cache_filter: Callable[[dict], dict] | None = None,
     ) -> RawResponse:
+        key = cache_key or req_hash
+        funding = self._funding()
         if self.use_cache:
-            hit = self.cache.get(req_hash)
+            hit = self.cache.get(key)
             if hit is not None:
-                row = self._log(model, purpose, visit_id, req_hash, feature, cached=True)
+                row = self._log(
+                    model, purpose, visit_id, req_hash, feature, cached=True, funding=funding
+                )
                 return self._annotate(hit, row)
         if self.cache_only:
             raise CacheMiss(f"cache-only mode: no cached {model} response for {purpose}")
         try:
             self.budget.check(est)
         except BudgetExceeded as exc:
-            self._log(model, purpose, visit_id, req_hash, feature, ok=False, error=str(exc))
+            self._log(
+                model, purpose, visit_id, req_hash, feature,
+                ok=False, error=str(exc), funding=funding,
+            )  # fmt: skip
             raise
 
         t0 = time.perf_counter()
@@ -558,25 +595,41 @@ class MetaClient:
             latency = int((time.perf_counter() - t0) * 1000)
             cost = est.usd if getattr(exc, "billed", False) else 0.0
             if cost:
-                self.budget.record(cost, feature)
+                self.budget.record(cost, feature, funding=funding)
             self._log(
                 model, purpose, visit_id, req_hash, feature,
                 ok=False, error=str(exc), latency_ms=latency, cost=cost,
-                units=self._units(model, est),
+                units=self._units(model, est), funding=funding,
             )  # fmt: skip
             raise
         latency = int((time.perf_counter() - t0) * 1000)
 
         in_t, out_t, cost = self._actual_cost(model, feature, data, est)
-        self.budget.record(cost, feature)
+        self.budget.record(cost, feature, funding=funding)
         row = self._log(
             model, purpose, visit_id, req_hash, feature,
             latency_ms=latency, cost=cost, in_tokens=in_t, out_tokens=out_t,
-            units=self._units(model, est),
+            units=self._units(model, est), funding=funding,
         )  # fmt: skip
         if self.use_cache:
-            self.cache.put(req_hash, data, model=model)
+            self._cache_put(key, data, model, cache_filter)
         return self._annotate(data, row)
+
+    def _funding(self) -> Funding:
+        """The ledger tag for a call made now (``credit`` unless the guard says ``paid``)."""
+        funding_now = getattr(self.budget, "funding_now", None)
+        return funding_now() if callable(funding_now) else "credit"
+
+    def _cache_put(
+        self, key: str, data: dict, model: str, cache_filter: Callable[[dict], dict] | None
+    ) -> None:
+        if cache_filter is not None:
+            try:
+                data = cache_filter(data)
+            except Exception as exc:  # a filter failure must not fail the call
+                log.warning("response not cached: %s", self._scrub(str(exc)))
+                return
+        self.cache.put(key, data, model=model)
 
     @staticmethod
     def _units(model: str, est: CostEstimate) -> float | None:
@@ -633,6 +686,7 @@ class MetaClient:
         in_tokens: int | None = None,
         out_tokens: int | None = None,
         units: float | None = None,
+        funding: Funding = "credit",
     ) -> ModelCall:
         row = ModelCall(
             id="mc_" + uuid.uuid4().hex[:16],
@@ -649,6 +703,8 @@ class MetaClient:
             ok=ok,
             error=self._scrub(error)[:2000] if error else None,
             backend="api",
+            feature=feature,
+            funding=funding,
             created_at=self._clock(),
         )
         return self.ledger.add(row, feature)

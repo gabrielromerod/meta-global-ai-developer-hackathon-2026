@@ -9,6 +9,11 @@ still caught.
 
 Appearance schema (NFR-003): ``tag`` is an enum of the burned-in tags, colours come from
 ``vigil.models.COLORS``, and there are no face, age, gender, skin or ethnicity fields.
+
+Rule compile (FR-021): identity phrases map to roles, never to people. Code reads the
+owner's words (:func:`classify_role_phrasing`) and its reading wins over the model's
+``applies_to``; a named person ("except Sam") gives ``non_household`` plus the spec notice,
+and :func:`rule_person_terms` guarantees that no compiled rule names a person.
 """
 
 from __future__ import annotations
@@ -28,6 +33,7 @@ from vigil.models import (
     COLORS,
     ActiveWindow,
     Appearance,
+    AppliesTo,
     Config,
     ProtectedObject,
     Rule,
@@ -179,16 +185,244 @@ def appearance_notes(
 # Rule compile (FR-021)
 # ---------------------------------------------------------------------------
 
-BASE_LIMIT = "Vigil never identifies people, so this rule applies to anyone."
-IDENTITY_LIMIT = (
-    "You asked to treat some people differently (for example family). Vigil cannot tell "
-    "who someone is, so this rule will apply to everyone, family included."
+HOUSEHOLD_BASIS = (
+    "Vigil treats someone as household only when it saw them come out of the house's own "
+    "doors, or when a household member checked in on the app just before coming into view. "
+    "Household members arriving from the street without checking in, and anyone Vigil loses "
+    "track of, count as non-household and can trigger this rule. Vigil places people by where "
+    "they came from; it does not identify anyone and creates no face, voice or body templates."
+)
+"""The basis the draft card states for a role-scoped rule (FR-021, UC-03), verbatim."""
+
+NO_TEMPLATES = (
+    "Vigil places people by where they came from; it does not identify anyone and creates no "
+    "face, voice or body templates."
+)
+
+BASIS_NOTES: dict[str, str] = {
+    "anyone": "Applies to everyone, household members included. " + NO_TEMPLATES,
+    "non_household": "Applies to everyone except household members. " + HOUSEHOLD_BASIS,
+    "external_visitor_only": (
+        "Applies only to people arriving from outside the property, not to household members "
+        "or expected visitors. Vigil treats someone as an expected visitor only when they "
+        "arrive from the street, the driveway entry or the side alley during an expected guest "
+        "or delivery window you set, on a camera that window covers. " + HOUSEHOLD_BASIS
+    ),
+}
+"""Draft-card basis note per ``applies_to`` (spec 9.6 ``POST /api/rules/compile``)."""
+
+BASE_LIMIT = "Vigil does not identify anyone and creates no face, voice or body templates."
+GENERIC_NAMED = "the person you named"
+
+
+def named_person_notice(names: list[str]) -> str:
+    """FR-021 notice for "except Sam": the name stays in the notice, never in the rule."""
+    who = " and ".join(names) if names else GENERIC_NAMED
+    verb = "are" if len(names) > 1 else "is"
+    return (
+        "Vigil can't recognise individuals. It treats someone as household only if they came "
+        f"out of the house's own doors or checked in on the app, so {who} {verb} exempt only "
+        "in those cases."
+    )
+
+
+# -- role phrasing (code decides; the model's answer is only a hint) -----------------------
+
+
+def _words(text: str) -> frozenset[str]:
+    return frozenset(text.split())
+
+
+_CUE_RE = re.compile(
+    r"\b(?:except(?:\s+for)?|unless(?:\s+(?:it['\u2019]?s|it\s+is|they['\u2019]?re|they\s+are))?|"
+    r"other\s+than|but(?:\s+not)?|apart\s+from|excluding|besides|not)\b",
+    re.I,
 )
 IDENTITY_RE = re.compile(
     r"\b(except|unless|other than|but not|apart from|excluding|besides|strangers?|"
-    r"unknown (?:people|persons?)|people i don'?t know|not (?:me|us|my \w+))\b",
+    r"not (?:the |any )?(?:household|family|us|me|guests?|visitors?|deliver(?:y|ies)|couriers?)|"
+    r"people (?:i|we) don['\u2019]?t know)\b",
     re.I,
 )
+_EXTERNAL_ONLY_RE = re.compile(
+    r"\bstrangers?\b|\bpeople\s+(?:i|we)\s+don['\u2019]?t\s+know\b|\boutsiders?\b|"
+    r"\b(?:not|except(?:\s+for)?|excluding|but\s+not|other\s+than|apart\s+from|besides)\s+"
+    r"(?:the\s+|any\s+|our\s+|my\s+)?(?:guests?|visitors?|deliver(?:y|ies)|couriers?|"
+    r"delivery\s+(?:people|drivers?))\b",
+    re.I,
+)
+_HOUSEHOLD_WORDS = _words(
+    "family families household households us me we myself ourselves residents resident "
+    "wife husband partner kids kid children child son sons daughter daughters mum mom mother "
+    "dad father parents parent grandma grandpa grandmother grandfather sister brother "
+    "siblings roommate roommates housemates flatmates"
+)
+_HOUSEHOLD_PHRASES = re.compile(
+    r"^(?:one\s+of\s+us|people\s+who\s+live\s+here|anyone\s+who\s+lives\s+here|"
+    r"those\s+who\s+live\s+here)\b",
+    re.I,
+)
+_SPECIFIC_PEOPLE = _words(
+    "neighbour neighbor neighbours neighbors friend friends gardener cleaner nanny "
+    "babysitter landlord plumber"
+)
+_SKIP = _words("for the my our your a an of")
+_FUNCTION_WORDS = _words(
+    "at after before in on when if during between from to while until by around near "
+    "anyone someone anybody somebody people person everyone everybody they them it its "
+    "it's is are was be do does did please and or but just only also then there here "
+    "this that these those night nights day days daytime weekends weekend weekdays weekday "
+    "morning mornings evening evenings afternoon today tonight tomorrow dark midnight noon "
+    "alert tell let notify warn note make send open opens touch touches enter enters go "
+    "goes come comes cross crosses stay stays leave leaves take takes"
+)
+_CALENDAR = _words(
+    "monday tuesday wednesday thursday friday saturday sunday mondays tuesdays wednesdays "
+    "thursdays fridays saturdays sundays january february march april may june july august "
+    "september october november december am pm i"
+)
+_WORD_RE = re.compile(r"[A-Za-z][A-Za-z'’-]*|,")
+
+
+class RolePhrasing(BaseModel):
+    """What code reads from the owner's words: a role scope, never an identity (FR-021)."""
+
+    applies_to: AppliesTo | None = None
+    names: list[str] = Field(default_factory=list)
+    """Named people or specific non-household people. Used only for the notice."""
+    named: bool = False
+
+
+def _after_cue(text: str) -> list[tuple[str, int]]:
+    """Token runs that follow each exception cue: [(token, cue_index)]."""
+    out: list[tuple[str, int]] = []
+    for i, m in enumerate(_CUE_RE.finditer(text)):
+        rest = text[m.end() :]
+        if _HOUSEHOLD_PHRASES.match(rest.strip()):
+            out.append(("us", i))
+            continue
+        for tok in _WORD_RE.findall(rest)[:8]:
+            out.append((tok, i))
+    return out
+
+
+def classify_role_phrasing(text: str, model_named: bool = False) -> RolePhrasing:
+    """Map identity phrases to a role scope (FR-021); names go only to the notice.
+
+    "anyone except family / us / the household" -> ``non_household``; "strangers only",
+    "not guests or deliveries" -> ``external_visitor_only`` (it wins when both appear, since
+    it excludes more); "except Sam" -> ``non_household`` with Sam named for the notice. A
+    lower-case unknown word after a cue (a transcript's "except sam") counts as a name only
+    when the model also flagged a named person.
+    """
+    if _EXTERNAL_ONLY_RE.search(text):
+        return RolePhrasing(applies_to="external_visitor_only")
+    household = False
+    names: list[str] = []
+    runs: dict[int, list[str]] = {}
+    for tok, cue in _after_cue(text):
+        runs.setdefault(cue, []).append(tok)
+    for tokens in runs.values():
+        expect_name = True
+        owner = "the"
+        for tok in tokens:
+            low = tok.lower().strip("'’")
+            if tok == ",":
+                break
+            if low in _SKIP and expect_name:
+                owner = "your" if low in ("my", "our") else owner
+                continue
+            if low in ("and", "or"):
+                expect_name = True
+                continue
+            if not expect_name:
+                break
+            if low in _HOUSEHOLD_WORDS:
+                household = True
+                expect_name = False
+            elif low in _SPECIFIC_PEOPLE:
+                names.append(f"{owner} {low}")
+                expect_name = False
+            elif low in _FUNCTION_WORDS or low in _CALENDAR:
+                break
+            elif tok[0].isupper() or model_named:
+                names.append(tok[0].upper() + tok[1:])
+                expect_name = False
+            else:
+                break
+    names = list(dict.fromkeys(names))
+    if names:
+        return RolePhrasing(applies_to="non_household", names=names, named=True)
+    if household:
+        return RolePhrasing(applies_to="non_household")
+    return RolePhrasing()
+
+
+# -- no compiled rule ever names a person (FR-021) ------------------------------------------
+
+PERSON_WORDS = frozenset(
+    _HOUSEHOLD_WORDS
+    | _SPECIFIC_PEOPLE
+    | _words(
+        "owner owners guest guests visitor visitors courier couriers delivery deliveries "
+        "stranger strangers neighbour neighbor mum's mom's dad's"
+    )
+)
+"""Relationship and role words a rule's name must not carry (cf. validator check 7)."""
+
+
+def rule_person_terms(
+    rule: Rule, catalog: TargetCatalog | None = None, names: list[str] | tuple[str, ...] = ()
+) -> list[str]:
+    """Tokens in a rule's name (or id) that could name a person; [] when the rule is clean.
+
+    Flags in the name: any of ``names``; relationship or role words; and capitalised tokens
+    after the first that are not words of a catalog label or id, a weekday, a month, or
+    AM/PM. The id (a code-made hash unless the caller gives one) is checked for ``names``.
+    """
+    allowed: set[str] = set(_CALENDAR)
+    for e in catalog.entries if catalog else ():
+        allowed.update(w.lower() for w in _WORD_RE.findall(f"{e.label} {e.id}".replace("_", " ")))
+    named = {n.lower() for name in names for n in _WORD_RE.findall(name)} - _SKIP
+    bad: list[str] = []
+    tokens = [t for t in _WORD_RE.findall(rule.name.replace("_", " ")) if t != ","]
+    for i, tok in enumerate(tokens):
+        low = tok.lower()
+        base = low.removesuffix("'s").removesuffix("’s")
+        if (
+            low in named
+            or base in named
+            or low in PERSON_WORDS
+            or base in PERSON_WORDS
+            or (i > 0 and tok[0].isupper() and low not in allowed and base not in allowed)
+        ):
+            bad.append(tok)
+    id_tokens = {t.lower() for t in _WORD_RE.findall(rule.id.replace("_", " "))}
+    bad += [n for n in sorted(named) if n in id_tokens]
+    return list(dict.fromkeys(bad))
+
+
+_TRIGGER_NOUN = {
+    "touch": "touch",
+    "cross": "crossing",
+    "enter": "entry",
+    "dwell": "stay",
+    "removed": "removal",
+}
+
+
+def _code_rule_name(entry: CatalogEntry, rule: Rule) -> str:
+    """A neutral name built by code from the target and trigger, used when the model's name
+    could name a person."""
+    label = entry.label[:1].upper() + entry.label[1:]
+    name = f"{label} {_TRIGGER_NOUN.get(rule.trigger, rule.trigger)}"
+    if rule.active is not None:
+        name += f", {rule.active.start}-{rule.active.end}"
+    return name[:80]
+
+
+# -- catalog -----------------------------------------------------------------------------
+
 _TRIGGER_KINDS: dict[str, set[str]] = {
     "touch": {"protected_object"},
     "cross": {"line"},
@@ -288,11 +522,18 @@ class TargetCatalog(BaseModel):
 
 
 class RuleDraft(BaseModel):
-    """A compiled rule awaiting the owner's confirmation, with what Vigil cannot do."""
+    """A compiled rule awaiting the owner's confirmation (FR-021, spec 9.6).
+
+    ``basis_note`` is what the draft card says about whom the rule applies to; ``notice`` is
+    the named-person notice; ``limits`` lists what Vigil cannot do (the notice included).
+    """
 
     rule: Rule
+    basis_note: str
     limits: list[str]
+    notice: str | None = None
     identity_exception: bool = False
+    """True when the owner's words scoped the rule by role (any applies_to but anyone)."""
     source_text: str
     call_id: str | None = None
 
@@ -319,7 +560,8 @@ def rule_schema(catalog: TargetCatalog) -> dict:
         "active_start": {"type": ["string", "null"]},
         "active_end": {"type": ["string", "null"]},
         "severity": {"type": "string", "enum": list(get_args(Severity))},
-        "identity_exception": {"type": "boolean"},
+        "applies_to": {"type": "string", "enum": list(get_args(AppliesTo))},
+        "named_person": {"type": "boolean"},
     }
     return {
         "type": "object",
@@ -345,6 +587,19 @@ def build_rule_request(text: str, catalog: TargetCatalog) -> dict:
 
 def _rule_id(text: str) -> str:
     return "r_" + hashlib.sha256(text.strip().lower().encode("utf-8")).hexdigest()[:8]
+
+
+def resolve_applies_to(text: str, model_value: Any, model_named: bool) -> RolePhrasing:
+    """Code's reading of the words wins; the model's role is used only when the words hold an
+    exception cue that code could not map, and never without one."""
+    role = classify_role_phrasing(text, model_named=model_named)
+    if role.applies_to is not None:
+        return role
+    if model_named and _CUE_RE.search(text):
+        return RolePhrasing(applies_to="non_household", named=True)
+    if model_value in get_args(AppliesTo) and model_value != "anyone" and IDENTITY_RE.search(text):
+        return RolePhrasing(applies_to=model_value)
+    return RolePhrasing(applies_to="anyone")
 
 
 def parse_rule(
@@ -381,6 +636,8 @@ def parse_rule(
     if not isinstance(target_id, str) or target_id not in options:
         return ask(f"target {target_id!r} is not an existing object, zone, line or watch")
     entry = catalog.get(target_id)
+    role = resolve_applies_to(text, data.get("applies_to"), bool(data.get("named_person") is True))
+    applies_to = role.applies_to or "anyone"
     active = None
     start, end = data.get("active_start"), data.get("active_end")
     try:
@@ -394,16 +651,22 @@ def parse_rule(
             min_dwell_s=data.get("min_dwell_s"),
             active=active,
             severity=data.get("severity") or "needs_attention",
-            applies_to="anyone",
+            applies_to=applies_to,
             state="draft",
         )
     except (ValidationError, ValueError) as exc:
         return ask(f"the rule was incomplete: {type(exc).__name__}", question)
 
-    identity = bool(data.get("identity_exception")) or bool(IDENTITY_RE.search(text))
+    # No compiled rule ever names a person: replace a risky name, then verify.
+    if rule_person_terms(rule, catalog, role.names):
+        rule = rule.model_copy(update={"name": _code_rule_name(entry, rule)})
+    if rule_person_terms(rule, catalog, role.names):
+        return ask("the rule's name would identify a person; fill the form instead")
+
+    notice = named_person_notice(role.names) if role.named else None
     limits = [BASE_LIMIT]
-    if identity:
-        limits.append(IDENTITY_LIMIT)
+    if notice:
+        limits.append(notice)
     if entry.kind not in _TRIGGER_KINDS.get(rule.trigger, {entry.kind}):
         limits.append(
             f"'{rule.trigger}' is normally used with a "
@@ -411,7 +674,13 @@ def parse_rule(
             f"{entry.kind.replace('_', ' ')}; check the target before confirming."
         )
     return RuleDraft(
-        rule=rule, limits=limits, identity_exception=identity, source_text=text, call_id=call_id
+        rule=rule,
+        basis_note=BASIS_NOTES[applies_to],
+        limits=limits,
+        notice=notice,
+        identity_exception=applies_to != "anyone",
+        source_text=text,
+        call_id=call_id,
     )
 
 

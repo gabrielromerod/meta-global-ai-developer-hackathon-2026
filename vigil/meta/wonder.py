@@ -8,6 +8,10 @@ A malformed or off-schema answer raises :class:`StoryFormatError`, which carries
 ``ValidationFailure(check="schema")`` items so the story stage treats it like any
 validator failure: one retry with the reasons, then the template (FR-015).
 
+Roles (FR-044, validator check 7): the ledger carries each subject chain's ``actor_role``
+and ``role_basis``, and code adds the one ``role_phrase`` the story may use for it (or
+``null``), so Wonder never has to infer a role. The ledger holds no person names.
+
 Spec 5.14 notes that strict-schema support on ``muse-wonder-1.0`` is unverified, so
 ``schema_mode="json"`` sends no ``text.format`` and puts the schema in the instructions
 instead; the parser tolerates a Markdown code fence in that mode.
@@ -24,7 +28,7 @@ from pydantic import ValidationError
 from vigil.meta.budget import WONDER
 from vigil.meta.client import extract_text, load_json_text
 from vigil.meta.prompts import load_prompt
-from vigil.models import StoryDraft, ValidationFailure, VisitLedger
+from vigil.models import StoryDraft, Subject, ValidationFailure, VisitLedger
 
 SchemaMode = Literal["json_schema", "json"]
 
@@ -33,6 +37,28 @@ _MEDIA_TYPES = frozenset({"input_image", "input_video", "input_audio", "input_fi
 _MEDIA_KEYS = frozenset({"file_id", "image_url", "video_url", "audio_url", "file_url"})
 _MEDIA_TEXT = re.compile(r"\bfile-[A-Za-z0-9]|data:(?:image|video|audio)/", re.I)
 _SENTENCE_KEYS = frozenset({"text", "event_ids"})
+
+ROLE_PHRASES: dict[str, str] = {
+    "someone who came out of the house": "household_insider",
+    "an expected visitor": "expected_visitor",
+    "someone who arrived from outside the property": "external_visitor",
+}
+"""Allowed role phrase -> the role it asserts (spec 9.4 check 7; config/role_phrases.json)."""
+
+
+def role_phrase_for(subject: Subject) -> str | None:
+    """The one role phrase a story may use for this subject, or None (check 7).
+
+    ``household_insider`` gets its phrase only with an ``egress:<zone>`` basis; check-in and
+    group subjects get none, and ``unknown`` has no phrase.
+    """
+    role, basis = subject.actor_role, subject.role_basis
+    if role == "household_insider" and not basis.startswith("egress:"):
+        return None
+    for phrase, phrase_role in ROLE_PHRASES.items():
+        if phrase_role == role:
+            return phrase
+    return None
 
 
 class PixelLeakError(ValueError):
@@ -82,8 +108,16 @@ def _clock_fn(ledger: VisitLedger):
 
 
 def ledger_payload(ledger: VisitLedger) -> dict:
-    """The ledger as Wonder sees it: JSON only, file references removed, clock times added."""
+    """The ledger as Wonder sees it: JSON only, file references removed, clock times and
+    each subject's allowed ``role_phrase`` added."""
     data = _strip(ledger.model_dump(mode="json", by_alias=True, exclude_none=True))
+    data["subjects"] = [
+        {
+            **_strip(subj.model_dump(mode="json", exclude_none=True)),
+            "role_phrase": role_phrase_for(subj),
+        }
+        for subj in ledger.subjects
+    ]
     clock = _clock_fn(ledger)
     if clock is not None:
         for key in ("events", "gaps"):

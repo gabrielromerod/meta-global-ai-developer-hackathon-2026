@@ -10,7 +10,7 @@ import random
 import sqlite3
 import struct
 import wave
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 import httpx
@@ -309,6 +309,70 @@ def test_window_end_disables_paid_calls(tmp_path: Path, router):
     with pytest.raises(PaidCallsDisabled):
         env.client().responses("muse-spark-1.3", BODY, purpose="triage")
     assert route.call_count == 0
+
+
+def _paid_env(tmp_path: Path, **kw) -> Env:
+    kw.setdefault("credit_window_end", datetime(2026, 11, 1, tzinfo=UTC))
+    kw.setdefault("allow_paid", True)
+    return Env(tmp_path, **kw)
+
+
+def test_ledger_rows_are_tagged_credit_inside_the_window(env: Env, router):
+    router.post("/responses").mock(return_value=httpx.Response(200, json=OK_BODY))
+    env.client().responses("muse-spark-1.3", BODY, purpose="triage")
+    [row] = env.ledger.rows()
+    assert row.funding == "credit"
+    assert row.feature == "triage"
+    assert env.guard.spent_total == pytest.approx(SPARK_COST)
+    assert env.guard.spent_paid == 0.0
+
+
+def test_ledger_rows_are_tagged_paid_after_the_window(tmp_path: Path, router):
+    env = _paid_env(tmp_path)
+    router.post("/responses").mock(return_value=httpx.Response(200, json=OK_BODY))
+    env.client().responses("muse-spark-1.3", BODY, purpose="triage")
+    [row] = env.ledger.rows()
+    assert row.funding == "paid"
+    assert env.guard.spent_paid == pytest.approx(SPARK_COST)
+    assert env.guard.spent_total == 0.0  # paid spend never counts toward the $140
+
+
+def test_judging_cap_refuses_before_sending(tmp_path: Path, router):
+    env = _paid_env(tmp_path)
+    route = router.post("/responses").mock(return_value=httpx.Response(200, json=OK_BODY))
+    env.guard.record(24.9999, "sandbox", when=NOW - timedelta(days=1))
+    with pytest.raises(BudgetExceeded) as exc:
+        env.client().responses("muse-spark-1.3", BODY, purpose="triage")
+    assert exc.value.cap == "judging"
+    assert route.call_count == 0
+    [row] = env.ledger.rows()
+    assert not row.ok
+    assert row.funding == "paid"
+    assert "judging cap" in (row.error or "")
+
+
+def test_judging_end_refuses_before_sending(tmp_path: Path, router):
+    env = _paid_env(tmp_path, judging_end=NOW - timedelta(minutes=1))
+    route = router.post("/responses").mock(return_value=httpx.Response(200, json=OK_BODY))
+    with pytest.raises(BudgetExceeded) as exc:
+        env.client().responses("muse-spark-1.3", BODY, purpose="triage")
+    assert exc.value.cap == "judging_end"
+    assert route.call_count == 0
+
+
+def test_sqlite_ledger_keeps_funding_and_reseeds_the_guard(tmp_path: Path, router):
+    env = _paid_env(tmp_path)
+    router.post("/responses").mock(return_value=httpx.Response(200, json=OK_BODY))
+    db = tmp_path / "vigil.db"
+    env.client(ledger=CallLedger(db)).responses("muse-spark-1.3", BODY, purpose="triage")
+    reopened = CallLedger(db)
+    [row] = reopened.rows()
+    assert row.funding == "paid"
+    assert row.feature == "triage"
+    guard = BudgetGuard(env.settings, clock=lambda: NOW, spent=reopened.rows())
+    assert guard.spent_paid == pytest.approx(SPARK_COST)
+    assert guard.spent_total == 0.0
+    reopened.close()
 
 
 # --- secrets (NFR-014) -------------------------------------------------------------------

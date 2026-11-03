@@ -9,7 +9,9 @@ from pathlib import Path
 import pytest
 
 from vigil.meta.spark import (
+    BASIS_NOTES,
     CARRY_ITEMS,
+    HOUSEHOLD_BASIS,
     AppearanceSchemaError,
     ClarifyingQuestion,
     RuleDraft,
@@ -18,12 +20,15 @@ from vigil.meta.spark import (
     appearance_schema,
     build_appearance_request,
     build_rule_request,
+    classify_role_phrasing,
     compile_rule,
+    named_person_notice,
     parse_appearance,
+    rule_person_terms,
     rule_schema,
     triage,
 )
-from vigil.models import COLORS, VisitSummary
+from vigil.models import COLORS, ActiveWindow, Rule, RuleTarget, VisitSummary
 
 # Whole name tokens (split on "_"), so "package" does not match "age".
 SENSITIVE = re.compile(
@@ -211,7 +216,8 @@ def _rule_answer(**kw) -> dict:
         "active_start": "22:00",
         "active_end": "06:00",
         "severity": "needs_attention",
-        "identity_exception": False,
+        "applies_to": "anyone",
+        "named_person": False,
     }
     return {**base, **kw}
 
@@ -233,23 +239,57 @@ def test_rule_schema_targets_limited_to_catalog(catalog):
     assert body["text"]["format"]["schema"] == schema
 
 
+SPEC_BASIS = (
+    "Vigil treats someone as household only when it saw them come out of the house's own "
+    "doors, or when a household member checked in on the app just before coming into view. "
+    "Household members arriving from the street without checking in, and anyone Vigil loses "
+    "track of, count as non-household and can trigger this rule. Vigil places people by where "
+    "they came from; it does not identify anyone and creates no face, voice or body templates."
+)
+SAM_NOTICE = (
+    "Vigil can't recognise individuals. It treats someone as household only if they came out "
+    "of the house's own doors or checked in on the app, so Sam is exempt only in those cases."
+)
+
+
 def test_compile_rule_reference_phrasing(catalog, rule_r7):
-    fake = FakeClient(_rule_answer())
-    draft = compile_rule(fake, "tell me if anyone opens this gate after 10 PM", catalog)
+    """UC-03: "anyone except family ... after dark" compiles to r7 (spec 9.4, Nov 2)."""
+    fake = FakeClient(
+        _rule_answer(
+            name="Side gate after dark",
+            active_start="17:30",
+            active_end="06:00",
+            applies_to="non_household",
+        )
+    )
+    text = "Tell me if anyone except family opens this gate after dark"
+    draft = compile_rule(fake, text, catalog)
     assert isinstance(draft, RuleDraft)
     rule = draft.rule
     assert rule.target == rule_r7.target
     assert rule.trigger == rule_r7.trigger
     assert rule.active == rule_r7.active
-    assert rule.severity == "needs_attention"
+    assert rule.severity == rule_r7.severity
+    assert rule.applies_to == rule_r7.applies_to == "non_household"
     assert rule.state == "draft"
-    assert rule.applies_to == "anyone"
-    assert any("never identifies" in note for note in draft.limits)
+    assert draft.basis_note == "Applies to everyone except household members. " + SPEC_BASIS
+    assert draft.notice is None
+    assert draft.identity_exception is True
+    assert any("does not identify anyone" in note for note in draft.limits)
     assert fake.calls[0]["model"] == "muse-spark-1.3"
     assert fake.calls[0]["feature"] == "rule_compile"
 
 
-def test_compile_rule_identity_exception_becomes_anyone(catalog):
+def test_household_basis_is_the_spec_text():
+    assert HOUSEHOLD_BASIS == SPEC_BASIS
+    assert set(BASIS_NOTES) == {"anyone", "non_household", "external_visitor_only"}
+    for note in BASIS_NOTES.values():
+        assert note.endswith("creates no face, voice or body templates.")
+
+
+def test_compile_rule_family_exception_becomes_non_household(catalog):
+    """Revised Nov 2 (FR-021): "except my family" maps to the non_household role, no longer
+    to anyone. Replaces test_compile_rule_identity_exception_becomes_anyone."""
     text = "alert me if anyone except my family goes in the backyard at night"
     fake = FakeClient(
         _rule_answer(
@@ -258,14 +298,216 @@ def test_compile_rule_identity_exception_becomes_anyone(catalog):
             trigger="enter",
             active_start="23:00",
             active_end="05:00",
+            applies_to="anyone",  # the model got it wrong; code maps the phrase
         )
     )
     draft = compile_rule(fake, text, catalog)
     assert isinstance(draft, RuleDraft)
-    assert draft.rule.applies_to == "anyone"
+    assert draft.rule.applies_to == "non_household"
     assert draft.identity_exception is True
-    assert any("family" in n.lower() or "everyone" in n.lower() for n in draft.limits)
+    assert draft.basis_note.startswith("Applies to everyone except household members.")
     assert draft.rule.target.kind == "zone"
+
+
+# --- the FR-021 reference set: 10 phrasings, 4 of them role phrasings ----------------------
+
+REFERENCE_SET = [
+    # (text, model answer overrides, expected rule fields, expected notice name or None)
+    (
+        "Tell me if anyone except family opens this gate after dark",
+        {"active_start": "17:30", "active_end": "06:00", "applies_to": "non_household"},
+        {"target": "po_side_gate", "trigger": "touch", "applies_to": "non_household"},
+        None,
+    ),
+    (
+        "Alert me when anyone except us touches the side gate at night",
+        {"active_start": "17:30", "active_end": "06:00", "applies_to": "anyone"},
+        {"target": "po_side_gate", "trigger": "touch", "applies_to": "non_household"},
+        None,
+    ),
+    (
+        "Let me know if anyone who is not the household goes into the backyard",
+        {"target_id": "backyard", "trigger": "enter", "active_start": None, "active_end": None,
+         "applies_to": "non_household"},
+        {"target": "backyard", "trigger": "enter", "applies_to": "non_household"},
+        None,
+    ),
+    (
+        "Strangers only: tell me if they touch the side gate after 10 PM",
+        {"applies_to": "non_household"},  # the model got it wrong; code maps the phrase
+        {"target": "po_side_gate", "trigger": "touch", "applies_to": "external_visitor_only"},
+        None,
+    ),
+    (
+        "Alert me if anyone touches the side gate, but not guests or deliveries",
+        {"active_start": None, "active_end": None, "applies_to": "external_visitor_only"},
+        {"target": "po_side_gate", "trigger": "touch", "applies_to": "external_visitor_only"},
+        None,
+    ),
+    (
+        "Tell me if anyone except Sam enters the backyard",
+        {"name": "Backyard except Sam", "target_id": "backyard", "trigger": "enter",
+         "active_start": None, "active_end": None, "applies_to": "non_household",
+         "named_person": True},
+        {"target": "backyard", "trigger": "enter", "applies_to": "non_household"},
+        "Sam",
+    ),
+    (
+        "Tell me if anyone opens the side gate",
+        {"active_start": None, "active_end": None},
+        {"target": "po_side_gate", "trigger": "touch", "applies_to": "anyone"},
+        None,
+    ),
+    (
+        "Make a note when someone crosses the side gate line",
+        {"target_id": "side_gate", "trigger": "cross", "active_start": None,
+         "active_end": None, "severity": "noteworthy"},
+        {"target": "side_gate", "trigger": "cross", "applies_to": "anyone",
+         "severity": "noteworthy"},
+        None,
+    ),
+    (
+        "Alert me if anyone stays on the porch for more than 2 minutes",
+        {"target_id": "porch", "trigger": "dwell", "min_dwell_s": 120, "active_start": None,
+         "active_end": None},
+        {"target": "porch", "trigger": "dwell", "applies_to": "anyone", "min_dwell_s": 120},
+        None,
+    ),
+    (
+        "Tell me if anyone goes in the backyard between 11 PM and 5 AM",
+        {"target_id": "backyard", "trigger": "enter", "active_start": "23:00",
+         "active_end": "05:00"},
+        {"target": "backyard", "trigger": "enter", "applies_to": "anyone",
+         "active": ("23:00", "05:00")},
+        None,
+    ),
+]  # fmt: skip
+
+
+@pytest.mark.parametrize(("text", "answer", "expected", "named"), REFERENCE_SET)
+def test_reference_set_compiles_to_expected_json(catalog, text, answer, expected, named):
+    draft = compile_rule(FakeClient(_rule_answer(**answer)), text, catalog)
+    assert isinstance(draft, RuleDraft), getattr(draft, "reason", draft)
+    rule = draft.rule
+    assert rule.target.id == expected["target"]
+    assert rule.trigger == expected["trigger"]
+    assert rule.applies_to == expected["applies_to"]
+    assert rule.severity == expected.get("severity", "needs_attention")
+    if "min_dwell_s" in expected:
+        assert rule.min_dwell_s == expected["min_dwell_s"]
+    if "active" in expected:
+        assert rule.active == ActiveWindow(start=expected["active"][0], end=expected["active"][1])
+    assert draft.basis_note == BASIS_NOTES[rule.applies_to]
+    if named:
+        assert draft.notice == named_person_notice([named])
+        assert draft.notice in draft.limits
+    else:
+        assert draft.notice is None
+    # No compiled rule ever names a person (FR-021).
+    assert rule_person_terms(rule, catalog) == []
+    if named:
+        assert named.lower() not in rule.model_dump_json().lower()
+
+
+def test_reference_set_has_at_least_three_role_phrasings():
+    roles = [e for _, _, e, _ in REFERENCE_SET if e["applies_to"] != "anyone"]
+    assert len(REFERENCE_SET) == 10
+    assert len(roles) >= 3
+    assert {e["applies_to"] for e in roles} == {"non_household", "external_visitor_only"}
+
+
+def test_named_person_notice_is_the_spec_text():
+    assert named_person_notice(["Sam"]) == SAM_NOTICE
+
+
+@pytest.mark.parametrize(
+    ("text", "applies_to", "names"),
+    [
+        ("anyone except family", "non_household", []),
+        ("anyone except for my family", "non_household", []),
+        ("anyone except us", "non_household", []),
+        ("anyone except me", "non_household", []),
+        ("anyone who is not the household", "non_household", []),
+        ("unless it's one of us", "non_household", []),
+        ("strangers only", "external_visitor_only", []),
+        ("only strangers", "external_visitor_only", []),
+        ("not guests or deliveries", "external_visitor_only", []),
+        ("anyone except family, and not deliveries", "external_visitor_only", []),
+        ("anyone except Sam", "non_household", ["Sam"]),
+        ("unless it's Sam or Alex", "non_household", ["Sam", "Alex"]),
+        ("anyone except the neighbour", "non_household", ["the neighbour"]),
+        ("anyone at the gate after 10 PM", None, []),
+        ("anyone except at night on Monday", None, []),
+    ],
+)
+def test_classify_role_phrasing(text, applies_to, names):
+    result = classify_role_phrasing(text)
+    assert result.applies_to == applies_to
+    assert result.names == names
+
+
+def test_lowercase_transcript_name_needs_the_model_flag():
+    assert classify_role_phrasing("anyone except sam").applies_to is None
+    flagged = classify_role_phrasing("anyone except sam", model_named=True)
+    assert flagged.applies_to == "non_household"
+    assert flagged.names == ["Sam"]
+
+
+def test_named_person_never_reaches_the_rule_even_from_a_transcript(catalog):
+    fake = FakeClient(
+        _rule_answer(
+            name="sam can open the gate",
+            applies_to="non_household",
+            named_person=True,
+            active_start=None,
+            active_end=None,
+        )
+    )
+    draft = compile_rule(fake, "tell me if anyone except sam opens the side gate", catalog)
+    assert isinstance(draft, RuleDraft)
+    assert draft.rule.applies_to == "non_household"
+    assert "sam" not in draft.rule.model_dump_json().lower()
+    assert draft.notice is not None
+    assert "Sam is exempt only in those cases" in draft.notice
+
+
+def test_model_flag_without_a_name_in_text_gets_a_generic_notice(catalog):
+    fake = FakeClient(_rule_answer(applies_to="non_household", named_person=True))
+    draft = compile_rule(fake, "tell me if anyone but my friend opens the side gate", catalog)
+    assert isinstance(draft, RuleDraft)
+    assert draft.rule.applies_to == "non_household"
+    assert draft.notice is not None
+    assert draft.notice.startswith("Vigil can't recognise individuals.")
+
+
+def test_model_role_without_any_exception_phrase_is_ignored(catalog):
+    fake = FakeClient(_rule_answer(applies_to="external_visitor_only"))
+    draft = compile_rule(fake, "tell me if anyone opens the side gate after 10 PM", catalog)
+    assert isinstance(draft, RuleDraft)
+    assert draft.rule.applies_to == "anyone"
+    assert draft.identity_exception is False
+
+
+@pytest.mark.parametrize(
+    ("name", "bad"),
+    [
+        ("Side gate except Sam", ["Sam"]),
+        ("Side gate, not family", ["family"]),
+        ("Mum's gate", ["Mum's"]),
+        ("Side gate after dark", []),
+        ("Side gate on Monday after 10 PM", []),
+        ("porch (Front entrance) dwell", []),
+    ],
+)
+def test_rule_person_terms(catalog, name, bad):
+    rule = Rule(
+        id="r1",
+        name=name,
+        target=RuleTarget(kind="protected_object", id="po_side_gate"),
+        trigger="touch",
+        severity="needs_attention",
+    )
+    assert rule_person_terms(rule, catalog, names=["Sam"]) == bad
 
 
 def test_compile_rule_unresolvable_target_asks_a_question(catalog):
@@ -360,3 +602,14 @@ def test_prompts_forbid_identity_and_judgement_and_require_citations(name):
         assert word in text, f"{name} must explicitly forbid {word!r}"
     assert "never" in text
     assert "cite" in text
+
+
+def test_rule_person_terms_ignores_hash_ids_but_catches_named_ids(catalog):
+    base = dict(
+        name="Side gate touch",
+        target=RuleTarget(kind="protected_object", id="po_side_gate"),
+        trigger="touch",
+        severity="needs_attention",
+    )
+    assert rule_person_terms(Rule(id="r_dad1f0e2", **base), catalog) == []
+    assert rule_person_terms(Rule(id="r_sam_gate", **base), catalog, names=["Sam"]) == ["sam"]

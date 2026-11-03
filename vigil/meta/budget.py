@@ -62,7 +62,7 @@ SPARK_VIDEO_CLIP_TOKENS = 30_000
 
 FEATURE_CAPS: dict[str, float] = {
     "smoke": 1.0,  # smoke tests, T-03
-    "perception_demo": 5.0,  # SAM video for the 3 demo scenarios (11.4: 21,600 frames = $4.32)
+    "perception_demo": 8.0,  # SAM video, 5 demo scenarios (11.4: 36,000 frames = $7.20)
     "perception_all": 22.0,  # SAM video for all 12 scenarios, only if H-02 fails
     "appearance": 16.0,  # Spark appearance notes
     "story": 4.0,  # Wonder stories

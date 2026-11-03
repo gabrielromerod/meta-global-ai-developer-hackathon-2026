@@ -83,7 +83,7 @@ def test_estimate_refuses_unknown_and_contributor_models():
 
 
 def test_feature_caps_encode_spec_11_4():
-    assert FEATURE_CAPS["perception_demo"] == 5.0  # 11.4 volume: 21,600 frames = $4.32
+    assert FEATURE_CAPS["perception_demo"] == 8.0  # 11.4 volume: 36,000 frames = $7.20
     assert FEATURE_CAPS["perception_all"] == 22.0
     assert FEATURE_CAPS["appearance"] == 16.0
     assert FEATURE_CAPS["story"] == 4.0

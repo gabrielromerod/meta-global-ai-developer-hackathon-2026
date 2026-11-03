@@ -876,7 +876,7 @@ PLAN_11_4: list[tuple[str, str, str, int, dict[str, Any]]] = [
     ("smoke", "Spark clip", "muse-spark-1.3", 3, {"in_tokens": "clip", "out_tokens": 500}),
     ("smoke", "Wonder story", "muse-wonder-1.0", 3, {"in_tokens": 6000, "out_tokens": 800}),
     ("smoke", "Voice 10 s", "muse-voice-transcribe-1.0", 3, {"audio_s": 10}),
-    ("perception_demo", "3 scenarios x 4 cams x 3 phrases x 60 s x 10 fps", "sam-3.1", 36,
+    ("perception_demo", "5 scenarios x 4 cams x 3 phrases x 60 s x 10 fps", "sam-3.1", 60,
      {"frames": 600}),
     ("appearance", "~390 clips (290 benchmark + 100 dev), 500 out assumed", "muse-spark-1.3",
      390, {"in_tokens": "clip", "out_tokens": 500}),

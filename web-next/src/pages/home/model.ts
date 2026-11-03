@@ -1,11 +1,11 @@
 import type {UIState, VisitRow, VisitEvent} from '../../contracts';
 
-export function attentionVisits(state: UIState): VisitRow[] {
+export function attentionVisits(state: UIState, limit = 5): VisitRow[] {
   const visits = new Map(state.visits.map(visit => [visit.id, visit]));
   return [...new Set(state.attention_ids)]
     .map(id => visits.get(id))
     .filter((visit): visit is VisitRow => visit !== undefined)
-    .slice(0, 5);
+    .slice(0, limit);
 }
 
 export function summaryText(summary: UIState['summary']): string {

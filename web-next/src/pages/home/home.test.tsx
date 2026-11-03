@@ -55,6 +55,11 @@ describe('Home cards and selection (FR-017, FR-044)', () => {
 });
 
 describe('Attention center', () => {
+  it('keeps all ranked visits available on the full Attention page beyond the five-card Home preview', () => {
+    const visits = Array.from({length:7},(_,index)=>({...state.visits[0],id:`visit-${index}`,title:`Recorded visit ${index}`}));
+    render(<AttentionPage state={{...state,visits,attention_ids:visits.map(visit=>visit.id)}} {...callbacks()}/>);
+    expect(screen.getAllByRole('button',{name:/Open visit Recorded visit/})).toHaveLength(7);
+  });
   it('keeps supplied gaps visible and opens a visit from the ranked list', async () => {
     const props = callbacks();
     render(<AttentionPage state={state} {...props} />);

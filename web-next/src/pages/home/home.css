@@ -33,7 +33,8 @@
 .home-touch-top,.home-touch-title{display:flex;align-items:center;justify-content:space-between;gap:var(--v-space-1);width:var(--v-full)}
 .home-touch-top time{font-size:var(--v-text-xs);color:var(--v-muted);white-space:nowrap}
 .home-touch-title{font-size:var(--v-text-sm);line-height:var(--v-leading)}
-.home-touch-title strong{font-weight:var(--v-weight-medium);text-transform:capitalize}
+.home-touch-title strong{font-weight:var(--v-weight-medium)}
+.home-touch-title strong::first-letter{text-transform:uppercase}
 .home-touch-title svg{width:var(--v-icon-sm);height:var(--v-icon-sm);color:var(--v-muted);flex-shrink:var(--v-zero)}
 .home-touch-role,.home-touch-reason{font-size:var(--v-text-xs);line-height:var(--v-leading);overflow-wrap:anywhere}
 .home-touch-role{color:var(--v-muted)}

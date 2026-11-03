@@ -14,7 +14,7 @@ const filters = [
 
 export function AttentionPage({state,onOpenVisit,visitSlot}: PageProps) {
   const [filter,setFilter] = useState<Verdict|'all'>('all');
-  const ranked = attentionVisits(state);
+  const ranked = attentionVisits(state, state.attention_ids.length);
   const shown = ranked.filter(visit => filter === 'all' || visit.verdict === filter);
   return <div className="attention-page">
     <header className="attention-intro"><div><h2>Attention center</h2>

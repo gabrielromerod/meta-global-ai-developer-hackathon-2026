@@ -14,3 +14,8 @@ will include the implementation commit SHA after verification.
 ## Fixed
 
 <!-- QA-ID — fix description — commit SHA -->
+
+## Owner decisions
+
+- FONT-001: Inter selected by the owner in chat on Nov 3 after the three-font study. Default retained; decision commit recorded in docs/decisions.md.
+- CAMERA-001: No Reolink Home Hub. The three battery cameras use imported clips.

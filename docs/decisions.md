@@ -16,3 +16,5 @@
 - 2026-11-03: Public massing uses no textures or identifying geometry; actual Duo geometry requires per-half ground homographies and declared uncertainty, never a guessed full-panorama pinhole.
 - 2026-11-03: Replace only drei Html's projected label bridge with a normal React overlay because React19 browser tests reproduced nested-root synchronous-unmount console errors; keep R3F and drei orbit/line primitives.
 - 2026-11-03: Event capture retains separate observed media parts across missing intervals; a partial Wi-Fi clip remains evidence and missing time is explicitly unresolved.
+
+- 2026-11-03: Owner selected Inter after reviewing the Inter, Manrope and DM Sans Home screenshots. Inter remains the final default.

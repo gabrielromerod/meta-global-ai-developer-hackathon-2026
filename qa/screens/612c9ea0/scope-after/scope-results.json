@@ -1,0 +1,185 @@
+{
+  "sha": "612c9ea0",
+  "phase": "after",
+  "started": "2026-11-03T13:41:48.270Z",
+  "cases": [
+    {
+      "width": 1280,
+      "height": 600,
+      "theme": "dark",
+      "checks": [
+        {
+          "label": "Zone scope test",
+          "line": "Zones: Side alley",
+          "passed": true,
+          "actual": "Zone scope test\nScheduled\n\nNov 2, 4:00 PM (UTC-08:00) – Nov 2, 4:45 PM (UTC-08:00)\n\nZones: Side alley\n\nCancel window"
+        },
+        {
+          "label": "Camera scope test",
+          "line": "Cameras: Doorbell",
+          "passed": true,
+          "actual": "Camera scope test\nScheduled\n\nNov 2, 4:00 PM (UTC-08:00) – Nov 2, 4:45 PM (UTC-08:00)\n\nCameras: Doorbell\n\nCancel window"
+        },
+        {
+          "label": "Combined scope test",
+          "line": "Cameras: Doorbell",
+          "passed": true,
+          "actual": "Combined scope test\nScheduled\n\nNov 2, 4:00 PM (UTC-08:00) – Nov 2, 4:45 PM (UTC-08:00)\n\nCameras: Doorbell\n\nZones: Side alley\n\nCancel window"
+        },
+        {
+          "label": "Combined scope test",
+          "line": "Zones: Side alley",
+          "passed": true,
+          "actual": "Combined scope test\nScheduled\n\nNov 2, 4:00 PM (UTC-08:00) – Nov 2, 4:45 PM (UTC-08:00)\n\nCameras: Doorbell\n\nZones: Side alley\n\nCancel window"
+        },
+        {
+          "label": "Unrestricted scope test",
+          "line": "All configured cameras",
+          "passed": true,
+          "actual": "Unrestricted scope test\nScheduled\n\nNov 2, 4:00 PM (UTC-08:00) – Nov 2, 4:45 PM (UTC-08:00)\n\nAll configured cameras\n\nCancel window"
+        }
+      ],
+      "geometry": {
+        "width": 1280,
+        "height": 600,
+        "docWidth": 1280,
+        "docHeight": 600,
+        "scrollY": 0
+      }
+    },
+    {
+      "width": 1280,
+      "height": 600,
+      "theme": "light",
+      "checks": [
+        {
+          "label": "Zone scope test",
+          "line": "Zones: Side alley",
+          "passed": true,
+          "actual": "Zone scope test\nScheduled\n\nNov 2, 4:00 PM (UTC-08:00) – Nov 2, 4:45 PM (UTC-08:00)\n\nZones: Side alley\n\nCancel window"
+        },
+        {
+          "label": "Camera scope test",
+          "line": "Cameras: Doorbell",
+          "passed": true,
+          "actual": "Camera scope test\nScheduled\n\nNov 2, 4:00 PM (UTC-08:00) – Nov 2, 4:45 PM (UTC-08:00)\n\nCameras: Doorbell\n\nCancel window"
+        },
+        {
+          "label": "Combined scope test",
+          "line": "Cameras: Doorbell",
+          "passed": true,
+          "actual": "Combined scope test\nScheduled\n\nNov 2, 4:00 PM (UTC-08:00) – Nov 2, 4:45 PM (UTC-08:00)\n\nCameras: Doorbell\n\nZones: Side alley\n\nCancel window"
+        },
+        {
+          "label": "Combined scope test",
+          "line": "Zones: Side alley",
+          "passed": true,
+          "actual": "Combined scope test\nScheduled\n\nNov 2, 4:00 PM (UTC-08:00) – Nov 2, 4:45 PM (UTC-08:00)\n\nCameras: Doorbell\n\nZones: Side alley\n\nCancel window"
+        },
+        {
+          "label": "Unrestricted scope test",
+          "line": "All configured cameras",
+          "passed": true,
+          "actual": "Unrestricted scope test\nScheduled\n\nNov 2, 4:00 PM (UTC-08:00) – Nov 2, 4:45 PM (UTC-08:00)\n\nAll configured cameras\n\nCancel window"
+        }
+      ],
+      "geometry": {
+        "width": 1280,
+        "height": 600,
+        "docWidth": 1280,
+        "docHeight": 600,
+        "scrollY": 0
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "dark",
+      "checks": [
+        {
+          "label": "Zone scope test",
+          "line": "Zones: Side alley",
+          "passed": true,
+          "actual": "Zone scope test\nScheduled\n\nNov 2, 4:00 PM (UTC-08:00) – Nov 2, 4:45 PM (UTC-08:00)\n\nZones: Side alley\n\nCancel window"
+        },
+        {
+          "label": "Camera scope test",
+          "line": "Cameras: Doorbell",
+          "passed": true,
+          "actual": "Camera scope test\nScheduled\n\nNov 2, 4:00 PM (UTC-08:00) – Nov 2, 4:45 PM (UTC-08:00)\n\nCameras: Doorbell\n\nCancel window"
+        },
+        {
+          "label": "Combined scope test",
+          "line": "Cameras: Doorbell",
+          "passed": true,
+          "actual": "Combined scope test\nScheduled\n\nNov 2, 4:00 PM (UTC-08:00) – Nov 2, 4:45 PM (UTC-08:00)\n\nCameras: Doorbell\n\nZones: Side alley\n\nCancel window"
+        },
+        {
+          "label": "Combined scope test",
+          "line": "Zones: Side alley",
+          "passed": true,
+          "actual": "Combined scope test\nScheduled\n\nNov 2, 4:00 PM (UTC-08:00) – Nov 2, 4:45 PM (UTC-08:00)\n\nCameras: Doorbell\n\nZones: Side alley\n\nCancel window"
+        },
+        {
+          "label": "Unrestricted scope test",
+          "line": "All configured cameras",
+          "passed": true,
+          "actual": "Unrestricted scope test\nScheduled\n\nNov 2, 4:00 PM (UTC-08:00) – Nov 2, 4:45 PM (UTC-08:00)\n\nAll configured cameras\n\nCancel window"
+        }
+      ],
+      "geometry": {
+        "width": 390,
+        "height": 844,
+        "docWidth": 390,
+        "docHeight": 2142,
+        "scrollY": 1298
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "light",
+      "checks": [
+        {
+          "label": "Zone scope test",
+          "line": "Zones: Side alley",
+          "passed": true,
+          "actual": "Zone scope test\nScheduled\n\nNov 2, 4:00 PM (UTC-08:00) – Nov 2, 4:45 PM (UTC-08:00)\n\nZones: Side alley\n\nCancel window"
+        },
+        {
+          "label": "Camera scope test",
+          "line": "Cameras: Doorbell",
+          "passed": true,
+          "actual": "Camera scope test\nScheduled\n\nNov 2, 4:00 PM (UTC-08:00) – Nov 2, 4:45 PM (UTC-08:00)\n\nCameras: Doorbell\n\nCancel window"
+        },
+        {
+          "label": "Combined scope test",
+          "line": "Cameras: Doorbell",
+          "passed": true,
+          "actual": "Combined scope test\nScheduled\n\nNov 2, 4:00 PM (UTC-08:00) – Nov 2, 4:45 PM (UTC-08:00)\n\nCameras: Doorbell\n\nZones: Side alley\n\nCancel window"
+        },
+        {
+          "label": "Combined scope test",
+          "line": "Zones: Side alley",
+          "passed": true,
+          "actual": "Combined scope test\nScheduled\n\nNov 2, 4:00 PM (UTC-08:00) – Nov 2, 4:45 PM (UTC-08:00)\n\nCameras: Doorbell\n\nZones: Side alley\n\nCancel window"
+        },
+        {
+          "label": "Unrestricted scope test",
+          "line": "All configured cameras",
+          "passed": true,
+          "actual": "Unrestricted scope test\nScheduled\n\nNov 2, 4:00 PM (UTC-08:00) – Nov 2, 4:45 PM (UTC-08:00)\n\nAll configured cameras\n\nCancel window"
+        }
+      ],
+      "geometry": {
+        "width": 390,
+        "height": 844,
+        "docWidth": 390,
+        "docHeight": 2142,
+        "scrollY": 1298
+      }
+    }
+  ],
+  "errors": [],
+  "finished": "2026-11-03T13:41:51.049Z"
+}

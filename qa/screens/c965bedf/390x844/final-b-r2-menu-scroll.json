@@ -1,0 +1,21 @@
+{
+  "evidence": {
+    "kind": "fixture"
+  },
+  "menus": [
+    {
+      "theme": "dark",
+      "top": 28,
+      "height": 487,
+      "total": 515,
+      "gutter": "stable"
+    },
+    {
+      "theme": "light",
+      "top": 28,
+      "height": 487,
+      "total": 515,
+      "gutter": "stable"
+    }
+  ]
+}

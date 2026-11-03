@@ -96,6 +96,36 @@
       <div id="rule-result" class="result-box" hidden aria-live="polite"></div>
     </section>
 
+    <section id="owner-panel" class="panel owner-panel" aria-label="Owner controls" data-testid="owner-panel">
+      <div class="panel-head"><h2>Owner controls</h2>
+        <button id="owner-token-open" type="button" class="btn small">Owner token</button></div>
+      <p id="owner-disabled" class="card-meta">Owner-only on the home box</p>
+      <fieldset id="owner-controls">
+        <button id="owner-checkin" type="button" class="btn">I'm outside</button>
+        <span id="owner-countdown" aria-live="polite"></span>
+        <p class="card-meta">For the next person arriving within 120 s. Single use; never retroactive.</p>
+        <h3>Expected Windows</h3>
+        <form id="owner-window-form" class="owner-form">
+          <label>Starts <input id="owner-window-start" type="datetime-local" required></label>
+          <label>Ends <input id="owner-window-end" type="datetime-local" required></label>
+          <label>Label <input id="owner-window-label" maxlength="60" placeholder="Deliveries"></label>
+          <label>Camera <select id="owner-window-camera"></select></label>
+          <label>Zones (optional, comma separated) <input id="owner-window-zones"></label>
+          <button id="owner-window-create" type="submit" class="btn">Create Expected Window</button>
+        </form>
+      </fieldset>
+      <p id="owner-status" role="status"></p>
+      <ul id="owner-windows" aria-label="Expected Windows"></ul>
+    </section>
+    <dialog id="owner-token-sheet" aria-labelledby="owner-token-title">
+      <form id="owner-token-form">
+        <h2 id="owner-token-title">Owner token</h2>
+        <p>Kept in this tab only. Enter the token configured on your home box.</p>
+        <label>Token <input id="owner-token-input" type="password" autocomplete="off" spellcheck="false"></label>
+        <div class="btn-row"><button id="owner-token-save" class="btn" type="submit">Save for this tab</button>
+          <button id="owner-token-close" class="btn" type="button">Close</button></div>
+      </form>
+    </dialog>
     <section id="benchmark" class="panel benchmark" hidden aria-label="Benchmark"></section>
   </main>
 

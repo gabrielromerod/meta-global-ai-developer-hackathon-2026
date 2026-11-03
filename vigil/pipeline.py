@@ -761,6 +761,43 @@ def _recorded_sam(sam_dir: Path, windows: list[Window]) -> dict[str, dict[str, A
     return out
 
 
+def _owner_records(settings, expected, checkins):
+    """Merge persistent owner state; a cancellation or consumed check-in wins over a file."""
+    path = getattr(settings, "db_path", None)
+    if settings.mode != "edge" or path is None or not Path(path).exists():
+        return expected, checkins
+    from vigil.store import db
+
+    conn = db.connect(path)
+    try:
+        windows = {w.id: w for w in expected}
+        windows.update({w.id: w for w in db.expected_windows(conn)})
+        taps = {c.id: c for c in checkins}
+        taps.update({c.id: c for c in db.checkins(conn)})
+        return list(windows.values()), list(taps.values())
+    finally:
+        conn.close()
+
+
+def _save_owner_bindings(settings, result):
+    path = getattr(settings, "db_path", None)
+    if settings.mode != "edge" or path is None or not Path(path).exists():
+        return
+    from vigil.store import db
+
+    conn = db.connect(path)
+    try:
+        with conn:
+            for tap in result.get("checkins", []):
+                if tap.get("bound_subject"):
+                    conn.execute(
+                        "UPDATE checkins SET bound_subject=? WHERE id=? AND bound_subject IS NULL",
+                        (tap["bound_subject"], tap["id"]),
+                    )
+    finally:
+        conn.close()
+
+
 def process_session(
     session: str,
     *,
@@ -851,6 +888,7 @@ def process_session(
     watches = [Watch.model_validate(w) for w in meta.get("watches", [])]
     expected = [ExpectedWindow.model_validate(w) for w in meta.get("expected_windows", [])]
     checkins = [CheckIn.model_validate(c) for c in meta.get("checkins", [])]
+    expected, checkins = _owner_records(settings, expected, checkins)
     result_dir = data / "results" / session
     if cloud or client is not None:
         from vigil.cloud import run_cloud
@@ -889,6 +927,7 @@ def process_session(
         result["db_path"] = str(result_dir / "result.sqlite")
         store_result(result["db_path"], result, cfg=cfg, rules=rules, protected=protected)
         write_visits_json(result, result_dir / "visits.json")
+        _save_owner_bindings(settings, result)
         return result
     result = run_scenario(
         {"scenario": session, "windows": windows, "sam_outputs": recorded},
@@ -901,4 +940,5 @@ def process_session(
         checkins=checkins,
     )
     write_visits_json(result, data / "results" / session / "visits.json")
+    _save_owner_bindings(settings, result)
     return result

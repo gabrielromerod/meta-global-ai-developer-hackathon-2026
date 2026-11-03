@@ -183,7 +183,7 @@ export function renderVisitDetail(section, visit, handlers) {
   const watches = (visit.watches || []).filter((w) => w.notice).map((w) =>
     `<div class="watch-notice" data-testid="watch-notice">◉ ${esc(w.notice)}` +
     ` <span class="card-meta">expires ${esc((w.expires_at || "").slice(0, 16).replace("T", " "))}</span>` +
-    ` <button type="button" class="btn small" data-undo="${esc(w.id)}">Undo</button></div>`).join("");
+    `</div>`).join("");
   const rules = visit.rule_hits.length
     ? `<p class="rules-fired">${visit.rule_hits.map((h) => `<b>Rule ${esc(h.rule_id)} fired</b>: ${esc(h.rule_name)}`).join("; ")}</p>`
     : "";
@@ -227,11 +227,6 @@ export function renderVisitDetail(section, visit, handlers) {
   });
   section.querySelectorAll("[data-feedback]").forEach((el) => {
     el.addEventListener("click", () => handlers.onFeedback && handlers.onFeedback(el.dataset.feedback, el));
-  });
-  section.querySelectorAll("[data-undo]").forEach((el) => {
-    el.addEventListener("click", () => {
-      el.closest(".watch-notice").innerHTML = "Watch undone for this session (the sandbox does not save changes).";
-    });
   });
 }
 

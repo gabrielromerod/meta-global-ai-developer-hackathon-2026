@@ -7,6 +7,7 @@ import {
 import { SyncedPlayer } from "./player.js";
 import { createTwin } from "./twin/viewer.js";
 import { MAX_SECONDS, Recorder } from "./voice.js";
+import { setupOwner } from "./owner.js";
 
 const $ = (sel) => document.querySelector(sel);
 const state = {
@@ -451,6 +452,9 @@ async function boot() {
   state.scenarios = scenarios;
   state.twin = twin;
   state.presets = presets;
+  await setupOwner(state.health, twin.cameras || []).catch(err => {
+    $("#owner-status").textContent = err.message;
+  });
   setSessionStart(scenarios.session_start);
   renderSummary(scenarios);
   renderTabs();

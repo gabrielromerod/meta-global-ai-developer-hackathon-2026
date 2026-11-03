@@ -250,6 +250,16 @@ table.telemetry td.num, table.telemetry th.num { text-align: right; font-variant
 .window-chip { display: inline-block; margin-top: 4px; font-size: 12.5px; padding: 1px 7px; border-radius: 6px;
   border: 1px dashed var(--accent); color: var(--accent); }
 
+.owner-panel { grid-column: 1 / -1; }
+.owner-panel fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+.owner-form { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; }
+.owner-form label { display: grid; gap: 4px; max-width: 100%; }
+.owner-form input, .owner-form select, #owner-token-input { padding: 7px; max-width: 100%; }
+.owner-window { margin: 7px 0; overflow-wrap: anywhere; }
+#owner-token-sheet { color: var(--ink); background: var(--panel); border: 1px solid var(--line);
+  border-radius: var(--radius); max-width: min(480px, 94vw); }
+#owner-token-sheet::backdrop { background: #0009; }
+
 @media (max-width: 900px) {
   .layout, .layout.no-detail {
     grid-template-columns: minmax(0, 1fr);

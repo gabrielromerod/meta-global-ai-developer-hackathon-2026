@@ -27,6 +27,12 @@ proposal over generated media and proves the next window requests that phrase on
 the story response. Earlier windows use their existing perception, with no retroactive
 watch request. Accepted watches remain in the final SQLite snapshot and visit notice.
 
+FR-029 owner UI (FIXTURE): `tests/e2e/test_owner_ui.py` covers tab-only token storage,
+check-in countdown, Expected Window create/list/cancel and persistence, and disabled
+sandbox controls with B′'s recorded example. `tests/integration/test_owner_session.py`
+covers persisted owner windows, cancellation precedence and single-use check-in binding
+in the session processor. The misleading page-only watch Undo control was removed.
+
 Source: [spec section 1](../spec/vigil-spec.md#1-functional-requirements), including [Added for the real-world environment](../spec/vigil-spec.md#added-for-the-real-world-environment-nov-2) and [Added for compute and budget](../spec/vigil-spec.md#added-for-compute-and-budget-nov-2), as revised by the [Nov 2 change set](../spec/changes/2026-11-02-business-corrections.md). The full requirement text and acceptance criteria are in the spec; this page is the tracking checklist.
 
 **Status as of Mon Nov 2, 2026 (docs sync after the Nov 2 spec revision).** Evidence, run on the working tree:

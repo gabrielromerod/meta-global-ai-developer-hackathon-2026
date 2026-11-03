@@ -18,6 +18,8 @@ import { useReducedMotion } from "framer-motion";
 import {
   DoubleSide,
   PerspectiveCamera,
+  Spherical,
+  MathUtils,
   Shape,
   Vector2,
   Vector3,
@@ -748,8 +750,25 @@ function BoundedControls({
     null,
   );
   useEffect(() => {
-    const pose = fitPose(
+    const c = controls.current;
+    // Consume pending input before a code-driven transition. The public update
+    // with damping disabled clears the library's retained pan/rotation deltas.
+    if (c) {
+      const damping = c.enableDamping;
+      c.enableDamping = false;
+      c.update();
+      c.enableDamping = damping;
+    }
+    const legal = clampOrbit(
       presetPose(preset.split(":")[0], ground),
+      ground,
+      palette.minDistance,
+      palette.maxDistance,
+      palette.clearance,
+      { min: palette.minPolar, max: palette.maxPolar },
+    );
+    const pose = fitPose(
+      legal,
       ground,
       height,
       framingFov(palette.fov, size.width / size.height),
@@ -775,13 +794,66 @@ function BoundedControls({
         reduced || palette.duration === 0
           ? 1
           : 1 - Math.exp((-delta * 6) / palette.duration);
-      camera.position.lerp(transition.current.position, alpha);
-      c.target.lerp(transition.current.target, alpha);
+      const currentOrbit = new Spherical().setFromVector3(
+        camera.position.clone().sub(c.target),
+      );
+      const goalOrbit = new Spherical().setFromVector3(
+        transition.current.position.clone().sub(transition.current.target),
+      );
+      const thetaDelta =
+        MathUtils.euclideanModulo(
+          goalOrbit.theta - currentOrbit.theta + Math.PI,
+          Math.PI * 2,
+        ) - Math.PI;
+      const interpolated = new Spherical(
+        MathUtils.lerp(currentOrbit.radius, goalOrbit.radius, alpha),
+        MathUtils.lerp(currentOrbit.phi, goalOrbit.phi, alpha),
+        currentOrbit.theta + thetaDelta * alpha,
+      );
+      const target = c.target.clone().lerp(transition.current.target, alpha);
+      const candidate = clampOrbit(
+        {
+          position: target
+            .clone()
+            .add(new Vector3().setFromSpherical(interpolated))
+            .toArray() as Vec3,
+          target: target.toArray() as Vec3,
+        },
+        ground,
+        palette.minDistance,
+        palette.maxDistance,
+        palette.clearance,
+        { min: palette.minPolar, max: palette.maxPolar },
+      );
+      // Fit each legal orientation while it moves, so an otherwise valid pair
+      // of endpoints cannot cross an under-framed intermediate camera pose.
+      const framed = fitPose(
+        candidate,
+        ground,
+        height,
+        framingFov(palette.fov, size.width / size.height),
+        size.width / size.height,
+      );
+      camera.position.fromArray(framed.position);
+      c.target.fromArray(framed.target);
       if (camera.position.distanceTo(transition.current.position) < 0.01) {
         camera.position.copy(transition.current.position);
         c.target.copy(transition.current.target);
         transition.current = null;
       }
+    }
+    const outsideGround =
+      c.target.x < ground.min[0] ||
+      c.target.x > ground.max[0] ||
+      c.target.z < ground.min[1] ||
+      c.target.z > ground.max[1] ||
+      c.target.y !== 0;
+    if (outsideGround && c.enableDamping) {
+      // Clear the remaining outward inertia at the boundary, then constrain
+      // the result of that final library update rather than an earlier pose.
+      c.enableDamping = false;
+      c.update();
+      c.enableDamping = true;
     }
     const pose = clampOrbit(
       {
@@ -792,13 +864,17 @@ function BoundedControls({
       palette.minDistance,
       palette.maxDistance,
       palette.clearance,
+      { min: palette.minPolar, max: palette.maxPolar },
     );
     camera.position.fromArray(pose.position);
     c.target.fromArray(pose.target);
-    c.update();
+    // drei already updated OrbitControls at frame priority -1. No controls
+    // update may follow this final constraint before the renderer consumes it.
+    camera.lookAt(c.target);
+    camera.updateMatrixWorld();
     onState(
-      pose.position,
-      pose.target,
+      camera.position.toArray() as Vec3,
+      c.target.toArray() as Vec3,
       camera instanceof PerspectiveCamera ? camera.fov : 0,
     );
   });

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { PerspectiveCamera, Vector3 } from "three";
+import { PerspectiveCamera, Vector3, Spherical } from "three";
+import { OrbitControls } from "three-stdlib";
 import fixture from "../fixtures/twin.json";
 import {
   parseTwin,
@@ -14,6 +15,43 @@ import {
 } from "./geometry";
 
 describe("FR-040 generic house geometry and bounded orbit", () => {
+  it("constrains the top preset before fitting so real OrbitControls does not change its orientation", () => {
+    const ground = {
+        min: [-9, -10] as [number, number],
+        max: [9, 14] as [number, number],
+      },
+      aspect = 0.665,
+      fov = framingFov(42, aspect);
+    const legal = clampOrbit(presetPose("top", ground), ground, 8, 55, 0.6, {
+      min: 0.08,
+      max: 1.48,
+    });
+    const angle = new Spherical().setFromVector3(
+      new Vector3(...legal.position).sub(new Vector3(...legal.target)),
+    ).phi;
+    expect(angle).toBeGreaterThanOrEqual(0.08 - 1e-10);
+    const fitted = fitPose(legal, ground, 3, fov, aspect),
+      camera = new PerspectiveCamera(fov, aspect, 0.1, 300),
+      controls = new OrbitControls(camera);
+    controls.minPolarAngle = 0.08;
+    controls.maxPolarAngle = 1.48;
+    controls.minDistance = 8;
+    controls.maxDistance = 55;
+    camera.position.fromArray(fitted.position);
+    controls.target.fromArray(fitted.target);
+    controls.update();
+    expect(
+      camera.position.distanceTo(new Vector3(...fitted.position)),
+    ).toBeLessThan(1e-8);
+    camera.updateMatrixWorld();
+    for (const x of [-9, 9])
+      for (const y of [0, 3])
+        for (const z of [-10, 14]) {
+          const projected = new Vector3(x, y, z).project(camera);
+          expect(Math.abs(projected.x)).toBeLessThan(1);
+          expect(Math.abs(projected.y)).toBeLessThan(1);
+        }
+  });
   it("preserves horizontal framing on a narrow phone canvas without changing world coordinates", () => {
     const fov = framingFov(42, 0.58);
     const horizontal =

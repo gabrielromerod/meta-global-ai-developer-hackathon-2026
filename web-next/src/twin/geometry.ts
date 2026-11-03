@@ -1,4 +1,4 @@
-import { Vector3 } from "three";
+import { Spherical, Vector3 } from "three";
 /** Public geometry is generic massing. Coordinates remain the supplied house frame. */
 export type Vec2 = [number, number];
 export function framingFov(base: number, aspect: number): number {
@@ -250,17 +250,32 @@ export function clampOrbit(
   minDistance: number,
   maxDistance: number,
   clearance: number,
+  polar?: { min: number; max: number },
 ): OrbitPose {
   const target: Vec3 = [
     clamp(pose.target[0], ground.min[0], ground.max[0]),
     0,
     clamp(pose.target[2], ground.min[1], ground.max[1]),
   ];
-  const delta = pose.position.map((n, i) => n - pose.target[i]) as Vec3;
-  delta[1] = Math.max(clearance, delta[1]);
-  const distance = Math.hypot(...delta) || minDistance;
-  const scale = clamp(distance, minDistance, maxDistance) / distance;
-  const position = delta.map((n, i) => target[i] + n * scale) as Vec3;
+  const offset = new Vector3(...pose.position).sub(new Vector3(...pose.target));
+  const distance = clamp(
+    offset.length() || minDistance,
+    minDistance,
+    maxDistance,
+  );
+  const spherical = new Spherical().setFromVector3(offset);
+  spherical.radius = distance;
+  spherical.phi = clamp(
+    spherical.phi,
+    polar?.min ?? 0,
+    Math.min(
+      polar?.max ?? Math.PI / 2,
+      Math.acos(Math.min(1, clearance / distance)),
+    ),
+  );
+  const position = new Vector3(...target)
+    .add(offset.setFromSpherical(spherical))
+    .toArray() as Vec3;
   position[1] = Math.max(clearance, position[1]);
   return { position, target };
 }

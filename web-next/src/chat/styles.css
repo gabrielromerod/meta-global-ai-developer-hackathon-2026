@@ -6,7 +6,7 @@
 .v-chat-page button:disabled, .v-chat-popup button:disabled { cursor: not-allowed; opacity: var(--v-disabled-opacity); }
 .v-chat-page :focus-visible, .v-chat-popup :focus-visible, .v-chat-menu-item:focus-visible, .v-chat-control-wrap:focus-visible { outline: var(--v-focus-width) solid var(--v-accent); outline-offset: var(--v-focus-offset); }
 .v-chat-page h2, .v-chat-page h3, .v-chat-page p, .v-chat-popup h2, .v-chat-popup h3, .v-chat-popup p { margin: var(--v-zero); }
-.v-chat-workspace { display: grid; grid-template-columns: var(--v-chat-thread-list) minmax(var(--v-content-min),1fr); height: var(--v-full); min-height: var(--v-content-min); }
+.v-chat-workspace { display: grid; grid-template-columns: var(--v-chat-thread-list) minmax(var(--v-content-min),var(--v-grid-fr)); height: var(--v-full); min-height: var(--v-content-min); }
 .v-chat-thread-list { padding: var(--v-space-2); border-right: var(--v-line) solid var(--v-border); overflow: auto; scrollbar-gutter: stable; }
 .v-chat-tabs { display: flex; flex-direction: column; gap: var(--v-space-1); }
 .v-chat-thread-tab { display: flex; align-items: center; gap: var(--v-space-1); padding: var(--v-space-1); min-height: var(--v-target); color: var(--v-muted); background: var(--v-transparent); border: var(--v-line) solid var(--v-transparent); border-radius: var(--v-radius-md); text-align: left; transition: background var(--v-motion-fast) var(--v-ease), color var(--v-motion-fast) var(--v-ease); }

@@ -12,6 +12,9 @@ import './styles.css';
 export type ChatSurfaceProps = ChatProps;
 
 const narrowQuery='(max-width: 640px)';
+function visualNumber(name:string) {
+  return parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name))||0;
+}
 function useNarrowLayout() {
   return useSyncExternalStore(callback=>{
     const query=window.matchMedia?.(narrowQuery);
@@ -51,7 +54,7 @@ function Message({message,onOpenVisit,onOpenClip}: {message:ChatMessage;onOpenVi
 function HintButton({label,explanation,disabled,onClick,children}: {label:string;explanation:string;disabled:boolean;onClick?:()=>void;children:React.ReactNode}) {
   return <Tooltip.Root><Tooltip.Trigger asChild><span className="v-chat-control-wrap" tabIndex={disabled?0:undefined} aria-label={disabled?`${label}: ${explanation}`:undefined}>
     <button type="button" className="v-chat-icon-button" aria-label={label} title={explanation} disabled={disabled} onClick={onClick}>{children}</button>
-  </span></Tooltip.Trigger><Tooltip.Portal><Tooltip.Content className="v-chat-tooltip" sideOffset={8}>{explanation}<Tooltip.Arrow className="v-chat-tooltip-arrow"/></Tooltip.Content></Tooltip.Portal></Tooltip.Root>;
+  </span></Tooltip.Trigger><Tooltip.Portal><Tooltip.Content className="v-chat-tooltip" sideOffset={visualNumber('--v-space-1')}>{explanation}<Tooltip.Arrow className="v-chat-tooltip-arrow"/></Tooltip.Content></Tooltip.Portal></Tooltip.Root>;
 }
 
 function ThreadView({thread,props,draft,onDraftChange}: {thread:Thread;props:ChatSurfaceProps;draft:string;onDraftChange:(text:string)=>void}) {
@@ -97,7 +100,7 @@ function ThreadView({thread,props,draft,onDraftChange}: {thread:Thread;props:Cha
       {!canSend&&<p className="v-chat-capability">{thread.kind==='assistant'?'Ask your home is unavailable for this session.':'Local household messaging is unavailable for this session.'}</p>}
       <label className="v-chat-visually-hidden" htmlFor={fieldId}>Message</label>
       <div className="v-chat-input-row"><textarea id={fieldId} value={draft} onChange={event=>onDraftChange(event.target.value)} onKeyDown={onKeyDown} rows={2} disabled={!canSend||sending} maxLength={4000} placeholder={thread.kind==='assistant'?'Ask about your home':'Write a local message'} aria-describedby={`${fieldId}-help`}/><button type="submit" className="v-chat-send" aria-label="Send message" disabled={!canSend||sending||!draft.trim()}><Send aria-hidden="true"/></button></div>
-      <div className="v-chat-composer-tools"><div className="v-chat-attachments"><DropdownMenu.Root><DropdownMenu.Trigger asChild><button type="button" className="v-chat-icon-button" aria-label="Share options"><Plus aria-hidden="true"/><ChevronDown aria-hidden="true"/></button></DropdownMenu.Trigger><DropdownMenu.Portal><DropdownMenu.Content className="v-chat-menu" side="top" align="start" sideOffset={8}><DropdownMenu.Label className="v-chat-menu-label">Share evidence</DropdownMenu.Label><DropdownMenu.Item className="v-chat-menu-item" disabled={!props.onShareClip} onSelect={()=>props.onShareClip?.(thread.id)}><FileVideo aria-hidden="true"/><span>Share a clip{!props.onShareClip&&<small>Clip sharing unavailable</small>}</span></DropdownMenu.Item><DropdownMenu.Item className="v-chat-menu-item" disabled={!snapshot} onSelect={()=>props.onSnapshot?.()}><Camera aria-hidden="true"/><span>Take snapshot{!snapshot&&<small>Unavailable for this session</small>}</span></DropdownMenu.Item><DropdownMenu.Item className="v-chat-menu-item" disabled={!record} onSelect={()=>props.onRecord?.()}><Video aria-hidden="true"/><span>Record clip{!record&&<small>Unavailable for this session</small>}</span></DropdownMenu.Item></DropdownMenu.Content></DropdownMenu.Portal></DropdownMenu.Root>
+      <div className="v-chat-composer-tools"><div className="v-chat-attachments"><DropdownMenu.Root><DropdownMenu.Trigger asChild><button type="button" className="v-chat-icon-button" aria-label="Share options"><Plus aria-hidden="true"/><ChevronDown aria-hidden="true"/></button></DropdownMenu.Trigger><DropdownMenu.Portal><DropdownMenu.Content className="v-chat-menu" side="top" align="start" sideOffset={visualNumber('--v-space-1')}><DropdownMenu.Label className="v-chat-menu-label">Share evidence</DropdownMenu.Label><DropdownMenu.Item className="v-chat-menu-item" disabled={!props.onShareClip} onSelect={()=>props.onShareClip?.(thread.id)}><FileVideo aria-hidden="true"/><span>Share a clip{!props.onShareClip&&<small>Clip sharing unavailable</small>}</span></DropdownMenu.Item><DropdownMenu.Item className="v-chat-menu-item" disabled={!snapshot} onSelect={()=>props.onSnapshot?.()}><Camera aria-hidden="true"/><span>Take snapshot{!snapshot&&<small>Unavailable for this session</small>}</span></DropdownMenu.Item><DropdownMenu.Item className="v-chat-menu-item" disabled={!record} onSelect={()=>props.onRecord?.()}><Video aria-hidden="true"/><span>Record clip{!record&&<small>Unavailable for this session</small>}</span></DropdownMenu.Item></DropdownMenu.Content></DropdownMenu.Portal></DropdownMenu.Root>
       <HintButton label="Take snapshot" explanation={snapshot?'Capture the selected camera frame':'Snapshots are unavailable for this session'} disabled={!snapshot} onClick={props.onSnapshot}><Camera aria-hidden="true"/></HintButton><HintButton label="Record clip" explanation={record?'Record the selected camera clip':'Recording is unavailable for this session'} disabled={!record} onClick={props.onRecord}><Video aria-hidden="true"/></HintButton></div><p id={`${fieldId}-help`}>Enter to send · Shift+Enter for a new line</p></div>
       {!snapshot&&!record&&<p className="v-chat-capability">Snapshots and recording are unavailable for this session.</p>}
     </form>
@@ -109,7 +112,7 @@ function ThreadWorkspace({props,popup=false}: {props:ChatSurfaceProps;popup?:boo
   const narrow=useNarrowLayout();
   const selected=props.threads.find(thread=>thread.id===props.selectedThreadId)??props.threads[0];
   if(!selected)return <div className="v-chat-empty"><MessageCircle aria-hidden="true"/><h2>No threads available</h2><p>Messages will appear here when a session is loaded.</p></div>;
-  return <Tooltip.Provider delayDuration={300}><Tabs.Root className={`v-chat-workspace${popup?' v-chat-workspace--popup':''}`} value={selected.id} onValueChange={props.onSelectThread} orientation={popup||narrow?'horizontal':'vertical'} activationMode="automatic">
+  return <Tooltip.Provider delayDuration={visualNumber('--v-motion')}><Tabs.Root className={`v-chat-workspace${popup?' v-chat-workspace--popup':''}`} value={selected.id} onValueChange={props.onSelectThread} orientation={popup||narrow?'horizontal':'vertical'} activationMode="automatic">
     <aside className="v-chat-thread-list"><Tabs.List className="v-chat-tabs" aria-label="Message threads">{props.threads.map(thread=><Tabs.Trigger key={thread.id} value={thread.id} className="v-chat-thread-tab" aria-label={thread.title}><span className="v-chat-avatar"><ThreadIcon thread={thread}/></span><span><strong>{thread.title}</strong><small>{thread.kind==='assistant'?'Visit evidence':'Local to this browser'}</small></span></Tabs.Trigger>)}</Tabs.List>{!popup&&<p className="v-chat-thread-note">{selected.note}</p>}</aside>
     <Tabs.Content className="v-chat-tab-panel" value={selected.id} key={selected.id}><ThreadView thread={selected} props={props} draft={drafts.values[selected.id]??''} onDraftChange={text=>drafts.change(selected.id,text)}/></Tabs.Content>
   </Tabs.Root></Tooltip.Provider>;
@@ -126,7 +129,7 @@ export function ChatPopup(props:ChatSurfaceProps) {
   if(props.open&&!wasOpen.current)focusBeforeOpen.current=document.activeElement instanceof HTMLElement?document.activeElement:null;
   wasOpen.current=Boolean(props.open);
   return <Dialog.Root open={Boolean(props.open)} modal={false} onOpenChange={open=>{if(!open)props.onClose?.();}}><Dialog.Portal><Dialog.Content asChild onCloseAutoFocus={event=>{event.preventDefault();focusBeforeOpen.current?.focus();}} onInteractOutside={event=>event.preventDefault()}>
-    <motion.section className="v-chat-popup" initial={reducedMotion?false:{opacity:0,y:'var(--v-space-2)'}} animate={{opacity:1,y:0}} transition={{duration:reducedMotion?0:parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--v-motion'))/1000||0}}>
+    <motion.section className="v-chat-popup" initial={reducedMotion?false:{opacity:0,y:'var(--v-space-2)'}} animate={{opacity:1,y:0}} transition={{duration:reducedMotion?0:visualNumber('--v-motion-seconds')}}>
       <header className="v-chat-popup-header"><div><Dialog.Title>Messages</Dialog.Title><Dialog.Description>Ask your home or leave a local household message.</Dialog.Description></div><Dialog.Close asChild><button type="button" className="v-chat-icon-button" aria-label="Close messages"><X aria-hidden="true"/></button></Dialog.Close></header>
       <ThreadWorkspace props={props} popup/>
     </motion.section>

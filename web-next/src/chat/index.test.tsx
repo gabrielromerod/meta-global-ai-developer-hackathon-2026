@@ -122,4 +122,10 @@ describe('Messages',()=>{
     expect(screen.getByRole('heading',{name:'No threads available'})).toBeVisible();
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
   });
+  it('blocks clip sharing when the selected thread cannot send messages',async()=>{
+    const user=userEvent.setup();
+    render(<MessagesPage {...base} selectedThreadId="household" capabilities={{...capabilities,household_messaging:'unavailable'}} onShareClip={()=>{throw new Error('Unavailable sharing must never run');}}/>);
+    await user.click(screen.getByRole('button',{name:'Share options'}));
+    expect(screen.getByRole('menuitem',{name:/Share a clip/})).toHaveAttribute('aria-disabled','true');
+  });
 });

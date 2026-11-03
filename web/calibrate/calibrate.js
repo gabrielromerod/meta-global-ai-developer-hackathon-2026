@@ -79,11 +79,29 @@ function pos(canvas, ev) {
   return [((ev.clientX - r.left) / r.width) * canvas.width, ((ev.clientY - r.top) / r.height) * canvas.height];
 }
 
+// Owner endpoints need VIGIL_OWNER_TOKEN (F2). It lives in this tab's sessionStorage only.
+const TOKEN_KEY = "vigil_owner_token";
+
+function ownerToken() {
+  const typed = $("#owner-token").value.trim();
+  try {
+    if (typed) sessionStorage.setItem(TOKEN_KEY, typed);
+  } catch (_) { /* storage blocked: the typed value still works for this page */ }
+  return typed;
+}
+
+function restoreToken() {
+  try {
+    $("#owner-token").value = sessionStorage.getItem(TOKEN_KEY) || "";
+  } catch (_) { /* storage blocked */ }
+}
+
 function ready() {
   $("#send").disabled = !(pixel && world);
 }
 
 async function boot() {
+  restoreToken();
   twin = await (await fetch("/api/twin")).json();
   $("#camera").innerHTML = (twin.cameras || []).map((c) => `<option value="${c.id}">${c.name}</option>`).join("");
   still.addEventListener("click", (ev) => {
@@ -109,8 +127,12 @@ async function boot() {
   });
   $("#send").addEventListener("click", async () => {
     const body = { camera_id: $("#camera").value, pixel, world };
+    const token = ownerToken();
+    if (!token) { $("#status").textContent = "Enter the owner token (VIGIL_OWNER_TOKEN) first."; return; }
     const res = await fetch("/api/spatial/pairs", {
-      method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body),
+      method: "POST",
+      headers: { "content-type": "application/json", authorization: `Bearer ${token}` },
+      body: JSON.stringify(body),
     });
     const out = await res.json();
     if (!res.ok) { $("#status").textContent = out.detail || `HTTP ${res.status}`; return; }

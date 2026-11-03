@@ -766,9 +766,22 @@ def test_compile_live_clarifying_question_is_shown() -> None:
 # --- expected windows (FR-029) --------------------------------------------------------------
 
 
+OWNER_TOKEN = "owner-api-test-token-5e1f"
+
+
+def owner_settings(tmp_path, **kw: Any) -> Settings:
+    """Edge settings with VIGIL_OWNER_TOKEN set: owner endpoints need it (F2)."""
+    return make_settings(mode="edge", db_path=tmp_path / "edge.db", owner_token=OWNER_TOKEN, **kw)
+
+
+def as_owner(client: TestClient) -> TestClient:
+    client.headers["authorization"] = f"Bearer {OWNER_TOKEN}"
+    return client
+
+
 def _edge(tmp_path, ip: str = "192.168.1.20", clock: FakeClock | None = None):
-    settings = make_settings(mode="edge", db_path=tmp_path / "edge.db")
-    return build(settings, clock=clock or FakeClock(), ip=ip)
+    app, client = build(owner_settings(tmp_path), clock=clock or FakeClock(), ip=ip)
+    return app, as_owner(client)
 
 
 def _iso(clock: FakeClock, offset_s: float) -> str:
@@ -905,8 +918,8 @@ def test_landmarks_live_with_backend(tmp_path) -> None:
             )
 
     backend = Landmarks()
-    settings = make_settings(mode="edge", db_path=tmp_path / "edge.db")
-    _, lan = build(settings, backend=backend, ip="10.0.0.8")
+    _, lan = build(owner_settings(tmp_path), backend=backend, ip="10.0.0.8")
+    as_owner(lan)
     body = lan.post("/api/spatial/landmarks", json={"camera_id": "side_left"}).json()
     assert backend.calls == ["landmarks"]
     assert body["blocked"] is False
@@ -916,9 +929,8 @@ def test_landmarks_live_with_backend(tmp_path) -> None:
 
 def test_landmarks_default_adapter_says_when_no_still_exists(tmp_path) -> None:
     """The real adapter reaches vigil.spatial.landmarks; the synthetic bundle has no stills."""
-    settings = make_settings(mode="edge", db_path=tmp_path / "edge.db")
-    app = create_app(settings, clock=FakeClock())
-    lan = client_for(app, "192.168.1.30")
+    app = create_app(owner_settings(tmp_path), clock=FakeClock())
+    lan = as_owner(client_for(app, "192.168.1.30"))
     body = lan.post("/api/spatial/landmarks", json={"camera_id": "side_left"}).json()
     assert body["proposals"] == []
     assert body["blocked"] is False

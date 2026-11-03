@@ -3,11 +3,14 @@
 `uvicorn vigil.api.app:create_app --factory` serves the API and the static web app over a
 demo bundle. In the hosted sandbox (VIGIL_MODE=sandbox) everything is cached by default,
 LAN-only routes and the calibration page are off, and live calls need a server-side key and
-pass the guards. The key is never sent to the browser (NFR-014).
+pass the guards. The key is never sent to the browser (NFR-014). Every request's Host header
+must be in VIGIL_TRUSTED_HOSTS (DNS rebinding, F2); the hosted sandbox adds its public host
+there. Owner endpoints also need VIGIL_OWNER_TOKEN (`vigil.api.owner.require_owner`).
 """
 
 from __future__ import annotations
 
+import ipaddress
 import time
 from collections.abc import AsyncIterator, Callable
 from contextlib import asynccontextmanager
@@ -51,6 +54,25 @@ def _load_config(path: Path) -> Config | None:
         return None
 
 
+def host_allowed(host_header: str, trusted: set[str]) -> bool:
+    """Host is in VIGIL_TRUSTED_HOSTS, or a private or loopback IP literal (a phone opening the
+    edge box by LAN IP, FR-034). Rebinding needs a hostname, so IP literals are safe to allow."""
+    host = host_header.strip().lower()
+    if host.startswith("["):
+        host = host[1 : host.find("]")] if "]" in host else host
+    elif host.count(":") == 1:
+        host = host.split(":", 1)[0]
+    if not host:
+        return False
+    if host in trusted:
+        return True
+    try:
+        ip = ipaddress.ip_address(host)
+    except ValueError:
+        return False
+    return ip.is_private or ip.is_loopback
+
+
 def create_app(
     settings: Settings | None = None,
     *,
@@ -90,7 +112,7 @@ def create_app(
     )
     app.state.live_hub = hub
     app.state.live_backend = live_backend or MetaLiveBackend(
-        settings, stills if stills.exists() else None
+        settings, stills if stills.exists() else None, ledger=app.state.guards.ledger
     )
     app.state.eval_path = REPO_ROOT / "eval" / "results.json"
 
@@ -106,6 +128,17 @@ def create_app(
         if path.startswith("/api/"):
             response.headers.setdefault("Cache-Control", "no-store")
         return response
+
+    # Refuse a foreign Host before any route runs (DNS rebinding to the LAN box). The public
+    # sandbox serves no owner or LAN route, so it answers on any hostname it is deployed under.
+    if settings.mode != "sandbox":
+        trusted = {h.lower() for h in settings.trusted_hosts}
+
+        @app.middleware("http")
+        async def trusted_host(request: Request, call_next: Any) -> Response:
+            if not host_allowed(request.headers.get("host", ""), trusted):
+                return JSONResponse({"detail": "Invalid host header"}, status_code=400)
+            return await call_next(request)
 
     app.include_router(router())
     app.include_router(voice_router())

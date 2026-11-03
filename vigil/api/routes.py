@@ -150,9 +150,26 @@ def _state(request: Request) -> tuple[Bundle, Guards, Runtime, Any]:
     return s.bundle, s.guards, s.runtime, s.live_backend
 
 
+def is_json(request: Request) -> bool:
+    ctype = request.headers.get("content-type", "").split(";")[0].strip().lower()
+    return ctype == "application/json"
+
+
+def require_json(request: Request) -> None:
+    """415 unless the body is declared application/json.
+
+    A cross-site form or `no-cors` fetch can only send text/plain, form or multipart bodies
+    without a preflight, so insisting on JSON keeps those simple requests out (F2).
+    """
+    if not is_json(request):
+        raise HTTPException(415, "send the body as application/json")
+
+
 async def _parse(request: Request, model: type[BaseModel]) -> Any:
     settings = request.app.state.settings
     body = await read_bounded(request, int(settings.max_json_bytes))
+    if body and not is_json(request):
+        raise HTTPException(415, "send the body as application/json")
     try:
         return model.model_validate_json(body or b"{}")
     except ValidationError as exc:
@@ -171,7 +188,8 @@ def _accept_live(guards: Guards, runtime: Runtime, result: LiveResult) -> list[M
         check_model_allowed(str(data.get("model", "")))
         call = ModelCall.model_validate({**data, "cached": False, "funding": funding})
         calls.append(call)
-    guards.record_spend(sum(c.cost_usd for c in calls), funding)
+    # By call id: rows the Meta client already ledgered are skipped, new ones are added.
+    guards.record_calls(calls)
     with runtime.lock:
         runtime.live_calls.extend(calls)
     return calls

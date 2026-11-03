@@ -65,7 +65,7 @@ In another CMD window: `node src/twin/browser-qa.mjs`.
 Reviewers may set `TWIN_QA_URL` to their isolated Vite port and `QA_SHA` to the
 immutable revision they are reviewing.
 
-The 20 Vitest checks include seven-camera preservation, empty configuration,
+The 21 Vitest checks include seven-camera preservation, empty configuration,
 above-ground orbit, zoom/pan bounds, each preset, full phone-frustum containment,
 opaque-wall cone clipping, polygon hatching, label collisions, shared clock,
 gap noninterpolation and real event pulses. They were written and observed
@@ -87,3 +87,27 @@ application screenshots, not camera frames; no camera privacy polygon can map to
 them. Manual inspection checks that they contain only the generic scene and
 authored fixture text. ExifTool checks GPS/device metadata. Local gitleaks was not
 installed; no claim is made that it ran here.
+
+## Round 1 review corrections
+
+Production source `9682b68` corrects two independently reproduced findings.
+OrbitControls is constrained after its damped update, outward residual input is
+consumed at a boundary through the public controls API, and no subsequent controls
+update can invalidate the final rendered pose. Diagnostics publish that actual
+pose. Presets are constrained to legal polar angles before fitting; their spherical
+motion is fitted on each frame, including intermediate orientations.
+
+`actual-frame-qa.mjs` samples the real R3F store in `addAfterEffect`, rather than
+trusting data attributes. It asserts actual ground/height/distance bounds, matches
+diagnostics to the actual state, and projects all supplied property bounds through
+the actual camera throughout preset settling. Run with `TWIN_QA_MATRIX=1` for all
+eleven sizes and `TWIN_QA_REDUCED=1` to apply reduced motion before load.
+
+The baseline failed 15 of 18 focused cases and the new real-OrbitControls unit
+test failed at the illegal 0.019-radian Top-down goal. The corrected matrices
+passed 99 cases with motion (7,748 sampled rendered frames) and 99 with reduced
+motion (7,717 frames). Worst absolute NDC during moving presets was 0.929, inside
+the required 1.0 limit. The original reviewer probes were also replayed against
+port 8102, with no pan overshoot or phone framing failure. This is builder
+verification, not an independent approval. Focused frames and matrix results are
+in `qa/screens/9682b68/twin-round2/`; independent round-two review remains required.

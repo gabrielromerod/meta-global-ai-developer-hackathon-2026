@@ -9,7 +9,15 @@ const sha =
   execFileSync("git", ["rev-parse", "--short", "HEAD"], {
     encoding: "utf8",
   }).trim();
-const root = path.resolve("..", "qa", "screens", sha, "twin-actual-frame");
+const root = path.resolve(
+  "..",
+  "qa",
+  "screens",
+  sha,
+  process.env.TWIN_QA_REDUCED === "1"
+    ? "twin-actual-frame-reduced"
+    : "twin-actual-frame",
+);
 const url =
   process.env.TWIN_QA_URL ?? "http://127.0.0.1:8102/next/src/twin/preview.html";
 const full = process.env.TWIN_QA_MATRIX === "1";
@@ -206,7 +214,7 @@ try {
   }
   await writeFile(
     path.join(root, "results.json"),
-    JSON.stringify({ sha, url, results, errors }, null, 2),
+    JSON.stringify({ sha, url, reduced, results, errors }, null, 2),
   );
   console.log(
     JSON.stringify({

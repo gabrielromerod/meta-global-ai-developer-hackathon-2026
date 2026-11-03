@@ -1,0 +1,1185 @@
+{
+  "sha": "9682b68",
+  "url": "http://127.0.0.1:8102/next/src/twin/preview.html",
+  "reduced": true,
+  "results": [
+    {
+      "width": 1470,
+      "height": 870,
+      "kind": "pan",
+      "sample": {
+        "phase": "pan",
+        "frames": 503,
+        "violations": [],
+        "maxNdc": 0
+      }
+    },
+    {
+      "width": 1470,
+      "height": 870,
+      "theme": "dark",
+      "preset": "Front",
+      "sample": {
+        "phase": "framing",
+        "frames": 59,
+        "violations": [],
+        "maxNdc": 0.893392457423675
+      }
+    },
+    {
+      "width": 1470,
+      "height": 870,
+      "theme": "dark",
+      "preset": "Left passage",
+      "sample": {
+        "phase": "framing",
+        "frames": 58,
+        "violations": [],
+        "maxNdc": 0.893392457423675
+      }
+    },
+    {
+      "width": 1470,
+      "height": 870,
+      "theme": "dark",
+      "preset": "Backyard",
+      "sample": {
+        "phase": "framing",
+        "frames": 59,
+        "violations": [],
+        "maxNdc": 0.8815908538014228
+      }
+    },
+    {
+      "width": 1470,
+      "height": 870,
+      "theme": "dark",
+      "preset": "Top-down",
+      "sample": {
+        "phase": "framing",
+        "frames": 58,
+        "violations": [],
+        "maxNdc": 0.9105453122279437
+      }
+    },
+    {
+      "width": 1470,
+      "height": 870,
+      "theme": "light",
+      "preset": "Front",
+      "sample": {
+        "phase": "framing",
+        "frames": 62,
+        "violations": [],
+        "maxNdc": 0.9105453122279437
+      }
+    },
+    {
+      "width": 1470,
+      "height": 870,
+      "theme": "light",
+      "preset": "Left passage",
+      "sample": {
+        "phase": "framing",
+        "frames": 59,
+        "violations": [],
+        "maxNdc": 0.893392457423675
+      }
+    },
+    {
+      "width": 1470,
+      "height": 870,
+      "theme": "light",
+      "preset": "Backyard",
+      "sample": {
+        "phase": "framing",
+        "frames": 59,
+        "violations": [],
+        "maxNdc": 0.8815908538014228
+      }
+    },
+    {
+      "width": 1470,
+      "height": 870,
+      "theme": "light",
+      "preset": "Top-down",
+      "sample": {
+        "phase": "framing",
+        "frames": 59,
+        "violations": [],
+        "maxNdc": 0.9105453122279437
+      }
+    },
+    {
+      "width": 1512,
+      "height": 895,
+      "kind": "pan",
+      "sample": {
+        "phase": "pan",
+        "frames": 214,
+        "violations": [],
+        "maxNdc": 0
+      }
+    },
+    {
+      "width": 1512,
+      "height": 895,
+      "theme": "dark",
+      "preset": "Front",
+      "sample": {
+        "phase": "framing",
+        "frames": 59,
+        "violations": [],
+        "maxNdc": 0.893392457423675
+      }
+    },
+    {
+      "width": 1512,
+      "height": 895,
+      "theme": "dark",
+      "preset": "Left passage",
+      "sample": {
+        "phase": "framing",
+        "frames": 58,
+        "violations": [],
+        "maxNdc": 0.893392457423675
+      }
+    },
+    {
+      "width": 1512,
+      "height": 895,
+      "theme": "dark",
+      "preset": "Backyard",
+      "sample": {
+        "phase": "framing",
+        "frames": 57,
+        "violations": [],
+        "maxNdc": 0.8815908538014228
+      }
+    },
+    {
+      "width": 1512,
+      "height": 895,
+      "theme": "dark",
+      "preset": "Top-down",
+      "sample": {
+        "phase": "framing",
+        "frames": 61,
+        "violations": [],
+        "maxNdc": 0.9105453122279437
+      }
+    },
+    {
+      "width": 1512,
+      "height": 895,
+      "theme": "light",
+      "preset": "Front",
+      "sample": {
+        "phase": "framing",
+        "frames": 61,
+        "violations": [],
+        "maxNdc": 0.9105453122279437
+      }
+    },
+    {
+      "width": 1512,
+      "height": 895,
+      "theme": "light",
+      "preset": "Left passage",
+      "sample": {
+        "phase": "framing",
+        "frames": 58,
+        "violations": [],
+        "maxNdc": 0.893392457423675
+      }
+    },
+    {
+      "width": 1512,
+      "height": 895,
+      "theme": "light",
+      "preset": "Backyard",
+      "sample": {
+        "phase": "framing",
+        "frames": 58,
+        "violations": [],
+        "maxNdc": 0.8815908538014228
+      }
+    },
+    {
+      "width": 1512,
+      "height": 895,
+      "theme": "light",
+      "preset": "Top-down",
+      "sample": {
+        "phase": "framing",
+        "frames": 59,
+        "violations": [],
+        "maxNdc": 0.9105453122279437
+      }
+    },
+    {
+      "width": 1728,
+      "height": 1030,
+      "kind": "pan",
+      "sample": {
+        "phase": "pan",
+        "frames": 214,
+        "violations": [],
+        "maxNdc": 0
+      }
+    },
+    {
+      "width": 1728,
+      "height": 1030,
+      "theme": "dark",
+      "preset": "Front",
+      "sample": {
+        "phase": "framing",
+        "frames": 63,
+        "violations": [],
+        "maxNdc": 0.893392457423675
+      }
+    },
+    {
+      "width": 1728,
+      "height": 1030,
+      "theme": "dark",
+      "preset": "Left passage",
+      "sample": {
+        "phase": "framing",
+        "frames": 62,
+        "violations": [],
+        "maxNdc": 0.893392457423675
+      }
+    },
+    {
+      "width": 1728,
+      "height": 1030,
+      "theme": "dark",
+      "preset": "Backyard",
+      "sample": {
+        "phase": "framing",
+        "frames": 63,
+        "violations": [],
+        "maxNdc": 0.8815908538014228
+      }
+    },
+    {
+      "width": 1728,
+      "height": 1030,
+      "theme": "dark",
+      "preset": "Top-down",
+      "sample": {
+        "phase": "framing",
+        "frames": 57,
+        "violations": [],
+        "maxNdc": 0.9105453122279437
+      }
+    },
+    {
+      "width": 1728,
+      "height": 1030,
+      "theme": "light",
+      "preset": "Front",
+      "sample": {
+        "phase": "framing",
+        "frames": 65,
+        "violations": [],
+        "maxNdc": 0.9105453122279437
+      }
+    },
+    {
+      "width": 1728,
+      "height": 1030,
+      "theme": "light",
+      "preset": "Left passage",
+      "sample": {
+        "phase": "framing",
+        "frames": 57,
+        "violations": [],
+        "maxNdc": 0.893392457423675
+      }
+    },
+    {
+      "width": 1728,
+      "height": 1030,
+      "theme": "light",
+      "preset": "Backyard",
+      "sample": {
+        "phase": "framing",
+        "frames": 58,
+        "violations": [],
+        "maxNdc": 0.8815908538014228
+      }
+    },
+    {
+      "width": 1728,
+      "height": 1030,
+      "theme": "light",
+      "preset": "Top-down",
+      "sample": {
+        "phase": "framing",
+        "frames": 58,
+        "violations": [],
+        "maxNdc": 0.9105453122279437
+      }
+    },
+    {
+      "width": 1920,
+      "height": 960,
+      "kind": "pan",
+      "sample": {
+        "phase": "pan",
+        "frames": 212,
+        "violations": [],
+        "maxNdc": 0
+      }
+    },
+    {
+      "width": 1920,
+      "height": 960,
+      "theme": "dark",
+      "preset": "Front",
+      "sample": {
+        "phase": "framing",
+        "frames": 57,
+        "violations": [],
+        "maxNdc": 0.893392457423675
+      }
+    },
+    {
+      "width": 1920,
+      "height": 960,
+      "theme": "dark",
+      "preset": "Left passage",
+      "sample": {
+        "phase": "framing",
+        "frames": 60,
+        "violations": [],
+        "maxNdc": 0.893392457423675
+      }
+    },
+    {
+      "width": 1920,
+      "height": 960,
+      "theme": "dark",
+      "preset": "Backyard",
+      "sample": {
+        "phase": "framing",
+        "frames": 59,
+        "violations": [],
+        "maxNdc": 0.8815908538014228
+      }
+    },
+    {
+      "width": 1920,
+      "height": 960,
+      "theme": "dark",
+      "preset": "Top-down",
+      "sample": {
+        "phase": "framing",
+        "frames": 59,
+        "violations": [],
+        "maxNdc": 0.9105453122279437
+      }
+    },
+    {
+      "width": 1920,
+      "height": 960,
+      "theme": "light",
+      "preset": "Front",
+      "sample": {
+        "phase": "framing",
+        "frames": 64,
+        "violations": [],
+        "maxNdc": 0.9105453122279437
+      }
+    },
+    {
+      "width": 1920,
+      "height": 960,
+      "theme": "light",
+      "preset": "Left passage",
+      "sample": {
+        "phase": "framing",
+        "frames": 58,
+        "violations": [],
+        "maxNdc": 0.893392457423675
+      }
+    },
+    {
+      "width": 1920,
+      "height": 960,
+      "theme": "light",
+      "preset": "Backyard",
+      "sample": {
+        "phase": "framing",
+        "frames": 58,
+        "violations": [],
+        "maxNdc": 0.8815908538014228
+      }
+    },
+    {
+      "width": 1920,
+      "height": 960,
+      "theme": "light",
+      "preset": "Top-down",
+      "sample": {
+        "phase": "framing",
+        "frames": 59,
+        "violations": [],
+        "maxNdc": 0.9105453122279437
+      }
+    },
+    {
+      "width": 1536,
+      "height": 730,
+      "kind": "pan",
+      "sample": {
+        "phase": "pan",
+        "frames": 206,
+        "violations": [],
+        "maxNdc": 0
+      }
+    },
+    {
+      "width": 1536,
+      "height": 730,
+      "theme": "dark",
+      "preset": "Front",
+      "sample": {
+        "phase": "framing",
+        "frames": 57,
+        "violations": [],
+        "maxNdc": 0.893392457423675
+      }
+    },
+    {
+      "width": 1536,
+      "height": 730,
+      "theme": "dark",
+      "preset": "Left passage",
+      "sample": {
+        "phase": "framing",
+        "frames": 57,
+        "violations": [],
+        "maxNdc": 0.893392457423675
+      }
+    },
+    {
+      "width": 1536,
+      "height": 730,
+      "theme": "dark",
+      "preset": "Backyard",
+      "sample": {
+        "phase": "framing",
+        "frames": 57,
+        "violations": [],
+        "maxNdc": 0.8815908538014228
+      }
+    },
+    {
+      "width": 1536,
+      "height": 730,
+      "theme": "dark",
+      "preset": "Top-down",
+      "sample": {
+        "phase": "framing",
+        "frames": 56,
+        "violations": [],
+        "maxNdc": 0.9105453122279437
+      }
+    },
+    {
+      "width": 1536,
+      "height": 730,
+      "theme": "light",
+      "preset": "Front",
+      "sample": {
+        "phase": "framing",
+        "frames": 59,
+        "violations": [],
+        "maxNdc": 0.9105453122279437
+      }
+    },
+    {
+      "width": 1536,
+      "height": 730,
+      "theme": "light",
+      "preset": "Left passage",
+      "sample": {
+        "phase": "framing",
+        "frames": 57,
+        "violations": [],
+        "maxNdc": 0.893392457423675
+      }
+    },
+    {
+      "width": 1536,
+      "height": 730,
+      "theme": "light",
+      "preset": "Backyard",
+      "sample": {
+        "phase": "framing",
+        "frames": 57,
+        "violations": [],
+        "maxNdc": 0.8815908538014228
+      }
+    },
+    {
+      "width": 1536,
+      "height": 730,
+      "theme": "light",
+      "preset": "Top-down",
+      "sample": {
+        "phase": "framing",
+        "frames": 57,
+        "violations": [],
+        "maxNdc": 0.9105453122279437
+      }
+    },
+    {
+      "width": 1280,
+      "height": 600,
+      "kind": "pan",
+      "sample": {
+        "phase": "pan",
+        "frames": 207,
+        "violations": [],
+        "maxNdc": 0
+      }
+    },
+    {
+      "width": 1280,
+      "height": 600,
+      "theme": "dark",
+      "preset": "Front",
+      "sample": {
+        "phase": "framing",
+        "frames": 57,
+        "violations": [],
+        "maxNdc": 0.893392457423675
+      }
+    },
+    {
+      "width": 1280,
+      "height": 600,
+      "theme": "dark",
+      "preset": "Left passage",
+      "sample": {
+        "phase": "framing",
+        "frames": 55,
+        "violations": [],
+        "maxNdc": 0.893392457423675
+      }
+    },
+    {
+      "width": 1280,
+      "height": 600,
+      "theme": "dark",
+      "preset": "Backyard",
+      "sample": {
+        "phase": "framing",
+        "frames": 57,
+        "violations": [],
+        "maxNdc": 0.8815908538014228
+      }
+    },
+    {
+      "width": 1280,
+      "height": 600,
+      "theme": "dark",
+      "preset": "Top-down",
+      "sample": {
+        "phase": "framing",
+        "frames": 56,
+        "violations": [],
+        "maxNdc": 0.9105453122279437
+      }
+    },
+    {
+      "width": 1280,
+      "height": 600,
+      "theme": "light",
+      "preset": "Front",
+      "sample": {
+        "phase": "framing",
+        "frames": 59,
+        "violations": [],
+        "maxNdc": 0.9105453122279437
+      }
+    },
+    {
+      "width": 1280,
+      "height": 600,
+      "theme": "light",
+      "preset": "Left passage",
+      "sample": {
+        "phase": "framing",
+        "frames": 59,
+        "violations": [],
+        "maxNdc": 0.893392457423675
+      }
+    },
+    {
+      "width": 1280,
+      "height": 600,
+      "theme": "light",
+      "preset": "Backyard",
+      "sample": {
+        "phase": "framing",
+        "frames": 56,
+        "violations": [],
+        "maxNdc": 0.8815908538014228
+      }
+    },
+    {
+      "width": 1280,
+      "height": 600,
+      "theme": "light",
+      "preset": "Top-down",
+      "sample": {
+        "phase": "framing",
+        "frames": 56,
+        "violations": [],
+        "maxNdc": 0.9105453122279437
+      }
+    },
+    {
+      "width": 1366,
+      "height": 650,
+      "kind": "pan",
+      "sample": {
+        "phase": "pan",
+        "frames": 209,
+        "violations": [],
+        "maxNdc": 0
+      }
+    },
+    {
+      "width": 1366,
+      "height": 650,
+      "theme": "dark",
+      "preset": "Front",
+      "sample": {
+        "phase": "framing",
+        "frames": 58,
+        "violations": [],
+        "maxNdc": 0.893392457423675
+      }
+    },
+    {
+      "width": 1366,
+      "height": 650,
+      "theme": "dark",
+      "preset": "Left passage",
+      "sample": {
+        "phase": "framing",
+        "frames": 58,
+        "violations": [],
+        "maxNdc": 0.893392457423675
+      }
+    },
+    {
+      "width": 1366,
+      "height": 650,
+      "theme": "dark",
+      "preset": "Backyard",
+      "sample": {
+        "phase": "framing",
+        "frames": 56,
+        "violations": [],
+        "maxNdc": 0.8815908538014228
+      }
+    },
+    {
+      "width": 1366,
+      "height": 650,
+      "theme": "dark",
+      "preset": "Top-down",
+      "sample": {
+        "phase": "framing",
+        "frames": 56,
+        "violations": [],
+        "maxNdc": 0.9105453122279437
+      }
+    },
+    {
+      "width": 1366,
+      "height": 650,
+      "theme": "light",
+      "preset": "Front",
+      "sample": {
+        "phase": "framing",
+        "frames": 59,
+        "violations": [],
+        "maxNdc": 0.9105453122279437
+      }
+    },
+    {
+      "width": 1366,
+      "height": 650,
+      "theme": "light",
+      "preset": "Left passage",
+      "sample": {
+        "phase": "framing",
+        "frames": 56,
+        "violations": [],
+        "maxNdc": 0.893392457423675
+      }
+    },
+    {
+      "width": 1366,
+      "height": 650,
+      "theme": "light",
+      "preset": "Backyard",
+      "sample": {
+        "phase": "framing",
+        "frames": 57,
+        "violations": [],
+        "maxNdc": 0.8815908538014228
+      }
+    },
+    {
+      "width": 1366,
+      "height": 650,
+      "theme": "light",
+      "preset": "Top-down",
+      "sample": {
+        "phase": "framing",
+        "frames": 56,
+        "violations": [],
+        "maxNdc": 0.9105453122279437
+      }
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "kind": "pan",
+      "sample": {
+        "phase": "pan",
+        "frames": 205,
+        "violations": [],
+        "maxNdc": 0
+      }
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "theme": "dark",
+      "preset": "Front",
+      "sample": {
+        "phase": "framing",
+        "frames": 57,
+        "violations": [],
+        "maxNdc": 0.893392457423675
+      }
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "theme": "dark",
+      "preset": "Left passage",
+      "sample": {
+        "phase": "framing",
+        "frames": 56,
+        "violations": [],
+        "maxNdc": 0.893392457423675
+      }
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "theme": "dark",
+      "preset": "Backyard",
+      "sample": {
+        "phase": "framing",
+        "frames": 57,
+        "violations": [],
+        "maxNdc": 0.8815908538014228
+      }
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "theme": "dark",
+      "preset": "Top-down",
+      "sample": {
+        "phase": "framing",
+        "frames": 56,
+        "violations": [],
+        "maxNdc": 0.9105453122279437
+      }
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "theme": "light",
+      "preset": "Front",
+      "sample": {
+        "phase": "framing",
+        "frames": 59,
+        "violations": [],
+        "maxNdc": 0.9105453122279437
+      }
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "theme": "light",
+      "preset": "Left passage",
+      "sample": {
+        "phase": "framing",
+        "frames": 57,
+        "violations": [],
+        "maxNdc": 0.893392457423675
+      }
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "theme": "light",
+      "preset": "Backyard",
+      "sample": {
+        "phase": "framing",
+        "frames": 56,
+        "violations": [],
+        "maxNdc": 0.8815908538014228
+      }
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "theme": "light",
+      "preset": "Top-down",
+      "sample": {
+        "phase": "framing",
+        "frames": 56,
+        "violations": [],
+        "maxNdc": 0.9105453122279437
+      }
+    },
+    {
+      "width": 1180,
+      "height": 820,
+      "kind": "pan",
+      "sample": {
+        "phase": "pan",
+        "frames": 208,
+        "violations": [],
+        "maxNdc": 0
+      }
+    },
+    {
+      "width": 1180,
+      "height": 820,
+      "theme": "dark",
+      "preset": "Front",
+      "sample": {
+        "phase": "framing",
+        "frames": 56,
+        "violations": [],
+        "maxNdc": 0.893392457423675
+      }
+    },
+    {
+      "width": 1180,
+      "height": 820,
+      "theme": "dark",
+      "preset": "Left passage",
+      "sample": {
+        "phase": "framing",
+        "frames": 56,
+        "violations": [],
+        "maxNdc": 0.893392457423675
+      }
+    },
+    {
+      "width": 1180,
+      "height": 820,
+      "theme": "dark",
+      "preset": "Backyard",
+      "sample": {
+        "phase": "framing",
+        "frames": 56,
+        "violations": [],
+        "maxNdc": 0.8815908538014228
+      }
+    },
+    {
+      "width": 1180,
+      "height": 820,
+      "theme": "dark",
+      "preset": "Top-down",
+      "sample": {
+        "phase": "framing",
+        "frames": 57,
+        "violations": [],
+        "maxNdc": 0.9105453122279437
+      }
+    },
+    {
+      "width": 1180,
+      "height": 820,
+      "theme": "light",
+      "preset": "Front",
+      "sample": {
+        "phase": "framing",
+        "frames": 59,
+        "violations": [],
+        "maxNdc": 0.9105453122279437
+      }
+    },
+    {
+      "width": 1180,
+      "height": 820,
+      "theme": "light",
+      "preset": "Left passage",
+      "sample": {
+        "phase": "framing",
+        "frames": 57,
+        "violations": [],
+        "maxNdc": 0.893392457423675
+      }
+    },
+    {
+      "width": 1180,
+      "height": 820,
+      "theme": "light",
+      "preset": "Backyard",
+      "sample": {
+        "phase": "framing",
+        "frames": 56,
+        "violations": [],
+        "maxNdc": 0.8815908538014228
+      }
+    },
+    {
+      "width": 1180,
+      "height": 820,
+      "theme": "light",
+      "preset": "Top-down",
+      "sample": {
+        "phase": "framing",
+        "frames": 58,
+        "violations": [],
+        "maxNdc": 0.9105453122279437
+      }
+    },
+    {
+      "width": 2560,
+      "height": 1000,
+      "kind": "pan",
+      "sample": {
+        "phase": "pan",
+        "frames": 213,
+        "violations": [],
+        "maxNdc": 0
+      }
+    },
+    {
+      "width": 2560,
+      "height": 1000,
+      "theme": "dark",
+      "preset": "Front",
+      "sample": {
+        "phase": "framing",
+        "frames": 62,
+        "violations": [],
+        "maxNdc": 0.893392457423675
+      }
+    },
+    {
+      "width": 2560,
+      "height": 1000,
+      "theme": "dark",
+      "preset": "Left passage",
+      "sample": {
+        "phase": "framing",
+        "frames": 64,
+        "violations": [],
+        "maxNdc": 0.893392457423675
+      }
+    },
+    {
+      "width": 2560,
+      "height": 1000,
+      "theme": "dark",
+      "preset": "Backyard",
+      "sample": {
+        "phase": "framing",
+        "frames": 59,
+        "violations": [],
+        "maxNdc": 0.8815908538014228
+      }
+    },
+    {
+      "width": 2560,
+      "height": 1000,
+      "theme": "dark",
+      "preset": "Top-down",
+      "sample": {
+        "phase": "framing",
+        "frames": 60,
+        "violations": [],
+        "maxNdc": 0.9105453122279437
+      }
+    },
+    {
+      "width": 2560,
+      "height": 1000,
+      "theme": "light",
+      "preset": "Front",
+      "sample": {
+        "phase": "framing",
+        "frames": 62,
+        "violations": [],
+        "maxNdc": 0.9105453122279437
+      }
+    },
+    {
+      "width": 2560,
+      "height": 1000,
+      "theme": "light",
+      "preset": "Left passage",
+      "sample": {
+        "phase": "framing",
+        "frames": 59,
+        "violations": [],
+        "maxNdc": 0.893392457423675
+      }
+    },
+    {
+      "width": 2560,
+      "height": 1000,
+      "theme": "light",
+      "preset": "Backyard",
+      "sample": {
+        "phase": "framing",
+        "frames": 59,
+        "violations": [],
+        "maxNdc": 0.8815908538014228
+      }
+    },
+    {
+      "width": 2560,
+      "height": 1000,
+      "theme": "light",
+      "preset": "Top-down",
+      "sample": {
+        "phase": "framing",
+        "frames": 60,
+        "violations": [],
+        "maxNdc": 0.9105453122279437
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "kind": "pan",
+      "sample": {
+        "phase": "pan",
+        "frames": 209,
+        "violations": [],
+        "maxNdc": 0
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "dark",
+      "preset": "Front",
+      "sample": {
+        "phase": "framing",
+        "frames": 57,
+        "violations": [],
+        "maxNdc": 0.9253400750685989
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "dark",
+      "preset": "Left passage",
+      "sample": {
+        "phase": "framing",
+        "frames": 57,
+        "violations": [],
+        "maxNdc": 0.9253400750685989
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "dark",
+      "preset": "Backyard",
+      "sample": {
+        "phase": "framing",
+        "frames": 56,
+        "violations": [],
+        "maxNdc": 0.9228951400072269
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "dark",
+      "preset": "Top-down",
+      "sample": {
+        "phase": "framing",
+        "frames": 57,
+        "violations": [],
+        "maxNdc": 0.9228951400072269
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "light",
+      "preset": "Front",
+      "sample": {
+        "phase": "framing",
+        "frames": 57,
+        "violations": [],
+        "maxNdc": 0.9253400750685989
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "light",
+      "preset": "Left passage",
+      "sample": {
+        "phase": "framing",
+        "frames": 57,
+        "violations": [],
+        "maxNdc": 0.9253400750685989
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "light",
+      "preset": "Backyard",
+      "sample": {
+        "phase": "framing",
+        "frames": 56,
+        "violations": [],
+        "maxNdc": 0.9228951400072269
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "light",
+      "preset": "Top-down",
+      "sample": {
+        "phase": "framing",
+        "frames": 57,
+        "violations": [],
+        "maxNdc": 0.9228951400072269
+      }
+    }
+  ],
+  "errors": []
+}

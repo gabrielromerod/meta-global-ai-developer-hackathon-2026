@@ -1,0 +1,5747 @@
+{
+  "results": [
+    {
+      "name": "mac-air",
+      "width": 1470,
+      "height": 870,
+      "theme": "dark",
+      "thread": "ask-home",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 1087,
+          "y": 460.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 460.796875,
+          "right": 1445,
+          "bottom": 638,
+          "left": 1087
+        },
+        "text": [
+          {
+            "text": "Ask about a visit",
+            "rect": {
+              "x": 1196.375,
+              "y": 515.390625,
+              "width": 124.25,
+              "height": 24,
+              "top": 515.390625,
+              "right": 1320.625,
+              "bottom": 539.390625,
+              "left": 1196.375
+            }
+          },
+          {
+            "text": "Search what the cameras recorded. Answers link to the visit evidence.",
+            "rect": {
+              "x": 1111,
+              "y": 547.390625,
+              "width": 295,
+              "height": 36,
+              "top": 547.390625,
+              "right": 1406,
+              "bottom": 583.390625,
+              "left": 1111
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "mac-air",
+      "width": 1470,
+      "height": 870,
+      "theme": "dark",
+      "thread": "ask-home",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 1087,
+          "y": 460.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 460.796875,
+          "right": 1445,
+          "bottom": 638,
+          "left": 1087
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 1103,
+              "y": 476.796875,
+              "width": 311,
+              "height": 34,
+              "top": 476.796875,
+              "right": 1414,
+              "bottom": 510.796875,
+              "left": 1103
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "mac-air",
+      "width": 1470,
+      "height": 870,
+      "theme": "dark",
+      "thread": "ask-home",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 1087,
+          "y": 460.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 460.796875,
+          "right": 1445,
+          "bottom": 638,
+          "left": 1087
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 1103,
+              "y": 587.796875,
+              "width": 311,
+              "height": 34,
+              "top": 587.796875,
+              "right": 1414,
+              "bottom": 621.796875,
+              "left": 1103
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "mac-air",
+      "width": 1470,
+      "height": 870,
+      "theme": "dark",
+      "thread": "household",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 1087,
+          "y": 460.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 460.796875,
+          "right": 1445,
+          "bottom": 638,
+          "left": 1087
+        },
+        "text": [
+          {
+            "text": "No messages yet",
+            "rect": {
+              "x": 1193.140625,
+              "y": 493.390625,
+              "width": 130.703125,
+              "height": 24,
+              "top": 493.390625,
+              "right": 1323.84375,
+              "bottom": 517.390625,
+              "left": 1193.140625
+            }
+          },
+          {
+            "text": "Share a note or a clip with this local household thread.",
+            "rect": {
+              "x": 1111,
+              "y": 525.390625,
+              "width": 295,
+              "height": 36,
+              "top": 525.390625,
+              "right": 1406,
+              "bottom": 561.390625,
+              "left": 1111
+            }
+          },
+          {
+            "text": "Messages stay in this browser. They are not delivered to anyone.",
+            "rect": {
+              "x": 1111,
+              "y": 569.390625,
+              "width": 295,
+              "height": 36,
+              "top": 569.390625,
+              "right": 1406,
+              "bottom": 605.390625,
+              "left": 1111
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "mac-air",
+      "width": 1470,
+      "height": 870,
+      "theme": "dark",
+      "thread": "household",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 1087,
+          "y": 460.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 460.796875,
+          "right": 1445,
+          "bottom": 638,
+          "left": 1087
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 1103,
+              "y": 476.796875,
+              "width": 311,
+              "height": 34,
+              "top": 476.796875,
+              "right": 1414,
+              "bottom": 510.796875,
+              "left": 1103
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "mac-air",
+      "width": 1470,
+      "height": 870,
+      "theme": "dark",
+      "thread": "household",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 1087,
+          "y": 460.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 460.796875,
+          "right": 1445,
+          "bottom": 638,
+          "left": 1087
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 1103,
+              "y": 587.796875,
+              "width": 311,
+              "height": 34,
+              "top": 587.796875,
+              "right": 1414,
+              "bottom": 621.796875,
+              "left": 1103
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "mac-air",
+      "width": 1470,
+      "height": 870,
+      "theme": "light",
+      "thread": "ask-home",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 1087,
+          "y": 460.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 460.796875,
+          "right": 1445,
+          "bottom": 638,
+          "left": 1087
+        },
+        "text": [
+          {
+            "text": "Ask about a visit",
+            "rect": {
+              "x": 1196.375,
+              "y": 515.390625,
+              "width": 124.25,
+              "height": 24,
+              "top": 515.390625,
+              "right": 1320.625,
+              "bottom": 539.390625,
+              "left": 1196.375
+            }
+          },
+          {
+            "text": "Search what the cameras recorded. Answers link to the visit evidence.",
+            "rect": {
+              "x": 1111,
+              "y": 547.390625,
+              "width": 295,
+              "height": 36,
+              "top": 547.390625,
+              "right": 1406,
+              "bottom": 583.390625,
+              "left": 1111
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "mac-air",
+      "width": 1470,
+      "height": 870,
+      "theme": "light",
+      "thread": "ask-home",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 1087,
+          "y": 460.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 460.796875,
+          "right": 1445,
+          "bottom": 638,
+          "left": 1087
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 1103,
+              "y": 476.796875,
+              "width": 311,
+              "height": 34,
+              "top": 476.796875,
+              "right": 1414,
+              "bottom": 510.796875,
+              "left": 1103
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "mac-air",
+      "width": 1470,
+      "height": 870,
+      "theme": "light",
+      "thread": "ask-home",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 1087,
+          "y": 460.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 460.796875,
+          "right": 1445,
+          "bottom": 638,
+          "left": 1087
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 1103,
+              "y": 587.796875,
+              "width": 311,
+              "height": 34,
+              "top": 587.796875,
+              "right": 1414,
+              "bottom": 621.796875,
+              "left": 1103
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "mac-air",
+      "width": 1470,
+      "height": 870,
+      "theme": "light",
+      "thread": "household",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 1087,
+          "y": 460.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 460.796875,
+          "right": 1445,
+          "bottom": 638,
+          "left": 1087
+        },
+        "text": [
+          {
+            "text": "No messages yet",
+            "rect": {
+              "x": 1193.140625,
+              "y": 493.390625,
+              "width": 130.703125,
+              "height": 24,
+              "top": 493.390625,
+              "right": 1323.84375,
+              "bottom": 517.390625,
+              "left": 1193.140625
+            }
+          },
+          {
+            "text": "Share a note or a clip with this local household thread.",
+            "rect": {
+              "x": 1111,
+              "y": 525.390625,
+              "width": 295,
+              "height": 36,
+              "top": 525.390625,
+              "right": 1406,
+              "bottom": 561.390625,
+              "left": 1111
+            }
+          },
+          {
+            "text": "Messages stay in this browser. They are not delivered to anyone.",
+            "rect": {
+              "x": 1111,
+              "y": 569.390625,
+              "width": 295,
+              "height": 36,
+              "top": 569.390625,
+              "right": 1406,
+              "bottom": 605.390625,
+              "left": 1111
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "mac-air",
+      "width": 1470,
+      "height": 870,
+      "theme": "light",
+      "thread": "household",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 1087,
+          "y": 460.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 460.796875,
+          "right": 1445,
+          "bottom": 638,
+          "left": 1087
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 1103,
+              "y": 476.796875,
+              "width": 311,
+              "height": 34,
+              "top": 476.796875,
+              "right": 1414,
+              "bottom": 510.796875,
+              "left": 1103
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "mac-air",
+      "width": 1470,
+      "height": 870,
+      "theme": "light",
+      "thread": "household",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 1087,
+          "y": 460.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 460.796875,
+          "right": 1445,
+          "bottom": 638,
+          "left": 1087
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 1103,
+              "y": 587.796875,
+              "width": 311,
+              "height": 34,
+              "top": 587.796875,
+              "right": 1414,
+              "bottom": 621.796875,
+              "left": 1103
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "mac-pro-14",
+      "width": 1512,
+      "height": 895,
+      "theme": "dark",
+      "thread": "ask-home",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 1129,
+          "y": 485.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 485.796875,
+          "right": 1487,
+          "bottom": 663,
+          "left": 1129
+        },
+        "text": [
+          {
+            "text": "Ask about a visit",
+            "rect": {
+              "x": 1238.375,
+              "y": 540.390625,
+              "width": 124.25,
+              "height": 24,
+              "top": 540.390625,
+              "right": 1362.625,
+              "bottom": 564.390625,
+              "left": 1238.375
+            }
+          },
+          {
+            "text": "Search what the cameras recorded. Answers link to the visit evidence.",
+            "rect": {
+              "x": 1153,
+              "y": 572.390625,
+              "width": 295,
+              "height": 36,
+              "top": 572.390625,
+              "right": 1448,
+              "bottom": 608.390625,
+              "left": 1153
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "mac-pro-14",
+      "width": 1512,
+      "height": 895,
+      "theme": "dark",
+      "thread": "ask-home",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 1129,
+          "y": 485.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 485.796875,
+          "right": 1487,
+          "bottom": 663,
+          "left": 1129
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 1145,
+              "y": 501.796875,
+              "width": 311,
+              "height": 34,
+              "top": 501.796875,
+              "right": 1456,
+              "bottom": 535.796875,
+              "left": 1145
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "mac-pro-14",
+      "width": 1512,
+      "height": 895,
+      "theme": "dark",
+      "thread": "ask-home",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 1129,
+          "y": 485.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 485.796875,
+          "right": 1487,
+          "bottom": 663,
+          "left": 1129
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 1145,
+              "y": 612.796875,
+              "width": 311,
+              "height": 34,
+              "top": 612.796875,
+              "right": 1456,
+              "bottom": 646.796875,
+              "left": 1145
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "mac-pro-14",
+      "width": 1512,
+      "height": 895,
+      "theme": "dark",
+      "thread": "household",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 1129,
+          "y": 485.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 485.796875,
+          "right": 1487,
+          "bottom": 663,
+          "left": 1129
+        },
+        "text": [
+          {
+            "text": "No messages yet",
+            "rect": {
+              "x": 1235.140625,
+              "y": 518.390625,
+              "width": 130.703125,
+              "height": 24,
+              "top": 518.390625,
+              "right": 1365.84375,
+              "bottom": 542.390625,
+              "left": 1235.140625
+            }
+          },
+          {
+            "text": "Share a note or a clip with this local household thread.",
+            "rect": {
+              "x": 1153,
+              "y": 550.390625,
+              "width": 295,
+              "height": 36,
+              "top": 550.390625,
+              "right": 1448,
+              "bottom": 586.390625,
+              "left": 1153
+            }
+          },
+          {
+            "text": "Messages stay in this browser. They are not delivered to anyone.",
+            "rect": {
+              "x": 1153,
+              "y": 594.390625,
+              "width": 295,
+              "height": 36,
+              "top": 594.390625,
+              "right": 1448,
+              "bottom": 630.390625,
+              "left": 1153
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "mac-pro-14",
+      "width": 1512,
+      "height": 895,
+      "theme": "dark",
+      "thread": "household",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 1129,
+          "y": 485.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 485.796875,
+          "right": 1487,
+          "bottom": 663,
+          "left": 1129
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 1145,
+              "y": 501.796875,
+              "width": 311,
+              "height": 34,
+              "top": 501.796875,
+              "right": 1456,
+              "bottom": 535.796875,
+              "left": 1145
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "mac-pro-14",
+      "width": 1512,
+      "height": 895,
+      "theme": "dark",
+      "thread": "household",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 1129,
+          "y": 485.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 485.796875,
+          "right": 1487,
+          "bottom": 663,
+          "left": 1129
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 1145,
+              "y": 612.796875,
+              "width": 311,
+              "height": 34,
+              "top": 612.796875,
+              "right": 1456,
+              "bottom": 646.796875,
+              "left": 1145
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "mac-pro-14",
+      "width": 1512,
+      "height": 895,
+      "theme": "light",
+      "thread": "ask-home",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 1129,
+          "y": 485.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 485.796875,
+          "right": 1487,
+          "bottom": 663,
+          "left": 1129
+        },
+        "text": [
+          {
+            "text": "Ask about a visit",
+            "rect": {
+              "x": 1238.375,
+              "y": 540.390625,
+              "width": 124.25,
+              "height": 24,
+              "top": 540.390625,
+              "right": 1362.625,
+              "bottom": 564.390625,
+              "left": 1238.375
+            }
+          },
+          {
+            "text": "Search what the cameras recorded. Answers link to the visit evidence.",
+            "rect": {
+              "x": 1153,
+              "y": 572.390625,
+              "width": 295,
+              "height": 36,
+              "top": 572.390625,
+              "right": 1448,
+              "bottom": 608.390625,
+              "left": 1153
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "mac-pro-14",
+      "width": 1512,
+      "height": 895,
+      "theme": "light",
+      "thread": "ask-home",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 1129,
+          "y": 485.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 485.796875,
+          "right": 1487,
+          "bottom": 663,
+          "left": 1129
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 1145,
+              "y": 501.796875,
+              "width": 311,
+              "height": 34,
+              "top": 501.796875,
+              "right": 1456,
+              "bottom": 535.796875,
+              "left": 1145
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "mac-pro-14",
+      "width": 1512,
+      "height": 895,
+      "theme": "light",
+      "thread": "ask-home",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 1129,
+          "y": 485.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 485.796875,
+          "right": 1487,
+          "bottom": 663,
+          "left": 1129
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 1145,
+              "y": 612.796875,
+              "width": 311,
+              "height": 34,
+              "top": 612.796875,
+              "right": 1456,
+              "bottom": 646.796875,
+              "left": 1145
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "mac-pro-14",
+      "width": 1512,
+      "height": 895,
+      "theme": "light",
+      "thread": "household",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 1129,
+          "y": 485.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 485.796875,
+          "right": 1487,
+          "bottom": 663,
+          "left": 1129
+        },
+        "text": [
+          {
+            "text": "No messages yet",
+            "rect": {
+              "x": 1235.140625,
+              "y": 518.390625,
+              "width": 130.703125,
+              "height": 24,
+              "top": 518.390625,
+              "right": 1365.84375,
+              "bottom": 542.390625,
+              "left": 1235.140625
+            }
+          },
+          {
+            "text": "Share a note or a clip with this local household thread.",
+            "rect": {
+              "x": 1153,
+              "y": 550.390625,
+              "width": 295,
+              "height": 36,
+              "top": 550.390625,
+              "right": 1448,
+              "bottom": 586.390625,
+              "left": 1153
+            }
+          },
+          {
+            "text": "Messages stay in this browser. They are not delivered to anyone.",
+            "rect": {
+              "x": 1153,
+              "y": 594.390625,
+              "width": 295,
+              "height": 36,
+              "top": 594.390625,
+              "right": 1448,
+              "bottom": 630.390625,
+              "left": 1153
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "mac-pro-14",
+      "width": 1512,
+      "height": 895,
+      "theme": "light",
+      "thread": "household",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 1129,
+          "y": 485.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 485.796875,
+          "right": 1487,
+          "bottom": 663,
+          "left": 1129
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 1145,
+              "y": 501.796875,
+              "width": 311,
+              "height": 34,
+              "top": 501.796875,
+              "right": 1456,
+              "bottom": 535.796875,
+              "left": 1145
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "mac-pro-14",
+      "width": 1512,
+      "height": 895,
+      "theme": "light",
+      "thread": "household",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 1129,
+          "y": 485.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 485.796875,
+          "right": 1487,
+          "bottom": 663,
+          "left": 1129
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 1145,
+              "y": 612.796875,
+              "width": 311,
+              "height": 34,
+              "top": 612.796875,
+              "right": 1456,
+              "bottom": 646.796875,
+              "left": 1145
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "mac-pro-16",
+      "width": 1728,
+      "height": 1030,
+      "theme": "dark",
+      "thread": "ask-home",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 1345,
+          "y": 620.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 620.796875,
+          "right": 1703,
+          "bottom": 798,
+          "left": 1345
+        },
+        "text": [
+          {
+            "text": "Ask about a visit",
+            "rect": {
+              "x": 1454.375,
+              "y": 675.390625,
+              "width": 124.25,
+              "height": 24,
+              "top": 675.390625,
+              "right": 1578.625,
+              "bottom": 699.390625,
+              "left": 1454.375
+            }
+          },
+          {
+            "text": "Search what the cameras recorded. Answers link to the visit evidence.",
+            "rect": {
+              "x": 1369,
+              "y": 707.390625,
+              "width": 295,
+              "height": 36,
+              "top": 707.390625,
+              "right": 1664,
+              "bottom": 743.390625,
+              "left": 1369
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "mac-pro-16",
+      "width": 1728,
+      "height": 1030,
+      "theme": "dark",
+      "thread": "ask-home",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 1345,
+          "y": 620.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 620.796875,
+          "right": 1703,
+          "bottom": 798,
+          "left": 1345
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 1361,
+              "y": 636.796875,
+              "width": 311,
+              "height": 34,
+              "top": 636.796875,
+              "right": 1672,
+              "bottom": 670.796875,
+              "left": 1361
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "mac-pro-16",
+      "width": 1728,
+      "height": 1030,
+      "theme": "dark",
+      "thread": "ask-home",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 1345,
+          "y": 620.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 620.796875,
+          "right": 1703,
+          "bottom": 798,
+          "left": 1345
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 1361,
+              "y": 747.796875,
+              "width": 311,
+              "height": 34,
+              "top": 747.796875,
+              "right": 1672,
+              "bottom": 781.796875,
+              "left": 1361
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "mac-pro-16",
+      "width": 1728,
+      "height": 1030,
+      "theme": "dark",
+      "thread": "household",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 1345,
+          "y": 620.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 620.796875,
+          "right": 1703,
+          "bottom": 798,
+          "left": 1345
+        },
+        "text": [
+          {
+            "text": "No messages yet",
+            "rect": {
+              "x": 1451.140625,
+              "y": 653.390625,
+              "width": 130.703125,
+              "height": 24,
+              "top": 653.390625,
+              "right": 1581.84375,
+              "bottom": 677.390625,
+              "left": 1451.140625
+            }
+          },
+          {
+            "text": "Share a note or a clip with this local household thread.",
+            "rect": {
+              "x": 1369,
+              "y": 685.390625,
+              "width": 295,
+              "height": 36,
+              "top": 685.390625,
+              "right": 1664,
+              "bottom": 721.390625,
+              "left": 1369
+            }
+          },
+          {
+            "text": "Messages stay in this browser. They are not delivered to anyone.",
+            "rect": {
+              "x": 1369,
+              "y": 729.390625,
+              "width": 295,
+              "height": 36,
+              "top": 729.390625,
+              "right": 1664,
+              "bottom": 765.390625,
+              "left": 1369
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "mac-pro-16",
+      "width": 1728,
+      "height": 1030,
+      "theme": "dark",
+      "thread": "household",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 1345,
+          "y": 620.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 620.796875,
+          "right": 1703,
+          "bottom": 798,
+          "left": 1345
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 1361,
+              "y": 636.796875,
+              "width": 311,
+              "height": 34,
+              "top": 636.796875,
+              "right": 1672,
+              "bottom": 670.796875,
+              "left": 1361
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "mac-pro-16",
+      "width": 1728,
+      "height": 1030,
+      "theme": "dark",
+      "thread": "household",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 1345,
+          "y": 620.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 620.796875,
+          "right": 1703,
+          "bottom": 798,
+          "left": 1345
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 1361,
+              "y": 747.796875,
+              "width": 311,
+              "height": 34,
+              "top": 747.796875,
+              "right": 1672,
+              "bottom": 781.796875,
+              "left": 1361
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "mac-pro-16",
+      "width": 1728,
+      "height": 1030,
+      "theme": "light",
+      "thread": "ask-home",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 1345,
+          "y": 620.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 620.796875,
+          "right": 1703,
+          "bottom": 798,
+          "left": 1345
+        },
+        "text": [
+          {
+            "text": "Ask about a visit",
+            "rect": {
+              "x": 1454.375,
+              "y": 675.390625,
+              "width": 124.25,
+              "height": 24,
+              "top": 675.390625,
+              "right": 1578.625,
+              "bottom": 699.390625,
+              "left": 1454.375
+            }
+          },
+          {
+            "text": "Search what the cameras recorded. Answers link to the visit evidence.",
+            "rect": {
+              "x": 1369,
+              "y": 707.390625,
+              "width": 295,
+              "height": 36,
+              "top": 707.390625,
+              "right": 1664,
+              "bottom": 743.390625,
+              "left": 1369
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "mac-pro-16",
+      "width": 1728,
+      "height": 1030,
+      "theme": "light",
+      "thread": "ask-home",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 1345,
+          "y": 620.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 620.796875,
+          "right": 1703,
+          "bottom": 798,
+          "left": 1345
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 1361,
+              "y": 636.796875,
+              "width": 311,
+              "height": 34,
+              "top": 636.796875,
+              "right": 1672,
+              "bottom": 670.796875,
+              "left": 1361
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "mac-pro-16",
+      "width": 1728,
+      "height": 1030,
+      "theme": "light",
+      "thread": "ask-home",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 1345,
+          "y": 620.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 620.796875,
+          "right": 1703,
+          "bottom": 798,
+          "left": 1345
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 1361,
+              "y": 747.796875,
+              "width": 311,
+              "height": 34,
+              "top": 747.796875,
+              "right": 1672,
+              "bottom": 781.796875,
+              "left": 1361
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "mac-pro-16",
+      "width": 1728,
+      "height": 1030,
+      "theme": "light",
+      "thread": "household",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 1345,
+          "y": 620.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 620.796875,
+          "right": 1703,
+          "bottom": 798,
+          "left": 1345
+        },
+        "text": [
+          {
+            "text": "No messages yet",
+            "rect": {
+              "x": 1451.140625,
+              "y": 653.390625,
+              "width": 130.703125,
+              "height": 24,
+              "top": 653.390625,
+              "right": 1581.84375,
+              "bottom": 677.390625,
+              "left": 1451.140625
+            }
+          },
+          {
+            "text": "Share a note or a clip with this local household thread.",
+            "rect": {
+              "x": 1369,
+              "y": 685.390625,
+              "width": 295,
+              "height": 36,
+              "top": 685.390625,
+              "right": 1664,
+              "bottom": 721.390625,
+              "left": 1369
+            }
+          },
+          {
+            "text": "Messages stay in this browser. They are not delivered to anyone.",
+            "rect": {
+              "x": 1369,
+              "y": 729.390625,
+              "width": 295,
+              "height": 36,
+              "top": 729.390625,
+              "right": 1664,
+              "bottom": 765.390625,
+              "left": 1369
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "mac-pro-16",
+      "width": 1728,
+      "height": 1030,
+      "theme": "light",
+      "thread": "household",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 1345,
+          "y": 620.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 620.796875,
+          "right": 1703,
+          "bottom": 798,
+          "left": 1345
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 1361,
+              "y": 636.796875,
+              "width": 311,
+              "height": 34,
+              "top": 636.796875,
+              "right": 1672,
+              "bottom": 670.796875,
+              "left": 1361
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "mac-pro-16",
+      "width": 1728,
+      "height": 1030,
+      "theme": "light",
+      "thread": "household",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 1345,
+          "y": 620.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 620.796875,
+          "right": 1703,
+          "bottom": 798,
+          "left": 1345
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 1361,
+              "y": 747.796875,
+              "width": 311,
+              "height": 34,
+              "top": 747.796875,
+              "right": 1672,
+              "bottom": 781.796875,
+              "left": 1361
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "windows-100",
+      "width": 1920,
+      "height": 960,
+      "theme": "dark",
+      "thread": "ask-home",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 1537,
+          "y": 550.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 550.796875,
+          "right": 1895,
+          "bottom": 728,
+          "left": 1537
+        },
+        "text": [
+          {
+            "text": "Ask about a visit",
+            "rect": {
+              "x": 1646.375,
+              "y": 605.390625,
+              "width": 124.25,
+              "height": 24,
+              "top": 605.390625,
+              "right": 1770.625,
+              "bottom": 629.390625,
+              "left": 1646.375
+            }
+          },
+          {
+            "text": "Search what the cameras recorded. Answers link to the visit evidence.",
+            "rect": {
+              "x": 1561,
+              "y": 637.390625,
+              "width": 295,
+              "height": 36,
+              "top": 637.390625,
+              "right": 1856,
+              "bottom": 673.390625,
+              "left": 1561
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "windows-100",
+      "width": 1920,
+      "height": 960,
+      "theme": "dark",
+      "thread": "ask-home",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 1537,
+          "y": 550.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 550.796875,
+          "right": 1895,
+          "bottom": 728,
+          "left": 1537
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 1553,
+              "y": 566.796875,
+              "width": 311,
+              "height": 34,
+              "top": 566.796875,
+              "right": 1864,
+              "bottom": 600.796875,
+              "left": 1553
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "windows-100",
+      "width": 1920,
+      "height": 960,
+      "theme": "dark",
+      "thread": "ask-home",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 1537,
+          "y": 550.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 550.796875,
+          "right": 1895,
+          "bottom": 728,
+          "left": 1537
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 1553,
+              "y": 677.796875,
+              "width": 311,
+              "height": 34,
+              "top": 677.796875,
+              "right": 1864,
+              "bottom": 711.796875,
+              "left": 1553
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "windows-100",
+      "width": 1920,
+      "height": 960,
+      "theme": "dark",
+      "thread": "household",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 1537,
+          "y": 550.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 550.796875,
+          "right": 1895,
+          "bottom": 728,
+          "left": 1537
+        },
+        "text": [
+          {
+            "text": "No messages yet",
+            "rect": {
+              "x": 1643.140625,
+              "y": 583.390625,
+              "width": 130.703125,
+              "height": 24,
+              "top": 583.390625,
+              "right": 1773.84375,
+              "bottom": 607.390625,
+              "left": 1643.140625
+            }
+          },
+          {
+            "text": "Share a note or a clip with this local household thread.",
+            "rect": {
+              "x": 1561,
+              "y": 615.390625,
+              "width": 295,
+              "height": 36,
+              "top": 615.390625,
+              "right": 1856,
+              "bottom": 651.390625,
+              "left": 1561
+            }
+          },
+          {
+            "text": "Messages stay in this browser. They are not delivered to anyone.",
+            "rect": {
+              "x": 1561,
+              "y": 659.390625,
+              "width": 295,
+              "height": 36,
+              "top": 659.390625,
+              "right": 1856,
+              "bottom": 695.390625,
+              "left": 1561
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "windows-100",
+      "width": 1920,
+      "height": 960,
+      "theme": "dark",
+      "thread": "household",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 1537,
+          "y": 550.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 550.796875,
+          "right": 1895,
+          "bottom": 728,
+          "left": 1537
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 1553,
+              "y": 566.796875,
+              "width": 311,
+              "height": 34,
+              "top": 566.796875,
+              "right": 1864,
+              "bottom": 600.796875,
+              "left": 1553
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "windows-100",
+      "width": 1920,
+      "height": 960,
+      "theme": "dark",
+      "thread": "household",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 1537,
+          "y": 550.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 550.796875,
+          "right": 1895,
+          "bottom": 728,
+          "left": 1537
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 1553,
+              "y": 677.796875,
+              "width": 311,
+              "height": 34,
+              "top": 677.796875,
+              "right": 1864,
+              "bottom": 711.796875,
+              "left": 1553
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "windows-100",
+      "width": 1920,
+      "height": 960,
+      "theme": "light",
+      "thread": "ask-home",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 1537,
+          "y": 550.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 550.796875,
+          "right": 1895,
+          "bottom": 728,
+          "left": 1537
+        },
+        "text": [
+          {
+            "text": "Ask about a visit",
+            "rect": {
+              "x": 1646.375,
+              "y": 605.390625,
+              "width": 124.25,
+              "height": 24,
+              "top": 605.390625,
+              "right": 1770.625,
+              "bottom": 629.390625,
+              "left": 1646.375
+            }
+          },
+          {
+            "text": "Search what the cameras recorded. Answers link to the visit evidence.",
+            "rect": {
+              "x": 1561,
+              "y": 637.390625,
+              "width": 295,
+              "height": 36,
+              "top": 637.390625,
+              "right": 1856,
+              "bottom": 673.390625,
+              "left": 1561
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "windows-100",
+      "width": 1920,
+      "height": 960,
+      "theme": "light",
+      "thread": "ask-home",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 1537,
+          "y": 550.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 550.796875,
+          "right": 1895,
+          "bottom": 728,
+          "left": 1537
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 1553,
+              "y": 566.796875,
+              "width": 311,
+              "height": 34,
+              "top": 566.796875,
+              "right": 1864,
+              "bottom": 600.796875,
+              "left": 1553
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "windows-100",
+      "width": 1920,
+      "height": 960,
+      "theme": "light",
+      "thread": "ask-home",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 1537,
+          "y": 550.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 550.796875,
+          "right": 1895,
+          "bottom": 728,
+          "left": 1537
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 1553,
+              "y": 677.796875,
+              "width": 311,
+              "height": 34,
+              "top": 677.796875,
+              "right": 1864,
+              "bottom": 711.796875,
+              "left": 1553
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "windows-100",
+      "width": 1920,
+      "height": 960,
+      "theme": "light",
+      "thread": "household",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 1537,
+          "y": 550.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 550.796875,
+          "right": 1895,
+          "bottom": 728,
+          "left": 1537
+        },
+        "text": [
+          {
+            "text": "No messages yet",
+            "rect": {
+              "x": 1643.140625,
+              "y": 583.390625,
+              "width": 130.703125,
+              "height": 24,
+              "top": 583.390625,
+              "right": 1773.84375,
+              "bottom": 607.390625,
+              "left": 1643.140625
+            }
+          },
+          {
+            "text": "Share a note or a clip with this local household thread.",
+            "rect": {
+              "x": 1561,
+              "y": 615.390625,
+              "width": 295,
+              "height": 36,
+              "top": 615.390625,
+              "right": 1856,
+              "bottom": 651.390625,
+              "left": 1561
+            }
+          },
+          {
+            "text": "Messages stay in this browser. They are not delivered to anyone.",
+            "rect": {
+              "x": 1561,
+              "y": 659.390625,
+              "width": 295,
+              "height": 36,
+              "top": 659.390625,
+              "right": 1856,
+              "bottom": 695.390625,
+              "left": 1561
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "windows-100",
+      "width": 1920,
+      "height": 960,
+      "theme": "light",
+      "thread": "household",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 1537,
+          "y": 550.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 550.796875,
+          "right": 1895,
+          "bottom": 728,
+          "left": 1537
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 1553,
+              "y": 566.796875,
+              "width": 311,
+              "height": 34,
+              "top": 566.796875,
+              "right": 1864,
+              "bottom": 600.796875,
+              "left": 1553
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "windows-100",
+      "width": 1920,
+      "height": 960,
+      "theme": "light",
+      "thread": "household",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 1537,
+          "y": 550.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 550.796875,
+          "right": 1895,
+          "bottom": 728,
+          "left": 1537
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 1553,
+              "y": 677.796875,
+              "width": 311,
+              "height": 34,
+              "top": 677.796875,
+              "right": 1864,
+              "bottom": 711.796875,
+              "left": 1553
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "windows-125",
+      "width": 1536,
+      "height": 730,
+      "theme": "dark",
+      "thread": "ask-home",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 1153,
+          "y": 304.796875,
+          "width": 358,
+          "height": 193.203125,
+          "top": 304.796875,
+          "right": 1511,
+          "bottom": 498,
+          "left": 1153
+        },
+        "text": [
+          {
+            "text": "Ask about a visit",
+            "rect": {
+              "x": 1262.375,
+              "y": 367.390625,
+              "width": 124.25,
+              "height": 24,
+              "top": 367.390625,
+              "right": 1386.625,
+              "bottom": 391.390625,
+              "left": 1262.375
+            }
+          },
+          {
+            "text": "Search what the cameras recorded. Answers link to the visit evidence.",
+            "rect": {
+              "x": 1161,
+              "y": 399.390625,
+              "width": 327,
+              "height": 36,
+              "top": 399.390625,
+              "right": 1488,
+              "bottom": 435.390625,
+              "left": 1161
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "windows-125",
+      "width": 1536,
+      "height": 730,
+      "theme": "dark",
+      "thread": "ask-home",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 1153,
+          "y": 304.796875,
+          "width": 358,
+          "height": 193.203125,
+          "top": 304.796875,
+          "right": 1511,
+          "bottom": 498,
+          "left": 1153
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 1161,
+              "y": 312.796875,
+              "width": 327,
+              "height": 34,
+              "top": 312.796875,
+              "right": 1488,
+              "bottom": 346.796875,
+              "left": 1161
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "windows-125",
+      "width": 1536,
+      "height": 730,
+      "theme": "dark",
+      "thread": "ask-home",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 1153,
+          "y": 304.796875,
+          "width": 358,
+          "height": 193.203125,
+          "top": 304.796875,
+          "right": 1511,
+          "bottom": 498,
+          "left": 1153
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 1161,
+              "y": 455.796875,
+              "width": 327,
+              "height": 34,
+              "top": 455.796875,
+              "right": 1488,
+              "bottom": 489.796875,
+              "left": 1161
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "windows-125",
+      "width": 1536,
+      "height": 730,
+      "theme": "dark",
+      "thread": "household",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 1153,
+          "y": 304.796875,
+          "width": 358,
+          "height": 193.203125,
+          "top": 304.796875,
+          "right": 1511,
+          "bottom": 498,
+          "left": 1153
+        },
+        "text": [
+          {
+            "text": "No messages yet",
+            "rect": {
+              "x": 1259.140625,
+              "y": 354.390625,
+              "width": 130.703125,
+              "height": 24,
+              "top": 354.390625,
+              "right": 1389.84375,
+              "bottom": 378.390625,
+              "left": 1259.140625
+            }
+          },
+          {
+            "text": "Share a note or a clip with this local household thread.",
+            "rect": {
+              "x": 1171.046875,
+              "y": 386.390625,
+              "width": 306.890625,
+              "height": 18,
+              "top": 386.390625,
+              "right": 1477.9375,
+              "bottom": 404.390625,
+              "left": 1171.046875
+            }
+          },
+          {
+            "text": "Messages stay in this browser. They are not delivered to anyone.",
+            "rect": {
+              "x": 1161,
+              "y": 412.390625,
+              "width": 327,
+              "height": 36,
+              "top": 412.390625,
+              "right": 1488,
+              "bottom": 448.390625,
+              "left": 1161
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "windows-125",
+      "width": 1536,
+      "height": 730,
+      "theme": "dark",
+      "thread": "household",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 1153,
+          "y": 304.796875,
+          "width": 358,
+          "height": 193.203125,
+          "top": 304.796875,
+          "right": 1511,
+          "bottom": 498,
+          "left": 1153
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 1161,
+              "y": 312.796875,
+              "width": 327,
+              "height": 34,
+              "top": 312.796875,
+              "right": 1488,
+              "bottom": 346.796875,
+              "left": 1161
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "windows-125",
+      "width": 1536,
+      "height": 730,
+      "theme": "dark",
+      "thread": "household",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 1153,
+          "y": 304.796875,
+          "width": 358,
+          "height": 193.203125,
+          "top": 304.796875,
+          "right": 1511,
+          "bottom": 498,
+          "left": 1153
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 1161,
+              "y": 455.796875,
+              "width": 327,
+              "height": 34,
+              "top": 455.796875,
+              "right": 1488,
+              "bottom": 489.796875,
+              "left": 1161
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "windows-125",
+      "width": 1536,
+      "height": 730,
+      "theme": "light",
+      "thread": "ask-home",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 1153,
+          "y": 304.796875,
+          "width": 358,
+          "height": 193.203125,
+          "top": 304.796875,
+          "right": 1511,
+          "bottom": 498,
+          "left": 1153
+        },
+        "text": [
+          {
+            "text": "Ask about a visit",
+            "rect": {
+              "x": 1262.375,
+              "y": 367.390625,
+              "width": 124.25,
+              "height": 24,
+              "top": 367.390625,
+              "right": 1386.625,
+              "bottom": 391.390625,
+              "left": 1262.375
+            }
+          },
+          {
+            "text": "Search what the cameras recorded. Answers link to the visit evidence.",
+            "rect": {
+              "x": 1161,
+              "y": 399.390625,
+              "width": 327,
+              "height": 36,
+              "top": 399.390625,
+              "right": 1488,
+              "bottom": 435.390625,
+              "left": 1161
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "windows-125",
+      "width": 1536,
+      "height": 730,
+      "theme": "light",
+      "thread": "ask-home",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 1153,
+          "y": 304.796875,
+          "width": 358,
+          "height": 193.203125,
+          "top": 304.796875,
+          "right": 1511,
+          "bottom": 498,
+          "left": 1153
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 1161,
+              "y": 312.796875,
+              "width": 327,
+              "height": 34,
+              "top": 312.796875,
+              "right": 1488,
+              "bottom": 346.796875,
+              "left": 1161
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "windows-125",
+      "width": 1536,
+      "height": 730,
+      "theme": "light",
+      "thread": "ask-home",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 1153,
+          "y": 304.796875,
+          "width": 358,
+          "height": 193.203125,
+          "top": 304.796875,
+          "right": 1511,
+          "bottom": 498,
+          "left": 1153
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 1161,
+              "y": 455.796875,
+              "width": 327,
+              "height": 34,
+              "top": 455.796875,
+              "right": 1488,
+              "bottom": 489.796875,
+              "left": 1161
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "windows-125",
+      "width": 1536,
+      "height": 730,
+      "theme": "light",
+      "thread": "household",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 1153,
+          "y": 304.796875,
+          "width": 358,
+          "height": 193.203125,
+          "top": 304.796875,
+          "right": 1511,
+          "bottom": 498,
+          "left": 1153
+        },
+        "text": [
+          {
+            "text": "No messages yet",
+            "rect": {
+              "x": 1259.140625,
+              "y": 354.390625,
+              "width": 130.703125,
+              "height": 24,
+              "top": 354.390625,
+              "right": 1389.84375,
+              "bottom": 378.390625,
+              "left": 1259.140625
+            }
+          },
+          {
+            "text": "Share a note or a clip with this local household thread.",
+            "rect": {
+              "x": 1171.046875,
+              "y": 386.390625,
+              "width": 306.890625,
+              "height": 18,
+              "top": 386.390625,
+              "right": 1477.9375,
+              "bottom": 404.390625,
+              "left": 1171.046875
+            }
+          },
+          {
+            "text": "Messages stay in this browser. They are not delivered to anyone.",
+            "rect": {
+              "x": 1161,
+              "y": 412.390625,
+              "width": 327,
+              "height": 36,
+              "top": 412.390625,
+              "right": 1488,
+              "bottom": 448.390625,
+              "left": 1161
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "windows-125",
+      "width": 1536,
+      "height": 730,
+      "theme": "light",
+      "thread": "household",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 1153,
+          "y": 304.796875,
+          "width": 358,
+          "height": 193.203125,
+          "top": 304.796875,
+          "right": 1511,
+          "bottom": 498,
+          "left": 1153
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 1161,
+              "y": 312.796875,
+              "width": 327,
+              "height": 34,
+              "top": 312.796875,
+              "right": 1488,
+              "bottom": 346.796875,
+              "left": 1161
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "windows-125",
+      "width": 1536,
+      "height": 730,
+      "theme": "light",
+      "thread": "household",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 1153,
+          "y": 304.796875,
+          "width": 358,
+          "height": 193.203125,
+          "top": 304.796875,
+          "right": 1511,
+          "bottom": 498,
+          "left": 1153
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 1161,
+              "y": 455.796875,
+              "width": 327,
+              "height": 34,
+              "top": 455.796875,
+              "right": 1488,
+              "bottom": 489.796875,
+              "left": 1161
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "windows-150",
+      "width": 1280,
+      "height": 600,
+      "theme": "dark",
+      "thread": "ask-home",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 897,
+          "y": 230.796875,
+          "width": 358,
+          "height": 137.203125,
+          "top": 230.796875,
+          "right": 1255,
+          "bottom": 368,
+          "left": 897
+        },
+        "text": [
+          {
+            "text": "Ask about a visit",
+            "rect": {
+              "x": 1006.375,
+              "y": 265.390625,
+              "width": 124.25,
+              "height": 24,
+              "top": 265.390625,
+              "right": 1130.625,
+              "bottom": 289.390625,
+              "left": 1006.375
+            }
+          },
+          {
+            "text": "Search what the cameras recorded. Answers link to the visit evidence.",
+            "rect": {
+              "x": 905,
+              "y": 297.390625,
+              "width": 327,
+              "height": 36,
+              "top": 297.390625,
+              "right": 1232,
+              "bottom": 333.390625,
+              "left": 905
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "windows-150",
+      "width": 1280,
+      "height": 600,
+      "theme": "dark",
+      "thread": "ask-home",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 897,
+          "y": 230.796875,
+          "width": 358,
+          "height": 137.203125,
+          "top": 230.796875,
+          "right": 1255,
+          "bottom": 368,
+          "left": 897
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 905,
+              "y": 238.796875,
+              "width": 327,
+              "height": 34,
+              "top": 238.796875,
+              "right": 1232,
+              "bottom": 272.796875,
+              "left": 905
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "windows-150",
+      "width": 1280,
+      "height": 600,
+      "theme": "dark",
+      "thread": "ask-home",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 897,
+          "y": 230.796875,
+          "width": 358,
+          "height": 137.203125,
+          "top": 230.796875,
+          "right": 1255,
+          "bottom": 368,
+          "left": 897
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 905,
+              "y": 325.796875,
+              "width": 327,
+              "height": 34,
+              "top": 325.796875,
+              "right": 1232,
+              "bottom": 359.796875,
+              "left": 905
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "windows-150",
+      "width": 1280,
+      "height": 600,
+      "theme": "dark",
+      "thread": "household",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 897,
+          "y": 230.796875,
+          "width": 358,
+          "height": 137.203125,
+          "top": 230.796875,
+          "right": 1255,
+          "bottom": 368,
+          "left": 897
+        },
+        "text": [
+          {
+            "text": "No messages yet",
+            "rect": {
+              "x": 1003.140625,
+              "y": 252.390625,
+              "width": 130.703125,
+              "height": 24,
+              "top": 252.390625,
+              "right": 1133.84375,
+              "bottom": 276.390625,
+              "left": 1003.140625
+            }
+          },
+          {
+            "text": "Share a note or a clip with this local household thread.",
+            "rect": {
+              "x": 915.046875,
+              "y": 284.390625,
+              "width": 306.890625,
+              "height": 18,
+              "top": 284.390625,
+              "right": 1221.9375,
+              "bottom": 302.390625,
+              "left": 915.046875
+            }
+          },
+          {
+            "text": "Messages stay in this browser. They are not delivered to anyone.",
+            "rect": {
+              "x": 905,
+              "y": 310.390625,
+              "width": 327,
+              "height": 36,
+              "top": 310.390625,
+              "right": 1232,
+              "bottom": 346.390625,
+              "left": 905
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "windows-150",
+      "width": 1280,
+      "height": 600,
+      "theme": "dark",
+      "thread": "household",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 897,
+          "y": 230.796875,
+          "width": 358,
+          "height": 137.203125,
+          "top": 230.796875,
+          "right": 1255,
+          "bottom": 368,
+          "left": 897
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 905,
+              "y": 238.796875,
+              "width": 327,
+              "height": 34,
+              "top": 238.796875,
+              "right": 1232,
+              "bottom": 272.796875,
+              "left": 905
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "windows-150",
+      "width": 1280,
+      "height": 600,
+      "theme": "dark",
+      "thread": "household",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 897,
+          "y": 230.796875,
+          "width": 358,
+          "height": 137.203125,
+          "top": 230.796875,
+          "right": 1255,
+          "bottom": 368,
+          "left": 897
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 905,
+              "y": 325.796875,
+              "width": 327,
+              "height": 34,
+              "top": 325.796875,
+              "right": 1232,
+              "bottom": 359.796875,
+              "left": 905
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "windows-150",
+      "width": 1280,
+      "height": 600,
+      "theme": "light",
+      "thread": "ask-home",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 897,
+          "y": 230.796875,
+          "width": 358,
+          "height": 137.203125,
+          "top": 230.796875,
+          "right": 1255,
+          "bottom": 368,
+          "left": 897
+        },
+        "text": [
+          {
+            "text": "Ask about a visit",
+            "rect": {
+              "x": 1006.375,
+              "y": 265.390625,
+              "width": 124.25,
+              "height": 24,
+              "top": 265.390625,
+              "right": 1130.625,
+              "bottom": 289.390625,
+              "left": 1006.375
+            }
+          },
+          {
+            "text": "Search what the cameras recorded. Answers link to the visit evidence.",
+            "rect": {
+              "x": 905,
+              "y": 297.390625,
+              "width": 327,
+              "height": 36,
+              "top": 297.390625,
+              "right": 1232,
+              "bottom": 333.390625,
+              "left": 905
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "windows-150",
+      "width": 1280,
+      "height": 600,
+      "theme": "light",
+      "thread": "ask-home",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 897,
+          "y": 230.796875,
+          "width": 358,
+          "height": 137.203125,
+          "top": 230.796875,
+          "right": 1255,
+          "bottom": 368,
+          "left": 897
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 905,
+              "y": 238.796875,
+              "width": 327,
+              "height": 34,
+              "top": 238.796875,
+              "right": 1232,
+              "bottom": 272.796875,
+              "left": 905
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "windows-150",
+      "width": 1280,
+      "height": 600,
+      "theme": "light",
+      "thread": "ask-home",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 897,
+          "y": 230.796875,
+          "width": 358,
+          "height": 137.203125,
+          "top": 230.796875,
+          "right": 1255,
+          "bottom": 368,
+          "left": 897
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 905,
+              "y": 325.796875,
+              "width": 327,
+              "height": 34,
+              "top": 325.796875,
+              "right": 1232,
+              "bottom": 359.796875,
+              "left": 905
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "windows-150",
+      "width": 1280,
+      "height": 600,
+      "theme": "light",
+      "thread": "household",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 897,
+          "y": 230.796875,
+          "width": 358,
+          "height": 137.203125,
+          "top": 230.796875,
+          "right": 1255,
+          "bottom": 368,
+          "left": 897
+        },
+        "text": [
+          {
+            "text": "No messages yet",
+            "rect": {
+              "x": 1003.140625,
+              "y": 252.390625,
+              "width": 130.703125,
+              "height": 24,
+              "top": 252.390625,
+              "right": 1133.84375,
+              "bottom": 276.390625,
+              "left": 1003.140625
+            }
+          },
+          {
+            "text": "Share a note or a clip with this local household thread.",
+            "rect": {
+              "x": 915.046875,
+              "y": 284.390625,
+              "width": 306.890625,
+              "height": 18,
+              "top": 284.390625,
+              "right": 1221.9375,
+              "bottom": 302.390625,
+              "left": 915.046875
+            }
+          },
+          {
+            "text": "Messages stay in this browser. They are not delivered to anyone.",
+            "rect": {
+              "x": 905,
+              "y": 310.390625,
+              "width": 327,
+              "height": 36,
+              "top": 310.390625,
+              "right": 1232,
+              "bottom": 346.390625,
+              "left": 905
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "windows-150",
+      "width": 1280,
+      "height": 600,
+      "theme": "light",
+      "thread": "household",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 897,
+          "y": 230.796875,
+          "width": 358,
+          "height": 137.203125,
+          "top": 230.796875,
+          "right": 1255,
+          "bottom": 368,
+          "left": 897
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 905,
+              "y": 238.796875,
+              "width": 327,
+              "height": 34,
+              "top": 238.796875,
+              "right": 1232,
+              "bottom": 272.796875,
+              "left": 905
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "windows-150",
+      "width": 1280,
+      "height": 600,
+      "theme": "light",
+      "thread": "household",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 897,
+          "y": 230.796875,
+          "width": 358,
+          "height": 137.203125,
+          "top": 230.796875,
+          "right": 1255,
+          "bottom": 368,
+          "left": 897
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 905,
+              "y": 325.796875,
+              "width": 327,
+              "height": 34,
+              "top": 325.796875,
+              "right": 1232,
+              "bottom": 359.796875,
+              "left": 905
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "laptop",
+      "width": 1366,
+      "height": 650,
+      "theme": "dark",
+      "thread": "ask-home",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 983,
+          "y": 230.796875,
+          "width": 358,
+          "height": 187.203125,
+          "top": 230.796875,
+          "right": 1341,
+          "bottom": 418,
+          "left": 983
+        },
+        "text": [
+          {
+            "text": "Ask about a visit",
+            "rect": {
+              "x": 1092.375,
+              "y": 290.390625,
+              "width": 124.25,
+              "height": 24,
+              "top": 290.390625,
+              "right": 1216.625,
+              "bottom": 314.390625,
+              "left": 1092.375
+            }
+          },
+          {
+            "text": "Search what the cameras recorded. Answers link to the visit evidence.",
+            "rect": {
+              "x": 991,
+              "y": 322.390625,
+              "width": 327,
+              "height": 36,
+              "top": 322.390625,
+              "right": 1318,
+              "bottom": 358.390625,
+              "left": 991
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "laptop",
+      "width": 1366,
+      "height": 650,
+      "theme": "dark",
+      "thread": "ask-home",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 983,
+          "y": 230.796875,
+          "width": 358,
+          "height": 187.203125,
+          "top": 230.796875,
+          "right": 1341,
+          "bottom": 418,
+          "left": 983
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 991,
+              "y": 238.796875,
+              "width": 327,
+              "height": 34,
+              "top": 238.796875,
+              "right": 1318,
+              "bottom": 272.796875,
+              "left": 991
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "laptop",
+      "width": 1366,
+      "height": 650,
+      "theme": "dark",
+      "thread": "ask-home",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 983,
+          "y": 230.796875,
+          "width": 358,
+          "height": 187.203125,
+          "top": 230.796875,
+          "right": 1341,
+          "bottom": 418,
+          "left": 983
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 991,
+              "y": 375.796875,
+              "width": 327,
+              "height": 34,
+              "top": 375.796875,
+              "right": 1318,
+              "bottom": 409.796875,
+              "left": 991
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "laptop",
+      "width": 1366,
+      "height": 650,
+      "theme": "dark",
+      "thread": "household",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 983,
+          "y": 230.796875,
+          "width": 358,
+          "height": 187.203125,
+          "top": 230.796875,
+          "right": 1341,
+          "bottom": 418,
+          "left": 983
+        },
+        "text": [
+          {
+            "text": "No messages yet",
+            "rect": {
+              "x": 1089.140625,
+              "y": 277.390625,
+              "width": 130.703125,
+              "height": 24,
+              "top": 277.390625,
+              "right": 1219.84375,
+              "bottom": 301.390625,
+              "left": 1089.140625
+            }
+          },
+          {
+            "text": "Share a note or a clip with this local household thread.",
+            "rect": {
+              "x": 1001.046875,
+              "y": 309.390625,
+              "width": 306.890625,
+              "height": 18,
+              "top": 309.390625,
+              "right": 1307.9375,
+              "bottom": 327.390625,
+              "left": 1001.046875
+            }
+          },
+          {
+            "text": "Messages stay in this browser. They are not delivered to anyone.",
+            "rect": {
+              "x": 991,
+              "y": 335.390625,
+              "width": 327,
+              "height": 36,
+              "top": 335.390625,
+              "right": 1318,
+              "bottom": 371.390625,
+              "left": 991
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "laptop",
+      "width": 1366,
+      "height": 650,
+      "theme": "dark",
+      "thread": "household",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 983,
+          "y": 230.796875,
+          "width": 358,
+          "height": 187.203125,
+          "top": 230.796875,
+          "right": 1341,
+          "bottom": 418,
+          "left": 983
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 991,
+              "y": 238.796875,
+              "width": 327,
+              "height": 34,
+              "top": 238.796875,
+              "right": 1318,
+              "bottom": 272.796875,
+              "left": 991
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "laptop",
+      "width": 1366,
+      "height": 650,
+      "theme": "dark",
+      "thread": "household",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 983,
+          "y": 230.796875,
+          "width": 358,
+          "height": 187.203125,
+          "top": 230.796875,
+          "right": 1341,
+          "bottom": 418,
+          "left": 983
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 991,
+              "y": 375.796875,
+              "width": 327,
+              "height": 34,
+              "top": 375.796875,
+              "right": 1318,
+              "bottom": 409.796875,
+              "left": 991
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "laptop",
+      "width": 1366,
+      "height": 650,
+      "theme": "light",
+      "thread": "ask-home",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 983,
+          "y": 230.796875,
+          "width": 358,
+          "height": 187.203125,
+          "top": 230.796875,
+          "right": 1341,
+          "bottom": 418,
+          "left": 983
+        },
+        "text": [
+          {
+            "text": "Ask about a visit",
+            "rect": {
+              "x": 1092.375,
+              "y": 290.390625,
+              "width": 124.25,
+              "height": 24,
+              "top": 290.390625,
+              "right": 1216.625,
+              "bottom": 314.390625,
+              "left": 1092.375
+            }
+          },
+          {
+            "text": "Search what the cameras recorded. Answers link to the visit evidence.",
+            "rect": {
+              "x": 991,
+              "y": 322.390625,
+              "width": 327,
+              "height": 36,
+              "top": 322.390625,
+              "right": 1318,
+              "bottom": 358.390625,
+              "left": 991
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "laptop",
+      "width": 1366,
+      "height": 650,
+      "theme": "light",
+      "thread": "ask-home",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 983,
+          "y": 230.796875,
+          "width": 358,
+          "height": 187.203125,
+          "top": 230.796875,
+          "right": 1341,
+          "bottom": 418,
+          "left": 983
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 991,
+              "y": 238.796875,
+              "width": 327,
+              "height": 34,
+              "top": 238.796875,
+              "right": 1318,
+              "bottom": 272.796875,
+              "left": 991
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "laptop",
+      "width": 1366,
+      "height": 650,
+      "theme": "light",
+      "thread": "ask-home",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 983,
+          "y": 230.796875,
+          "width": 358,
+          "height": 187.203125,
+          "top": 230.796875,
+          "right": 1341,
+          "bottom": 418,
+          "left": 983
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 991,
+              "y": 375.796875,
+              "width": 327,
+              "height": 34,
+              "top": 375.796875,
+              "right": 1318,
+              "bottom": 409.796875,
+              "left": 991
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "laptop",
+      "width": 1366,
+      "height": 650,
+      "theme": "light",
+      "thread": "household",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 983,
+          "y": 230.796875,
+          "width": 358,
+          "height": 187.203125,
+          "top": 230.796875,
+          "right": 1341,
+          "bottom": 418,
+          "left": 983
+        },
+        "text": [
+          {
+            "text": "No messages yet",
+            "rect": {
+              "x": 1089.140625,
+              "y": 277.390625,
+              "width": 130.703125,
+              "height": 24,
+              "top": 277.390625,
+              "right": 1219.84375,
+              "bottom": 301.390625,
+              "left": 1089.140625
+            }
+          },
+          {
+            "text": "Share a note or a clip with this local household thread.",
+            "rect": {
+              "x": 1001.046875,
+              "y": 309.390625,
+              "width": 306.890625,
+              "height": 18,
+              "top": 309.390625,
+              "right": 1307.9375,
+              "bottom": 327.390625,
+              "left": 1001.046875
+            }
+          },
+          {
+            "text": "Messages stay in this browser. They are not delivered to anyone.",
+            "rect": {
+              "x": 991,
+              "y": 335.390625,
+              "width": 327,
+              "height": 36,
+              "top": 335.390625,
+              "right": 1318,
+              "bottom": 371.390625,
+              "left": 991
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "laptop",
+      "width": 1366,
+      "height": 650,
+      "theme": "light",
+      "thread": "household",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 983,
+          "y": 230.796875,
+          "width": 358,
+          "height": 187.203125,
+          "top": 230.796875,
+          "right": 1341,
+          "bottom": 418,
+          "left": 983
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 991,
+              "y": 238.796875,
+              "width": 327,
+              "height": 34,
+              "top": 238.796875,
+              "right": 1318,
+              "bottom": 272.796875,
+              "left": 991
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "laptop",
+      "width": 1366,
+      "height": 650,
+      "theme": "light",
+      "thread": "household",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 983,
+          "y": 230.796875,
+          "width": 358,
+          "height": 187.203125,
+          "top": 230.796875,
+          "right": 1341,
+          "bottom": 418,
+          "left": 983
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 991,
+              "y": 375.796875,
+              "width": 327,
+              "height": 34,
+              "top": 375.796875,
+              "right": 1318,
+              "bottom": 409.796875,
+              "left": 991
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "four-three",
+      "width": 1024,
+      "height": 768,
+      "theme": "dark",
+      "thread": "ask-home",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 641,
+          "y": 358.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 358.796875,
+          "right": 999,
+          "bottom": 536,
+          "left": 641
+        },
+        "text": [
+          {
+            "text": "Ask about a visit",
+            "rect": {
+              "x": 750.375,
+              "y": 413.390625,
+              "width": 124.25,
+              "height": 24,
+              "top": 413.390625,
+              "right": 874.625,
+              "bottom": 437.390625,
+              "left": 750.375
+            }
+          },
+          {
+            "text": "Search what the cameras recorded. Answers link to the visit evidence.",
+            "rect": {
+              "x": 665,
+              "y": 445.390625,
+              "width": 295,
+              "height": 36,
+              "top": 445.390625,
+              "right": 960,
+              "bottom": 481.390625,
+              "left": 665
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "four-three",
+      "width": 1024,
+      "height": 768,
+      "theme": "dark",
+      "thread": "ask-home",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 641,
+          "y": 358.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 358.796875,
+          "right": 999,
+          "bottom": 536,
+          "left": 641
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 657,
+              "y": 374.796875,
+              "width": 311,
+              "height": 34,
+              "top": 374.796875,
+              "right": 968,
+              "bottom": 408.796875,
+              "left": 657
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "four-three",
+      "width": 1024,
+      "height": 768,
+      "theme": "dark",
+      "thread": "ask-home",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 641,
+          "y": 358.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 358.796875,
+          "right": 999,
+          "bottom": 536,
+          "left": 641
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 657,
+              "y": 485.796875,
+              "width": 311,
+              "height": 34,
+              "top": 485.796875,
+              "right": 968,
+              "bottom": 519.796875,
+              "left": 657
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "four-three",
+      "width": 1024,
+      "height": 768,
+      "theme": "dark",
+      "thread": "household",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 641,
+          "y": 358.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 358.796875,
+          "right": 999,
+          "bottom": 536,
+          "left": 641
+        },
+        "text": [
+          {
+            "text": "No messages yet",
+            "rect": {
+              "x": 747.140625,
+              "y": 391.390625,
+              "width": 130.703125,
+              "height": 24,
+              "top": 391.390625,
+              "right": 877.84375,
+              "bottom": 415.390625,
+              "left": 747.140625
+            }
+          },
+          {
+            "text": "Share a note or a clip with this local household thread.",
+            "rect": {
+              "x": 665,
+              "y": 423.390625,
+              "width": 295,
+              "height": 36,
+              "top": 423.390625,
+              "right": 960,
+              "bottom": 459.390625,
+              "left": 665
+            }
+          },
+          {
+            "text": "Messages stay in this browser. They are not delivered to anyone.",
+            "rect": {
+              "x": 665,
+              "y": 467.390625,
+              "width": 295,
+              "height": 36,
+              "top": 467.390625,
+              "right": 960,
+              "bottom": 503.390625,
+              "left": 665
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "four-three",
+      "width": 1024,
+      "height": 768,
+      "theme": "dark",
+      "thread": "household",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 641,
+          "y": 358.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 358.796875,
+          "right": 999,
+          "bottom": 536,
+          "left": 641
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 657,
+              "y": 374.796875,
+              "width": 311,
+              "height": 34,
+              "top": 374.796875,
+              "right": 968,
+              "bottom": 408.796875,
+              "left": 657
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "four-three",
+      "width": 1024,
+      "height": 768,
+      "theme": "dark",
+      "thread": "household",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 641,
+          "y": 358.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 358.796875,
+          "right": 999,
+          "bottom": 536,
+          "left": 641
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 657,
+              "y": 485.796875,
+              "width": 311,
+              "height": 34,
+              "top": 485.796875,
+              "right": 968,
+              "bottom": 519.796875,
+              "left": 657
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "four-three",
+      "width": 1024,
+      "height": 768,
+      "theme": "light",
+      "thread": "ask-home",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 641,
+          "y": 358.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 358.796875,
+          "right": 999,
+          "bottom": 536,
+          "left": 641
+        },
+        "text": [
+          {
+            "text": "Ask about a visit",
+            "rect": {
+              "x": 750.375,
+              "y": 413.390625,
+              "width": 124.25,
+              "height": 24,
+              "top": 413.390625,
+              "right": 874.625,
+              "bottom": 437.390625,
+              "left": 750.375
+            }
+          },
+          {
+            "text": "Search what the cameras recorded. Answers link to the visit evidence.",
+            "rect": {
+              "x": 665,
+              "y": 445.390625,
+              "width": 295,
+              "height": 36,
+              "top": 445.390625,
+              "right": 960,
+              "bottom": 481.390625,
+              "left": 665
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "four-three",
+      "width": 1024,
+      "height": 768,
+      "theme": "light",
+      "thread": "ask-home",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 641,
+          "y": 358.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 358.796875,
+          "right": 999,
+          "bottom": 536,
+          "left": 641
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 657,
+              "y": 374.796875,
+              "width": 311,
+              "height": 34,
+              "top": 374.796875,
+              "right": 968,
+              "bottom": 408.796875,
+              "left": 657
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "four-three",
+      "width": 1024,
+      "height": 768,
+      "theme": "light",
+      "thread": "ask-home",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 641,
+          "y": 358.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 358.796875,
+          "right": 999,
+          "bottom": 536,
+          "left": 641
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 657,
+              "y": 485.796875,
+              "width": 311,
+              "height": 34,
+              "top": 485.796875,
+              "right": 968,
+              "bottom": 519.796875,
+              "left": 657
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "four-three",
+      "width": 1024,
+      "height": 768,
+      "theme": "light",
+      "thread": "household",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 641,
+          "y": 358.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 358.796875,
+          "right": 999,
+          "bottom": 536,
+          "left": 641
+        },
+        "text": [
+          {
+            "text": "No messages yet",
+            "rect": {
+              "x": 747.140625,
+              "y": 391.390625,
+              "width": 130.703125,
+              "height": 24,
+              "top": 391.390625,
+              "right": 877.84375,
+              "bottom": 415.390625,
+              "left": 747.140625
+            }
+          },
+          {
+            "text": "Share a note or a clip with this local household thread.",
+            "rect": {
+              "x": 665,
+              "y": 423.390625,
+              "width": 295,
+              "height": 36,
+              "top": 423.390625,
+              "right": 960,
+              "bottom": 459.390625,
+              "left": 665
+            }
+          },
+          {
+            "text": "Messages stay in this browser. They are not delivered to anyone.",
+            "rect": {
+              "x": 665,
+              "y": 467.390625,
+              "width": 295,
+              "height": 36,
+              "top": 467.390625,
+              "right": 960,
+              "bottom": 503.390625,
+              "left": 665
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "four-three",
+      "width": 1024,
+      "height": 768,
+      "theme": "light",
+      "thread": "household",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 641,
+          "y": 358.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 358.796875,
+          "right": 999,
+          "bottom": 536,
+          "left": 641
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 657,
+              "y": 374.796875,
+              "width": 311,
+              "height": 34,
+              "top": 374.796875,
+              "right": 968,
+              "bottom": 408.796875,
+              "left": 657
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "four-three",
+      "width": 1024,
+      "height": 768,
+      "theme": "light",
+      "thread": "household",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 641,
+          "y": 358.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 358.796875,
+          "right": 999,
+          "bottom": 536,
+          "left": 641
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 657,
+              "y": 485.796875,
+              "width": 311,
+              "height": 34,
+              "top": 485.796875,
+              "right": 968,
+              "bottom": 519.796875,
+              "left": 657
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "tablet",
+      "width": 1180,
+      "height": 820,
+      "theme": "dark",
+      "thread": "ask-home",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 797,
+          "y": 410.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 410.796875,
+          "right": 1155,
+          "bottom": 588,
+          "left": 797
+        },
+        "text": [
+          {
+            "text": "Ask about a visit",
+            "rect": {
+              "x": 906.375,
+              "y": 465.390625,
+              "width": 124.25,
+              "height": 24,
+              "top": 465.390625,
+              "right": 1030.625,
+              "bottom": 489.390625,
+              "left": 906.375
+            }
+          },
+          {
+            "text": "Search what the cameras recorded. Answers link to the visit evidence.",
+            "rect": {
+              "x": 821,
+              "y": 497.390625,
+              "width": 295,
+              "height": 36,
+              "top": 497.390625,
+              "right": 1116,
+              "bottom": 533.390625,
+              "left": 821
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "tablet",
+      "width": 1180,
+      "height": 820,
+      "theme": "dark",
+      "thread": "ask-home",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 797,
+          "y": 410.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 410.796875,
+          "right": 1155,
+          "bottom": 588,
+          "left": 797
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 813,
+              "y": 426.796875,
+              "width": 311,
+              "height": 34,
+              "top": 426.796875,
+              "right": 1124,
+              "bottom": 460.796875,
+              "left": 813
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "tablet",
+      "width": 1180,
+      "height": 820,
+      "theme": "dark",
+      "thread": "ask-home",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 797,
+          "y": 410.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 410.796875,
+          "right": 1155,
+          "bottom": 588,
+          "left": 797
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 813,
+              "y": 537.796875,
+              "width": 311,
+              "height": 34,
+              "top": 537.796875,
+              "right": 1124,
+              "bottom": 571.796875,
+              "left": 813
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "tablet",
+      "width": 1180,
+      "height": 820,
+      "theme": "dark",
+      "thread": "household",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 797,
+          "y": 410.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 410.796875,
+          "right": 1155,
+          "bottom": 588,
+          "left": 797
+        },
+        "text": [
+          {
+            "text": "No messages yet",
+            "rect": {
+              "x": 903.140625,
+              "y": 443.390625,
+              "width": 130.703125,
+              "height": 24,
+              "top": 443.390625,
+              "right": 1033.84375,
+              "bottom": 467.390625,
+              "left": 903.140625
+            }
+          },
+          {
+            "text": "Share a note or a clip with this local household thread.",
+            "rect": {
+              "x": 821,
+              "y": 475.390625,
+              "width": 295,
+              "height": 36,
+              "top": 475.390625,
+              "right": 1116,
+              "bottom": 511.390625,
+              "left": 821
+            }
+          },
+          {
+            "text": "Messages stay in this browser. They are not delivered to anyone.",
+            "rect": {
+              "x": 821,
+              "y": 519.390625,
+              "width": 295,
+              "height": 36,
+              "top": 519.390625,
+              "right": 1116,
+              "bottom": 555.390625,
+              "left": 821
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "tablet",
+      "width": 1180,
+      "height": 820,
+      "theme": "dark",
+      "thread": "household",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 797,
+          "y": 410.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 410.796875,
+          "right": 1155,
+          "bottom": 588,
+          "left": 797
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 813,
+              "y": 426.796875,
+              "width": 311,
+              "height": 34,
+              "top": 426.796875,
+              "right": 1124,
+              "bottom": 460.796875,
+              "left": 813
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "tablet",
+      "width": 1180,
+      "height": 820,
+      "theme": "dark",
+      "thread": "household",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 797,
+          "y": 410.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 410.796875,
+          "right": 1155,
+          "bottom": 588,
+          "left": 797
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 813,
+              "y": 537.796875,
+              "width": 311,
+              "height": 34,
+              "top": 537.796875,
+              "right": 1124,
+              "bottom": 571.796875,
+              "left": 813
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "tablet",
+      "width": 1180,
+      "height": 820,
+      "theme": "light",
+      "thread": "ask-home",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 797,
+          "y": 410.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 410.796875,
+          "right": 1155,
+          "bottom": 588,
+          "left": 797
+        },
+        "text": [
+          {
+            "text": "Ask about a visit",
+            "rect": {
+              "x": 906.375,
+              "y": 465.390625,
+              "width": 124.25,
+              "height": 24,
+              "top": 465.390625,
+              "right": 1030.625,
+              "bottom": 489.390625,
+              "left": 906.375
+            }
+          },
+          {
+            "text": "Search what the cameras recorded. Answers link to the visit evidence.",
+            "rect": {
+              "x": 821,
+              "y": 497.390625,
+              "width": 295,
+              "height": 36,
+              "top": 497.390625,
+              "right": 1116,
+              "bottom": 533.390625,
+              "left": 821
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "tablet",
+      "width": 1180,
+      "height": 820,
+      "theme": "light",
+      "thread": "ask-home",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 797,
+          "y": 410.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 410.796875,
+          "right": 1155,
+          "bottom": 588,
+          "left": 797
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 813,
+              "y": 426.796875,
+              "width": 311,
+              "height": 34,
+              "top": 426.796875,
+              "right": 1124,
+              "bottom": 460.796875,
+              "left": 813
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "tablet",
+      "width": 1180,
+      "height": 820,
+      "theme": "light",
+      "thread": "ask-home",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 797,
+          "y": 410.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 410.796875,
+          "right": 1155,
+          "bottom": 588,
+          "left": 797
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 813,
+              "y": 537.796875,
+              "width": 311,
+              "height": 34,
+              "top": 537.796875,
+              "right": 1124,
+              "bottom": 571.796875,
+              "left": 813
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "tablet",
+      "width": 1180,
+      "height": 820,
+      "theme": "light",
+      "thread": "household",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 797,
+          "y": 410.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 410.796875,
+          "right": 1155,
+          "bottom": 588,
+          "left": 797
+        },
+        "text": [
+          {
+            "text": "No messages yet",
+            "rect": {
+              "x": 903.140625,
+              "y": 443.390625,
+              "width": 130.703125,
+              "height": 24,
+              "top": 443.390625,
+              "right": 1033.84375,
+              "bottom": 467.390625,
+              "left": 903.140625
+            }
+          },
+          {
+            "text": "Share a note or a clip with this local household thread.",
+            "rect": {
+              "x": 821,
+              "y": 475.390625,
+              "width": 295,
+              "height": 36,
+              "top": 475.390625,
+              "right": 1116,
+              "bottom": 511.390625,
+              "left": 821
+            }
+          },
+          {
+            "text": "Messages stay in this browser. They are not delivered to anyone.",
+            "rect": {
+              "x": 821,
+              "y": 519.390625,
+              "width": 295,
+              "height": 36,
+              "top": 519.390625,
+              "right": 1116,
+              "bottom": 555.390625,
+              "left": 821
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "tablet",
+      "width": 1180,
+      "height": 820,
+      "theme": "light",
+      "thread": "household",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 797,
+          "y": 410.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 410.796875,
+          "right": 1155,
+          "bottom": 588,
+          "left": 797
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 813,
+              "y": 426.796875,
+              "width": 311,
+              "height": 34,
+              "top": 426.796875,
+              "right": 1124,
+              "bottom": 460.796875,
+              "left": 813
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "tablet",
+      "width": 1180,
+      "height": 820,
+      "theme": "light",
+      "thread": "household",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 797,
+          "y": 410.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 410.796875,
+          "right": 1155,
+          "bottom": 588,
+          "left": 797
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 813,
+              "y": 537.796875,
+              "width": 311,
+              "height": 34,
+              "top": 537.796875,
+              "right": 1124,
+              "bottom": 571.796875,
+              "left": 813
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "ultrawide",
+      "width": 2560,
+      "height": 1000,
+      "theme": "dark",
+      "thread": "ask-home",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 2177,
+          "y": 590.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 590.796875,
+          "right": 2535,
+          "bottom": 768,
+          "left": 2177
+        },
+        "text": [
+          {
+            "text": "Ask about a visit",
+            "rect": {
+              "x": 2286.375,
+              "y": 645.390625,
+              "width": 124.25,
+              "height": 24,
+              "top": 645.390625,
+              "right": 2410.625,
+              "bottom": 669.390625,
+              "left": 2286.375
+            }
+          },
+          {
+            "text": "Search what the cameras recorded. Answers link to the visit evidence.",
+            "rect": {
+              "x": 2201,
+              "y": 677.390625,
+              "width": 295,
+              "height": 36,
+              "top": 677.390625,
+              "right": 2496,
+              "bottom": 713.390625,
+              "left": 2201
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "ultrawide",
+      "width": 2560,
+      "height": 1000,
+      "theme": "dark",
+      "thread": "ask-home",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 2177,
+          "y": 590.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 590.796875,
+          "right": 2535,
+          "bottom": 768,
+          "left": 2177
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 2193,
+              "y": 606.796875,
+              "width": 311,
+              "height": 34,
+              "top": 606.796875,
+              "right": 2504,
+              "bottom": 640.796875,
+              "left": 2193
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "ultrawide",
+      "width": 2560,
+      "height": 1000,
+      "theme": "dark",
+      "thread": "ask-home",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 2177,
+          "y": 590.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 590.796875,
+          "right": 2535,
+          "bottom": 768,
+          "left": 2177
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 2193,
+              "y": 717.796875,
+              "width": 311,
+              "height": 34,
+              "top": 717.796875,
+              "right": 2504,
+              "bottom": 751.796875,
+              "left": 2193
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "ultrawide",
+      "width": 2560,
+      "height": 1000,
+      "theme": "dark",
+      "thread": "household",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 2177,
+          "y": 590.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 590.796875,
+          "right": 2535,
+          "bottom": 768,
+          "left": 2177
+        },
+        "text": [
+          {
+            "text": "No messages yet",
+            "rect": {
+              "x": 2283.140625,
+              "y": 623.390625,
+              "width": 130.703125,
+              "height": 24,
+              "top": 623.390625,
+              "right": 2413.84375,
+              "bottom": 647.390625,
+              "left": 2283.140625
+            }
+          },
+          {
+            "text": "Share a note or a clip with this local household thread.",
+            "rect": {
+              "x": 2201,
+              "y": 655.390625,
+              "width": 295,
+              "height": 36,
+              "top": 655.390625,
+              "right": 2496,
+              "bottom": 691.390625,
+              "left": 2201
+            }
+          },
+          {
+            "text": "Messages stay in this browser. They are not delivered to anyone.",
+            "rect": {
+              "x": 2201,
+              "y": 699.390625,
+              "width": 295,
+              "height": 36,
+              "top": 699.390625,
+              "right": 2496,
+              "bottom": 735.390625,
+              "left": 2201
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "ultrawide",
+      "width": 2560,
+      "height": 1000,
+      "theme": "dark",
+      "thread": "household",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 2177,
+          "y": 590.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 590.796875,
+          "right": 2535,
+          "bottom": 768,
+          "left": 2177
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 2193,
+              "y": 606.796875,
+              "width": 311,
+              "height": 34,
+              "top": 606.796875,
+              "right": 2504,
+              "bottom": 640.796875,
+              "left": 2193
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "ultrawide",
+      "width": 2560,
+      "height": 1000,
+      "theme": "dark",
+      "thread": "household",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 2177,
+          "y": 590.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 590.796875,
+          "right": 2535,
+          "bottom": 768,
+          "left": 2177
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 2193,
+              "y": 717.796875,
+              "width": 311,
+              "height": 34,
+              "top": 717.796875,
+              "right": 2504,
+              "bottom": 751.796875,
+              "left": 2193
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "ultrawide",
+      "width": 2560,
+      "height": 1000,
+      "theme": "light",
+      "thread": "ask-home",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 2177,
+          "y": 590.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 590.796875,
+          "right": 2535,
+          "bottom": 768,
+          "left": 2177
+        },
+        "text": [
+          {
+            "text": "Ask about a visit",
+            "rect": {
+              "x": 2286.375,
+              "y": 645.390625,
+              "width": 124.25,
+              "height": 24,
+              "top": 645.390625,
+              "right": 2410.625,
+              "bottom": 669.390625,
+              "left": 2286.375
+            }
+          },
+          {
+            "text": "Search what the cameras recorded. Answers link to the visit evidence.",
+            "rect": {
+              "x": 2201,
+              "y": 677.390625,
+              "width": 295,
+              "height": 36,
+              "top": 677.390625,
+              "right": 2496,
+              "bottom": 713.390625,
+              "left": 2201
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "ultrawide",
+      "width": 2560,
+      "height": 1000,
+      "theme": "light",
+      "thread": "ask-home",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 2177,
+          "y": 590.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 590.796875,
+          "right": 2535,
+          "bottom": 768,
+          "left": 2177
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 2193,
+              "y": 606.796875,
+              "width": 311,
+              "height": 34,
+              "top": 606.796875,
+              "right": 2504,
+              "bottom": 640.796875,
+              "left": 2193
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "ultrawide",
+      "width": 2560,
+      "height": 1000,
+      "theme": "light",
+      "thread": "ask-home",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 2177,
+          "y": 590.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 590.796875,
+          "right": 2535,
+          "bottom": 768,
+          "left": 2177
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 2193,
+              "y": 717.796875,
+              "width": 311,
+              "height": 34,
+              "top": 717.796875,
+              "right": 2504,
+              "bottom": 751.796875,
+              "left": 2193
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "ultrawide",
+      "width": 2560,
+      "height": 1000,
+      "theme": "light",
+      "thread": "household",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 2177,
+          "y": 590.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 590.796875,
+          "right": 2535,
+          "bottom": 768,
+          "left": 2177
+        },
+        "text": [
+          {
+            "text": "No messages yet",
+            "rect": {
+              "x": 2283.140625,
+              "y": 623.390625,
+              "width": 130.703125,
+              "height": 24,
+              "top": 623.390625,
+              "right": 2413.84375,
+              "bottom": 647.390625,
+              "left": 2283.140625
+            }
+          },
+          {
+            "text": "Share a note or a clip with this local household thread.",
+            "rect": {
+              "x": 2201,
+              "y": 655.390625,
+              "width": 295,
+              "height": 36,
+              "top": 655.390625,
+              "right": 2496,
+              "bottom": 691.390625,
+              "left": 2201
+            }
+          },
+          {
+            "text": "Messages stay in this browser. They are not delivered to anyone.",
+            "rect": {
+              "x": 2201,
+              "y": 699.390625,
+              "width": 295,
+              "height": 36,
+              "top": 699.390625,
+              "right": 2496,
+              "bottom": 735.390625,
+              "left": 2201
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "ultrawide",
+      "width": 2560,
+      "height": 1000,
+      "theme": "light",
+      "thread": "household",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 2177,
+          "y": 590.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 590.796875,
+          "right": 2535,
+          "bottom": 768,
+          "left": 2177
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 2193,
+              "y": 606.796875,
+              "width": 311,
+              "height": 34,
+              "top": 606.796875,
+              "right": 2504,
+              "bottom": 640.796875,
+              "left": 2193
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "ultrawide",
+      "width": 2560,
+      "height": 1000,
+      "theme": "light",
+      "thread": "household",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 2177,
+          "y": 590.796875,
+          "width": 358,
+          "height": 177.203125,
+          "top": 590.796875,
+          "right": 2535,
+          "bottom": 768,
+          "left": 2177
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 2193,
+              "y": 717.796875,
+              "width": 311,
+              "height": 34,
+              "top": 717.796875,
+              "right": 2504,
+              "bottom": 751.796875,
+              "left": 2193
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "phone",
+      "width": 390,
+      "height": 844,
+      "theme": "dark",
+      "thread": "ask-home",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 17,
+          "y": 434.796875,
+          "width": 356,
+          "height": 177.203125,
+          "top": 434.796875,
+          "right": 373,
+          "bottom": 612,
+          "left": 17
+        },
+        "text": [
+          {
+            "text": "Ask about a visit",
+            "rect": {
+              "x": 125.375,
+              "y": 489.390625,
+              "width": 124.25,
+              "height": 24,
+              "top": 489.390625,
+              "right": 249.625,
+              "bottom": 513.390625,
+              "left": 125.375
+            }
+          },
+          {
+            "text": "Search what the cameras recorded. Answers link to the visit evidence.",
+            "rect": {
+              "x": 41,
+              "y": 521.390625,
+              "width": 293,
+              "height": 36,
+              "top": 521.390625,
+              "right": 334,
+              "bottom": 557.390625,
+              "left": 41
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "phone",
+      "width": 390,
+      "height": 844,
+      "theme": "dark",
+      "thread": "ask-home",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 17,
+          "y": 434.796875,
+          "width": 356,
+          "height": 177.203125,
+          "top": 434.796875,
+          "right": 373,
+          "bottom": 612,
+          "left": 17
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 33,
+              "y": 450.796875,
+              "width": 309,
+              "height": 34,
+              "top": 450.796875,
+              "right": 342,
+              "bottom": 484.796875,
+              "left": 33
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "phone",
+      "width": 390,
+      "height": 844,
+      "theme": "dark",
+      "thread": "ask-home",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 17,
+          "y": 434.796875,
+          "width": 356,
+          "height": 177.203125,
+          "top": 434.796875,
+          "right": 373,
+          "bottom": 612,
+          "left": 17
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 33,
+              "y": 561.796875,
+              "width": 309,
+              "height": 34,
+              "top": 561.796875,
+              "right": 342,
+              "bottom": 595.796875,
+              "left": 33
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "phone",
+      "width": 390,
+      "height": 844,
+      "theme": "dark",
+      "thread": "household",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 17,
+          "y": 434.796875,
+          "width": 356,
+          "height": 177.203125,
+          "top": 434.796875,
+          "right": 373,
+          "bottom": 612,
+          "left": 17
+        },
+        "text": [
+          {
+            "text": "No messages yet",
+            "rect": {
+              "x": 122.140625,
+              "y": 467.390625,
+              "width": 130.703125,
+              "height": 24,
+              "top": 467.390625,
+              "right": 252.84375,
+              "bottom": 491.390625,
+              "left": 122.140625
+            }
+          },
+          {
+            "text": "Share a note or a clip with this local household thread.",
+            "rect": {
+              "x": 41,
+              "y": 499.390625,
+              "width": 293,
+              "height": 36,
+              "top": 499.390625,
+              "right": 334,
+              "bottom": 535.390625,
+              "left": 41
+            }
+          },
+          {
+            "text": "Messages stay in this browser. They are not delivered to anyone.",
+            "rect": {
+              "x": 41,
+              "y": 543.390625,
+              "width": 293,
+              "height": 36,
+              "top": 543.390625,
+              "right": 334,
+              "bottom": 579.390625,
+              "left": 41
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "phone",
+      "width": 390,
+      "height": 844,
+      "theme": "dark",
+      "thread": "household",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 17,
+          "y": 434.796875,
+          "width": 356,
+          "height": 177.203125,
+          "top": 434.796875,
+          "right": 373,
+          "bottom": 612,
+          "left": 17
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 33,
+              "y": 450.796875,
+              "width": 309,
+              "height": 34,
+              "top": 450.796875,
+              "right": 342,
+              "bottom": 484.796875,
+              "left": 33
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "phone",
+      "width": 390,
+      "height": 844,
+      "theme": "dark",
+      "thread": "household",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 17,
+          "y": 434.796875,
+          "width": 356,
+          "height": 177.203125,
+          "top": 434.796875,
+          "right": 373,
+          "bottom": 612,
+          "left": 17
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 33,
+              "y": 561.796875,
+              "width": 309,
+              "height": 34,
+              "top": 561.796875,
+              "right": 342,
+              "bottom": 595.796875,
+              "left": 33
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "phone",
+      "width": 390,
+      "height": 844,
+      "theme": "light",
+      "thread": "ask-home",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 17,
+          "y": 434.796875,
+          "width": 356,
+          "height": 177.203125,
+          "top": 434.796875,
+          "right": 373,
+          "bottom": 612,
+          "left": 17
+        },
+        "text": [
+          {
+            "text": "Ask about a visit",
+            "rect": {
+              "x": 125.375,
+              "y": 489.390625,
+              "width": 124.25,
+              "height": 24,
+              "top": 489.390625,
+              "right": 249.625,
+              "bottom": 513.390625,
+              "left": 125.375
+            }
+          },
+          {
+            "text": "Search what the cameras recorded. Answers link to the visit evidence.",
+            "rect": {
+              "x": 41,
+              "y": 521.390625,
+              "width": 293,
+              "height": 36,
+              "top": 521.390625,
+              "right": 334,
+              "bottom": 557.390625,
+              "left": 41
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "phone",
+      "width": 390,
+      "height": 844,
+      "theme": "light",
+      "thread": "ask-home",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 17,
+          "y": 434.796875,
+          "width": 356,
+          "height": 177.203125,
+          "top": 434.796875,
+          "right": 373,
+          "bottom": 612,
+          "left": 17
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 33,
+              "y": 450.796875,
+              "width": 309,
+              "height": 34,
+              "top": 450.796875,
+              "right": 342,
+              "bottom": 484.796875,
+              "left": 33
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "phone",
+      "width": 390,
+      "height": 844,
+      "theme": "light",
+      "thread": "ask-home",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 17,
+          "y": 434.796875,
+          "width": 356,
+          "height": 177.203125,
+          "top": 434.796875,
+          "right": 373,
+          "bottom": 612,
+          "left": 17
+        },
+        "text": [
+          {
+            "text": "Searching the visit ledger…",
+            "rect": {
+              "x": 33,
+              "y": 561.796875,
+              "width": 309,
+              "height": 34,
+              "top": 561.796875,
+              "right": 342,
+              "bottom": 595.796875,
+              "left": 33
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "phone",
+      "width": 390,
+      "height": 844,
+      "theme": "light",
+      "thread": "household",
+      "state": "empty",
+      "bounds": {
+        "history": {
+          "x": 17,
+          "y": 434.796875,
+          "width": 356,
+          "height": 177.203125,
+          "top": 434.796875,
+          "right": 373,
+          "bottom": 612,
+          "left": 17
+        },
+        "text": [
+          {
+            "text": "No messages yet",
+            "rect": {
+              "x": 122.140625,
+              "y": 467.390625,
+              "width": 130.703125,
+              "height": 24,
+              "top": 467.390625,
+              "right": 252.84375,
+              "bottom": 491.390625,
+              "left": 122.140625
+            }
+          },
+          {
+            "text": "Share a note or a clip with this local household thread.",
+            "rect": {
+              "x": 41,
+              "y": 499.390625,
+              "width": 293,
+              "height": 36,
+              "top": 499.390625,
+              "right": 334,
+              "bottom": 535.390625,
+              "left": 41
+            }
+          },
+          {
+            "text": "Messages stay in this browser. They are not delivered to anyone.",
+            "rect": {
+              "x": 41,
+              "y": 543.390625,
+              "width": 293,
+              "height": 36,
+              "top": 543.390625,
+              "right": 334,
+              "bottom": 579.390625,
+              "left": 41
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "phone",
+      "width": 390,
+      "height": 844,
+      "theme": "light",
+      "thread": "household",
+      "state": "pending-0",
+      "bounds": {
+        "history": {
+          "x": 17,
+          "y": 434.796875,
+          "width": 356,
+          "height": 177.203125,
+          "top": 434.796875,
+          "right": 373,
+          "bottom": 612,
+          "left": 17
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 33,
+              "y": 450.796875,
+              "width": 309,
+              "height": 34,
+              "top": 450.796875,
+              "right": 342,
+              "bottom": 484.796875,
+              "left": 33
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    },
+    {
+      "name": "phone",
+      "width": 390,
+      "height": 844,
+      "theme": "light",
+      "thread": "household",
+      "state": "pending-1",
+      "bounds": {
+        "history": {
+          "x": 17,
+          "y": 434.796875,
+          "width": 356,
+          "height": 177.203125,
+          "top": 434.796875,
+          "right": 373,
+          "bottom": 612,
+          "left": 17
+        },
+        "text": [
+          {
+            "text": "Saving your local message…",
+            "rect": {
+              "x": 33,
+              "y": 561.796875,
+              "width": 309,
+              "height": 34,
+              "top": 561.796875,
+              "right": 342,
+              "bottom": 595.796875,
+              "left": 33
+            }
+          }
+        ],
+        "visible": true
+      },
+      "errors": []
+    }
+  ],
+  "failures": []
+}

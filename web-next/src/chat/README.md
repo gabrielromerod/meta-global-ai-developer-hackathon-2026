@@ -69,3 +69,37 @@ or metadata. The privacy scanner checked 132 frames using `--allow-unmapped`
 and the lead's fail-closed metadata scanner passed. `demo/` scans also passed but
 contained zero media in this checkout. Gitleaks is not installed locally; CI owns
 that check. No camera or Meta API was contacted.
+
+## Independent review round 1 corrections
+
+The independent reviewer requested changes for popup empty-state copy clipping,
+pending feedback below the history boundary, and corrupted punctuation. Those
+findings were reproduced in the builder's browser before changing code. The
+original short-popup Household copy ended at y=430.80 beyond history bottom y=368;
+pending feedback ended at y=417.80. An exact Unicode component assertion also failed.
+
+REAL: popup empty states now prioritize their explanatory text over the decorative
+icon, with compact token-based spacing in short windows. The message panel scrolls
+to its actual bottom and observes native panel/content resize events, including
+font-loading reflow. A zero-height end marker alone did not handle that late layout
+change. Radix continues to own dialog/tabs/menu behavior; the native scroll API and
+ResizeObserver handle the message list's content-specific scroll position. Pending
+first requests show status without an unrelated empty-state message. Punctuation
+uses explicit Unicode escapes so a Windows text rewrite cannot corrupt it.
+
+FIXTURE: `qa/screens/b30f7f0/` contains 132 newly inspected regression states: both
+threads, empty/pending-without-history/pending-with-cited-history, both themes, and
+all 11 exact viewport dimensions. Strict text rectangle bounds were retained. The
+first expanded run found the empty-copy defect at taller popup sizes too; removing
+the decorative popup icon at every height fixed those failures. The final matrix
+reports zero failures, console errors, failed requests or document overflow.
+At 1280×600, Household copy ends at y=346.39 and pending feedback at y=359.80, both
+above history bottom y=368. The full-screen short-window regression still passes.
+
+All 15 npm behavior tests and the TypeScript/Vite build pass. The 44 rendered text
+contrast checks still pass at a minimum 5.73:1. Manual scroll reaches the true top
+and bottom under reduced and ordinary motion without console errors; pending text
+stays within its history when returning to the bottom. Draft preservation, local
+messaging and unavailable capability tests remain unchanged and pass. The fresh
+evidence has its own hash-bound generated-UI privacy manifest. Independent round 2
+review remains required; this builder does not approve its own work.

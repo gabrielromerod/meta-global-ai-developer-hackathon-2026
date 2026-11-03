@@ -29,7 +29,8 @@ body {
   font-size: var(--v-text-2xl);
   line-height: var(--v-leading-tight);
 }
-.twin-preview p {
+.twin-preview > header p,
+.twin-preview > footer p {
   margin: var(--v-space-1) var(--v-zero) var(--v-zero);
   color: var(--v-muted);
   font-size: var(--v-text-sm);

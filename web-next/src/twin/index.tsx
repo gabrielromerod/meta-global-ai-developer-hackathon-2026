@@ -41,6 +41,7 @@ import {
 import "./twin.css";
 
 interface Palette {
+  space: number;
   background: string;
   ground: string;
   house: string;
@@ -82,6 +83,7 @@ function readPalette(): Palette {
     color = (name: string) => css.getPropertyValue(name).trim();
   const numeric = (name: string) => parseFloat(color(name));
   return {
+    space: numeric("--v-space-1"),
     background: color("--v-surface"),
     ground: color("--v-twin-ground"),
     house: color("--v-twin-house"),
@@ -374,8 +376,8 @@ function HouseAnnotations({
             <Tooltip.Portal>
               <Tooltip.Content
                 className="twin-tooltip"
-                sideOffset={8}
-                collisionPadding={8}
+                sideOffset={palette.space}
+                collisionPadding={palette.space}
               >
                 {region.name}
                 <Tooltip.Arrow />
@@ -865,8 +867,8 @@ export function HouseView({
             <DropdownMenu.Portal>
               <DropdownMenu.Content
                 className="twin-camera-dropdown"
-                sideOffset={8}
-                collisionPadding={8}
+                sideOffset={palette.space}
+                collisionPadding={palette.space}
                 align="end"
               >
                 <DropdownMenu.Label>Configured cameras</DropdownMenu.Label>

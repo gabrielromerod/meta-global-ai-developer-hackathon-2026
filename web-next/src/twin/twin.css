@@ -332,6 +332,7 @@
   }
   .twin-gap-summary {
     line-height: var(--v-leading-tight);
+    padding: calc(var(--v-space-1) / 2) var(--v-space-2);
   }
 }
 .twin-unavailable {

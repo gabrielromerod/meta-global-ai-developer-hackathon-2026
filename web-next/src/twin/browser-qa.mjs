@@ -200,7 +200,7 @@ try {
       await capture("observed");
       for (const control of await page
         .locator(
-          ".twin-toolbar button,.twin-camera-list button,.twin-blind-label,.twin-pin",
+          ".twin-toolbar button:visible,.twin-camera-list button:visible,.twin-blind-label:visible,.twin-pin:visible",
         )
         .all()) {
         await control.scrollIntoViewIfNeeded();

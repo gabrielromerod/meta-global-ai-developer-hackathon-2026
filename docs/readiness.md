@@ -9,7 +9,7 @@ Everything below is evidenced by a command run on this date, or by a file in the
 | Set | Total | Offline-verified | Partial (offline) | Blocked | Not verified | Verified |
 | --- | --- | --- | --- | --- | --- | --- |
 | Functional ([checklist](requirements/functional.md)) | 44 | 36 | 7 | 1 | 0 | 0 |
-| Non-functional ([checklist](requirements/non-functional.md)) | 37 | 17 | 9 | 9 | 2 | 0 |
+| Non-functional ([checklist](requirements/non-functional.md)) | 37 | 18 | 8 | 9 | 2 | 0 |
 
 Every change in the [Nov 2 change set](spec/changes/2026-11-02-business-corrections.md) now has passing offline tests: spatial-origin roles (FR-044), origin tagging (FR-008), subject chains and the group rule (FR-010), `applies_to` and the r7 window at 17:30–06:00 (FR-012), the case-2 triage exemption (FR-013), role phrasings (FR-021), voice rules with 3 sample-audio buttons (FR-022), 5 scenarios (FR-027), expected windows and check-in (FR-029), nominal-FOV intrinsics and lens profiles (FR-036), landmark proposals and the audit harness (FR-037, NFR-024), validator check 7, the $25 judging cap with `VIGIL_JUDGING_END` and the `credit`/`paid` tag (FR-043, NFR-036, NFR-037), and the repository-wide audio allowlist (NFR-002).
 
@@ -18,6 +18,7 @@ Every change in the [Nov 2 change set](spec/changes/2026-11-02-business-correcti
 | Item | Evidence |
 | --- | --- |
 | CI | [Run 41587853241](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/actions/runs/41587853241): every job green on commit `46c5b68` ("fix(scan): limit metadata scan to media and scan exports"): ruff and the NFR-004 grep, gitleaks, the blocking P0 suites 1–4, the report-only suite and determinism run, the privacy, metadata and repository-wide audio scans, and the Docker sandbox with the blocking judge-path E2E. The working tree has uncommitted changes on top of `46c5b68`; CI for the final commit: `<CI run URL>` |
+| Fix round (Nov 3) | `uv run pytest -q` after the defect fixes (durable ledger, reservations, owner token, trusted hosts, check 7 cues, removed events, NFR-003 schema test): **1394 passed, 18 deselected**, 0 failed, in 139 s |
 | Unit and integration suite | `uv run pytest -q` on the working tree: **1275 passed, 18 deselected** (e2e), 0 failed, in 105 s. 1043 unit tests in 31 files under `tests/unit/`, 232 integration tests in 8 files under `tests/integration/` (counts include parametrised cases) |
 | Browser E2E | `uv run pytest -m e2e tests/e2e -q`: **18 passed** in 13.7 s (Chromium), invalid key and unreachable live backend. One `PytestRemovedIn10Warning` about the session-scoped `base_url` fixture |
 | Lint | `uv run ruff check .`: all checks passed; `uv run ruff format --check .`: 168 files already formatted |
@@ -37,11 +38,28 @@ Every change in the [Nov 2 change set](spec/changes/2026-11-02-business-correcti
 - **FR-028 Glimmer server.** Only the client is tested; no llama.cpp server or H-03 run.
 - **FR-033 / FR-034 live paths.** No in-order, once-only window loop (`test_live_loop.py` missing); no WebRTC view test.
 - **Performance.** `tests/e2e/test_perf.py` does not exist (NFR-005, NFR-030, FR-040 frame rate and load time).
-- **NFR-003.** The track, event and position schemas are not yet checked for banned fields (appearance, subject and label schemas are).
 - **NFR-022.** Mask badges are untested (sentence badges pass).
 - **NFR-021.** Timed clean-clone run not done.
-- **EVAL 11.9 Tier 0.** `vigil eval` computes the escalation rate (Tier 1) and the role miss rate, but not the skipped-window share (Tier 0) registered in EVAL.md; T-27 needs it from the window log, or `vigil/eval/metrics.py` must add it.
 - **Final CI evidence.** Commit the working tree and record `<CI run URL>` here and in the checklists.
+- **Single replica only.** Budget reservations are held in memory per process, so the race-free cap check (FR-043) holds only with one sandbox replica on one ledger file. Several replicas would need SQLite-level reservations.
+- **Owner UI.** Only `web/calibrate/` sends the owner token; the main app (`web/app.js`) has no owner UI for check-in or windows yet. `GET /api/live/stream` stays LAN-only without the token (EventSource cannot send an `Authorization` header).
+
+- **Residual review risks (low, accepted for the hackathon; second review round, Nov 3).**
+  - Check 7 role cues are a denylist (`config/role_banned_words.json` `cues`). Two rounds of paraphrases are covered by tests, but a new wording can still state an origin the ledger does not back. Mitigation: the card shows each subject's role and `role_basis` from code beside the story, and verdicts never read the story.
+  - A read timeout or a mid-stream transport error after a request is sent is recorded as unbilled, so a retry can under-count spend by one estimate.
+  - Compiled rules with other impossible trigger and target pairs (touch on a zone or line, enter or dwell on a protected object, cross on a zone) get a limits note, not a refusal, so a confirmed rule can silently never fire. Only removed-on-object is refused or mapped to a watch.
+  - Check 7 name detection skips the sentence's first word and matches ASCII capitals only ("Sam touched…", "…with Élodie").
+
+## Deployment settings added on Nov 3 (fix round)
+
+| Setting | Effect | Where |
+| --- | --- | --- |
+| `VIGIL_LEDGER_PATH` | Durable SQLite (WAL) spend ledger; the single source of truth for every cap, rebuilt on restart. Unset or unwritable: the app still starts, the ledger stays in memory and **paid calls are refused** (credit-window calls still work) | Docker image sets `/data/ledger.db` on `VOLUME /data`; run **one replica** with a named volume mounted at `/data` |
+| `VIGIL_OWNER_TOKEN` | Required for the owner endpoints: `POST /api/checkin`, `POST`/`DELETE /api/windows`, `POST /api/spatial/pairs`, `POST /api/spatial/landmarks` (Bearer or `X-Vigil-Owner`). Unset: those endpoints answer 403 "owner endpoints disabled". They also stay LAN-only, JSON-only and same-origin | Edge box `.env` |
+| `VIGIL_TRUSTED_HOSTS` | Edge and dev only: Host-header allowlist against DNS rebinding (default `127.0.0.1`, `localhost`, `testserver`); private and loopback IP literals are always allowed, so a phone can open the box by LAN IP. Any other host name gets 400. The public sandbox has no owner or LAN route and skips the check | Edge: add the mDNS name if you use one (e.g. `["vigil.local"]`) |
+| `VIGIL_JUDGING_END` | Defaults to **Nov 10, 23:59 PT**; no live call of any funding after it, even without `VIGIL_CREDIT_WINDOW_END` | Sandbox env (leave unset for the default) |
+
+Since `judging_end` defaults to Nov 10, an offline test that uses the real clock and makes a live client or guard call without setting `judging_end` will fail after that date; the current suites use fixed clocks.
 
 ## Blocked by Meta API credits
 
@@ -83,7 +101,10 @@ From [spec 13.4](spec/vigil-spec.md#134-blockers-to-clear-today), with the extra
 - [ ] An iPhone Pro with LiDAR before sunset (4:55 PM PT) ([lidar runbook](runbooks/lidar-scan.md))
 - [ ] **Track** (Indie or Startup) and **team members** ([HACKATHON.md](../HACKATHON.md))
 - [ ] **`MODEL_API_KEY` GitHub secret** for the sandbox key (CI never makes live calls; needed for T-28)
-- [ ] **Hosting account** for the sandbox deploy (T-28, Tue 23:00) and its judging env: `VIGIL_ALLOW_PAID=1` from window end, `VIGIL_JUDGING_CAP_USD=25`, `VIGIL_JUDGING_END`
+- [ ] **Hosting account** for the sandbox deploy (T-28, Tue 23:00) and its judging env: `VIGIL_ALLOW_PAID=1` from window end, `VIGIL_JUDGING_CAP_USD=25`, `VIGIL_JUDGING_END` (default Nov 10, 23:59 PT)
+- [ ] **Sandbox ledger volume:** a named volume mounted at `/data` (`VIGIL_LEDGER_PATH=/data/ledger.db`), **one replica** only. Without a writable ledger, paid judging calls are refused
+- [ ] **Sandbox `VIGIL_TRUSTED_HOSTS`:** set to `["<public host>", "127.0.0.1", "localhost"]`, or judges get 400 "Invalid host header"
+- [ ] **Edge `VIGIL_OWNER_TOKEN`** (a long random secret, never committed) and, if the LAN app is opened by IP or mDNS name, `VIGIL_TRUSTED_HOSTS`. Without the token, check-in, windows and the calibration tool answer 403
 - [ ] **Make the repository public** before submission ([submission runbook](runbooks/submission.md))
 - [ ] **Accept the SAM 3.1 licence on Hugging Face** (H-02, H-04, FR-042)
 - [ ] **Approve the torch / GPU install** in the project environment for H-02 to H-04 ([GPU runbook](runbooks/gpu-h01-h04.md))

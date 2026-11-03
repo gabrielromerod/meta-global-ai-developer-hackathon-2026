@@ -55,6 +55,17 @@ Once a day, compare the ledger total with the Billing page and append a row to `
 
 A drift over **10%** means updating the price table ([11.3](../spec/vigil-spec.md#113-unit-prices-used)) before spending more.
 
+### The ledger behind the caps
+
+The ledger at `VIGIL_LEDGER_PATH` is the **single source of truth** for every cap ($140 credit, feature budgets, $10/day sandbox, $25 and $5/day judging). Read it for the daily row above.
+
+- **Durable.** SQLite in WAL mode, `synchronous=FULL`, one row per billed attempt with `created_at` in UTC and the `funding` tag. On start, the budget guard and the sandbox guards rebuild their totals (by funding tag, PT day and feature) from this file, so a restart or redeploy does not reset any cap. All guards and clients in one process share one ledger.
+- **Fails closed.** If `VIGIL_LEDGER_PATH` is unset, cannot be written, or a write fails mid-run, the app still starts with an in-memory ledger, but **paid calls are refused** (`ledger_not_durable`; the request serves the cached result with "Live budget for today used; recorded result shown"). Credit-window calls still run.
+- **Docker.** The image sets `VIGIL_LEDGER_PATH=/data/ledger.db` and declares `VOLUME ["/data"]`. Mount a named volume at `/data` on the sandbox host and run **one replica**: reservations are held in memory per process, so two replicas on one file could both admit a call that only one fits.
+- **Reservations.** Before sending, the client reserves the call's estimate atomically under the ledger lock; pending reservations count in every cap check, so concurrent requests cannot together cross a cap. The reservation is released when the ledger row is written. In the sandbox, `check_live_allowed` holds the estimate (for at most 600 s if the action fails before recording); recording the calls releases it. While a live action is in flight both holds count, so a call can be refused a few cents short of a cap (it shows "Live call failed"); this errs on the safe side.
+- **Retries are charged.** Every billed attempt is charged at the estimate, and a retry that then succeeds also adds its actual price. The budget is re-checked before each retry; a retry that would cross a cap is not sent.
+- **Judging end is absolute.** No live call of any funding is admitted at or after `VIGIL_JUDGING_END`, even when `VIGIL_CREDIT_WINDOW_END` is unset.
+
 ## 7. Planned spend
 
 [Spec 11.5](../spec/vigil-spec.md#115-phased-usage-plan-and-balance): about **$55 to $95** of the $150 credits, depending on gate H-02, leaving at least $55 unspent (at least $45 below the $140 cap). Judging spend is separate: at most **$25**, charged to the card. The largest unknown is Spark tokens per 10 s clip (assumed 30,000) until T-03 measures it; then `vigil cost estimate` recomputes the plan.
@@ -68,7 +79,8 @@ A drift over **10%** means updating the price table ([11.3](../spec/vigil-spec.m
 | `VIGIL_ALLOW_PAID` | `1`, from the credit window end | Without it, Vigil switches to cached-only at `VIGIL_CREDIT_WINDOW_END` |
 | `VIGIL_JUDGING_CAP_USD` | `25` | Total post-window (`paid`) spend; binds before the daily caps (6 days × $5 = $30) |
 | `VIGIL_JUDGING_DAILY_CAP_USD` | `5` (default) | Per PT calendar day after the window |
-| `VIGIL_JUDGING_END` | Nov 10, 23:59 PT (the default when unset) | No paid call after it |
+| `VIGIL_JUDGING_END` | Nov 10, 23:59 PT (the default when unset) | No live call of any funding after it |
+| `VIGIL_LEDGER_PATH` | `/data/ledger.db` (image default), on a mounted volume, one replica | Caps survive restarts; without a durable ledger, paid calls are refused |
 | Rate limit | 10 live requests per minute per IP | Unchanged |
 
 At a cap, after `VIGIL_JUDGING_END`, or on a timeout or failure, the request degrades to the cached result with "Live budget for today used; recorded result shown" or "Live call failed; recorded result from \<date> shown". A judge never sees a blank or disabled screen.
@@ -78,6 +90,7 @@ At a cap, after `VIGIL_JUDGING_END`, or on a timeout or failure, the request deg
 - [ ] Card on file confirmed (owner, date: ____)
 - [ ] `VIGIL_CREDIT_WINDOW_END` set (owner, date: ____)
 - [ ] Sandbox env set: `VIGIL_ALLOW_PAID=1` from window end, `VIGIL_JUDGING_CAP_USD=25`, `VIGIL_JUDGING_END` (T-28)
+- [ ] Sandbox ledger volume mounted at `/data`, single replica; after a redeploy, the day's spend is still shown (T-28)
 - [ ] Billing second stop set at window end (owner, date: ____)
 - [ ] Daily ledger check Nov 5–10 in `eval/budget.md`
 

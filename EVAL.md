@@ -49,6 +49,8 @@ Spec 11.9's tier figures are **hypotheses, not targets**. T-27 measures them on 
 | Escalated visits | Escalated visits on the recorded evening, and the per-day figure E only if the recording covers a full day | E = 2–4 per day |
 | Tier 2 cost per escalated visit | Ledger cost of the Spark and Wonder calls per escalated visit | about $0.022 (compact-ledger story) or $0.040 (spec-size story) with appearance notes kept local; about $0.12 with 2 Spark appearance clips |
 
+`vigil eval` reports the Tier 0 measure as `totals.tier0_skipped_share` (windows with status `idle` ÷ all windows, from `windows_skipped` and `windows_total`; `null` when there are no windows) and as the table row "Tier 0 skipped-window share (11.9)", reported only, with no target.
+
 ### Spatial (NFR-024, NFR-025, NFR-026)
 
 | Metric | Target |

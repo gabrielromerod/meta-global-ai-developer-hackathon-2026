@@ -120,6 +120,7 @@ docs/          spec/, requirements/, runbooks/, architecture/, plans/, conventio
   `VIGIL_ALLOW_PAID=1`, at most **$25 total** (`VIGIL_JUDGING_CAP_USD`) and **$5 per PT day**, and
   none after `VIGIL_JUDGING_END` (Nov 10, 23:59 PT). At any cap the request serves the cached
   result with "Live budget for today used; recorded result shown".
+- The ledger at `VIGIL_LEDGER_PATH` is the single source of truth for caps; paid calls fail closed without it.
 - Only Standard-mode model IDs (`sam-3.1`, `muse-spark-1.3`, `muse-wonder-1.0`,
   `muse-voice-transcribe-1.0`). **Never a `-contributor` ID** (CI greps for it).
 - `VIGIL_ALLOW_PAID` and the caps are set only by the owner. Never set them, never bypass the guard.

@@ -1,4 +1,13 @@
 @import "tailwindcss";
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/manrope/400.css";
+@import "@fontsource/manrope/500.css";
+@import "@fontsource/manrope/600.css";
+@import "@fontsource/dm-sans/400.css";
+@import "@fontsource/dm-sans/500.css";
+@import "@fontsource/dm-sans/600.css";
 @theme inline {
   --color-background: var(--v-bg); --color-foreground: var(--v-text);
   --color-card: var(--v-surface); --color-border: var(--v-border);
@@ -7,3 +16,8 @@
 }
 * { box-sizing: border-box; }
 body { margin: var(--v-zero); background: var(--v-bg); color: var(--v-text); font-family: var(--v-font); }
+html,body,#root { min-width: var(--v-zero); min-height: var(--v-full); }
+button,input,textarea,select { font: inherit; }
+button,a,input,textarea,select { -webkit-tap-highlight-color:var(--v-transparent); }
+::selection { background: var(--v-accent); color: var(--v-accent-ink); }
+* { scrollbar-width:thin; scrollbar-color:var(--v-border) var(--v-transparent); }

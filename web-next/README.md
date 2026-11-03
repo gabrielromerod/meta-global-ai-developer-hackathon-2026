@@ -18,6 +18,11 @@ VideoTile, ClipCard, EmptyState, Modal. Follow exported interfaces from contract
 Pages export named HomePage, AttentionPage, ClipsPage, MediaPage, RulesPage,
 SettingsPage, BenchmarkPage from each owned directory's index.tsx.
 Every page receives PageProps. Render lead-provided slots; no duplicate players.
+Rules and Settings use optional typed ruleActions/ownerActions in contracts.ts.
+Missing callbacks disable actions. Owner token entry is available only in edge mode;
+check-in/window mutation additionally requires owner.enabled. Rule compile previews must
+display the returned notice and remain distinct from owner confirmation. Consented phone
+voice-rule fixtures/recording callbacks are separate from camera audio (never captured).
 Twin: `twin/index.tsx` exports `HouseView({twin,positions?,time?,activeCameraId?,onCameraSelect?,preset?})`.
 Chat: `chat/index.tsx` exports ChatPopup and MessagesPage, both receive ChatProps.
 Floating/fullscreen messages share lead-owned state. Local people messaging is

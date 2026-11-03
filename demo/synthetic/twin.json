@@ -27,8 +27,10 @@
   {
    "calibration": {
     "heldout_ground_m": 0.14,
+    "intrinsics_source": "fov_nominal",
+    "landmarks": 6,
     "method": "pnp_ransac",
-    "reproj_mean_px": 2.1,
+    "reproj_mean_px": 3.4,
     "synthetic": true
    },
    "height": 720,
@@ -52,8 +54,10 @@
   {
    "calibration": {
     "heldout_ground_m": 0.18,
+    "intrinsics_source": "fov_nominal",
+    "landmarks": 6,
     "method": "pnp_ransac",
-    "reproj_mean_px": 2.6,
+    "reproj_mean_px": 3.9,
     "synthetic": true
    },
    "height": 720,
@@ -77,8 +81,10 @@
   {
    "calibration": {
     "heldout_ground_m": 0.21,
+    "intrinsics_source": "fov_nominal",
+    "landmarks": 6,
     "method": "pnp_ransac",
-    "reproj_mean_px": 3.1,
+    "reproj_mean_px": 4.6,
     "synthetic": true
    },
    "height": 720,
@@ -102,8 +108,10 @@
   {
    "calibration": {
     "heldout_ground_m": 0.16,
+    "intrinsics_source": "fov_nominal",
+    "landmarks": 6,
     "method": "homography",
-    "reproj_mean_px": 2.4,
+    "reproj_mean_px": 3.6,
     "synthetic": true
    },
    "height": 720,

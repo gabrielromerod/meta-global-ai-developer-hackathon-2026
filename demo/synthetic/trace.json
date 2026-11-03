@@ -3,14 +3,35 @@
   "drafts": [],
   "story_call_id": null,
   "triage": {
-   "call_id": "call_0123",
+   "call_id": "call_0141",
    "escalate": false,
    "forced": false,
-   "reason": "One household departure by car; no rule, object or gap involved.",
+   "reason": "One departure by car; no rule, protected object or gap involved.",
    "source": "spark"
   },
   "verdict_inputs": {
    "floor": "normal",
+   "floor_reason": "No protected object, no rule.",
+   "proposal": null,
+   "proposal_cited": false,
+   "result": "normal",
+   "unresolved_gap": false
+  },
+  "watch_proposals": []
+ },
+ "v_ap": {
+  "drafts": [],
+  "story_call_id": null,
+  "triage": {
+   "call_id": "call_0146",
+   "escalate": false,
+   "forced": false,
+   "reason": "Not forced: r7 is in force on the side gate but applies to non-household, and this touch was by a household_insider (FR-013, 9.4 case 2). Routine.",
+   "source": "spark"
+  },
+  "verdict_inputs": {
+   "floor": "normal",
+   "floor_reason": "9.4 case 2: every rule in force on po_side_gate excludes household_insider, so the touch keeps the floor normal.",
    "proposal": null,
    "proposal_cited": false,
    "result": "normal",
@@ -22,7 +43,7 @@
   "drafts": [
    {
     "attempt": 1,
-    "call_id": "call_0125",
+    "call_id": "call_0143",
     "passed": true,
     "sentences": [
      {
@@ -34,7 +55,7 @@
       "gap_id": null,
       "model": null,
       "source": "wonder",
-      "text": "A person walked up to the porch on the Front entrance camera at 7:31 PM."
+      "text": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM."
      },
      {
       "call_id": null,
@@ -45,7 +66,7 @@
       "gap_id": null,
       "model": null,
       "source": "wonder",
-      "text": "They stayed on the porch for about 18 s, and a package appeared there at 7:31 PM."
+      "text": "They stayed on the porch for about 18 s, and a package appeared there at 3:31 PM."
      },
      {
       "call_id": null,
@@ -56,14 +77,14 @@
       "gap_id": null,
       "model": null,
       "source": "wonder",
-      "text": "They left at 7:32 PM; the package stayed on the porch."
+      "text": "They left at 3:32 PM; the package stayed on the porch."
      }
     ]
    }
   ],
-  "story_call_id": "call_0125",
+  "story_call_id": "call_0143",
   "triage": {
-   "call_id": "call_0124",
+   "call_id": "call_0142",
    "escalate": true,
    "forced": false,
    "reason": "A new object was left on the porch.",
@@ -71,6 +92,7 @@
   },
   "verdict_inputs": {
    "floor": "normal",
+   "floor_reason": "No rule fired and no protected object was touched.",
    "proposal": "noteworthy",
    "proposal_cited": true,
    "result": "noteworthy",
@@ -87,11 +109,82 @@
    }
   ]
  },
+ "v_bp": {
+  "drafts": [
+   {
+    "attempt": 1,
+    "call_id": "call_0145",
+    "passed": true,
+    "sentences": [
+     {
+      "call_id": null,
+      "event_ids": [
+       "e10",
+       "e11"
+      ],
+      "gap_id": null,
+      "model": null,
+      "source": "wonder",
+      "text": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM."
+     },
+     {
+      "call_id": null,
+      "event_ids": [
+       "e12",
+       "e14"
+      ],
+      "gap_id": null,
+      "model": null,
+      "source": "wonder",
+      "text": "They left a package on the porch at 4:20 PM."
+     },
+     {
+      "call_id": null,
+      "event_ids": [
+       "e13",
+       "e14"
+      ],
+      "gap_id": null,
+      "model": null,
+      "source": "wonder",
+      "text": "They walked away at 4:20 PM; the package stayed on the porch."
+     }
+    ]
+   }
+  ],
+  "expected_window": "w3",
+  "story_call_id": "call_0145",
+  "triage": {
+   "call_id": "call_0144",
+   "escalate": true,
+   "forced": false,
+   "reason": "A new object was left on the porch.",
+   "source": "spark"
+  },
+  "verdict_inputs": {
+   "floor": "normal",
+   "floor_reason": "No rule fired; the courier arrived inside window w3.",
+   "proposal": "normal",
+   "proposal_cited": true,
+   "result": "normal",
+   "unresolved_gap": false
+  },
+  "watch_proposals": [
+   {
+    "accepted": false,
+    "camera_id": "front",
+    "phrase": "package",
+    "reason": "already watching 'package' on Front entrance (w2)",
+    "reason_event_id": "e14",
+    "watch_id": "w2"
+   }
+  ]
+ },
  "v_c": {
   "drafts": [
    {
     "attempt": 1,
-    "call_id": "call_0126",
+    "call_id": "call_0147",
     "failures": [
      {
       "check": "uncited",
@@ -108,16 +201,15 @@
     "sentences": [
      {
       "event_ids": [
-       "e15",
        "e16"
       ],
-      "text": "A person walked from the front of the house into the left side yard at 10:13 PM."
+      "text": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM."
      },
      {
       "event_ids": [
        "e17"
       ],
-      "text": "They touched the side gate at 10:14 PM."
+      "text": "They touched the side gate at 6:14 PM."
      },
      {
       "event_ids": [],
@@ -128,25 +220,24 @@
        "e19",
        "e20"
       ],
-      "text": "They came back into view on the Left side camera at 10:15 PM and walked back through the side gate."
+      "text": "They came back into view on the Left side camera at 6:15 PM and walked back through the side gate."
      }
     ]
    },
    {
     "attempt": 2,
-    "call_id": "call_0127",
+    "call_id": "call_0148",
     "passed": true,
     "sentences": [
      {
       "call_id": null,
       "event_ids": [
-       "e15",
        "e16"
       ],
       "gap_id": null,
       "model": null,
       "source": "wonder",
-      "text": "A person walked from the front of the house into the left side yard at 10:13 PM."
+      "text": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM."
      },
      {
       "call_id": null,
@@ -156,7 +247,7 @@
       "gap_id": null,
       "model": null,
       "source": "wonder",
-      "text": "They touched the side gate at 10:14 PM."
+      "text": "They touched the side gate at 6:14 PM."
      },
      {
       "call_id": null,
@@ -167,7 +258,7 @@
       "gap_id": null,
       "model": null,
       "source": "wonder",
-      "text": "They came back into view on the Left side camera at 10:15 PM and walked back through the side gate."
+      "text": "They came back into view on the Left side camera at 6:15 PM and walked back through the side gate."
      },
      {
       "call_id": null,
@@ -178,7 +269,7 @@
       "gap_id": null,
       "model": null,
       "source": "wonder",
-      "text": "They left past the Front entrance camera at 10:16 PM."
+      "text": "They left past the Front entrance camera at 6:16 PM."
      }
     ]
    }
@@ -186,7 +277,7 @@
   "gap_sentences": [
    "g4"
   ],
-  "story_call_id": "call_0127",
+  "story_call_id": "call_0148",
   "triage": {
    "call_id": null,
    "escalate": true,
@@ -196,6 +287,7 @@
   },
   "verdict_inputs": {
    "floor": "needs_attention",
+   "floor_reason": "9.4 case 1: r7 is in force and applies to external_visitor.",
    "proposal": "normal",
    "proposal_cited": true,
    "result": "needs_attention",

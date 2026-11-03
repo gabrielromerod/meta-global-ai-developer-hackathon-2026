@@ -5,11 +5,10 @@
    "cost_usd": 0.0012,
    "latency_ms": 1840,
    "limits_note": [
-    "Vigil doesn't identify people, so this applies to anyone.",
     "'After 9 PM' is read as 21:00 to 06:00; change the end time if you meant something else."
    ],
    "model": "muse-spark-1.3",
-   "recorded_at": "2026-10-31T15:14:00-07:00",
+   "recorded_at": "2026-11-02T15:14:00-08:00",
    "rule": {
     "active": {
      "end": "06:00",
@@ -27,27 +26,55 @@
     },
     "trigger": "touch"
    },
-   "text": "tell me if anyone touches the bin after 9 PM",
-   "transcript": null
+   "text": "tell me if anyone touches the bin after 9 PM"
   },
   {
    "call_id": "call_rec_0104",
    "cost_usd": 0.0012,
    "latency_ms": 1910,
    "limits_note": [
-    "Vigil doesn't identify people, so this applies to anyone. The exception 'except family' was dropped."
+    "'After 9 PM' is read as 21:00 to 06:00; change the end time if you meant something else."
    ],
    "model": "muse-spark-1.3",
-   "recorded_at": "2026-10-31T15:16:00-07:00",
+   "recorded_at": "2026-11-02T15:16:00-08:00",
    "rule": {
     "active": {
      "end": "06:00",
-     "start": "22:00"
+     "start": "21:00"
     },
-    "applies_to": "anyone",
-    "id": "r9",
+    "applies_to": "non_household",
+    "id": "r10",
     "min_dwell_s": null,
-    "name": "Side gate after 10 PM (anyone)",
+    "name": "Recycling bin after 9 PM (non-household)",
+    "severity": "needs_attention",
+    "state": "draft",
+    "target": {
+     "id": "po_bin",
+     "kind": "protected_object"
+    },
+    "trigger": "touch"
+   },
+   "text": "Tell me if anyone except family touches the bin after 9 PM"
+  },
+  {
+   "call_id": "call_rec_0106",
+   "cost_usd": 0.0013,
+   "latency_ms": 1980,
+   "limits_note": [
+    "'After dark' is read as 17:30 to 06:00; change the start time if you meant something else.",
+    "Guests and deliveries are excluded only when they arrive inside an Expected Window you set in advance."
+   ],
+   "model": "muse-spark-1.3",
+   "recorded_at": "2026-11-02T15:18:00-08:00",
+   "rule": {
+    "active": {
+     "end": "06:00",
+     "start": "17:30"
+    },
+    "applies_to": "external_visitor_only",
+    "id": "r11",
+    "min_dwell_s": null,
+    "name": "Side gate after dark (strangers only)",
     "severity": "needs_attention",
     "state": "draft",
     "target": {
@@ -56,8 +83,35 @@
     },
     "trigger": "touch"
    },
-   "text": "tell me if anyone except family opens the side gate after 10 PM",
-   "transcript": null
+   "text": "Strangers only, not guests or deliveries: tell me if someone opens the side gate after dark"
+  },
+  {
+   "call_id": "call_rec_0107",
+   "cost_usd": 0.0012,
+   "latency_ms": 1870,
+   "limits_note": [
+    "Vigil can't recognise individuals. It treats someone as household only if they came out of the house's own doors or checked in on the app, so Sam is exempt only in those cases."
+   ],
+   "model": "muse-spark-1.3",
+   "recorded_at": "2026-11-02T15:19:00-08:00",
+   "rule": {
+    "active": {
+     "end": "06:00",
+     "start": "22:00"
+    },
+    "applies_to": "non_household",
+    "id": "r12",
+    "min_dwell_s": null,
+    "name": "Side gate after 10 PM (non-household)",
+    "severity": "needs_attention",
+    "state": "draft",
+    "target": {
+     "id": "po_side_gate",
+     "kind": "protected_object"
+    },
+    "trigger": "touch"
+   },
+   "text": "Tell me if anyone except Sam touches the side gate after 10 PM"
   }
  ],
  "protect": [
@@ -128,7 +182,7 @@
     790,
     403
    ],
-   "recorded_at": "2026-10-31T15:12:00-07:00"
+   "recorded_at": "2026-11-02T15:12:00-08:00"
   },
   {
    "call_id": "call_0001",
@@ -197,7 +251,7 @@
     406,
     479
    ],
-   "recorded_at": "2026-10-29T16:20:00-07:00"
+   "recorded_at": "2026-11-02T13:20:00-08:00"
   }
  ],
  "rerun": {
@@ -207,7 +261,7 @@
    "latency_ms": 0,
    "model": null,
    "note": "Not escalated, so the story is a template; a re-run gives the same text.",
-   "recorded_at": "2026-10-31T15:24:00-07:00",
+   "recorded_at": "2026-11-02T15:24:00-08:00",
    "story": [
     {
      "call_id": null,
@@ -218,7 +272,7 @@
      "gap_id": null,
      "model": null,
      "source": "template",
-     "text": "A person was seen on the Front entrance camera at 6:42 PM."
+     "text": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM."
     },
     {
      "call_id": null,
@@ -228,7 +282,55 @@
      "gap_id": null,
      "model": null,
      "source": "template",
-     "text": "A car left the driveway at 6:42 PM."
+     "text": "A car left the driveway at 2:42 PM."
+    }
+   ],
+   "validation": {
+    "attempt": 1,
+    "failures": [],
+    "passed": true
+   },
+   "verdict": "normal"
+  },
+  "v_ap": {
+   "call_id": null,
+   "cost_usd": 0.0,
+   "latency_ms": 0,
+   "model": null,
+   "note": "Not escalated, so the story is a template; a re-run gives the same text.",
+   "recorded_at": "2026-11-02T18:30:00-08:00",
+   "story": [
+    {
+     "call_id": null,
+     "event_ids": [
+      "e30",
+      "e31"
+     ],
+     "gap_id": null,
+     "model": null,
+     "source": "template",
+     "text": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM."
+    },
+    {
+     "call_id": null,
+     "event_ids": [
+      "e33"
+     ],
+     "gap_id": null,
+     "model": null,
+     "source": "template",
+     "text": "They touched the side gate on the Left side camera at 6:02 PM."
+    },
+    {
+     "call_id": null,
+     "event_ids": [
+      "e35",
+      "e36"
+     ],
+     "gap_id": null,
+     "model": null,
+     "source": "template",
+     "text": "They were last seen at the front door on the Front entrance camera at 6:03 PM."
     }
    ],
    "validation": {
@@ -243,7 +345,7 @@
    "cost_usd": 0.0391,
    "latency_ms": 17300,
    "model": "muse-wonder-1.0",
-   "recorded_at": "2026-10-31T15:22:00-07:00",
+   "recorded_at": "2026-11-02T15:42:00-08:00",
    "story": [
     {
      "call_id": null,
@@ -254,7 +356,7 @@
      "gap_id": null,
      "model": null,
      "source": "wonder",
-     "text": "At 7:31 PM a person came up to the porch on the Front entrance camera."
+     "text": "At 3:31 PM someone who arrived from outside the property came up to the porch on the Front entrance camera."
     },
     {
      "call_id": null,
@@ -265,7 +367,7 @@
      "gap_id": null,
      "model": null,
      "source": "wonder",
-     "text": "They spent about 18 s on the porch, and a package was there from 7:31 PM."
+     "text": "They spent about 18 s on the porch, and a package was there from 3:31 PM."
     },
     {
      "call_id": null,
@@ -276,7 +378,7 @@
      "gap_id": null,
      "model": null,
      "source": "wonder",
-     "text": "They walked away at 7:32 PM, leaving the package on the porch."
+     "text": "They walked away at 3:32 PM, leaving the package on the porch."
     }
    ],
    "validation": {
@@ -286,23 +388,70 @@
    },
    "verdict": "noteworthy"
   },
+  "v_bp": {
+   "call_id": "call_rec_0108",
+   "cost_usd": 0.0388,
+   "latency_ms": 16800,
+   "model": "muse-wonder-1.0",
+   "recorded_at": "2026-11-02T16:31:00-08:00",
+   "story": [
+    {
+     "call_id": null,
+     "event_ids": [
+      "e10",
+      "e11"
+     ],
+     "gap_id": null,
+     "model": null,
+     "source": "wonder",
+     "text": "At 4:20 PM an expected visitor came up to the porch on the Front entrance camera."
+    },
+    {
+     "call_id": null,
+     "event_ids": [
+      "e12",
+      "e14"
+     ],
+     "gap_id": null,
+     "model": null,
+     "source": "wonder",
+     "text": "A package was on the porch from 4:20 PM."
+    },
+    {
+     "call_id": null,
+     "event_ids": [
+      "e13",
+      "e14"
+     ],
+     "gap_id": null,
+     "model": null,
+     "source": "wonder",
+     "text": "They walked away at 4:20 PM, leaving the package on the porch."
+    }
+   ],
+   "validation": {
+    "attempt": 1,
+    "failures": [],
+    "passed": true
+   },
+   "verdict": "normal"
+  },
   "v_c": {
    "call_id": "call_rec_0103",
    "cost_usd": 0.0412,
    "latency_ms": 21400,
    "model": "muse-wonder-1.0",
-   "recorded_at": "2026-10-31T15:20:00-07:00",
+   "recorded_at": "2026-11-02T18:40:00-08:00",
    "story": [
     {
      "call_id": null,
      "event_ids": [
-      "e15",
       "e16"
      ],
      "gap_id": null,
      "model": null,
      "source": "wonder",
-     "text": "A person came along the front of the house and into the left side yard at 10:13 PM."
+     "text": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM."
     },
     {
      "call_id": null,
@@ -312,7 +461,7 @@
      "gap_id": null,
      "model": null,
      "source": "wonder",
-     "text": "At 10:14 PM they touched the side gate."
+     "text": "At 6:14 PM they touched the side gate."
     },
     {
      "call_id": null,
@@ -334,7 +483,7 @@
      "gap_id": null,
      "model": null,
      "source": "wonder",
-     "text": "They reappeared on the Left side camera at 10:15 PM and went back through the side gate."
+     "text": "They reappeared on the Left side camera at 6:15 PM and went back through the side gate."
     },
     {
      "call_id": null,
@@ -345,7 +494,7 @@
      "gap_id": null,
      "model": null,
      "source": "wonder",
-     "text": "They were last seen leaving past the Front entrance camera at 10:16 PM."
+     "text": "They were last seen leaving past the Front entrance camera at 6:16 PM."
     }
    ],
    "validation": {
@@ -355,5 +504,40 @@
    },
    "verdict": "needs_attention"
   }
- }
+ },
+ "voice": [
+  {
+   "call_id": "call_rec_0201",
+   "cost_usd": 0.000195,
+   "id": "vf_family_bin",
+   "label": "Sample 1 · anyone except family, bin after 9 PM",
+   "latency_ms": 1460,
+   "model": "muse-voice-transcribe-1.0",
+   "recorded_at": "2026-11-02T15:30:00-08:00",
+   "seconds": 3.9,
+   "transcript": "Tell me if anyone except family touches the bin after 9 PM"
+  },
+  {
+   "call_id": "call_rec_0202",
+   "cost_usd": 0.00028,
+   "id": "vf_strangers_gate",
+   "label": "Sample 2 · strangers only, side gate after dark",
+   "latency_ms": 1610,
+   "model": "muse-voice-transcribe-1.0",
+   "recorded_at": "2026-11-02T15:30:00-08:00",
+   "seconds": 5.6,
+   "transcript": "Strangers only, not guests or deliveries: tell me if someone opens the side gate after dark"
+  },
+  {
+   "call_id": "call_rec_0203",
+   "cost_usd": 0.00021,
+   "id": "vf_named_gate",
+   "label": "Sample 3 · anyone except Sam, side gate after 10 PM",
+   "latency_ms": 1520,
+   "model": "muse-voice-transcribe-1.0",
+   "recorded_at": "2026-11-02T15:30:00-08:00",
+   "seconds": 4.2,
+   "transcript": "Tell me if anyone except Sam touches the side gate after 10 PM"
+  }
+ ]
 }

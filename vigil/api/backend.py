@@ -1,7 +1,8 @@
-"""Live model calls behind one injectable interface (FR-019, FR-021, FR-022, FR-026).
+"""Live model calls behind one injectable interface (FR-019, FR-021, FR-022, FR-026, FR-037).
 
-The sandbox makes only three kinds of live call (spec 5.2): tap-to-protect, rule compile
-and story re-run. Routes never touch the Meta client directly: they call a `LiveBackend`.
+The sandbox makes four kinds of live call (spec 5.2): tap-to-protect, voice transcription,
+rule compile and story re-run; the LAN calibration tool adds SAM landmark proposals. Routes
+never touch the Meta client directly: they call a `LiveBackend`.
 Tests inject fakes; production uses `MetaLiveBackend`, which imports `vigil.meta` lazily so
 the sandbox starts (and every cached flow works) even when those modules or the API are
 unavailable (NFR-009). Any exception from a backend becomes a cached fallback with a notice.
@@ -9,6 +10,7 @@ unavailable (NFR-009). Any exception from a backend becomes a cached fallback wi
 
 from __future__ import annotations
 
+import importlib
 from typing import Any, Protocol
 
 from pydantic import BaseModel, Field
@@ -27,6 +29,10 @@ class LiveUnavailableError(RuntimeError):
     """The live path cannot run (module missing, not configured, upstream failure)."""
 
 
+class LandmarksBlockedError(LiveUnavailableError):
+    """SAM landmark proposals (FR-037) are not built yet by the spatial workstream."""
+
+
 class LiveBackend(Protocol):
     def protect(
         self, camera_id: str, frame_ts: float | None, x: float, y: float, label: str | None
@@ -37,6 +43,8 @@ class LiveBackend(Protocol):
     def transcribe(self, audio: bytes, content_type: str) -> LiveResult: ...
 
     def rerun_story(self, ledger: VisitLedger) -> LiveResult: ...
+
+    def propose_landmarks(self, camera_id: str) -> LiveResult: ...
 
 
 def _ledger(client: Any) -> Any:
@@ -116,24 +124,21 @@ class MetaLiveBackend:
         before = self._ledger_len(client)
         draft = compile_rule(client, text, catalog)
         payload = draft.model_dump() if hasattr(draft, "model_dump") else dict(draft)
-        if "rule" not in payload:
+        if "rule" not in payload and "question" not in payload:
             payload = {"rule": payload}
         return LiveResult(payload=payload, calls=_calls_since(client, before))
 
     def transcribe(self, audio: bytes, content_type: str) -> LiveResult:
-        import tempfile
-        from pathlib import Path
+        """Send the WAV bytes as they are: speech never touches the disk (NFR-002)."""
+        from vigil.meta import asr
 
-        from vigil.meta.asr import transcribe
-
+        if "wav" not in content_type:
+            raise LiveUnavailableError("voice rules take 16 kHz mono 16-bit PCM WAV only")
         client = self._meta_client()
         before = self._ledger_len(client)
-        suffix = ".wav" if "wav" in content_type else ".webm"
-        with tempfile.TemporaryDirectory() as tmp:
-            path = Path(tmp) / f"rule{suffix}"
-            path.write_bytes(audio)
-            text = transcribe(client, path)
-        return LiveResult(payload={"transcript": text}, calls=_calls_since(client, before))
+        result = asr.transcribe_wav(client, bytes(audio))
+        payload = {"transcript": result.text, "cached": bool(result.cached)}
+        return LiveResult(payload=payload, calls=_calls_since(client, before))
 
     def rerun_story(self, ledger: VisitLedger) -> LiveResult:
         from vigil.meta.wonder import write_story
@@ -154,3 +159,30 @@ class MetaLiveBackend:
             "validation": result.model_dump(),
         }
         return LiveResult(payload=payload, calls=_calls_since(client, before))
+
+    def propose_landmarks(self, camera_id: str) -> LiveResult:
+        """SAM 3.1 landmark proposals on a camera still (FR-037), once the module exists.
+
+        The spatial workstream's `vigil.spatial.landmarks.propose_landmarks` is imported lazily
+        (it needs OpenCV); spec 9.5 also lists it under `vigil.meta`, so that is tried second.
+        """
+        propose: Any = None
+        for module in ("vigil.spatial.landmarks", "vigil.meta.sam"):
+            try:
+                propose = getattr(importlib.import_module(module), "propose_landmarks", None)
+            except ImportError:
+                propose = None
+            if callable(propose):
+                break
+        if not callable(propose):
+            raise LandmarksBlockedError("SAM landmark proposals are not built yet")
+        if self._stills_dir is None:
+            raise LiveUnavailableError("no still frames in this bundle for landmark proposals")
+        still = self._stills_dir / f"{camera_id}.jpg"
+        if not still.exists():
+            raise LiveUnavailableError(f"no still frame for camera {camera_id}")
+        client = self._meta_client()
+        before = self._ledger_len(client)
+        proposals = propose(client, still, camera_id)
+        rows = [p.model_dump() if hasattr(p, "model_dump") else dict(p) for p in proposals]
+        return LiveResult(payload={"proposals": rows}, calls=_calls_since(client, before))

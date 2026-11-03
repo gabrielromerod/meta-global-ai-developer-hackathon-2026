@@ -1,10 +1,18 @@
-"""Build the SYNTHETIC demo bundle for scenarios A, B and C (FR-027, spec section 4).
+"""Build the SYNTHETIC demo bundle for scenarios A, A′, B, B′ and C (FR-027, spec section 4).
 
 Everything here is invented: no footage, no real house, no people, no location. The geometry
-is a measured-site-plan stand-in (spec 7, fallback ladder level 3) laid out to match the
-sample config/cameras.yaml, and the camera views in the sandbox are drawn on canvases from
-this data. It exists so the sandbox, the API and the E2E tests work before the recorded
-evening is exported by `vigil export`.
+is a measured-site-plan stand-in (spec 7, fallback ladder level 3) laid out like the spec 9.4
+`cameras.yaml` excerpt, and the camera views in the sandbox are drawn on canvases from this
+data. It exists so the sandbox, the API and the E2E tests work before the recorded evening is
+exported by `vigil export`.
+
+The evening follows the Nov 2 schedule (spec 4, 9.7): daylight block T-07a with A (household
+departure through the front door), B (courier from the driveway entry) and B′ (a courier inside
+the owner's "deliveries" window w3); night block T-07b with A′ (a household member walks out of
+the front door to the side gate and touches it after 17:30: no alert, r7 applies to
+non-household) and C (a person from the side alley touches the same gate at about 18:14 PT,
+goes behind the shed for 41 s: Needs your attention). Every subject carries its spatial-origin
+role and `role_basis` (FR-044); nobody is identified.
 
 Run from the repo root:  uv run python demo/synthetic/build.py
 Re-running gives byte-identical JSON and GLB files (tested in tests/integration/test_store.py).
@@ -23,7 +31,6 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
-import yaml
 from shapely.geometry import Polygon as ShapelyPolygon
 from shapely.ops import unary_union
 
@@ -33,6 +40,7 @@ from vigil.models import (
     Box,
     Config,
     Event,
+    ExpectedWindow,
     Gap,
     ModelCall,
     Position,
@@ -41,6 +49,7 @@ from vigil.models import (
     RuleHit,
     RuleTarget,
     StorySentence,
+    Subject,
     Track,
     ValidationFailure,
     ValidationResult,
@@ -53,13 +62,54 @@ from vigil.store.export import export_bundle
 
 HERE = Path(__file__).resolve().parent
 REPO_ROOT = HERE.parent.parent
-SESSION_START = datetime.fromisoformat("2026-10-30T18:00:00-07:00")
+# Nov 2, 2026 is in PST (DST ended Nov 1). Session t=0 is 14:00 PT, inside the daylight block.
+SESSION_START = datetime.fromisoformat("2026-11-02T14:00:00-08:00")
 W, H = 1280, 720
 LABEL = "SYNTHETIC DEMO DATA: invented scenes drawn from JSON, no real footage or home"
 
 SAM = "sam-3.1"
 SPARK = "muse-spark-1.3"
 WONDER = "muse-wonder-1.0"
+VOICE = "muse-voice-transcribe-1.0"
+
+# Self-contained config in the shape of spec 9.4 (zones carry a kind), so the synthetic bundle
+# never changes when config/cameras.yaml is edited for the real cameras.
+SYNTHETIC_CONFIG: dict[str, Any] = {
+    "timezone": "America/Los_Angeles",
+    "cameras": [
+        {"id": "front", "name": "Front entrance", "hfov_deg": 100.0, "zones": {
+            "front_door_egress": {"kind": "egress",
+                                  "polygon": [[560, 300], [700, 300], [700, 560], [560, 560]]},
+            "porch": {"kind": "interior_yard",
+                      "polygon": [[420, 380], [860, 380], [860, 720], [420, 720]]},
+            "driveway_entry": {"kind": "perimeter",
+                               "polygon": [[0, 300], [180, 300], [180, 720], [0, 720]]}},
+         "exits": {"to_side_left": [[1180, 260], [1280, 260], [1280, 720], [1180, 720]]}},
+        {"id": "side_left", "name": "Left side", "hfov_deg": 85.0, "zones": {
+            "side_alley": {"kind": "perimeter",
+                           "polygon": [[200, 300], [420, 300], [420, 720], [200, 720]]},
+            "side_yard": {"kind": "interior_yard",
+                          "polygon": [[420, 300], [1100, 300], [1100, 720], [420, 720]]}},
+         "lines": {"side_gate": [[812, 410], [870, 655]]},
+         "exits": {"to_shed_back": [[1100, 380], [1280, 380], [1280, 720], [1100, 720]]}},
+        {"id": "side_right", "name": "Right side", "hfov_deg": 80.0, "zones": {
+            "side_path": {"kind": "interior_yard",
+                          "polygon": [[150, 280], [1130, 280], [1130, 720], [150, 720]]}}},
+        {"id": "backyard", "name": "Backyard", "hfov_deg": 90.0, "zones": {
+            "back_door_egress": {"kind": "egress",
+                                 "polygon": [[600, 260], [760, 260], [760, 520], [600, 520]]}}},
+    ],
+    "blind_regions": [
+        {"id": "shed_back", "name": "behind the shed",
+         "polygon_m": [[4.1, 9.0], [7.3, 9.0], [7.3, 11.2], [4.1, 11.2]]},
+    ],
+    "topology": [
+        {"from": "side_left", "exit": "to_shed_back", "to": "shed_back", "blind": True},
+        {"from": "shed_back", "to": "side_left", "min_s": 5, "max_s": 180, "blind": True},
+        {"from": "front", "to": "side_left", "min_s": 2, "max_s": 20},
+        {"from": "side_left", "to": "front", "min_s": 2, "max_s": 20},
+    ],
+}  # fmt: skip
 
 # ---------------------------------------------------------------------------
 # Site plan (world metres: x along the front wall, y up, z towards the backyard)
@@ -98,12 +148,18 @@ CAMERA_POSES: dict[str, dict[str, Any]] = {
                  "range_m": 10.0},
 }  # fmt: skip
 
-CALIBRATION = {  # synthetic figures shown in "How this was decided" (spec 4, step 4)
-    "front": {"reproj_mean_px": 2.1, "heldout_ground_m": 0.14, "method": "pnp_ransac"},
-    "side_left": {"reproj_mean_px": 2.6, "heldout_ground_m": 0.18, "method": "pnp_ransac"},
-    "side_right": {"reproj_mean_px": 3.1, "heldout_ground_m": 0.21, "method": "pnp_ransac"},
-    "backyard": {"reproj_mean_px": 2.4, "heldout_ground_m": 0.16, "method": "homography"},
-}
+# Synthetic figures shown in "How this was decided" (spec 4 step 4, spec 7): nominal-FOV
+# intrinsics, 6-landmark PnP, and an audit-harness held-out ground error that feeds r95.
+CALIBRATION = {
+    "front": {"intrinsics_source": "fov_nominal", "landmarks": 6, "reproj_mean_px": 3.4,
+              "heldout_ground_m": 0.14, "method": "pnp_ransac"},
+    "side_left": {"intrinsics_source": "fov_nominal", "landmarks": 6, "reproj_mean_px": 3.9,
+                  "heldout_ground_m": 0.18, "method": "pnp_ransac"},
+    "side_right": {"intrinsics_source": "fov_nominal", "landmarks": 6, "reproj_mean_px": 4.6,
+                   "heldout_ground_m": 0.21, "method": "pnp_ransac"},
+    "backyard": {"intrinsics_source": "fov_nominal", "landmarks": 6, "reproj_mean_px": 3.6,
+                 "heldout_ground_m": 0.16, "method": "homography"},
+}  # fmt: skip
 
 
 def r3(v: float) -> float:
@@ -227,24 +283,44 @@ def path_at(waypoints: list[tuple[float, float, float]], t: float) -> tuple[floa
     return waypoints[-1][1], waypoints[-1][2]
 
 
+# Session times (t = 0 is 14:00 PT): A 14:42, B 15:31, B′ 16:20 (inside w3 16:00-16:45),
+# A′ 18:02 and C 18:13-18:16 (both inside r7's 17:30-06:00 window, cameras in IR).
 TRACKS: dict[str, dict[str, Any]] = {
-    # Scenario A: routine departure, front camera
+    # Scenario A: a household member leaves through the front door and drives off
     "t_a1": {"camera": "front", "cls": "person", "tag": "T1", "visit": "v_a",
+             "origin": "front_door_egress",
              "path": [(2522, 0.0, -0.4), (2531, 2.6, -2.8), (2546, 4.3, -4.4)]},
     "t_a2": {"camera": "front", "cls": "car", "tag": "T2", "visit": "v_a",
              "path": [(2540, 5.2, -5.0), (2552, 5.2, -5.0), (2578, 5.4, -10.5)]},
-    # Scenario B: delivery, front camera; the package stays
+    # Scenario B: a courier from the driveway entry; the package stays
     "t_b1": {"camera": "front", "cls": "person", "tag": "T1", "visit": "v_b",
+             "origin": "driveway_entry",
              "path": [(5462, 2.2, -8.0), (5478, 0.7, -1.3), (5496, 0.8, -1.2),
                       (5520, 2.6, -8.4)]},
     "t_b2": {"camera": "front", "cls": "package", "tag": "T2", "visit": "v_b",
              "path": [(5494, 0.4, -0.9), (5530, 0.4, -0.9)]},
-    # Scenario C: night visit with the shed gap g4
-    "t_c0": {"camera": "front", "cls": "person", "tag": "T1", "visit": "v_c",
-             "path": [(15170, 3.0, -4.5), (15190, 4.0, -0.6)]},
+    # Scenario B′: the same walk inside the owner's "deliveries" window w3
+    "t_bp1": {"camera": "front", "cls": "person", "tag": "T1", "visit": "v_bp",
+              "origin": "driveway_entry",
+              "path": [(8402, 2.2, -8.0), (8418, 0.7, -1.3), (8434, 0.8, -1.2),
+                       (8456, 2.6, -8.4)]},
+    "t_bp2": {"camera": "front", "cls": "package", "tag": "T2", "visit": "v_bp",
+              "path": [(8432, -0.2, -0.9), (8466, -0.2, -0.9)]},
+    # Scenario A′ (night): out of the front door, to the side gate, touch, back inside
+    "t_ap0": {"camera": "front", "cls": "person", "tag": "T1", "visit": "v_ap",
+              "origin": "front_door_egress",
+              "path": [(14520, 0.0, -0.4), (14528, 2.4, -1.6), (14534, 4.0, -0.6)]},
+    "t_ap1": {"camera": "side_left", "cls": "person", "tag": "T1", "visit": "v_ap",
+              "path": [(14537, 3.9, -0.8), (14544, 5.6, 2.2), (14548, 6.1, 2.75),
+                       (14552, 6.1, 2.8), (14560, 5.0, 1.0), (14568, 3.9, -0.8)]},
+    "t_ap2": {"camera": "front", "cls": "person", "tag": "T1", "visit": "v_ap",
+              "path": [(14571, 4.0, -0.6), (14576, 2.4, -1.6), (14580, 0.0, -0.4)]},
+    # Scenario C (night): from the side alley, touch the gate, the shed gap g4, leave
     "t_c1": {"camera": "side_left", "cls": "person", "tag": "T1", "visit": "v_c",
-             "path": [(15186, 3.9, -0.8), (15230, 5.6, 2.2), (15245, 6.1, 2.75),
-                      (15249, 6.1, 2.8), (15256, 6.0, 5.0), (15263, 6.6, 7.3)]},
+             "origin": "side_alley",
+             "path": [(15186, 7.0, 2.5), (15214, 7.6, 1.2), (15232, 6.6, 2.0),
+                      (15245, 6.1, 2.75), (15249, 6.1, 2.8), (15256, 6.0, 5.0),
+                      (15263, 6.6, 7.3)]},
     "t_c2": {"camera": "side_left", "cls": "person", "tag": "T1", "visit": "v_c",
              "path": [(15304, 7.6, 7.4), (15318, 6.1, 3.0), (15340, 5.0, 1.0),
                       (15360, 4.0, -0.6)]},
@@ -253,8 +329,15 @@ TRACKS: dict[str, dict[str, Any]] = {
 }  # fmt: skip
 
 # (from_track, to_track, t0, t1): both cameras see the subject; positions are fused.
-FUSED = [("t_c0", "t_c1", 15186.0, 15190.0), ("t_c2", "t_c3", 15356.0, 15360.0)]
+FUSED = [("t_c2", "t_c3", 15356.0, 15360.0)]
 LOW_CONFIDENCE = ("t_c1", 15257.0, 15263.0)  # feet hidden behind the bins near the shed
+
+
+def r95_for(camera: str, dist: float) -> float:
+    """Audit-harness ground error plus a range term; fov_nominal widens it (spec 7 step 4)."""
+    cal = CALIBRATION[camera]
+    radial = 0.03 if cal["intrinsics_source"] == "fov_nominal" else 0.02
+    return cal["heldout_ground_m"] + 0.08 + radial * dist
 
 
 def positions_for(track_id: str) -> list[Position]:
@@ -266,22 +349,21 @@ def positions_for(track_id: str) -> list[Position]:
     while t <= t1 + 1e-9:
         x, z = path_at(spec["path"], t)
         method, cams, flags = "footpoint", [spec["camera"]], []
-        dist = math.hypot(x - cam[0], z - cam[2])
-        r95 = 0.2 + 0.035 * dist
+        r95 = r95_for(spec["camera"], math.hypot(x - cam[0], z - cam[2]))
         skip = False
         for a, b, f0, f1 in FUSED:
             if f0 <= t <= f1:
-                if track_id == b:
-                    skip = True  # one fused estimate per instant, stored on the first track
-                elif track_id == a:
-                    method, cams, r95 = (
-                        "fused",
-                        sorted([TRACKS[a]["camera"], TRACKS[b]["camera"]]),
-                        0.22,
-                    )
+                if track_id == a:
+                    skip = True  # one fused estimate per instant, stored on the later track
+                elif track_id == b:
+                    other = TRACKS[a]["camera"]
+                    oc = CAMERA_POSES[other]["position"]
+                    r_other = r95_for(other, math.hypot(x - oc[0], z - oc[2]))
+                    r95 = 1.0 / math.sqrt(1.0 / r95**2 + 1.0 / r_other**2)  # inverse variance
+                    method, cams = "fused", sorted([TRACKS[a]["camera"], TRACKS[b]["camera"]])
         lc_track, lc0, lc1 = LOW_CONFIDENCE
         if track_id == lc_track and lc0 <= t <= lc1:
-            method, flags, r95 = "height_prior", ["low_confidence"], 0.9
+            method, flags, r95 = "height_prior", ["low_confidence"], r95 + 0.6
         if not skip:
             jitter = (noise(f"{track_id}:{t}") - 0.5) * 0.06
             out.append(
@@ -313,34 +395,74 @@ def overlays_for(track_id: str) -> dict[str, Any]:
 
 
 # ---------------------------------------------------------------------------
+# Subjects and roles (FR-044): one chain per linked set of person tracks, with its basis
+# ---------------------------------------------------------------------------
+
+SUBJECTS = [
+    Subject(id="s_a1", visit_id="v_a", track_ids=["t_a1"], actor_role="household_insider",
+            role_basis="egress:front_door_egress"),
+    Subject(id="s_ap1", visit_id="v_ap", track_ids=["t_ap0", "t_ap1", "t_ap2"],
+            actor_role="household_insider", role_basis="egress:front_door_egress"),
+    Subject(id="s_b1", visit_id="v_b", track_ids=["t_b1"], actor_role="external_visitor",
+            role_basis="perimeter:driveway_entry"),
+    Subject(id="s_bp1", visit_id="v_bp", track_ids=["t_bp1"], actor_role="expected_visitor",
+            role_basis="window:w3"),
+    Subject(id="s_c1", visit_id="v_c", track_ids=["t_c1", "t_c2", "t_c3"],
+            actor_role="external_visitor", role_basis="perimeter:side_alley"),
+]  # fmt: skip
+SUBJECT_OF = {tid: s for s in SUBJECTS for tid in s.track_ids}
+
+WINDOW_W3 = ExpectedWindow(
+    id="w3", label="deliveries",
+    start=datetime.fromisoformat("2026-11-02T16:00:00-08:00"),
+    end=datetime.fromisoformat("2026-11-02T16:45:00-08:00"),
+    cameras=["front"], state="expired",
+)  # fmt: skip
+"""Set by the owner at 13:40 PT, before it started; expired at 16:45 (FR-029)."""
+
+# ---------------------------------------------------------------------------
 # Events, gaps, visits, stories
 # ---------------------------------------------------------------------------
 
 
 def ev(eid, visit, cam, track, typ, t0, t1, target=None) -> Event:
+    subject = SUBJECT_OF.get(track)
     return Event(id=eid, visit_id=visit, camera_id=cam, track_id=track, type=typ, t0=t0, t1=t1,
-                 target=target, clip_t0=t0 - 5.0, clip_t1=t1 + 5.0)  # fmt: skip
+                 target=target, clip_t0=t0 - 5.0, clip_t1=t1 + 5.0,
+                 subject_id=subject.id if subject else None,
+                 actor_role=subject.actor_role if subject else None)  # fmt: skip
 
 
 EVENTS = [
-    ev("e1", "v_a", "front", "t_a1", "enter", 2522, 2523),
+    ev("e1", "v_a", "front", "t_a1", "enter", 2522, 2523, "front_door_egress"),
     ev("e2", "v_a", "front", "t_a1", "enter", 2531, 2532, "driveway"),
     ev("e3", "v_a", "front", "t_a1", "exit", 2545, 2546),
     ev("e4", "v_a", "front", "t_a2", "exit", 2552, 2578, "driveway"),
-    ev("e5", "v_b", "front", "t_b1", "enter", 5462, 5463),
+    ev("e5", "v_b", "front", "t_b1", "enter", 5462, 5463, "driveway_entry"),
     ev("e6", "v_b", "front", "t_b1", "enter", 5470, 5471, "porch"),
     ev("e7", "v_b", "front", "t_b1", "dwell", 5478, 5496, "porch"),
     ev("e8", "v_b", "front", "t_b1", "exit", 5519, 5520),
     ev("e9", "v_b", "front", "t_b2", "enter", 5494, 5495, "porch"),
-    ev("e15", "v_c", "front", "t_c0", "enter", 15170, 15171),
-    ev("e16", "v_c", "side_left", "t_c1", "enter", 15186, 15187, "side_yard"),
+    ev("e10", "v_bp", "front", "t_bp1", "enter", 8402, 8403, "driveway_entry"),
+    ev("e11", "v_bp", "front", "t_bp1", "enter", 8410, 8411, "porch"),
+    ev("e12", "v_bp", "front", "t_bp1", "dwell", 8418, 8434, "porch"),
+    ev("e13", "v_bp", "front", "t_bp1", "exit", 8455, 8456),
+    ev("e14", "v_bp", "front", "t_bp2", "enter", 8432, 8433, "porch"),
+    ev("e16", "v_c", "side_left", "t_c1", "enter", 15186, 15187, "side_alley"),
     ev("e17", "v_c", "side_left", "t_c1", "touch", 15245, 15249, "po_side_gate"),
     ev("e18", "v_c", "side_left", "t_c1", "exit", 15262, 15263, "to_shed_back"),
     ev("e19", "v_c", "side_left", "t_c2", "enter", 15304, 15305, "side_yard"),
     ev("e20", "v_c", "side_left", "t_c2", "cross", 15317, 15319, "side_gate"),
     ev("e21", "v_c", "side_left", "t_c2", "exit", 15359, 15360),
     ev("e22", "v_c", "front", "t_c3", "enter", 15356, 15357),
-    ev("e23", "v_c", "front", "t_c3", "exit", 15384, 15385),
+    ev("e23", "v_c", "front", "t_c3", "exit", 15384, 15385, "driveway_entry"),
+    ev("e30", "v_ap", "front", "t_ap0", "enter", 14520, 14521, "front_door_egress"),
+    ev("e31", "v_ap", "front", "t_ap0", "exit", 14533, 14534, "to_side_left"),
+    ev("e32", "v_ap", "side_left", "t_ap1", "enter", 14537, 14538, "side_yard"),
+    ev("e33", "v_ap", "side_left", "t_ap1", "touch", 14548, 14552, "po_side_gate"),
+    ev("e34", "v_ap", "side_left", "t_ap1", "exit", 14567, 14568),
+    ev("e35", "v_ap", "front", "t_ap2", "enter", 14571, 14572),
+    ev("e36", "v_ap", "front", "t_ap2", "exit", 14579, 14580, "front_door_egress"),
 ]
 
 GAPS = [
@@ -362,20 +484,34 @@ GAP_SENTENCE = s(
 )
 
 STORY_A = [
-    s(f"A person was seen on the Front entrance camera at {clock(2522)}.", ["e1", "e3"],
-      "template"),
+    s(f"Someone who came out of the house was seen on the Front entrance camera at "
+      f"{clock(2522)}.", ["e1", "e3"], "template"),
     s(f"A car left the driveway at {clock(2552)}.", ["e4"], "template"),
 ]  # fmt: skip
+STORY_AP = [
+    s(f"Someone who came out of the house was seen on the Front entrance camera at "
+      f"{clock(14520)}.", ["e30", "e31"], "template"),
+    s(f"They touched the side gate on the Left side camera at {clock(14548)}.", ["e33"],
+      "template"),
+    s(f"They were last seen at the front door on the Front entrance camera at "
+      f"{clock(14580)}.", ["e35", "e36"], "template"),
+]  # fmt: skip
 STORY_B = [
-    s(f"A person walked up to the porch on the Front entrance camera at {clock(5462)}.",
-      ["e5", "e6"]),
+    s(f"Someone who arrived from outside the property walked up to the porch on the Front "
+      f"entrance camera at {clock(5462)}.", ["e5", "e6"]),
     s(f"They stayed on the porch for about 18 s, and a package appeared there at "
       f"{clock(5494)}.", ["e7", "e9"]),
     s(f"They left at {clock(5520)}; the package stayed on the porch.", ["e8", "e9"]),
 ]  # fmt: skip
+STORY_BP = [
+    s(f"An expected visitor walked up to the porch on the Front entrance camera at "
+      f"{clock(8402)}.", ["e10", "e11"]),
+    s(f"They left a package on the porch at {clock(8432)}.", ["e12", "e14"]),
+    s(f"They walked away at {clock(8456)}; the package stayed on the porch.", ["e13", "e14"]),
+]  # fmt: skip
 STORY_C = [
-    s(f"A person walked from the front of the house into the left side yard at "
-      f"{clock(15186)}.", ["e15", "e16"]),
+    s(f"Someone who arrived from outside the property came into view on the Left side camera "
+      f"at {clock(15186)}.", ["e16"]),
     s(f"They touched the side gate at {clock(15245)}.", ["e17"]),
     GAP_SENTENCE,
     s(f"They came back into view on the Left side camera at {clock(15304)} and walked back "
@@ -383,7 +519,7 @@ STORY_C = [
     s(f"They left past the Front entrance camera at {clock(15385)}.", ["e22", "e23"]),
 ]  # fmt: skip
 REJECTED_C = [
-    {"text": STORY_C[0].text, "event_ids": ["e15", "e16"]},
+    {"text": STORY_C[0].text, "event_ids": ["e16"]},
     {"text": STORY_C[1].text, "event_ids": ["e17"]},
     {"text": "He checked the shed door.", "event_ids": []},
     {"text": STORY_C[3].text, "event_ids": ["e19", "e20"]},
@@ -400,15 +536,21 @@ VISITS = [
           proposal=None, verdict="normal", escalated=False, story=STORY_A),
     Visit(id="v_b", scenario="B", t0=5462, t1=5530, state="published", floor="normal",
           proposal="noteworthy", verdict="noteworthy", escalated=True, story=STORY_B),
-    Visit(id="v_c", scenario="C", t0=15170, t1=15385, state="published",
+    Visit(id="v_bp", scenario="B-prime", t0=8402, t1=8466, state="published", floor="normal",
+          proposal="normal", verdict="normal", escalated=True, story=STORY_BP),
+    Visit(id="v_ap", scenario="A-prime", t0=14520, t1=14580, state="published",
+          floor="normal", proposal=None, verdict="normal", escalated=False, story=STORY_AP),
+    Visit(id="v_c", scenario="C", t0=15186, t1=15385, state="published",
           floor="needs_attention", proposal="normal", verdict="needs_attention",
           escalated=True, story=STORY_C),
 ]  # fmt: skip
 
 TITLES = {
-    "A": "A · Routine departure",
+    "A": "A · Routine departure (daylight)",
+    "A-prime": "A′ · After dark: household member at the side gate",
     "B": "B · Delivery on the porch",
-    "C": "C · Night visit to the side gate",
+    "B-prime": "B′ · Delivery inside an expected window",
+    "C": "C · After dark: side gate and the shed gap",
 }
 
 
@@ -426,7 +568,8 @@ class Ledger:
         cid = f"call_{len(self.calls) + 1:04d}"
         req = hashlib.sha256(f"{model}|{purpose}|{key}".encode()).hexdigest()[:16]
         call = ModelCall(id=cid, model=model, purpose=purpose, visit_id=visit_id, req_hash=req,
-                         cached=True, ok=True, created_at=iso(t), **kw)  # fmt: skip
+                         cached=True, ok=True, created_at=iso(t), funding="credit",
+                         **kw)  # fmt: skip
         self.calls.append(call)
         return cid
 
@@ -457,12 +600,12 @@ def build_windows_and_calls(ledger: Ledger) -> list[Window]:
                     0.08 + 0.1 * noise(wid)), trigger="motion", status="processed",
                     path=f"windows/{wid}.mp4"))  # fmt: skip
                 phrases = ["person", "car"] if cam == "front" else ["person"]
-                if visit.id == "v_b" and t >= 5496:
+                if cam == "front" and t >= 5496:
                     phrases.append("package")  # the watch added by the closed loop (FR-020)
                 for phrase in phrases:
                     ledger.add(SAM, "track", visit.id, f"{wid}|{phrase}", t + 14,
                                latency_ms=int(2600 + 2400 * noise(wid + phrase)), units=100,
-                               cost_usd=sam_cost(100))  # fmt: skip
+                               cost_usd=sam_cost(100), feature="perception_demo")  # fmt: skip
                 t += 8.0
     # Motion triggers that never became visits: wind in trees, headlights, a moth.
     for k in range(19):
@@ -483,27 +626,50 @@ def build_calls(ledger: Ledger) -> dict[str, Any]:
             t_end = spec["path"][-1][0]
             ledger.add(SPARK, "appearance", spec["visit"], tid, t_end + 20,
                        latency_ms=int(5200 + 3000 * noise(tid)), in_tokens=30000,
-                       out_tokens=220, cost_usd=tok_cost(SPARK, 30000, 220))  # fmt: skip
-    tri_a = ledger.add(SPARK, "triage", "v_a", "v_a", 2600, latency_ms=1310, in_tokens=820,
-                       out_tokens=60, cost_usd=tok_cost(SPARK, 820, 60))  # fmt: skip
-    tri_b = ledger.add(SPARK, "triage", "v_b", "v_b", 5560, latency_ms=1420, in_tokens=870,
-                       out_tokens=64, cost_usd=tok_cost(SPARK, 870, 64))  # fmt: skip
-    story_b = ledger.add(WONDER, "story", "v_b", "v_b|1", 5575, latency_ms=17800,
-                         in_tokens=5900, out_tokens=780,
-                         cost_usd=tok_cost(WONDER, 5900, 780))  # fmt: skip
-    draft_c1 = ledger.add(WONDER, "story", "v_c", "v_c|1", 15420, latency_ms=19400,
-                          in_tokens=6400, out_tokens=820,
-                          cost_usd=tok_cost(WONDER, 6400, 820))  # fmt: skip
-    draft_c2 = ledger.add(WONDER, "story", "v_c", "v_c|2", 15445, latency_ms=18100,
-                          in_tokens=6900, out_tokens=760,
-                          cost_usd=tok_cost(WONDER, 6900, 760))  # fmt: skip
+                       out_tokens=220, cost_usd=tok_cost(SPARK, 30000, 220),
+                       feature="appearance")  # fmt: skip
+
+    def triage(visit: str, t: float, latency: int, tin: int, tout: int) -> str:
+        return ledger.add(SPARK, "triage", visit, visit, t, latency_ms=latency, in_tokens=tin,
+                          out_tokens=tout, cost_usd=tok_cost(SPARK, tin, tout),
+                          feature="triage")  # fmt: skip
+
+    def story(visit: str, attempt: int, t: float, latency: int, tin: int, tout: int) -> str:
+        return ledger.add(WONDER, "story", visit, f"{visit}|{attempt}", t, latency_ms=latency,
+                          in_tokens=tin, out_tokens=tout, cost_usd=tok_cost(WONDER, tin, tout),
+                          feature="story")  # fmt: skip
+
+    tri_a = triage("v_a", 2600, 1310, 820, 60)
+    tri_b = triage("v_b", 5560, 1420, 870, 64)
+    story_b = story("v_b", 1, 5575, 17800, 5900, 780)
+    tri_bp = triage("v_bp", 8496, 1380, 880, 62)
+    story_bp = story("v_bp", 1, 8512, 16900, 6100, 760)
+    tri_ap = triage("v_ap", 14610, 1290, 900, 58)
+    draft_c1 = story("v_c", 1, 15420, 19400, 6400, 820)
+    draft_c2 = story("v_c", 2, 15445, 18100, 6900, 760)
+
+    def inputs(floor: str, proposal: str | None, cited: bool, result: str, why: str) -> dict:
+        return {"floor": floor, "unresolved_gap": False, "proposal": proposal,
+                "proposal_cited": cited, "result": result, "floor_reason": why}  # fmt: skip
+
     trace["v_a"] = {
         "triage": {"escalate": False, "forced": False, "source": "spark", "call_id": tri_a,
-                   "reason": "One household departure by car; no rule, object or gap involved."},
+                   "reason": "One departure by car; no rule, protected object or gap involved."},
         "drafts": [],
         "story_call_id": None,
-        "verdict_inputs": {"floor": "normal", "unresolved_gap": False, "proposal": None,
-                           "proposal_cited": False, "result": "normal"},
+        "verdict_inputs": inputs("normal", None, False, "normal", "No protected object, no rule."),
+        "watch_proposals": [],
+    }  # fmt: skip
+    trace["v_ap"] = {
+        "triage": {"escalate": False, "forced": False, "source": "spark", "call_id": tri_ap,
+                   "reason": "Not forced: r7 is in force on the side gate but applies to "
+                             "non-household, and this touch was by a household_insider "
+                             "(FR-013, 9.4 case 2). Routine."},
+        "drafts": [],
+        "story_call_id": None,
+        "verdict_inputs": inputs("normal", None, False, "normal",
+                                 "9.4 case 2: every rule in force on po_side_gate excludes "
+                                 "household_insider, so the touch keeps the floor normal."),
         "watch_proposals": [],
     }  # fmt: skip
     trace["v_b"] = {
@@ -512,13 +678,25 @@ def build_calls(ledger: Ledger) -> dict[str, Any]:
         "drafts": [{"attempt": 1, "call_id": story_b, "passed": True,
                     "sentences": [x.model_dump() for x in STORY_B]}],
         "story_call_id": story_b,
-        "verdict_inputs": {"floor": "normal", "unresolved_gap": False,
-                           "proposal": "noteworthy", "proposal_cited": True,
-                           "result": "noteworthy"},
+        "verdict_inputs": inputs("normal", "noteworthy", True, "noteworthy",
+                                 "No rule fired and no protected object was touched."),
         "watch_proposals": [{"camera_id": "front", "phrase": "package",
                              "reason_event_id": "e9", "accepted": True, "watch_id": "w2",
                              "reason": "camera exists; 'package' is on the allowlist; "
                                        "1 of 4 watches on Front entrance"}],
+    }  # fmt: skip
+    trace["v_bp"] = {
+        "triage": {"escalate": True, "forced": False, "source": "spark", "call_id": tri_bp,
+                   "reason": "A new object was left on the porch."},
+        "drafts": [{"attempt": 1, "call_id": story_bp, "passed": True,
+                    "sentences": [x.model_dump() for x in STORY_BP]}],
+        "story_call_id": story_bp,
+        "verdict_inputs": inputs("normal", "normal", True, "normal",
+                                 "No rule fired; the courier arrived inside window w3."),
+        "watch_proposals": [{"camera_id": "front", "phrase": "package",
+                             "reason_event_id": "e14", "accepted": False, "watch_id": "w2",
+                             "reason": "already watching 'package' on Front entrance (w2)"}],
+        "expected_window": "w3",
     }  # fmt: skip
     trace["v_c"] = {
         "triage": {"escalate": True, "forced": True, "source": "code", "call_id": None,
@@ -531,9 +709,8 @@ def build_calls(ledger: Ledger) -> dict[str, Any]:
         ],
         "story_call_id": draft_c2,
         "gap_sentences": ["g4"],
-        "verdict_inputs": {"floor": "needs_attention", "unresolved_gap": False,
-                           "proposal": "normal", "proposal_cited": True,
-                           "result": "needs_attention"},
+        "verdict_inputs": inputs("needs_attention", "normal", True, "needs_attention",
+                                 "9.4 case 1: r7 is in force and applies to external_visitor."),
         "watch_proposals": [],
     }  # fmt: skip
     return trace
@@ -714,6 +891,29 @@ def build_glb() -> bytes:
 # Presets for the live buttons (cached results shown when live is unavailable)
 # ---------------------------------------------------------------------------
 
+NAMED_PERSON_NOTICE = (
+    "Vigil can't recognise individuals. It treats someone as household only if they came out "
+    "of the house's own doors or checked in on the app, so Sam is exempt only in those cases."
+)
+# The 3 sample-audio buttons (judge step 6). Their WAVs are recorded in T-07a (owner); until
+# then the buttons use these cached transcripts (demo/voice/README.md).
+VOICE_FIXTURES = [
+    ("vf_family_bin", "Sample 1 · anyone except family, bin after 9 PM",
+     "Tell me if anyone except family touches the bin after 9 PM", 3.9, 1460),
+    ("vf_strangers_gate", "Sample 2 · strangers only, side gate after dark",
+     "Strangers only, not guests or deliveries: tell me if someone opens the side gate "
+     "after dark", 5.6, 1610),
+    ("vf_named_gate", "Sample 3 · anyone except Sam, side gate after 10 PM",
+     "Tell me if anyone except Sam touches the side gate after 10 PM", 4.2, 1520),
+]  # fmt: skip
+
+
+def _rule(rid: str, name: str, target: str, start: str, end: str, applies_to: str) -> dict:
+    return Rule(id=rid, name=name, target=RuleTarget(kind="protected_object", id=target),
+                trigger="touch", active=ActiveWindow(start=start, end=end),
+                severity="needs_attention", applies_to=applies_to,
+                state="draft").model_dump()  # fmt: skip
+
 
 def build_presets(protected: dict[str, ProtectedObject]) -> dict[str, Any]:
     def bin_box() -> dict[str, Any]:
@@ -743,40 +943,54 @@ def build_presets(protected: dict[str, ProtectedObject]) -> dict[str, Any]:
                     "bbox": dict(zip(("x1", "y1", "x2", "y2"), bin_shape["box"], strict=True)),
                     "footprint": bin_fp, "call_id": "call_rec_0101"},
          "outline": bin_shape["outline"], "model": SAM, "call_id": "call_rec_0101",
-         "latency_ms": 3120, "cost_usd": 0.0025, "recorded_at": "2026-10-31T15:12:00-07:00"},
+         "latency_ms": 3120, "cost_usd": 0.0025, "recorded_at": "2026-11-02T15:12:00-08:00"},
         {"camera_id": "side_left", "point": centre(gate_shape["box"]), "label": "side gate",
          "object": {"id": gate.id, "camera_id": gate.camera_id, "label": gate.label,
                     "bbox": gate.bbox.model_dump(),
                     "footprint": [list(p) for p in gate.footprint or []],
                     "call_id": gate.call_id},
          "outline": gate_shape["outline"], "model": SAM, "call_id": gate.call_id,
-         "latency_ms": 2870, "cost_usd": 0.0025, "recorded_at": "2026-10-29T16:20:00-07:00"},
+         "latency_ms": 2870, "cost_usd": 0.0025, "recorded_at": "2026-11-02T13:20:00-08:00"},
     ]  # fmt: skip
+    after_9 = ("'After 9 PM' is read as 21:00 to 06:00; change the end time if you meant "
+               "something else.")  # fmt: skip
     compile_ = [
-        {"text": "tell me if anyone touches the bin after 9 PM", "transcript": None,
-         "rule": Rule(id="r8", name="Recycling bin after 9 PM",
-                      target=RuleTarget(kind="protected_object", id="po_bin"), trigger="touch",
-                      active=ActiveWindow(start="21:00", end="06:00"),
-                      severity="needs_attention", state="draft").model_dump(),
-         "limits_note": ["Vigil doesn't identify people, so this applies to anyone.",
-                         "'After 9 PM' is read as 21:00 to 06:00; change the end time if you "
-                         "meant something else."],
+        {"text": "tell me if anyone touches the bin after 9 PM",
+         "rule": _rule("r8", "Recycling bin after 9 PM", "po_bin", "21:00", "06:00", "anyone"),
+         "limits_note": [after_9],
          "model": SPARK, "call_id": "call_rec_0102", "latency_ms": 1840, "cost_usd": 0.0012,
-         "recorded_at": "2026-10-31T15:14:00-07:00"},
-        {"text": "tell me if anyone except family opens the side gate after 10 PM",
-         "transcript": None,
-         "rule": Rule(id="r9", name="Side gate after 10 PM (anyone)",
-                      target=RuleTarget(kind="protected_object", id="po_side_gate"),
-                      trigger="touch", active=ActiveWindow(start="22:00", end="06:00"),
-                      severity="needs_attention", state="draft").model_dump(),
-         "limits_note": ["Vigil doesn't identify people, so this applies to anyone. "
-                         "The exception 'except family' was dropped."],
+         "recorded_at": "2026-11-02T15:14:00-08:00"},
+        {"text": VOICE_FIXTURES[0][2],
+         "rule": _rule("r10", "Recycling bin after 9 PM (non-household)", "po_bin", "21:00",
+                       "06:00", "non_household"),
+         "limits_note": [after_9],
          "model": SPARK, "call_id": "call_rec_0104", "latency_ms": 1910, "cost_usd": 0.0012,
-         "recorded_at": "2026-10-31T15:16:00-07:00"},
+         "recorded_at": "2026-11-02T15:16:00-08:00"},
+        {"text": VOICE_FIXTURES[1][2],
+         "rule": _rule("r11", "Side gate after dark (strangers only)", "po_side_gate", "17:30",
+                       "06:00", "external_visitor_only"),
+         "limits_note": ["'After dark' is read as 17:30 to 06:00; change the start time if you "
+                         "meant something else.",
+                         "Guests and deliveries are excluded only when they arrive inside an "
+                         "Expected Window you set in advance."],
+         "model": SPARK, "call_id": "call_rec_0106", "latency_ms": 1980, "cost_usd": 0.0013,
+         "recorded_at": "2026-11-02T15:18:00-08:00"},
+        {"text": VOICE_FIXTURES[2][2],
+         "rule": _rule("r12", "Side gate after 10 PM (non-household)", "po_side_gate", "22:00",
+                       "06:00", "non_household"),
+         "limits_note": [NAMED_PERSON_NOTICE],
+         "model": SPARK, "call_id": "call_rec_0107", "latency_ms": 1870, "cost_usd": 0.0012,
+         "recorded_at": "2026-11-02T15:19:00-08:00"},
+    ]  # fmt: skip
+    voice = [
+        {"id": fid, "label": label, "transcript": text, "seconds": secs, "model": VOICE,
+         "call_id": f"call_rec_02{k + 1:02d}", "latency_ms": latency,
+         "cost_usd": round(secs / 3600 * 0.18, 6), "recorded_at": "2026-11-02T15:30:00-08:00"}
+        for k, (fid, label, text, secs, latency) in enumerate(VOICE_FIXTURES)
     ]  # fmt: skip
     rerun_c = [
-        s(f"A person came along the front of the house and into the left side yard at "
-          f"{clock(15186)}.", ["e15", "e16"]),
+        s(f"Someone who arrived from outside the property came into view on the Left side "
+          f"camera at {clock(15186)}.", ["e16"]),
         s(f"At {clock(15245)} they touched the side gate.", ["e17"]),
         GAP_SENTENCE,
         s(f"They reappeared on the Left side camera at {clock(15304)} and went back through "
@@ -785,28 +999,43 @@ def build_presets(protected: dict[str, ProtectedObject]) -> dict[str, Any]:
           ["e22", "e23"]),
     ]  # fmt: skip
     rerun_b = [
-        s(f"At {clock(5462)} a person came up to the porch on the Front entrance camera.",
-          ["e5", "e6"]),
+        s(f"At {clock(5462)} someone who arrived from outside the property came up to the porch "
+          f"on the Front entrance camera.", ["e5", "e6"]),
         s(f"They spent about 18 s on the porch, and a package was there from {clock(5494)}.",
           ["e7", "e9"]),
         s(f"They walked away at {clock(5520)}, leaving the package on the porch.", ["e8", "e9"]),
     ]  # fmt: skip
+    rerun_bp = [
+        s(f"At {clock(8402)} an expected visitor came up to the porch on the Front entrance "
+          f"camera.", ["e10", "e11"]),
+        s(f"A package was on the porch from {clock(8432)}.", ["e12", "e14"]),
+        s(f"They walked away at {clock(8456)}, leaving the package on the porch.",
+          ["e13", "e14"]),
+    ]  # fmt: skip
+
+    def recorded(story, verdict, call_id, latency, cost, at, model=WONDER, note=None):
+        out = {"story": [x.model_dump() for x in story], "verdict": verdict,
+               "validation": {"passed": True, "attempt": 1, "failures": []},
+               "model": model, "call_id": call_id, "latency_ms": latency, "cost_usd": cost,
+               "recorded_at": at}  # fmt: skip
+        if note:
+            out["note"] = note
+        return out
+
+    template_note = "Not escalated, so the story is a template; a re-run gives the same text."
     rerun = {
-        "v_c": {"story": [x.model_dump() for x in rerun_c], "verdict": "needs_attention",
-                "validation": {"passed": True, "attempt": 1, "failures": []},
-                "model": WONDER, "call_id": "call_rec_0103", "latency_ms": 21400,
-                "cost_usd": 0.0412, "recorded_at": "2026-10-31T15:20:00-07:00"},
-        "v_b": {"story": [x.model_dump() for x in rerun_b], "verdict": "noteworthy",
-                "validation": {"passed": True, "attempt": 1, "failures": []},
-                "model": WONDER, "call_id": "call_rec_0105", "latency_ms": 17300,
-                "cost_usd": 0.0391, "recorded_at": "2026-10-31T15:22:00-07:00"},
-        "v_a": {"story": [x.model_dump() for x in STORY_A], "verdict": "normal",
-                "validation": {"passed": True, "attempt": 1, "failures": []},
-                "model": None, "call_id": None, "latency_ms": 0, "cost_usd": 0.0,
-                "note": "Not escalated, so the story is a template; a re-run gives the same text.",
-                "recorded_at": "2026-10-31T15:24:00-07:00"},
+        "v_c": recorded(rerun_c, "needs_attention", "call_rec_0103", 21400, 0.0412,
+                        "2026-11-02T18:40:00-08:00"),
+        "v_b": recorded(rerun_b, "noteworthy", "call_rec_0105", 17300, 0.0391,
+                        "2026-11-02T15:42:00-08:00"),
+        "v_bp": recorded(rerun_bp, "normal", "call_rec_0108", 16800, 0.0388,
+                         "2026-11-02T16:31:00-08:00"),
+        "v_a": recorded(STORY_A, "normal", None, 0, 0.0, "2026-11-02T15:24:00-08:00",
+                        model=None, note=template_note),
+        "v_ap": recorded(STORY_AP, "normal", None, 0, 0.0, "2026-11-02T18:30:00-08:00",
+                         model=None, note=template_note),
     }  # fmt: skip
-    return {"protect": protect, "compile": compile_, "rerun": rerun}
+    return {"protect": protect, "voice": voice, "compile": compile_, "rerun": rerun}
 
 
 EVAL_PLACEHOLDER = {
@@ -820,6 +1049,8 @@ EVAL_PLACEHOLDER = {
         {"metric": "Link precision", "target": ">= 90%", "result": None},
         {"metric": "Claims inside gaps", "target": "0", "result": None},
         {"metric": "Uncited sentences shipped", "target": "0", "result": None},
+        {"metric": "Role miss rate (household subjects not assigned household_insider)",
+         "target": "reported, day and night", "result": None},
         {"metric": "3D position error (median, within 10 m)", "target": "< 0.5 m",
          "result": None},
         {"metric": "Test points inside stated r95", "target": ">= 90%", "result": None},
@@ -833,8 +1064,7 @@ EVAL_PLACEHOLDER = {
 
 
 def load_config() -> Config:
-    raw = yaml.safe_load((REPO_ROOT / "config" / "cameras.yaml").read_text(encoding="utf-8"))
-    return Config.model_validate(raw)
+    return Config.model_validate(SYNTHETIC_CONFIG)
 
 
 def build(out: Path | None = None) -> Path:
@@ -845,10 +1075,10 @@ def build(out: Path | None = None) -> Path:
         id="po_side_gate", camera_id="side_left", label="side gate",
         bbox=Box(x1=800, y1=400, x2=880, y2=660),
         footprint=[(5.5, 2.95), (6.7, 2.95), (6.7, 3.05), (5.5, 3.05)],
-        call_id=None, created_at=datetime.fromisoformat("2026-10-29T16:20:00-07:00"),
+        call_id=None, created_at=datetime.fromisoformat("2026-11-02T13:20:00-08:00"),
     )  # fmt: skip
-    gate.call_id = ledger.add(SAM, "protect", None, "po_side_gate", -91200, latency_ms=2870,
-                              units=1, cost_usd=0.0025)  # fmt: skip
+    gate.call_id = ledger.add(SAM, "protect", None, "po_side_gate", -2400, latency_ms=2870,
+                              units=1, cost_usd=0.0025, feature="rule_compile")  # fmt: skip
     windows = build_windows_and_calls(ledger)
     trace = build_calls(ledger)
 
@@ -861,14 +1091,18 @@ def build(out: Path | None = None) -> Path:
             db.insert_window(conn, w)
         appearance_calls = {c.req_hash: c.id for c in ledger.calls if c.purpose == "appearance"}
         colours = {"t_a1": ("navy", "grey"), "t_b1": ("brown", "brown"),
-                   "t_c0": ("black", "grey"), "t_c1": ("black", "grey"),
-                   "t_c2": ("black", "grey"), "t_c3": ("black", "grey")}  # fmt: skip
+                   "t_bp1": ("brown", "brown"),
+                   "t_ap0": ("navy", "grey"), "t_ap1": ("unknown", "unknown"),
+                   "t_ap2": ("unknown", "unknown"),
+                   "t_c1": ("unknown", "unknown"), "t_c2": ("unknown", "unknown"),
+                   "t_c3": ("unknown", "unknown")}  # fmt: skip
         for tid, spec in TRACKS.items():
             t0, t1 = spec["path"][0][0], spec["path"][-1][0]
             wids = [w.id for w in windows if w.camera_id == spec["camera"]
                     and w.status == "processed" and w.t0 < t1 and w.t1 > t0]  # fmt: skip
             track = Track(id=tid, camera_id=spec["camera"], cls=spec["cls"], t_first=t0,
-                          t_last=t1, window_ids=wids, tag=spec["tag"])  # fmt: skip
+                          t_last=t1, window_ids=wids, tag=spec["tag"],
+                          origin_zone=spec.get("origin"))  # fmt: skip
             db.insert_track(conn, track, overlay_path=f"overlays.json#{spec['camera']}/{tid}",
                             sam_obj_ids={w: 1 for w in wids})  # fmt: skip
             for p in positions_for(tid):
@@ -876,7 +1110,7 @@ def build(out: Path | None = None) -> Path:
             req = hashlib.sha256(f"{SPARK}|appearance|{tid}".encode()).hexdigest()[:16]
             if spec["cls"] == "person":
                 up, low = colours[tid]
-                carrying = ["box"] if tid == "t_b1" else []
+                carrying = ["box"] if tid in ("t_b1", "t_bp1") else []
                 note = Appearance(tag=spec["tag"], **{"class": "person"}, upper_color=up,
                                   lower_color=low, carrying=carrying)  # fmt: skip
                 db.insert_appearance(conn, tid, note, appearance_calls[req])
@@ -890,22 +1124,25 @@ def build(out: Path | None = None) -> Path:
             db.insert_gap(conn, g)
         for v in VISITS:
             db.insert_visit(conn, v)
+        for subject in SUBJECTS:
+            db.insert_subject(conn, subject)
+        db.insert_expected_window(conn, WINDOW_W3, created_at="2026-11-02T13:40:00-08:00")
         db.insert_protected_object(conn, gate)
         rules = [
             (Rule(id="r1", name="Watched package removed",
                   target=RuleTarget(kind="watch", id="any"), trigger="removed",
-                  severity="needs_attention"), "default"),
-            (Rule(id="r2", name="Anyone in the backyard 23:00 to 05:00",
+                  severity="needs_attention", applies_to="non_household"), "default"),
+            (Rule(id="r2", name="Non-household person in the backyard 23:00 to 05:00",
                   target=RuleTarget(kind="zone", id="backyard"), trigger="enter",
                   active=ActiveWindow(start="23:00", end="05:00"),
-                  severity="needs_attention"), "default"),
-            (Rule(id="r7", name="Side gate after 10 PM",
+                  severity="needs_attention", applies_to="non_household"), "default"),
+            (Rule(id="r7", name="Side gate after dark",
                   target=RuleTarget(kind="protected_object", id="po_side_gate"),
-                  trigger="touch", active=ActiveWindow(start="22:00", end="06:00"),
-                  severity="needs_attention"), "owner"),
+                  trigger="touch", active=ActiveWindow(start="17:30", end="06:00"),
+                  severity="needs_attention", applies_to="non_household"), "owner"),
         ]  # fmt: skip
         for rule, source in rules:
-            db.insert_rule(conn, rule, source, "2026-10-29T16:25:00-07:00")
+            db.insert_rule(conn, rule, source, "2026-11-02T13:25:00-08:00")
         db.insert_rule_hit(conn, RuleHit(rule_id="r7", visit_id="v_c", event_id="e17"))
         db.insert_watch(
             conn,
@@ -916,6 +1153,7 @@ def build(out: Path | None = None) -> Path:
         for call in ledger.calls:
             db.insert_model_call(conn, call)
         db.insert_validation(conn, "v_b", ValidationResult(passed=True, attempt=1))
+        db.insert_validation(conn, "v_bp", ValidationResult(passed=True, attempt=1))
         db.insert_validation(
             conn, "v_c", ValidationResult(passed=False, attempt=1, failures=REJECTION_C)
         )
@@ -947,6 +1185,10 @@ def build(out: Path | None = None) -> Path:
                     "Every scene, person, path and number in this bundle is invented.",
                     "Camera views are drawn in the browser from overlays.json; no video.",
                     "Model and call IDs mirror the real ledger format; no call was made.",
+                    "Roles come from where each person came from (spatial origin); nobody is "
+                    "identified.",
+                    "Voice samples: cached transcripts only until the consented WAVs are "
+                    "recorded (T-07a).",
                 ],
             },
         )

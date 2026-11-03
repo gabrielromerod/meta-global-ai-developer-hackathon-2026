@@ -16,7 +16,7 @@
     "gap_id": null,
     "model": null,
     "source": "template",
-    "text": "A person was seen on the Front entrance camera at 6:42 PM."
+    "text": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM."
    },
    {
     "call_id": null,
@@ -26,7 +26,7 @@
     "gap_id": null,
     "model": null,
     "source": "template",
-    "text": "A car left the driveway at 6:42 PM."
+    "text": "A car left the driveway at 2:42 PM."
    }
   ],
   "t0": 2522.0,
@@ -50,7 +50,7 @@
     "gap_id": null,
     "model": null,
     "source": "wonder",
-    "text": "A person walked up to the porch on the Front entrance camera at 7:31 PM."
+    "text": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM."
    },
    {
     "call_id": null,
@@ -61,7 +61,7 @@
     "gap_id": null,
     "model": null,
     "source": "wonder",
-    "text": "They stayed on the porch for about 18 s, and a package appeared there at 7:31 PM."
+    "text": "They stayed on the porch for about 18 s, and a package appeared there at 3:31 PM."
    },
    {
     "call_id": null,
@@ -72,12 +72,103 @@
     "gap_id": null,
     "model": null,
     "source": "wonder",
-    "text": "They left at 7:32 PM; the package stayed on the porch."
+    "text": "They left at 3:32 PM; the package stayed on the porch."
    }
   ],
   "t0": 5462.0,
   "t1": 5530.0,
   "verdict": "noteworthy"
+ },
+ {
+  "escalated": 1,
+  "floor": "normal",
+  "id": "v_bp",
+  "proposal": "normal",
+  "scenario": "B-prime",
+  "state": "published",
+  "story_json": [
+   {
+    "call_id": null,
+    "event_ids": [
+     "e10",
+     "e11"
+    ],
+    "gap_id": null,
+    "model": null,
+    "source": "wonder",
+    "text": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM."
+   },
+   {
+    "call_id": null,
+    "event_ids": [
+     "e12",
+     "e14"
+    ],
+    "gap_id": null,
+    "model": null,
+    "source": "wonder",
+    "text": "They left a package on the porch at 4:20 PM."
+   },
+   {
+    "call_id": null,
+    "event_ids": [
+     "e13",
+     "e14"
+    ],
+    "gap_id": null,
+    "model": null,
+    "source": "wonder",
+    "text": "They walked away at 4:20 PM; the package stayed on the porch."
+   }
+  ],
+  "t0": 8402.0,
+  "t1": 8466.0,
+  "verdict": "normal"
+ },
+ {
+  "escalated": 0,
+  "floor": "normal",
+  "id": "v_ap",
+  "proposal": null,
+  "scenario": "A-prime",
+  "state": "published",
+  "story_json": [
+   {
+    "call_id": null,
+    "event_ids": [
+     "e30",
+     "e31"
+    ],
+    "gap_id": null,
+    "model": null,
+    "source": "template",
+    "text": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM."
+   },
+   {
+    "call_id": null,
+    "event_ids": [
+     "e33"
+    ],
+    "gap_id": null,
+    "model": null,
+    "source": "template",
+    "text": "They touched the side gate on the Left side camera at 6:02 PM."
+   },
+   {
+    "call_id": null,
+    "event_ids": [
+     "e35",
+     "e36"
+    ],
+    "gap_id": null,
+    "model": null,
+    "source": "template",
+    "text": "They were last seen at the front door on the Front entrance camera at 6:03 PM."
+   }
+  ],
+  "t0": 14520.0,
+  "t1": 14580.0,
+  "verdict": "normal"
  },
  {
   "escalated": 1,
@@ -90,13 +181,12 @@
    {
     "call_id": null,
     "event_ids": [
-     "e15",
      "e16"
     ],
     "gap_id": null,
     "model": null,
     "source": "wonder",
-    "text": "A person walked from the front of the house into the left side yard at 10:13 PM."
+    "text": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM."
    },
    {
     "call_id": null,
@@ -106,7 +196,7 @@
     "gap_id": null,
     "model": null,
     "source": "wonder",
-    "text": "They touched the side gate at 10:14 PM."
+    "text": "They touched the side gate at 6:14 PM."
    },
    {
     "call_id": null,
@@ -128,7 +218,7 @@
     "gap_id": null,
     "model": null,
     "source": "wonder",
-    "text": "They came back into view on the Left side camera at 10:15 PM and walked back through the side gate."
+    "text": "They came back into view on the Left side camera at 6:15 PM and walked back through the side gate."
    },
    {
     "call_id": null,
@@ -139,10 +229,10 @@
     "gap_id": null,
     "model": null,
     "source": "wonder",
-    "text": "They left past the Front entrance camera at 10:16 PM."
+    "text": "They left past the Front entrance camera at 6:16 PM."
    }
   ],
-  "t0": 15170.0,
+  "t0": 15186.0,
   "t1": 15385.0,
   "verdict": "needs_attention"
  }

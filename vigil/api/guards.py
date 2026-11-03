@@ -1,8 +1,10 @@
-"""Guards for live endpoints: rate limit, spend cap, credit window, size limits, LAN only.
+"""Guards for live endpoints: rate limit, spend and judging caps, size limits, LAN only.
 
-FR-026, NFR-013 (daily $10 cap; live disables at the cap), NFR-014 (the API key is never
-served), NFR-015 (10 live requests per minute per IP; audio <= 30 s and 2 MB; JSON <= 64 KB),
-NFR-004 (no Contributor-mode model IDs), spec 11.6 safeguard 6 (credit-window end).
+FR-026, FR-043, NFR-013 (daily $10 cap from credits; at a cap, live requests return the
+cached result with "Live budget for today used; recorded result shown"), NFR-014 (the API key
+is never served), NFR-015 (10 live requests per minute per IP; audio <= 30 s and 2 MB; JSON
+<= 64 KB), NFR-004 (no Contributor-mode model IDs), NFR-037 and spec 11.6 item 6 (after the
+credit window: VIGIL_ALLOW_PAID=1, $25 judging total, $5 per PT day, VIGIL_JUDGING_END).
 """
 
 from __future__ import annotations
@@ -16,6 +18,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from typing import Any
+from zoneinfo import ZoneInfo
 
 from fastapi import HTTPException, Request
 
@@ -24,10 +27,30 @@ ALLOWED_MODELS = frozenset(
     {"sam-3.1", "muse-spark-1.3", "muse-wonder-1.0", "muse-voice-transcribe-1.0"}
 )
 _CONTRIBUTOR = "-" + "contributor"  # spelled out so the CI grep for the literal stays clean
+_EPS = 1e-9
 
-NOTICE_SPEND_CAP = "Daily live budget used; recorded results shown."
-NOTICE_NO_KEY = "Live calls are not configured on this server; recorded results shown."
-NOTICE_WINDOW = "The live credit window has ended; recorded results shown."
+NOTICE_BUDGET = "Live budget for today used; recorded result shown"
+"""The one notice for every cap or window refusal (spec 11.6 item 6, NFR-013)."""
+NOTICE_SPEND_CAP = NOTICE_BUDGET  # kept name: the daily credit cap uses the same words
+NOTICE_NO_KEY = "Live calls are not configured on this server; recorded result shown"
+PT = ZoneInfo("America/Los_Angeles")
+"""Daily caps reset at midnight Pacific time ("$5 per PT calendar day", NFR-037)."""
+
+# What one live action is priced at before it runs (spec 11.3; rounded up). The Meta client's
+# budget guard prices each call exactly; this keeps the sandbox from starting an action that
+# would cross a cap (a refusal at $24.999 + $0.0025 > $25, FR-043).
+LIVE_ESTIMATE_USD: dict[str, float] = {
+    "protect": 0.0025,  # one SAM 3.1 image
+    "transcribe": 0.0015,  # 30 s of Voice Transcribe at $0.18/h
+    "compile": 0.003,  # one Spark text call
+    "rerun": 0.06,  # Spark triage + up to two Wonder drafts
+    "landmarks": 0.01,  # SAM 3.1 concept prompts on one still
+}
+
+
+def notice_live_failed(recorded: str) -> str:
+    """'Live call failed; recorded result from <date> shown' (spec 11.6 item 6, UC-09)."""
+    return f"Live call failed; recorded result from {recorded} shown"
 
 
 class ModelNotAllowedError(ValueError):
@@ -76,6 +99,9 @@ class LiveStatus:
     configured: bool
     spend_today_usd: float
     daily_cap_usd: float
+    phase: str = "credit"
+    """credit: inside the credit window; judging: paid calls allowed; closed: no live calls."""
+    funding: str = "credit"
 
     def public(self) -> dict[str, Any]:
         return {
@@ -83,11 +109,22 @@ class LiveStatus:
             "reason": self.reason,
             "notice": self.notice,
             "configured": self.configured,
+            "phase": self.phase,
         }
 
 
+def _utc(dt: datetime) -> datetime:
+    return dt.replace(tzinfo=UTC) if dt.tzinfo is None else dt.astimezone(UTC)
+
+
 class Guards:
-    """Process-local guard state shared by the live routes of one app instance."""
+    """Process-local guard state shared by the live routes of one app instance.
+
+    Spend is kept per funding tag (`credit` inside the credit window, `paid` after it) and per
+    PT calendar day. Before the window ends the sandbox's daily cap applies; after it, live
+    calls run only with VIGIL_ALLOW_PAID=1, before VIGIL_JUDGING_END, while the $25 judging
+    total and the $5 PT-day cap both have room (FR-043, NFR-037). The total binds first.
+    """
 
     def __init__(
         self,
@@ -97,49 +134,102 @@ class Guards:
         self.settings = settings
         self._clock = clock
         self.rate = RateLimiter(int(settings.live_rate_per_min), 60.0, clock)
-        self._spend: dict[str, float] = {}
+        self.feedback_rate = RateLimiter(int(settings.live_rate_per_min), 60.0, clock)
+        """Visit feedback has its own per-IP budget (spec 9.6: rate limit, not a live call)."""
+        self._spend: dict[tuple[str, str], float] = {}
         self._lock = threading.Lock()
 
-    # -- spend ---------------------------------------------------------------
+    # -- time and phase ----------------------------------------------------------------------
+    def now(self) -> datetime:
+        return datetime.fromtimestamp(self._clock(), tz=UTC)
+
     def _day(self) -> str:
-        return datetime.fromtimestamp(self._clock(), tz=UTC).date().isoformat()
+        return self.now().astimezone(PT).date().isoformat()
 
-    def spend_today(self) -> float:
-        return round(self._spend.get(self._day(), 0.0), 6)
+    def phase(self) -> tuple[str, str | None]:
+        """(phase, reason): credit, judging, or closed with why."""
+        end = self.settings.credit_window_end
+        if end is None or self.now() < _utc(end):
+            return "credit", None
+        if not self.settings.allow_paid:
+            return "closed", "credit_window_ended"
+        judging_end = getattr(self.settings, "judging_end", None)
+        if judging_end is not None and self.now() >= _utc(judging_end):
+            return "closed", "judging_ended"
+        return "judging", None
 
-    def record_spend(self, usd: float) -> None:
+    def funding(self) -> str:
+        return "credit" if self.phase()[0] == "credit" else "paid"
+
+    # -- spend ---------------------------------------------------------------
+    def spend_today(self, funding: str | None = None) -> float:
+        day = self._day()
         with self._lock:
-            day = self._day()
-            self._spend[day] = self._spend.get(day, 0.0) + max(0.0, float(usd))
+            total = sum(v for (f, d), v in self._spend.items()
+                        if d == day and (funding is None or f == funding))  # fmt: skip
+        return round(total, 6)
+
+    def spend_total(self, funding: str) -> float:
+        with self._lock:
+            return round(sum(v for (f, _), v in self._spend.items() if f == funding), 6)
+
+    def record_spend(self, usd: float, funding: str | None = None) -> str:
+        """Add actual spend under its funding tag; returns the tag used."""
+        tag = funding or self.funding()
+        with self._lock:
+            key = (tag, self._day())
+            self._spend[key] = self._spend.get(key, 0.0) + max(0.0, float(usd))
+        return tag
+
+    def judging_remaining(self) -> tuple[float, float]:
+        """(total remaining, today's remaining) of the post-window judging allowance."""
+        cap = float(self.settings.judging_cap_usd)
+        daily = float(self.settings.judging_daily_cap_usd)
+        total_left = max(0.0, cap - self.spend_total("paid"))
+        today_left = max(0.0, daily - self.spend_today("paid"))
+        return round(total_left, 6), round(min(total_left, today_left), 6)
 
     # -- availability ----------------------------------------------------------
     def key_configured(self) -> bool:
         key = self.settings.model_api_key
         return bool(key is not None and key.get_secret_value().strip())
 
-    def live_status(self) -> LiveStatus:
+    def live_status(self, estimate_usd: float = 0.0) -> LiveStatus:
+        """Whether a live action priced at `estimate_usd` may run now, and the notice if not."""
         cap = float(self.settings.daily_cap_usd)
-        spent = self.spend_today()
+        phase, reason = self.phase()
+        funding = "credit" if phase == "credit" else "paid"
         configured = self.key_configured()
-        reason, notice = None, None
-        end = self.settings.credit_window_end
+        spent_today = self.spend_today()
+        notice = None
         if not configured:
             reason, notice = "not_configured", NOTICE_NO_KEY
-        elif end is not None and not self.settings.allow_paid:
-            end_utc = end if end.tzinfo else end.replace(tzinfo=UTC)
-            if datetime.fromtimestamp(self._clock(), tz=UTC) >= end_utc:
-                reason, notice = "credit_window_ended", NOTICE_WINDOW
-        if reason is None and spent >= cap:
-            reason, notice = "spend_cap", NOTICE_SPEND_CAP
-        return LiveStatus(reason is None, reason, notice, configured, spent, cap)
+        elif phase == "closed":
+            notice = NOTICE_BUDGET
+        elif phase == "credit":
+            credit_today = self.spend_today("credit")
+            if credit_today >= cap - _EPS or credit_today + estimate_usd > cap + _EPS:
+                reason, notice = "spend_cap", NOTICE_BUDGET
+        else:  # judging: the $25 total binds before the $5 day
+            total_left, _ = self.judging_remaining()
+            day_left = float(self.settings.judging_daily_cap_usd) - self.spend_today("paid")
+            if total_left <= _EPS or estimate_usd > total_left + _EPS:
+                reason, notice = "judging_cap", NOTICE_BUDGET
+            elif day_left <= _EPS or estimate_usd > day_left + _EPS:
+                reason, notice = "judging_daily_cap", NOTICE_BUDGET
+        available = notice is None
+        if available:
+            reason = None
+        return LiveStatus(available, reason, notice, configured, spent_today, cap, phase, funding)
 
-    def check_rate(self, ip: str) -> None:
+    def check_rate(self, ip: str, limiter: RateLimiter | None = None) -> None:
         """429 on the 11th live request within 60 s from one IP (NFR-015)."""
-        wait = self.rate.hit(ip)
+        limiter = limiter or self.rate
+        wait = limiter.hit(ip)
         if wait is not None:
             raise HTTPException(
                 status_code=429,
-                detail=f"Too many live requests: {self.rate.limit} per minute per IP.",
+                detail=f"Too many requests: {limiter.limit} per minute per IP.",
                 headers={"Retry-After": str(max(1, int(wait + 0.999)))},
             )
 
@@ -220,7 +310,7 @@ async def read_bounded(request: Request, limit: int) -> bytes:
     return body
 
 
-def check_live_allowed(guards: Guards, ip: str) -> LiveStatus:
+def check_live_allowed(guards: Guards, ip: str, estimate_usd: float = 0.0) -> LiveStatus:
     """Rate-limit a live request, then report whether live may run (else cached fallback)."""
     guards.check_rate(ip)
-    return guards.live_status()
+    return guards.live_status(estimate_usd)

@@ -51,6 +51,56 @@
  },
  {
   "sam_obj_id": 1,
+  "track_id": "t_ap0",
+  "window_id": "w_front_14516"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_ap0",
+  "window_id": "w_front_14524"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_ap0",
+  "window_id": "w_front_14532"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_ap1",
+  "window_id": "w_side_left_14533"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_ap1",
+  "window_id": "w_side_left_14541"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_ap1",
+  "window_id": "w_side_left_14549"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_ap1",
+  "window_id": "w_side_left_14557"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_ap1",
+  "window_id": "w_side_left_14565"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_ap2",
+  "window_id": "w_front_14564"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_ap2",
+  "window_id": "w_front_14572"
+ },
+ {
+  "sam_obj_id": 1,
   "track_id": "t_b1",
   "window_id": "w_front_5458"
  },
@@ -111,18 +161,63 @@
  },
  {
   "sam_obj_id": 1,
-  "track_id": "t_c0",
-  "window_id": "w_front_15166"
+  "track_id": "t_bp1",
+  "window_id": "w_front_8398"
  },
  {
   "sam_obj_id": 1,
-  "track_id": "t_c0",
-  "window_id": "w_front_15174"
+  "track_id": "t_bp1",
+  "window_id": "w_front_8406"
  },
  {
   "sam_obj_id": 1,
-  "track_id": "t_c0",
-  "window_id": "w_front_15182"
+  "track_id": "t_bp1",
+  "window_id": "w_front_8414"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_bp1",
+  "window_id": "w_front_8422"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_bp1",
+  "window_id": "w_front_8430"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_bp1",
+  "window_id": "w_front_8438"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_bp1",
+  "window_id": "w_front_8446"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_bp1",
+  "window_id": "w_front_8454"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_bp2",
+  "window_id": "w_front_8430"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_bp2",
+  "window_id": "w_front_8438"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_bp2",
+  "window_id": "w_front_8446"
+ },
+ {
+  "sam_obj_id": 1,
+  "track_id": "t_bp2",
+  "window_id": "w_front_8454"
  },
  {
   "sam_obj_id": 1,
@@ -222,26 +317,26 @@
  {
   "sam_obj_id": 1,
   "track_id": "t_c3",
-  "window_id": "w_front_15350"
+  "window_id": "w_front_15352"
  },
  {
   "sam_obj_id": 1,
   "track_id": "t_c3",
-  "window_id": "w_front_15358"
+  "window_id": "w_front_15360"
  },
  {
   "sam_obj_id": 1,
   "track_id": "t_c3",
-  "window_id": "w_front_15366"
+  "window_id": "w_front_15368"
  },
  {
   "sam_obj_id": 1,
   "track_id": "t_c3",
-  "window_id": "w_front_15374"
+  "window_id": "w_front_15376"
  },
  {
   "sam_obj_id": 1,
   "track_id": "t_c3",
-  "window_id": "w_front_15382"
+  "window_id": "w_front_15384"
  }
 ]

@@ -3,11 +3,11 @@
 Bundle layout (every file deterministic for the same inputs, NFR-011):
 
     manifest.json        format, synthetic flag and label, session start, evening summary, hashes
-    scenarios.json       scenarios A, B, C: title, visits, cameras, clip range, clip URLs
+    scenarios.json       scenarios A, A′, B, B′, C: title, visits, cameras, clip range, clip URLs
     tables/<table>.json  every schema.sql table, rows in a fixed order, JSON columns decoded
     twin.json            3D twin: GLB URL, camera poses and cones, coverage, blind regions
     overlays.json        per camera: SAM boxes and outlines keyed by track (player canvas)
-    presets.json         cached results for the live buttons (protect, compile, re-run)
+    presets.json         cached results for the live buttons (protect, voice, compile, re-run)
     trace.json           per visit: triage decision, Wonder drafts, verdict inputs, loop log
     eval.json            eval/results.json at export time (or a labelled placeholder)
     bundle.db            a compacted copy of the source SQLite DB
@@ -26,7 +26,18 @@ from typing import Any
 
 import yaml
 
-from vigil.models import Config, Event, Gap, ModelCall, Position, ValidationResult, Visit
+from vigil.models import (
+    CheckIn,
+    Config,
+    Event,
+    ExpectedWindow,
+    Gap,
+    ModelCall,
+    Position,
+    Subject,
+    ValidationResult,
+    Visit,
+)
 from vigil.store import db
 
 BUNDLE_FORMAT = "vigil-bundle/1"
@@ -228,6 +239,9 @@ class Bundle:
     positions: list[Position]
     model_calls: list[ModelCall]
     validations: list[tuple[str, ValidationResult]]
+    subjects: list[Subject]
+    expected_windows: list[ExpectedWindow]
+    checkins: list[CheckIn]
     tables: dict[str, list[dict[str, Any]]]
     twin: dict[str, Any]
     overlays: dict[str, Any]
@@ -277,6 +291,13 @@ class Bundle:
     def validations_for(self, visit_id: str) -> list[ValidationResult]:
         return [v for vid, v in self.validations if vid == visit_id]
 
+    def subjects_for(self, visit_id: str) -> list[Subject]:
+        """Subject chains of a visit with their roles and role_basis (FR-044)."""
+        return [s for s in self.subjects if s.visit_id == visit_id]
+
+    def subject_for_track(self, track_id: str) -> Subject | None:
+        return next((s for s in self.subjects if track_id in s.track_ids), None)
+
     def scenario(self, scenario_id: str) -> dict[str, Any] | None:
         return next((s for s in self.scenarios if s["id"] == scenario_id), None)
 
@@ -311,6 +332,9 @@ def load_bundle(root: Path) -> Bundle:
     validations = [
         (r["visit_id"], db.validation_from_row(r)) for r in tables.get("validations", [])
     ]
+    subjects = [db.subject_from_row(r) for r in tables.get("subjects", [])]
+    windows = [db.expected_window_from_row(r) for r in tables.get("expected_windows", [])]
+    checkins = [db.checkin_from_row(r) for r in tables.get("checkins", [])]
     bundle = Bundle(
         root=root,
         manifest=manifest,
@@ -321,6 +345,9 @@ def load_bundle(root: Path) -> Bundle:
         positions=positions,
         model_calls=calls,
         validations=validations,
+        subjects=subjects,
+        expected_windows=windows,
+        checkins=checkins,
         tables=tables,
         twin=_read(root, "twin.json", {}),
         overlays=_read(root, "overlays.json", {}),

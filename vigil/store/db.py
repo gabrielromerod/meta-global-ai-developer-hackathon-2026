@@ -18,7 +18,9 @@ from vigil.models import (
     Appearance,
     CameraAiEvent,
     CameraCfg,
+    CheckIn,
     Event,
+    ExpectedWindow,
     Gap,
     ModelCall,
     Position,
@@ -26,6 +28,7 @@ from vigil.models import (
     Rule,
     RuleHit,
     StorySentence,
+    Subject,
     Track,
     ValidationResult,
     Visit,
@@ -54,6 +57,9 @@ ORDER_BY: dict[str, str] = {
     "rule_hits": "rule_id, visit_id, event_id",
     "model_calls": "created_at, id",
     "validations": "visit_id, attempt",
+    "subjects": "visit_id, id",
+    "expected_windows": "starts_at, id",
+    "checkins": "starts_at, id",
 }
 
 # Columns holding JSON text, decoded on export.
@@ -64,6 +70,8 @@ JSON_COLUMNS: dict[str, tuple[str, ...]] = {
     "visits": ("story_json",),
     "rules": ("json",),
     "validations": ("failures_json",),
+    "subjects": ("track_ids_json",),
+    "expected_windows": ("cameras_json", "zones_json"),
 }
 
 
@@ -188,6 +196,7 @@ def insert_track(
             "t_first": t.t_first,
             "t_last": t.t_last,
             "overlay_path": overlay_path,
+            "origin_zone": t.origin_zone,
         },
     )
     for wid in t.window_ids:
@@ -261,6 +270,7 @@ def insert_rule(
         {
             "id": rule.id,
             "json": rule.model_dump(),
+            "applies_to": rule.applies_to,
             "source": source,
             "state": rule.state,
             "created_at": created_at,
@@ -274,6 +284,63 @@ def insert_rule_hit(conn: sqlite3.Connection, hit: RuleHit) -> None:
 
 def insert_model_call(conn: sqlite3.Connection, call: ModelCall) -> None:
     insert_raw(conn, "model_calls", call.model_dump())
+
+
+def insert_subject(conn: sqlite3.Connection, s: Subject) -> None:
+    """One subject chain with its spatial-origin role and stored basis (FR-044)."""
+    insert_raw(
+        conn,
+        "subjects",
+        {
+            "id": s.id,
+            "visit_id": s.visit_id,
+            "track_ids_json": list(s.track_ids),
+            "actor_role": s.actor_role,
+            "role_basis": s.role_basis,
+        },
+    )
+
+
+def insert_expected_window(
+    conn: sqlite3.Connection, w: ExpectedWindow, created_at: str | None = None
+) -> None:
+    """Expected Guest / Delivery Window (FR-029), wall-clock ISO-8601 with its offset."""
+    insert_raw(
+        conn,
+        "expected_windows",
+        {
+            "id": w.id,
+            "label": w.label,
+            "starts_at": w.start,
+            "ends_at": w.end,
+            "cameras_json": list(w.cameras),
+            "zones_json": list(w.zones),
+            "state": w.state,
+            "created_at": created_at,
+        },
+    )
+
+
+def cancel_expected_window(conn: sqlite3.Connection, window_id: str) -> bool:
+    """Mark a window cancelled; False when it does not exist."""
+    cur = conn.execute("UPDATE expected_windows SET state = 'cancelled' WHERE id = ?", (window_id,))
+    return cur.rowcount > 0
+
+
+def insert_checkin(conn: sqlite3.Connection, c: CheckIn) -> None:
+    """An explicit "I'm outside" check-in (FR-044 step 2); replaces the row on binding."""
+    insert_raw(
+        conn,
+        "checkins",
+        {
+            "id": c.id,
+            "session_id": c.session_id,
+            "starts_at": c.start,
+            "expires_at": c.expires,
+            "bound_subject": c.bound_subject,
+            "revoked": int(c.revoked),
+        },
+    )
 
 
 def insert_validation(conn: sqlite3.Connection, visit_id: str, result: ValidationResult) -> None:
@@ -292,6 +359,54 @@ def insert_validation(conn: sqlite3.Connection, visit_id: str, result: Validatio
 # ---------------------------------------------------------------------------
 # Readers (row -> contract model)
 # ---------------------------------------------------------------------------
+
+
+def subject_from_row(row: dict[str, Any]) -> Subject:
+    data = decode_row("subjects", row)
+    return Subject(
+        id=data["id"],
+        visit_id=data.get("visit_id"),
+        track_ids=list(data.get("track_ids_json") or []),
+        actor_role=data["actor_role"],
+        role_basis=data.get("role_basis") or "",
+    )
+
+
+def expected_window_from_row(row: dict[str, Any]) -> ExpectedWindow:
+    data = decode_row("expected_windows", row)
+    return ExpectedWindow(
+        id=data["id"],
+        label=data.get("label"),
+        start=datetime.fromisoformat(data["starts_at"]),
+        end=datetime.fromisoformat(data["ends_at"]),
+        cameras=list(data.get("cameras_json") or []),
+        zones=list(data.get("zones_json") or []),
+        state=data.get("state") or "scheduled",
+    )
+
+
+def checkin_from_row(row: dict[str, Any]) -> CheckIn:
+    data = dict(row)
+    return CheckIn(
+        id=data["id"],
+        session_id=data.get("session_id"),
+        start=datetime.fromisoformat(data["starts_at"]),
+        expires=datetime.fromisoformat(data["expires_at"]),
+        bound_subject=data.get("bound_subject"),
+        revoked=bool(data.get("revoked")),
+    )
+
+
+def rule_from_row(row: dict[str, Any]) -> Rule:
+    """The rule JSON is the source of truth; the applies_to column must agree with it."""
+    data = decode_row("rules", row)
+    rule = Rule.model_validate(data["json"])
+    column = data.get("applies_to")
+    if column is not None and column != rule.applies_to:
+        raise ValueError(
+            f"rule {rule.id}: applies_to column {column!r} != JSON {rule.applies_to!r}"
+        )
+    return rule
 
 
 def event_from_row(row: dict[str, Any]) -> Event:
@@ -409,3 +524,19 @@ def model_calls(conn: sqlite3.Connection, visit_id: str | None = None) -> list[M
 def validations_for_visit(conn: sqlite3.Connection, visit_id: str) -> list[ValidationResult]:
     found = rows(conn, "validations", "WHERE visit_id = ?", [visit_id])
     return [validation_from_row(r) for r in found]
+
+
+def subjects_for_visit(conn: sqlite3.Connection, visit_id: str) -> list[Subject]:
+    return [subject_from_row(r) for r in rows(conn, "subjects", "WHERE visit_id = ?", [visit_id])]
+
+
+def expected_windows(conn: sqlite3.Connection) -> list[ExpectedWindow]:
+    return [expected_window_from_row(r) for r in rows(conn, "expected_windows")]
+
+
+def checkins(conn: sqlite3.Connection) -> list[CheckIn]:
+    return [checkin_from_row(r) for r in rows(conn, "checkins")]
+
+
+def rules(conn: sqlite3.Connection) -> list[Rule]:
+    return [rule_from_row(r) for r in rows(conn, "rules")]

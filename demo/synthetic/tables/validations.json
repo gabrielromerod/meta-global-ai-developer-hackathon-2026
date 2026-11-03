@@ -7,6 +7,12 @@
  },
  {
   "attempt": 1,
+  "failures_json": [],
+  "passed": 1,
+  "visit_id": "v_bp"
+ },
+ {
+  "attempt": 1,
   "failures_json": [
    {
     "check": "uncited",

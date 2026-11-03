@@ -1,6 +1,7 @@
-"""LAN-only routes: live server-sent events (FR-034) and calibration pairs (FR-037).
+"""LAN-only routes: live server-sent events (FR-034), SAM landmark proposals and calibration
+pairs (FR-037).
 
-Both are refused in the hosted sandbox and for any non-private client (spec 9.6). The hub is
+All are refused in the hosted sandbox and for any non-private client (spec 9.6). The hub is
 an in-process broadcaster: the edge pipeline (capture, Reolink events, SAM, locate) publishes
 `camera_ai`, `tracks`, `positions` and `visits` messages; phones on the home Wi-Fi subscribe.
 Capture itself is blocked on field hardware (T-26), so nothing publishes yet outside tests.
@@ -18,7 +19,14 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, ConfigDict, Field
 from sse_starlette.sse import EventSourceResponse
 
-from vigil.api.guards import read_bounded, require_lan
+from vigil.api.backend import LandmarksBlockedError, LiveUnavailableError
+from vigil.api.guards import (
+    LIVE_ESTIMATE_USD,
+    check_live_allowed,
+    client_ip,
+    read_bounded,
+    require_lan,
+)
 
 PAIRS_NEEDED = 6  # PnP with RANSAC on 6 points; 2 more are held out (spec 7)
 KINDS = {"camera_ai", "tracks", "positions", "visits", "lag"}
@@ -62,6 +70,17 @@ class LiveHub:
             loop.call_soon_threadsafe(queue.put_nowait, None)
 
 
+LANDMARKS_BLOCKED = (
+    "SAM 3.1 landmark proposals are not available yet (FR-037, spatial workstream). Pick 6 "
+    "fixed landmarks by hand instead: door frames, gate posts, shed or window corners."
+)
+
+
+class LandmarkRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    camera_id: str = Field(max_length=64)
+
+
 class PairRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     camera_id: str = Field(max_length=64)
@@ -102,6 +121,42 @@ def live_router() -> APIRouter:
                 hub.unsubscribe(queue)
 
         return EventSourceResponse(events(), ping=15)
+
+    @r.post("/spatial/landmarks")
+    async def landmarks(request: Request) -> dict[str, Any]:
+        """SAM 3.1 proposes fixed landmarks on a camera still (UC-10 step 3)."""
+        from vigil.api.routes import _accept_live, _failure, _telemetry_live
+
+        settings = request.app.state.settings
+        body = await read_bounded(request, int(settings.max_json_bytes))
+        try:
+            req = LandmarkRequest.model_validate_json(body or b"{}")
+        except ValueError as exc:
+            raise HTTPException(422, "expected {camera_id}") from exc
+        names = {c["id"] for c in request.app.state.bundle.cameras}
+        if req.camera_id not in names:
+            raise HTTPException(422, f"unknown camera {req.camera_id!r}")
+        out: dict[str, Any] = {"camera_id": req.camera_id, "blocked": False, "proposals": [],
+                               "notice": None, "error": None, "telemetry": None}  # fmt: skip
+        backend = request.app.state.live_backend
+        if not callable(getattr(backend, "propose_landmarks", None)):
+            return {**out, "blocked": True, "notice": LANDMARKS_BLOCKED}
+        guards = request.app.state.guards
+        status = check_live_allowed(guards, client_ip(request), LIVE_ESTIMATE_USD["landmarks"])
+        if not status.available:
+            return {**out, "notice": status.notice}
+        try:
+            res = backend.propose_landmarks(req.camera_id)
+        except LandmarksBlockedError:
+            return {**out, "blocked": True, "notice": LANDMARKS_BLOCKED}
+        except LiveUnavailableError as exc:  # e.g. no still frame for this camera yet
+            return {**out, "notice": f"Landmark proposals unavailable: {exc}. Click them by hand."}
+        except Exception as exc:  # degrade with a notice, never a blank tool
+            return {**out, "notice": "Live call failed; click the landmarks by hand.",
+                    "error": _failure(guards, exc)}  # fmt: skip
+        calls = _accept_live(guards, request.app.state.runtime, res)
+        proposals = list(res.payload.get("proposals") or [])
+        return {**out, "proposals": proposals, "telemetry": _telemetry_live(calls)}
 
     @r.post("/spatial/pairs")
     async def pairs(request: Request) -> dict[str, Any]:

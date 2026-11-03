@@ -23,12 +23,16 @@ from vigil import __version__
 from vigil.api.backend import MetaLiveBackend
 from vigil.api.guards import Guards
 from vigil.api.live import LiveHub, live_router
+from vigil.api.owner import load_owner_state, owner_router
 from vigil.api.routes import Runtime, router
+from vigil.api.voice import voice_router
 from vigil.models import Config
 from vigil.settings import REPO_ROOT, Settings, get_settings
 from vigil.store.export import MANIFEST, load_bundle
 
 WEB_DIR = REPO_ROOT / "web"
+VOICE_DIR = REPO_ROOT / "demo" / "voice"
+AUDIO_FIXTURES = REPO_ROOT / "config" / "audio_fixtures.json"
 LAN_ONLY_PAGES = ("/calibrate",)
 
 
@@ -53,6 +57,8 @@ def create_app(
     bundle_dir: Path | None = None,
     live_backend: Any = None,
     clock: Callable[[], float] = time.time,
+    voice_dir: Path | None = None,
+    audio_fixtures_path: Path | None = None,
 ) -> FastAPI:
     settings = settings or get_settings()
     bundle_root = Path(bundle_dir) if bundle_dir is not None else resolve_bundle_dir(settings)
@@ -77,6 +83,11 @@ def create_app(
     app.state.config = _load_config(settings.config_path)
     app.state.guards = Guards(settings, clock=clock)
     app.state.runtime = Runtime(bundle)
+    load_owner_state(settings, app.state.runtime)
+    app.state.voice_dir = Path(voice_dir) if voice_dir is not None else VOICE_DIR
+    app.state.audio_fixtures_path = (
+        Path(audio_fixtures_path) if audio_fixtures_path is not None else AUDIO_FIXTURES
+    )
     app.state.live_hub = hub
     app.state.live_backend = live_backend or MetaLiveBackend(
         settings, stills if stills.exists() else None
@@ -97,6 +108,8 @@ def create_app(
         return response
 
     app.include_router(router())
+    app.include_router(voice_router())
+    app.include_router(owner_router())
     app.include_router(live_router())
     media = bundle_root / "media"
     if media.exists():

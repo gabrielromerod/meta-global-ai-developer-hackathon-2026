@@ -1,10 +1,11 @@
 [
  {
-  "created_at": "2026-10-29T16:25:00-07:00",
+  "applies_to": "non_household",
+  "created_at": "2026-11-02T13:25:00-08:00",
   "id": "r1",
   "json": {
    "active": null,
-   "applies_to": "anyone",
+   "applies_to": "non_household",
    "id": "r1",
    "min_dwell_s": null,
    "name": "Watched package removed",
@@ -20,17 +21,18 @@
   "state": "active"
  },
  {
-  "created_at": "2026-10-29T16:25:00-07:00",
+  "applies_to": "non_household",
+  "created_at": "2026-11-02T13:25:00-08:00",
   "id": "r2",
   "json": {
    "active": {
     "end": "05:00",
     "start": "23:00"
    },
-   "applies_to": "anyone",
+   "applies_to": "non_household",
    "id": "r2",
    "min_dwell_s": null,
-   "name": "Anyone in the backyard 23:00 to 05:00",
+   "name": "Non-household person in the backyard 23:00 to 05:00",
    "severity": "needs_attention",
    "state": "active",
    "target": {
@@ -43,17 +45,18 @@
   "state": "active"
  },
  {
-  "created_at": "2026-10-29T16:25:00-07:00",
+  "applies_to": "non_household",
+  "created_at": "2026-11-02T13:25:00-08:00",
   "id": "r7",
   "json": {
    "active": {
     "end": "06:00",
-    "start": "22:00"
+    "start": "17:30"
    },
-   "applies_to": "anyone",
+   "applies_to": "non_household",
    "id": "r7",
    "min_dwell_s": null,
-   "name": "Side gate after 10 PM",
+   "name": "Side gate after dark",
    "severity": "needs_attention",
    "state": "active",
    "target": {

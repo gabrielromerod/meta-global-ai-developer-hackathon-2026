@@ -1,5 +1,6 @@
-// Visit list and visit cards (FR-017, FR-023 UI, NFR-018, NFR-022).
-// Verdicts are icon + word; every sentence has citation chips and a source badge.
+// Visit list and visit cards (FR-017, FR-023 UI, FR-044, NFR-018, NFR-022).
+// Verdicts are icon + word; every sentence has citation chips and a source badge; every
+// subject shows where it came from (its role and stored role_basis), never who it is.
 
 export const VERDICT_ICONS = {
   needs_attention:
@@ -95,10 +96,33 @@ function timelineHtml(visit) {
   ).join("") + `</ol>`;
 }
 
+const APPLIES_SHORT = { anyone: "anyone", non_household: "non-household", external_visitor_only: "outsiders only" };
+
+export function appliesBadge(appliesTo) {
+  return `<span class="applies-badge" data-testid="applies-badge" data-applies="${esc(appliesTo)}">` +
+    `Applies to: ${esc(APPLIES_SHORT[appliesTo] || appliesTo)}</span>`;
+}
+
+function roleChip(s) {
+  return `<span class="role-chip" data-testid="role-chip" data-role="${esc(s.actor_role)}">${esc(s.role_label)}</span>`;
+}
+
+function subjectsHtml(t) {
+  const subjects = (t.subjects || []).map((s) =>
+    `<li data-testid="role-basis">Subject ${esc(s.id)}: ${roleChip(s)} role_basis ` +
+    `<code class="role-basis">${esc(s.role_basis)}</code>: ${esc(s.basis_label)}</li>`).join("");
+  const excluded = (t.rules_excluded || []).map((r) =>
+    `<li class="excluded" data-testid="rule-excluded">Rule <b>${esc(r.rule_id)}</b> not fired: ${esc(r.reason)}</li>`).join("");
+  if (!subjects && !excluded) return "";
+  return `<p class="section-title">Where each person came from (no identification)</p>` +
+    `<ul class="trace-list">${subjects}${excluded}</ul>`;
+}
+
 function traceHtml(visit) {
   const t = visit.trace;
+  const vi = t.verdict_inputs || {};
   const rules = t.rules_fired.length
-    ? t.rules_fired.map((r) => `<li>Rule <b>${esc(r.rule_id)}</b> fired: ${esc(r.rule_name)} (event ${esc(r.event_id)})</li>`).join("")
+    ? t.rules_fired.map((r) => `<li>Rule <b>${esc(r.rule_id)}</b> fired: ${esc(r.rule_name)} (event ${esc(r.event_id)}; applies to ${esc(APPLIES_SHORT[r.applies_to] || r.applies_to || "anyone")})</li>`).join("")
     : "<li>No rule fired.</li>";
   const tri = t.triage
     ? `<li>Triage: ${t.triage.escalate ? "escalated" : "not escalated"} by ${esc(t.triage.source)}` +
@@ -114,13 +138,15 @@ function traceHtml(visit) {
       ` <span class="source-badge" data-kind="model">${esc(d.call_id || "")}</span>` +
       `<ol class="trace-list">${sents}</ol>${fails ? `<ul class="trace-list">${fails}</ul>` : ""}</div>`;
   }).join("");
-  const vi = t.verdict_inputs || {};
   const cal = (t.calibration || []).map((c) =>
-    `<li>${esc(c.name)}: reprojection ${esc(c.reproj_mean_px)} px, held-out ground error ${esc(c.heldout_ground_m)} m (${esc(c.method)})${c.synthetic ? " · synthetic" : ""}</li>`).join("");
+    `<li>${esc(c.name)}: ${c.intrinsics_source ? `${esc(c.intrinsics_source)} intrinsics, ` : ""}` +
+    `${c.landmarks ? `${esc(c.landmarks)}-landmark PnP, ` : ""}reprojection ${esc(c.reproj_mean_px)} px, ` +
+    `held-out ground error ${esc(c.heldout_ground_m)} m (${esc(c.method)})${c.synthetic ? " · synthetic" : ""}</li>`).join("");
   const loop = (t.watch_proposals || []).map((w) =>
     `<li>Watch proposal "${esc(w.phrase)}" on ${esc(w.camera_id)}: ${w.accepted ? "accepted" : "rejected"} (${esc(w.reason || "")})</li>`).join("");
   return `<details class="trace" data-testid="trace"><summary>How this was decided</summary>` +
-    `<ul class="trace-list">${rules}${tri}<li>Rule floor: ${esc(t.floor)}</li></ul>` +
+    `<ul class="trace-list">${rules}${tri}<li>Rule floor: ${esc(t.floor)}` +
+    `${vi.floor_reason ? ` (${esc(vi.floor_reason)})` : ""}</li></ul>` + subjectsHtml(t) +
     `${drafts || `<p class="card-meta">Not escalated: the story is a template written by code.</p>`}` +
     `<p class="section-title">Verdict inputs</p><ul class="trace-list">` +
     `<li>floor = ${esc(vi.floor)}, unresolved gap = ${esc(vi.unresolved_gap)}, proposal = ${esc(vi.proposal)}, proposal cited = ${esc(vi.proposal_cited)}</li>` +
@@ -161,6 +187,15 @@ export function renderVisitDetail(section, visit, handlers) {
   const rules = visit.rule_hits.length
     ? `<p class="rules-fired">${visit.rule_hits.map((h) => `<b>Rule ${esc(h.rule_id)} fired</b>: ${esc(h.rule_name)}`).join("; ")}</p>`
     : "";
+  const subjects = visit.subjects || [];
+  const roles = subjects.length
+    ? `<p class="roles" data-testid="roles">Came from: ${subjects.map((s) =>
+      `${roleChip(s)}<code class="role-basis">${esc(s.role_basis)}</code>`).join(" ")}</p>`
+    : "";
+  const windows = (visit.expected_windows || []).map((w) =>
+    `<span class="window-chip" data-testid="window-chip">Expected Window ${esc(w.id)}` +
+    `${w.label ? ` "${esc(w.label)}"` : ""} · ${esc((w.start || "").slice(11, 16))}–${esc((w.end || "").slice(11, 16))}` +
+    `${w.cameras && w.cameras.length ? ` · ${w.cameras.map(esc).join(", ")}` : ""}</span>`).join(" ");
   section.innerHTML =
     `<article class="card" data-visit="${esc(visit.id)}" data-testid="visit-card">` +
     `<header class="card-head">${verdictHtml(visit.verdict, visit.verdict_label)}` +
@@ -168,11 +203,12 @@ export function renderVisitDetail(section, visit, handlers) {
     ` · ${visit.escalated ? "escalated" : "not escalated"}</span>` +
     `<span class="pill subtle">${visit.synthetic ? "Synthetic · cached" : "Cached"}</span></header>` +
     `<ol class="story" data-testid="story">${sentencesHtml(visit.sentences)}</ol>` +
-    watches + rules +
+    roles + windows + watches + rules +
     `<p class="section-title">Gaps</p>${gapBarsHtml(visit)}` +
     `<p class="section-title">Events</p>${timelineHtml(visit)}` +
     `<div class="btn-row"><button type="button" class="btn live" data-testid="rerun-live" data-rerun="live">Re-run story live</button>` +
-    `<button type="button" class="btn" data-rerun="cached">Show recorded re-run</button></div>` +
+    `<button type="button" class="btn" data-rerun="cached">Show recorded re-run</button>` +
+    `<button type="button" class="btn small" data-testid="feedback-expected" data-feedback="expected">This was expected</button></div>` +
     `<div class="rerun-out" data-testid="rerun-out" aria-live="polite"></div>` +
     traceHtml(visit) + telemetryHtml(visit.telemetry) +
     `</article>`;
@@ -188,6 +224,9 @@ export function renderVisitDetail(section, visit, handlers) {
   };
   section.querySelectorAll("[data-rerun]").forEach((el) => {
     el.addEventListener("click", () => handlers.onRerun(el.dataset.rerun === "live", el));
+  });
+  section.querySelectorAll("[data-feedback]").forEach((el) => {
+    el.addEventListener("click", () => handlers.onFeedback && handlers.onFeedback(el.dataset.feedback, el));
   });
   section.querySelectorAll("[data-undo]").forEach((el) => {
     el.addEventListener("click", () => {

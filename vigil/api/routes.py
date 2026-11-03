@@ -1,19 +1,19 @@
 """HTTP routes over the demo bundle (spec 9.6).
 
-Read routes serve the cached bundle. The three live buttons (protect, compile, re-run) are
-cached by default; a live request is rate-limited per IP, runs only when a key is set, the
-daily spend cap is not reached and the credit window is open, and any live failure falls back
-to the recorded result with a visible notice (FR-026, NFR-009, NFR-010).
+Read routes serve the cached bundle. The live buttons (protect, transcribe, compile, re-run)
+are cached by default; a live request is rate-limited per IP, runs only when a key is set and
+the guards allow it (daily credit cap; after the credit window, VIGIL_ALLOW_PAID, the $25
+judging total, $5 per PT day and VIGIL_JUDGING_END), and any live failure falls back to the
+recorded result with a visible notice (FR-026, FR-043, NFR-009, NFR-010, spec 11.6 item 6).
+Voice routes live in `vigil.api.voice`; windows, check-in and feedback in `vigil.api.owner`.
 """
 
 from __future__ import annotations
 
-import io
 import json
 import re
 import threading
 import uuid
-import wave
 from typing import Any, Literal
 
 from fastapi import APIRouter, BackgroundTasks, HTTPException, Request
@@ -22,19 +22,74 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError
 from vigil.api import views
 from vigil.api.backend import LiveResult
 from vigil.api.guards import (
+    LIVE_ESTIMATE_USD,
     Guards,
     LiveStatus,
     check_live_allowed,
     check_model_allowed,
     client_ip,
+    notice_live_failed,
     read_bounded,
 )
-from vigil.models import ModelCall, Rule, StorySentence, Visit
+from vigil.models import CheckIn, ExpectedWindow, ModelCall, Rule, StorySentence, Visit
 from vigil.store.export import Bundle
 
 W_MAX, H_MAX = 1280, 720
-IDENTITY_NOTE = "Vigil doesn't identify people, so this applies to anyone."
-NOTICE_TYPE_RULE = "Voice transcription unavailable; type the rule instead."
+
+# Draft-card wording (FR-021, UC-03). Code writes these; a model never does.
+NO_TEMPLATES = (
+    "Vigil places people by where they came from; it does not identify anyone and creates "
+    "no face, voice or body templates."
+)
+APPLIES_LABELS: dict[str, str] = {
+    "anyone": "Applies to everyone, including household members.",
+    "non_household": "Applies to everyone except household members.",
+    "external_visitor_only": (
+        "Applies only to people who arrived from outside the property, except guests or "
+        "deliveries inside an Expected Window you set."
+    ),
+}
+BASIS_NOTES: dict[str, str] = {
+    "anyone": (
+        "This rule does not depend on where anyone came from. Vigil does not identify anyone "
+        "and creates no face, voice or body templates."
+    ),
+    "non_household": (
+        "Vigil treats someone as household only when it saw them come out of the house's own "
+        "doors, or when a household member checked in on the app just before coming into view. "
+        "Household members arriving from the street without checking in, and anyone Vigil "
+        "loses track of, count as non-household and can trigger this rule. " + NO_TEMPLATES
+    ),
+    "external_visitor_only": (
+        "Vigil treats someone as an expected visitor only when they arrived from the street, "
+        "driveway or alley inside an Expected Window you set in advance, and as household only "
+        "when it saw them come out of the house's own doors or a household member checked in "
+        "on the app just before they came into view. Anyone Vigil loses track of counts as "
+        "arriving from outside and can trigger this rule. " + NO_TEMPLATES
+    ),
+}
+NAMED_PERSON_NOTICE = (
+    "Vigil can't recognise individuals. It treats someone as household only if they came out "
+    "of the house's own doors or checked in on the app, so {name} is exempt only in those cases."
+)
+_NOT_NAMES = {"family", "us", "the", "household", "me", "my", "our", "guests", "deliveries"}
+_NAMED = re.compile(r"\bexcept(?:\s+for)?\s+([A-Z][a-z]+)\b")
+
+
+def applies_view(applies_to: str) -> dict[str, str]:
+    """The plain-words scope and basis note shown on every draft rule card."""
+    return {
+        "applies_label": APPLIES_LABELS.get(applies_to, APPLIES_LABELS["anyone"]),
+        "basis_note": BASIS_NOTES.get(applies_to, BASIS_NOTES["anyone"]),
+    }
+
+
+def named_person(text: str) -> str | None:
+    """'except Sam' -> 'Sam'. Family words are roles, not names (FR-021)."""
+    for m in _NAMED.finditer(text):
+        if m.group(1).lower() not in _NOT_NAMES:
+            return m.group(1)
+    return None
 
 
 # ---------------------------------------------------------------------------
@@ -82,6 +137,12 @@ class Runtime:
         self.live_calls: list[ModelCall] = []
         self.jobs: dict[str, dict[str, Any]] = {}
         self.pairs: dict[str, list[dict[str, Any]]] = {}
+        self.windows: dict[str, ExpectedWindow] = {}
+        """Owner-set Expected Windows (FR-029); persisted to the edge DB in edge mode."""
+        self.checkins: dict[str, CheckIn] = {}
+        self.feedback: list[dict[str, Any]] = []
+        self.transcripts: dict[str, str] = {}
+        """Transcript by audio SHA-256: the only trace a spoken rule leaves (NFR-002)."""
 
 
 def _state(request: Request) -> tuple[Bundle, Guards, Runtime, Any]:
@@ -99,14 +160,18 @@ async def _parse(request: Request, model: type[BaseModel]) -> Any:
 
 
 def _accept_live(guards: Guards, runtime: Runtime, result: LiveResult) -> list[ModelCall]:
-    """Validate every model call of a live result, then record spend and ledger rows."""
+    """Validate every model call of a live result, then record spend and ledger rows.
+
+    Each row is tagged `credit` or `paid` by the guards' phase (spec 9.3, NFR-036/037).
+    """
+    funding = guards.funding()
     calls = []
     for c in result.calls:
         data = c.model_dump() if isinstance(c, BaseModel) else dict(c)
         check_model_allowed(str(data.get("model", "")))
-        call = ModelCall.model_validate({**data, "cached": False})
+        call = ModelCall.model_validate({**data, "cached": False, "funding": funding})
         calls.append(call)
-    guards.record_spend(sum(c.cost_usd for c in calls))
+    guards.record_spend(sum(c.cost_usd for c in calls), funding)
     with runtime.lock:
         runtime.live_calls.extend(calls)
     return calls
@@ -120,6 +185,7 @@ def _telemetry_live(calls: list[ModelCall]) -> dict[str, Any]:
         "latency_ms": sum(c.latency_ms or 0 for c in calls),
         "cost_usd": round(sum(c.cost_usd for c in calls), 6),
         "cached": False,
+        "funding": first.funding if first else None,
         "calls": [c.model_dump(mode="json") for c in calls],
     }
 
@@ -160,11 +226,15 @@ def _failure(guards: Guards, exc: Exception) -> str:
     return guards.redact(f"{type(exc).__name__}: {exc}")[:300]
 
 
-def _live_gate(request: Request, guards: Guards, live: bool) -> LiveStatus | None:
+def _failed_notice(preset: dict[str, Any] | None) -> str:
+    return notice_live_failed(views.recorded_date((preset or {}).get("recorded_at")))
+
+
+def _live_gate(request: Request, guards: Guards, live: bool, kind: str) -> LiveStatus | None:
     """Rate-limit live requests (429) and report whether live can run now."""
     if not live:
         return None
-    return check_live_allowed(guards, client_ip(request))
+    return check_live_allowed(guards, client_ip(request), LIVE_ESTIMATE_USD.get(kind, 0.0))
 
 
 def _visit_or_404(bundle: Bundle, visit_id: str) -> Visit:
@@ -213,26 +283,44 @@ def _target_known(rule: Rule, catalog: dict[str, Any]) -> bool:
 # ---------------------------------------------------------------------------
 
 
+def health_view(request: Request) -> dict[str, Any]:
+    """Mode, spend today, credit cap and judging cap remaining (spec 9.6)."""
+    bundle, guards, _, _ = _state(request)
+    status = guards.live_status()
+    settings = request.app.state.settings
+    end = settings.credit_window_end
+    judging_end = getattr(settings, "judging_end", None)
+    total_left, today_left = guards.judging_remaining()
+    return {
+        "status": "ok",
+        "mode": settings.mode,
+        "synthetic": bool(bundle.manifest.get("synthetic")),
+        "bundle_label": bundle.manifest.get("label"),
+        "live": status.public(),
+        "phase": status.phase,
+        "funding": status.funding,
+        "spend_today_usd": status.spend_today_usd,
+        "daily_cap_usd": status.daily_cap_usd,
+        "credit_cap_usd": float(settings.total_cap_usd),
+        "credit_spent_usd": guards.spend_total("credit"),
+        "credit_window_end": end.isoformat() if end else None,
+        "allow_paid": bool(settings.allow_paid),
+        "judging_cap_usd": float(settings.judging_cap_usd),
+        "judging_daily_cap_usd": float(settings.judging_daily_cap_usd),
+        "judging_spent_usd": guards.spend_total("paid"),
+        "judging_cap_remaining_usd": total_left,
+        "judging_today_remaining_usd": today_left,
+        "judging_end": judging_end.isoformat() if judging_end else None,
+        "rate_limit_per_min": guards.rate.limit,
+    }
+
+
 def router() -> APIRouter:
     r = APIRouter(prefix="/api")
 
     @r.get("/health")
     def health(request: Request) -> dict[str, Any]:
-        bundle, guards, _, _ = _state(request)
-        status = guards.live_status()
-        settings = request.app.state.settings
-        end = settings.credit_window_end
-        return {
-            "status": "ok",
-            "mode": settings.mode,
-            "synthetic": bool(bundle.manifest.get("synthetic")),
-            "bundle_label": bundle.manifest.get("label"),
-            "live": status.public(),
-            "spend_today_usd": status.spend_today_usd,
-            "daily_cap_usd": status.daily_cap_usd,
-            "credit_window_end": end.isoformat() if end else None,
-            "rate_limit_per_min": guards.rate.limit,
-        }
+        return health_view(request)
 
     @r.get("/scenarios")
     def scenarios(request: Request) -> dict[str, Any]:
@@ -319,6 +407,9 @@ def router() -> APIRouter:
                 for p in bundle.presets.get("protect", [])
             ],
             "compile": [c["text"] for c in bundle.presets.get("compile", [])],
+            "voice": [
+                {"id": v["id"], "label": v.get("label")} for v in bundle.presets.get("voice", [])
+            ],
         }
 
     # -- tap-to-protect (FR-019) ---------------------------------------------------------
@@ -328,7 +419,7 @@ def router() -> APIRouter:
         req: ProtectRequest = await _parse(request, ProtectRequest)
         if req.camera_id not in views.camera_names(bundle):
             raise HTTPException(422, f"unknown camera {req.camera_id!r}")
-        status = _live_gate(request, guards, req.live)
+        status = _live_gate(request, guards, req.live, "protect")
         notice, error = None, None
         if status is not None and status.available:
             try:
@@ -347,58 +438,38 @@ def router() -> APIRouter:
                 {"camera_id": p["camera_id"], "point": p["point"], "label": p["label"]}
                 for p in bundle.presets.get("protect", [])
             ]
-            text = "Nothing recorded at that point. Try another point, or a preset point."
-            lead = notice or ("Live call failed. " if error else "")
-            return _envelope(False, req.live, None, _telemetry_cached(None),
-                             f"{lead} {text}".strip(), error, presets=options)  # fmt: skip
+            hint = "Nothing recorded at that point. Try another point, or a preset point."
+            if error:
+                notice = (
+                    "Live call failed; no recorded result at that point. Try another point, "
+                    "or a preset point."
+                )
+            return _envelope(False, req.live, None, _telemetry_cached(None), notice or hint,
+                             error, presets=options, hint=hint)  # fmt: skip
         if error:
-            notice = (
-                f"Live call failed: showing the recorded result from "
-                f"{views.recorded_date(preset.get('recorded_at'))}."
-            )
+            notice = _failed_notice(preset)
         result = {"object": preset["object"], "outline": preset["outline"],
                   "camera_id": preset["camera_id"]}  # fmt: skip
         return _envelope(False, req.live, result, _telemetry_cached(preset), notice, error)
 
-    # -- rule compile (FR-021, FR-022) ---------------------------------------------------
+    # -- rule compile (FR-021): text only; voice is transcribed first (FR-022) ------------
     @r.post("/rules/compile")
     async def compile_rule(request: Request) -> dict[str, Any]:
         bundle, guards, runtime, backend = _state(request)
-        settings = request.app.state.settings
         ctype = request.headers.get("content-type", "application/json").split(";")[0].strip()
-        transcript = None
-        if ctype.startswith("audio/") or ctype == "application/octet-stream":
-            audio = await read_bounded(request, int(settings.max_audio_bytes))
-            _check_audio_duration(request, audio, float(settings.max_audio_s))
-            live = request.query_params.get("live", "").lower() in {"1", "true", "yes"}
-            status = _live_gate(request, guards, live)
-            if status is None or not status.available:
-                notice = (
-                    NOTICE_TYPE_RULE if status is None else f"{status.notice} {NOTICE_TYPE_RULE}"
-                )
-                return _envelope(False, live, None, _telemetry_cached(None), notice)
-            try:
-                res = backend.transcribe(audio, ctype)
-                tcalls = _accept_live(guards, runtime, res)
-                transcript = str(res.payload["transcript"])
-            except Exception as exc:
-                return _envelope(False, True, None, _telemetry_cached(None), NOTICE_TYPE_RULE,
-                                 _failure(guards, exc))  # fmt: skip
-            req = CompileRequest(text=transcript[:500], live=True)
-        elif ctype == "application/json":
-            req = await _parse(request, CompileRequest)
-            tcalls = []
-            status = _live_gate(request, guards, req.live)
-        else:
-            raise HTTPException(415, "send JSON {text} or an audio/* body")
-
+        if ctype != "application/json":
+            raise HTTPException(
+                415, "send JSON {text}; transcribe audio first with POST /api/voice/transcribe"
+            )
+        req: CompileRequest = await _parse(request, CompileRequest)
+        status = _live_gate(request, guards, req.live, "compile")
         notice, error = None, None
         if status is not None and status.available:
             catalog = _catalog(request, bundle, runtime)
             try:
                 res = backend.compile_rule(req.text, catalog)
-                calls = tcalls + _accept_live(guards, runtime, res)
-                result = _live_rule(runtime, res, catalog, transcript)
+                calls = _accept_live(guards, runtime, res)
+                result = _live_rule(runtime, res, catalog, req.text)
                 return _envelope(True, True, result, _telemetry_live(calls))
             except Exception as exc:
                 error = _failure(guards, exc)
@@ -411,15 +482,13 @@ def router() -> APIRouter:
         with runtime.lock:
             runtime.rules.setdefault(rule["id"], dict(rule))
         if error:
-            notice = (
-                f"Live call failed: showing the recorded result from "
-                f"{views.recorded_date(preset.get('recorded_at'))}."
-            )
+            notice = _failed_notice(preset)
         if not exact:
             example = f'Showing the recorded example for "{preset["text"]}".'
-            notice = f"{notice} {example}" if notice else example
-        result = {"transcript": transcript, "text": preset["text"], "rule": rule,
-                  "limits_note": preset.get("limits_note", []), "question": None}  # fmt: skip
+            notice = f"{notice}. {example}" if notice else example
+        result = {"text": preset["text"], "rule": rule,
+                  "limits_note": list(preset.get("limits_note", [])), "question": None,
+                  **applies_view(rule.get("applies_to", "anyone"))}  # fmt: skip
         return _envelope(False, req.live, result, _telemetry_cached(preset), notice, error)
 
     @r.post("/rules/{rule_id}/confirm")
@@ -439,7 +508,7 @@ def router() -> APIRouter:
         bundle, guards, runtime, _ = _state(request)
         req: RerunRequest = await _parse(request, RerunRequest)
         _visit_or_404(bundle, visit_id)
-        status = _live_gate(request, guards, req.live)
+        status = _live_gate(request, guards, req.live, "rerun")
         job_id = uuid.uuid4().hex[:12]
         with runtime.lock:
             runtime.jobs[job_id] = {"id": job_id, "visit_id": visit_id, "status": "queued",
@@ -499,23 +568,30 @@ def _live_object(
 
 
 def _live_rule(
-    runtime: Runtime, res: LiveResult, catalog: dict[str, Any], transcript: str | None
+    runtime: Runtime, res: LiveResult, catalog: dict[str, Any], text: str
 ) -> dict[str, Any]:
-    raw = dict(res.payload.get("rule") or {})
-    raw["state"] = "draft"
-    raw["applies_to"] = "anyone"
-    rule = Rule.model_validate(raw)
-    notes = [str(n) for n in res.payload.get("limits_note") or []]
-    if not any("identify people" in n for n in notes):
-        notes.insert(0, IDENTITY_NOTE)
+    """A live draft: the compiled applies_to stands; code adds the basis and name notices."""
+    payload = res.payload
+    notes = [str(n) for n in (payload.get("limits_note") or payload.get("limits") or [])]
+    name = named_person(text)
+    if name and not any("can't recognise individuals" in n for n in notes):
+        notes.insert(0, NAMED_PERSON_NOTICE.format(name=name))
+    raw = payload.get("rule")
+    if not raw:
+        question = payload.get("question") or "Which object or zone do you mean?"
+        return {"text": text, "rule": None, "limits_note": notes, "question": str(question),
+                **applies_view("anyone")}  # fmt: skip
+    rule = Rule.model_validate({**dict(raw), "state": "draft"})
     if not _target_known(rule, catalog):
         known = ", ".join(f"{o['label']} ({o['id']})" for o in catalog["protected_objects"])
-        return {"transcript": transcript, "rule": None, "limits_note": notes,
-                "question": f"Which object do you mean? Known objects: {known}."}  # fmt: skip
+        return {"text": text, "rule": None, "limits_note": notes,
+                "question": f"Which object do you mean? Known objects: {known}.",
+                **applies_view(rule.applies_to)}  # fmt: skip
     data = rule.model_dump()
     with runtime.lock:
         runtime.rules[rule.id] = data
-    return {"transcript": transcript, "rule": data, "limits_note": notes, "question": None}
+    return {"text": text, "rule": data, "limits_note": notes, "question": None,
+            **applies_view(rule.applies_to)}  # fmt: skip
 
 
 def _closest_compile(bundle: Bundle, text: str) -> tuple[dict | None, bool]:
@@ -529,24 +605,6 @@ def _closest_compile(bundle: Bundle, text: str) -> tuple[dict | None, bool]:
     words = set(target.split())
     best = max(presets, key=lambda p: len(words & set(_norm(p["text"]).split())))
     return best, False
-
-
-def _check_audio_duration(request: Request, audio: bytes, max_s: float) -> None:
-    declared = request.headers.get("x-audio-duration")
-    if declared:
-        try:
-            if float(declared) > max_s:
-                raise HTTPException(413, f"Audio over {max_s:.0f} s.")
-        except ValueError as exc:
-            raise HTTPException(422, "x-audio-duration must be seconds") from exc
-    if audio[:4] == b"RIFF":
-        try:
-            with wave.open(io.BytesIO(audio)) as w:
-                seconds = w.getnframes() / float(w.getframerate())
-        except (wave.Error, EOFError, ZeroDivisionError) as exc:
-            raise HTTPException(422, "unreadable WAV audio") from exc
-        if seconds > max_s:
-            raise HTTPException(413, f"Audio over {max_s:.0f} s.")
 
 
 def _verdict_after_rerun(visit: Visit, proposal: str | None, story: list[StorySentence]) -> str:
@@ -608,10 +666,7 @@ def _run_rerun(app: Any, job_id: str, visit_id: str, live: bool, status: LiveSta
             preset = {"story": [s.model_dump() for s in visit.story], "verdict": visit.verdict,
                       "validation": {"passed": True, "attempt": 1, "failures": []}}  # fmt: skip
         if error and notice is None:
-            notice = (
-                f"Live call failed: showing the recorded result from "
-                f"{views.recorded_date(preset.get('recorded_at'))}."
-            )
+            notice = _failed_notice(preset)
         story = [StorySentence.model_validate(s) for s in preset["story"]]
         verdict = preset.get("verdict") or visit.verdict
         result = {

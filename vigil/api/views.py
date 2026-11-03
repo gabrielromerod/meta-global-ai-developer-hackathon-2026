@@ -1,8 +1,10 @@
 """Compose API responses from a loaded bundle (spec 9.6; FR-017, FR-023, FR-040, NFR-022).
 
 Pure functions over `vigil.store.export.Bundle`: verdict labels, sentences with citation
-chips and source badges, gap labels, the "How this was decided" trace, telemetry totals,
-3D positions with observed path segments and gap connectors.
+chips and source badges, gap labels, the "How this was decided" trace (with each subject's
+spatial-origin role and `role_basis`, and any rule a role excluded; FR-044), telemetry totals,
+3D positions with observed path segments and gap connectors. Position labels state the
+measured r95 of each estimate, never a fixed figure (spec 4 step 3, NFR-026).
 """
 
 from __future__ import annotations
@@ -10,8 +12,10 @@ from __future__ import annotations
 import math
 from datetime import datetime, timedelta
 from typing import Any
+from zoneinfo import ZoneInfo
 
 from vigil.models import (
+    APPLIES_TO_ROLES,
     Appearance,
     Box,
     Event,
@@ -20,6 +24,7 @@ from vigil.models import (
     Position,
     ProtectedObject,
     StorySentence,
+    Subject,
     Visit,
     VisitLedger,
 )
@@ -32,6 +37,17 @@ VERDICT_LABELS = {
     "cant_confirm": "Can't confirm",
 }
 PATH_MAX_STEP_S = 1.0  # observed path joins estimates no more than 1 s apart (spec 7)
+ROLE_LABELS = {
+    "household_insider": "Household",
+    "expected_visitor": "Expected visitor",
+    "external_visitor": "Arrived from outside",
+    "unknown": "Unknown origin (treated as non-household)",
+}
+APPLIES_WORDS = {
+    "anyone": "everyone",
+    "non_household": "non-household people only",
+    "external_visitor_only": "people from outside the property only",
+}
 
 
 # ---------------------------------------------------------------------------
@@ -155,6 +171,8 @@ def citation(bundle: Bundle, e: Event) -> dict[str, Any]:
         "type": e.type,
         "target": e.target,
         "track_id": e.track_id,
+        "subject_id": e.subject_id,
+        "actor_role": e.actor_role,
     }
 
 
@@ -202,11 +220,151 @@ def gap_view(bundle: Bundle, g: Gap) -> dict[str, Any]:
     }
 
 
-def rule_name(bundle: Bundle, rule_id: str) -> str:
-    for r in bundle.rules:
-        if r["id"] == rule_id:
-            return r["json"].get("name", rule_id)
-    return rule_id
+def rule_json(bundle: Bundle, rule_id: str) -> dict[str, Any]:
+    return next((dict(r["json"]) for r in bundle.rules if r["id"] == rule_id), {})
+
+
+def rule_hits_view(bundle: Bundle, visit_id: str) -> list[dict[str, Any]]:
+    out = []
+    for h in bundle.rule_hits:
+        if h["visit_id"] == visit_id:
+            rule = rule_json(bundle, h["rule_id"])
+            out.append(
+                {
+                    **h,
+                    "rule_name": rule.get("name", h["rule_id"]),
+                    "applies_to": rule.get("applies_to", "anyone"),
+                }
+            )
+    return out
+
+
+# ---------------------------------------------------------------------------
+# Spatial-origin roles (FR-044): shown with their stored basis, never an identity
+# ---------------------------------------------------------------------------
+
+
+def _place(zone: str) -> str:
+    return zone.replace("_", " ")
+
+
+def basis_label(bundle: Bundle, basis: str) -> str:
+    """Plain words for a role_basis value (spec 9.4)."""
+    kind, _, ref = basis.partition(":")
+    if kind == "egress":
+        return f"came out of the house ({_place(ref)})"
+    if kind == "checkin":
+        return f"a household member checked in on the app just before ({ref})"
+    if kind == "window":
+        w = next((w for w in bundle.expected_windows if w.id == ref), None)
+        label = f' "{w.label}"' if w and w.label else ""
+        return f"arrived from the perimeter inside Expected Window {ref}{label}"
+    if kind == "perimeter":
+        return f"arrived from outside the property ({_place(ref)})"
+    if kind == "group":
+        return f"walked in a group whose members all held the same role ({ref})"
+    if kind == "gap_unresolved":
+        return f"re-linked after gap {ref} on timing alone; role unknown"
+    if kind == "ambiguous_link":
+        return f"followed an ambiguous link ({ref}); role unknown"
+    if kind == "origin_null":
+        return f"where they came from was not observed ({ref}); role unknown"
+    return basis
+
+
+def subject_view(bundle: Bundle, s: Subject) -> dict[str, Any]:
+    return {
+        "id": s.id,
+        "track_ids": list(s.track_ids),
+        "actor_role": s.actor_role,
+        "role_basis": s.role_basis,
+        "role_label": ROLE_LABELS.get(s.actor_role, s.actor_role),
+        "basis_label": basis_label(bundle, s.role_basis),
+    }
+
+
+def _tz(bundle: Bundle) -> ZoneInfo:
+    try:
+        return ZoneInfo(bundle.manifest.get("timezone") or "America/Los_Angeles")
+    except (KeyError, ValueError):
+        return ZoneInfo("America/Los_Angeles")
+
+
+def _minutes(hhmm: str) -> int:
+    hh, _, mm = hhmm.partition(":")
+    return int(hh) * 60 + int(mm)
+
+
+def _in_window(active: dict[str, str] | None, minute: int) -> bool:
+    if not active:
+        return True
+    start, end = _minutes(active["start"]), _minutes(active["end"])
+    if start <= end:
+        return start <= minute < end
+    return minute >= start or minute < end  # crosses midnight
+
+
+def _excluded_reason(rule_id: str, name: str, applies: str, role: str, basis: str | None) -> str:
+    who = APPLIES_WORDS.get(applies, applies)
+    why = f"{role} ({basis})" if basis else role
+    return (
+        f'{rule_id} "{name}" was in force but applies to {who}; this person\'s role is {why}, '
+        "so it did not fire."
+    )
+
+
+def rules_excluded(bundle: Bundle, visit: Visit) -> list[dict[str, Any]]:
+    """Rules in force on a touched object that did not fire because of `applies_to` (9.4).
+
+    This is the A′ evidence: r7 was in force on the side gate after dark, but it applies to
+    non-household people, and this person came out of the house's own door.
+    """
+    start = session_start(bundle)
+    subjects = {s.id: s for s in bundle.subjects_for(visit.id)}
+    hits = {(h["rule_id"], h["event_id"]) for h in bundle.rule_hits}
+    out: list[dict[str, Any]] = []
+    for e in bundle.events_for(visit.id):
+        if e.type not in ("touch", "removed") or not e.target or not e.actor_role:
+            continue
+        local = (start + timedelta(seconds=e.t0)).astimezone(_tz(bundle)) if start else None
+        minute = local.hour * 60 + local.minute if local else None
+        for r in bundle.rules:
+            rule = dict(r["json"])
+            target = rule.get("target") or {}
+            if target.get("id") != e.target or rule.get("trigger") != e.type:
+                continue
+            if rule.get("state", "active") != "active" or (r["id"], e.id) in hits:
+                continue
+            if minute is not None and not _in_window(rule.get("active"), minute):
+                continue
+            applies = rule.get("applies_to", "anyone")
+            if e.actor_role in APPLIES_TO_ROLES.get(applies, APPLIES_TO_ROLES["anyone"]):
+                continue
+            s = subjects.get(e.subject_id or "")
+            basis = s.role_basis if s else None
+            name = rule.get("name", r["id"])
+            out.append(
+                {
+                    "rule_id": r["id"],
+                    "rule_name": name,
+                    "event_id": e.id,
+                    "applies_to": applies,
+                    "actor_role": e.actor_role,
+                    "role_basis": basis,
+                    "reason": _excluded_reason(r["id"], name, applies, e.actor_role, basis),
+                }
+            )
+    return out
+
+
+def expected_windows_view(bundle: Bundle, visit: Visit) -> list[dict[str, Any]]:
+    """Expected Windows a subject of this visit was matched to (they show on the card)."""
+    ids = {
+        s.role_basis.partition(":")[2]
+        for s in bundle.subjects_for(visit.id)
+        if s.role_basis.startswith("window:")
+    }
+    return [w.model_dump(mode="json") for w in bundle.expected_windows if w.id in ids]
 
 
 def watches_view(bundle: Bundle, visit_id: str) -> list[dict[str, Any]]:
@@ -241,11 +399,9 @@ def trace_view(bundle: Bundle, visit: Visit) -> dict[str, Any]:
             d["failures"] = match["failures"]
     cams = sorted({e.camera_id for e in bundle.events_for(visit.id)})
     return {
-        "rules_fired": [
-            {**h, "rule_name": rule_name(bundle, h["rule_id"])}
-            for h in bundle.rule_hits
-            if h["visit_id"] == visit.id
-        ],
+        "rules_fired": rule_hits_view(bundle, visit.id),
+        "rules_excluded": rules_excluded(bundle, visit),
+        "subjects": [subject_view(bundle, s) for s in bundle.subjects_for(visit.id)],
         "floor": visit.floor,
         "triage": raw.get("triage"),
         "drafts": drafts,
@@ -273,6 +429,7 @@ def visit_summary(bundle: Bundle, visit: Visit) -> dict[str, Any]:
         "clock": clock(bundle, visit.t0),
         "cameras": sorted({e.camera_id for e in bundle.events_for(visit.id)}),
         "gaps": [gap_label(g) for g in bundle.gaps_for(visit.id)],
+        "roles": [s.actor_role for s in bundle.subjects_for(visit.id)],
     }
 
 
@@ -289,11 +446,9 @@ def visit_view(bundle: Bundle, visit: Visit) -> dict[str, Any]:
         "sentences": sentences_view(bundle, visit, visit.story),
         "events": [citation(bundle, e) for e in events],
         "gaps": [gap_view(bundle, g) for g in bundle.gaps_for(visit.id)],
-        "rule_hits": [
-            {**h, "rule_name": rule_name(bundle, h["rule_id"])}
-            for h in bundle.rule_hits
-            if h["visit_id"] == visit.id
-        ],
+        "rule_hits": rule_hits_view(bundle, visit.id),
+        "subjects": [subject_view(bundle, s) for s in bundle.subjects_for(visit.id)],
+        "expected_windows": expected_windows_view(bundle, visit),
         "watches": watches_view(bundle, visit.id),
         "trace": trace_view(bundle, visit),
         "telemetry": telemetry(bundle.calls_for(visit.id)),
@@ -398,6 +553,8 @@ def visit_ledger(bundle: Bundle, visit: Visit) -> VisitLedger:
         ],
         appearance=appearance,
         camera_names=camera_names(bundle),
+        region_names=region_names(bundle),
+        subjects=bundle.subjects_for(visit.id),
         timezone=bundle.manifest.get("timezone", "America/Los_Angeles"),
         session_start=session_start(bundle),
     )

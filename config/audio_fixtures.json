@@ -1,0 +1,4 @@
+{
+ "note": "NFR-002 allowlist: the only audio files allowed in the repository are the 3 consented voice-rule fixtures under demo/voice/, each listed here by SHA-256. None are recorded yet: the owner records them in T-07a (consenting adult team member, short WAV, 16 kHz mono 16-bit PCM). Until then the sandbox's 3 sample-audio buttons use the cached transcripts in the demo bundle (presets.json, key voice). Entry format (read by vigil/meta/asr.py load_fixtures): {\"id\": \"vf_family_bin\", \"file\": \"vf_family_bin.wav\" (relative to demo/voice/), \"sha256\": \"<hex>\", \"transcript\": \"<cached transcript>\", \"label\": \"<button label>\", \"consent\": \"T-07a, <date>\"}. CI fails on any tracked audio file whose hash is not listed.",
+ "fixtures": []
+}

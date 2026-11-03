@@ -1,0 +1,51 @@
+[
+ {
+  "actor_role": "household_insider",
+  "id": "s_a1",
+  "role_basis": "egress:front_door_egress",
+  "track_ids_json": [
+   "t_a1"
+  ],
+  "visit_id": "v_a"
+ },
+ {
+  "actor_role": "household_insider",
+  "id": "s_ap1",
+  "role_basis": "egress:front_door_egress",
+  "track_ids_json": [
+   "t_ap0",
+   "t_ap1",
+   "t_ap2"
+  ],
+  "visit_id": "v_ap"
+ },
+ {
+  "actor_role": "external_visitor",
+  "id": "s_b1",
+  "role_basis": "perimeter:driveway_entry",
+  "track_ids_json": [
+   "t_b1"
+  ],
+  "visit_id": "v_b"
+ },
+ {
+  "actor_role": "expected_visitor",
+  "id": "s_bp1",
+  "role_basis": "window:w3",
+  "track_ids_json": [
+   "t_bp1"
+  ],
+  "visit_id": "v_bp"
+ },
+ {
+  "actor_role": "external_visitor",
+  "id": "s_c1",
+  "role_basis": "perimeter:side_alley",
+  "track_ids_json": [
+   "t_c1",
+   "t_c2",
+   "t_c3"
+  ],
+  "visit_id": "v_c"
+ }
+]

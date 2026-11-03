@@ -70,11 +70,24 @@
     </section>
 
     <section id="rules" class="panel rules" aria-label="Rules">
-      <div class="panel-head"><h2>Rules</h2></div>
+      <div class="panel-head"><h2>Rules</h2><span class="pill subtle">Speak, play a sample, or type</span></div>
+      <div class="voice" data-testid="voice">
+        <div class="btn-row">
+          <button type="button" id="mic" class="btn live mic" data-testid="mic" aria-pressed="false">
+            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor"/><path d="M6 11a6 6 0 0 0 12 0M12 17v4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+            <span class="mic-word">Hold to speak</span>
+          </button>
+          <span id="mic-status" class="card-meta" data-testid="mic-status" aria-live="polite">Up to 30 s, recorded as 16 kHz mono WAV in this browser.</span>
+        </div>
+        <p class="section-title">Or play a sample recording</p>
+        <div id="voice-samples" class="preset-list" data-testid="voice-samples"></div>
+        <p id="voice-note" class="card-meta" data-testid="voice-note"></p>
+      </div>
       <form id="rule-form" class="rule-form">
-        <label for="rule-text">Type a rule</label>
-        <input id="rule-text" name="text" type="text" maxlength="500"
-               value="tell me if anyone touches the bin after 9 PM" autocomplete="off">
+        <label for="rule-text">Transcript (edit it before compiling) or type a rule</label>
+        <textarea id="rule-text" name="text" rows="3" maxlength="500" autocomplete="off"
+                  data-testid="transcript">tell me if anyone touches the bin after 9 PM</textarea>
+        <span id="transcript-meta" class="telemetry-line" data-testid="transcript-meta"></span>
         <div class="btn-row">
           <button type="submit" class="btn" data-live="false">Compile (recorded)</button>
           <button type="button" id="rule-live" class="btn live" data-live="true">Compile live</button>

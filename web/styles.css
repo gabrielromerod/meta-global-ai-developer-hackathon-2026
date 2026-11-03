@@ -219,8 +219,36 @@ table.telemetry td.num, table.telemetry th.num { text-align: right; font-variant
 .rule-form { display: grid; gap: 4px; }
 .rule-form input[type=text] { width: 100%; padding: 7px 9px; border-radius: 8px; border: 1px solid var(--line);
   background: var(--bg); color: var(--ink); font: inherit; }
+.rule-form textarea { width: 100%; padding: 7px 9px; border-radius: 8px; border: 1px solid var(--line);
+  background: var(--bg); color: var(--ink); font: inherit; resize: vertical; min-height: 3.2em; }
 .rule-card { border: 1px solid var(--line); border-radius: 8px; padding: 8px; }
 .rule-card .limits { color: var(--muted); font-size: 13px; margin: 4px 0; padding-left: 18px; }
+.applies-badge { display: inline-flex; align-items: center; gap: 4px; margin: 4px 0; padding: 2px 9px;
+  border-radius: 999px; font-size: 12.5px; font-weight: 600; border: 1px solid var(--accent);
+  color: var(--accent); background: var(--chip); }
+.applies-badge::before { content: "◎"; }
+.basis-note { margin: 4px 0; font-size: 13px; color: var(--ink); background: var(--bg);
+  border-left: 3px solid var(--accent); padding: 5px 8px; border-radius: 0 6px 6px 0; }
+
+/* Voice rules (FR-022) */
+.voice { margin-bottom: 8px; }
+.btn.mic { display: inline-flex; align-items: center; gap: 6px; touch-action: none; user-select: none; }
+.btn.mic.recording { background: var(--attn); border-color: var(--attn); }
+.btn.mic.recording .mic-word::after { content: " · recording"; }
+.btn.sample::before { content: "▶ "; }
+
+/* Roles (FR-044): where each person came from, with its stored basis */
+.roles { margin: 6px 0 0; font-size: 13px; color: var(--muted); }
+.role-chip { display: inline-block; margin-right: 6px; padding: 1px 7px; border-radius: 999px;
+  border: 1px solid var(--line); color: var(--ink); background: var(--bg); font-size: 12.5px; }
+.role-chip::before { content: "⌂ "; }
+.role-chip[data-role="external_visitor"]::before { content: "→ "; }
+.role-chip[data-role="expected_visitor"]::before { content: "✓ "; }
+.role-chip[data-role="unknown"]::before { content: "? "; }
+.role-basis { font-family: var(--mono); font-size: 12px; }
+.trace .excluded { color: var(--ok); }
+.window-chip { display: inline-block; margin-top: 4px; font-size: 12.5px; padding: 1px 7px; border-radius: 6px;
+  border: 1px dashed var(--accent); color: var(--accent); }
 
 @media (max-width: 900px) {
   .layout, .layout.no-detail {

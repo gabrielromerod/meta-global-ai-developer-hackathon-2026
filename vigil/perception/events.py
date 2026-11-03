@@ -11,8 +11,16 @@ All geometry is in the processed window's pixel frame (spec 9.4 config):
 * **touch** — a person's mask (or box when no mask is stored) overlaps a protected object's
   bbox with an overlap coefficient (intersection / smaller area) of at least
   ``touch_overlap``; one event per contiguous touching interval.
-* **removed** — a watched object's track ends, before the camera's footage ends and
-  without reappearing at the same place, while a person overlaps its last box.
+* **removed** — a watched object's track ends without reappearing at the same place while
+  a person overlaps its last box, and either (a) the camera's footage had not ended, or
+  (b) the object was **carried out of frame**: it moved from where it was first seen, its
+  last box touches a frame edge (within 2% of the frame size), and an overlapping person
+  track ends within 1 s of it. The footage end is the end of the :class:`Observation` span
+  containing the object's last frame; without an observation (or when no span contains
+  that frame) it is the latest track end on the camera. Rule (b) matters because a person
+  carrying the package away ends together with it, and the latest track end then sits
+  right after the package's (F3). An object still in view (not at an edge, or never moved)
+  when its observed span ends is not removed: the footage ended, not the object.
 
 When several people overlap the protected object (or the removed object's last box), one
 ``touch`` (or ``removed``) event is emitted **per overlapping person track**; each later
@@ -80,6 +88,10 @@ REMOVE_BEFORE_S = 2.0
 REMOVE_AFTER_S = 1.0
 REMOVE_REAPPEAR_IOU = 0.3
 END_TOLERANCE_S = 0.5
+CARRY_END_S = 1.0
+"""A person ending within this long of the object's last frame carried it out (rule b)."""
+EDGE_MARGIN_FRAC = 0.02
+"""A last box within this fraction of the frame width/height of a border is at the edge."""
 
 ORIGIN_FIRST_S = 1.0
 """Origin vote window: the track's first second ..."""
@@ -271,6 +283,23 @@ def _touch_events(
     return out
 
 
+def _at_edge(box: Box, cam: CameraCfg, frac: float = EDGE_MARGIN_FRAC) -> bool:
+    """True when ``box`` reaches within ``frac`` of the frame size of any frame border."""
+    mx, my = frac * cam.width, frac * cam.height
+    return box.x1 <= mx or box.y1 <= my or box.x2 >= cam.width - mx or box.y2 >= cam.height - my
+
+
+def _footage_end(
+    obj: Track, observation: Observation | None, track_end: Mapping[str, float]
+) -> float:
+    """End of the observed span holding ``obj``'s last frame (else the camera's last track)."""
+    if observation is not None:
+        for a, b in observation.spans.get(obj.camera_id, ()):
+            if a - _EPS <= obj.t_last <= b + _EPS:
+                return b
+    return track_end[obj.camera_id]
+
+
 def _removed_events(
     tracks: list[Track],
     watches: list[Watch],
@@ -278,11 +307,12 @@ def _removed_events(
     thresh: float,
     before_s: float,
     after_s: float,
+    observation: Observation | None = None,
 ) -> list[_Raw]:
     out: list[_Raw] = []
-    footage_end: dict[str, float] = {}
+    track_end: dict[str, float] = {}
     for tr in tracks:
-        footage_end[tr.camera_id] = max(footage_end.get(tr.camera_id, tr.t_last), tr.t_last)
+        track_end[tr.camera_id] = max(track_end.get(tr.camera_id, tr.t_last), tr.t_last)
     for watch in sorted(watches, key=lambda w: w.id):
         if watch.status not in ACTIVE_WATCH or watch.camera_id not in cams:
             continue
@@ -295,8 +325,6 @@ def _removed_events(
                 continue
             end = obj.t_last
             last_box = obj.frames[-1].box
-            if end >= footage_end[watch.camera_id] - END_TOLERANCE_S:
-                continue  # the footage ended, not the object
             reappears = any(
                 o is not obj
                 and o.t_first >= end
@@ -306,17 +334,33 @@ def _removed_events(
             )
             if reappears:
                 continue
-            # One removed event per person track overlapping the object as it disappears.
+            # Person tracks overlapping the object as it disappears.
+            hits: dict[str, tuple[Track, list[float]]] = {}
             for person in people:
-                hits = [
+                ts = [
                     f.t
                     for f in person.frames
                     if end - before_s <= f.t <= end + after_s
                     and _overlap(f, last_box, cam.height, cam.width) >= thresh
                 ]
-                if hits:
-                    t0, t1 = min(min(hits), end), max(max(hits), end)
-                    out.append(_Raw(watch.camera_id, person.id, "removed", t0, t1, watch.id))
+                if ts:
+                    hits[person.id] = (person, ts)
+            if not hits:
+                continue
+            footage_ended = end >= _footage_end(obj, observation, track_end) - END_TOLERANCE_S
+            if footage_ended:
+                moved = obj.frames[0].box.iou(last_box) < REMOVE_REAPPEAR_IOU
+                carried = (
+                    moved
+                    and _at_edge(last_box, cam)
+                    and any(abs(p.t_last - end) <= CARRY_END_S for p, _ in hits.values())
+                )
+                if not carried:
+                    continue  # the footage ended, not the object
+            # One removed event per person track overlapping the object as it disappears.
+            for person, ts in hits.values():
+                t0, t1 = min(min(ts), end), max(max(ts), end)
+                out.append(_Raw(watch.camera_id, person.id, "removed", t0, t1, watch.id))
     return out
 
 
@@ -343,7 +387,8 @@ class Observation:
     never observed, so its tracks get no origin (fails closed: ``None`` becomes the
     ``unknown`` role, FR-044). Build it with :meth:`from_windows`; pass
     ``observation=None`` (the default everywhere) when no window bookkeeping exists, which
-    treats every camera as observed.
+    treats every camera as observed. The same spans also set the footage end used by
+    ``removed`` (the end of the span holding the object's last frame).
     """
 
     spans: Mapping[str, tuple[tuple[float, float], ...]]
@@ -581,7 +626,9 @@ def build_events(
         if tr.cls in TOUCH_CLASSES:
             mine = sorted((p for p in protected if p.camera_id == tr.camera_id), key=lambda p: p.id)
             raws += _touch_events(tr, mine, cam, min_frames, touch_overlap, touch_merge_gap_s)
-    raws += _removed_events(known, watches, cams, touch_overlap, REMOVE_BEFORE_S, REMOVE_AFTER_S)
+    raws += _removed_events(
+        known, watches, cams, touch_overlap, REMOVE_BEFORE_S, REMOVE_AFTER_S, observation
+    )
 
     events = [
         Event(

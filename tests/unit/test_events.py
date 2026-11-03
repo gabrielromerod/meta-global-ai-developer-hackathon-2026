@@ -283,6 +283,107 @@ def test_not_removed_when_object_reappears(sample_config: Config) -> None:
     assert of_type(events, "removed") == []
 
 
+def _scene_carried_out() -> tuple[Track, Track]:
+    """The most common theft: a person carries the watched package out of frame (F3).
+
+    The package rests at PKG_BOX for 20 s, then is carried from x=630 to x=1260 (right
+    edge of the 1280 px frame) until 24.0 s; the person (15..24.2 s) walks up, picks it up
+    and leaves with it, so both tracks end together.
+    """
+    pkg = path_track(
+        "front-package-1",
+        "front",
+        [(0, 630, 650), (20, 630, 650), (24.0, 1260, 650)],
+        cls="package",
+        w=60,
+        h=50,
+    )
+    person = path_track(
+        "front-person-1",
+        "front",
+        [(15, 1000, 660), (18, 630, 660), (20, 630, 660), (24.0, 1260, 660), (24.2, 1260, 660)],
+    )
+    return pkg, person
+
+
+def test_removed_when_carried_out_of_frame(sample_config: Config) -> None:
+    # Regression (F3): footage end used to be the latest t_last on the camera (24.2 s), so
+    # the package ending at 24.0 s was dismissed as "the footage ended".
+    pkg, person = _scene_carried_out()
+    (removed,) = of_type(build_events([pkg, person], sample_config, [], [_watch()]), "removed")
+    assert (removed.target, removed.track_id, removed.camera_id) == ("w2", person.id, "front")
+    assert removed.t0 <= 24.0 <= removed.t1
+
+
+def test_removed_when_carried_out_with_observation(sample_config: Config) -> None:
+    pkg, person = _scene_carried_out()
+    obs = Observation.from_windows([_win("w0", "front", 0, 15), _win("w1", "front", 15, 30)])
+    events = build_events([pkg, person], sample_config, [], [_watch()], observation=obs)
+    (removed,) = of_type(events, "removed")
+    assert removed.target == "w2"
+    # The observed span ends at the window end even when no track is seen there.
+    tight = Observation.from_windows([_win("w0", "front", 0, 24.2)])
+    events = build_events([pkg, person], sample_config, [], [_watch()], observation=tight)
+    assert [e.target for e in of_type(events, "removed")] == ["w2"]
+
+
+def test_removed_uses_observed_span_end_not_last_track(sample_config: Config) -> None:
+    # The package (0..20 s) vanishes while the person overlaps it, and the camera stays
+    # observed until 30 s: removed, even though no track outlives the package.
+    pkg, person = _scene_removed()
+    short_person = path_track(
+        "front-person-1", "front", [(15, 1000, 660), (18, 630, 660), (20.0, 630, 660)]
+    )
+    obs = Observation.from_windows([_win("w0", "front", 0, 30)])
+    events = build_events([pkg, short_person], sample_config, [], [_watch()], observation=obs)
+    assert [e.target for e in of_type(events, "removed")] == ["w2"]
+    # The original scene still fires with observation.
+    events = build_events([pkg, person], sample_config, [], [_watch()], observation=obs)
+    assert [e.target for e in of_type(events, "removed")] == ["w2"]
+
+
+def test_not_removed_when_observed_span_ends_with_object_in_view(sample_config: Config) -> None:
+    # The footage really ended: the package is still in view (mid-frame) at the end of the
+    # observed span 0..20 s; a later span (25..50 s) with other activity does not change that.
+    pkg, _ = _scene_removed()
+    person = path_track(
+        "front-person-1", "front", [(15, 1000, 660), (18, 630, 660), (20, 630, 660)]
+    )
+    later = path_track("front-person-2", "front", [(30, 1000, 660), (40, 1100, 660)])
+    obs = Observation.from_windows(
+        [
+            _win("w0", "front", 0, 20.2),
+            _win("w1", "front", 20.2, 25, "idle"),
+            _win("w2", "front", 25, 50),
+        ]
+    )
+    events = build_events([pkg, person, later], sample_config, [], [_watch()], observation=obs)
+    assert of_type(events, "removed") == []
+
+
+def test_not_removed_when_footage_ends_mid_frame(sample_config: Config) -> None:
+    # No observation info: both tracks end at the footage end with the package mid-frame.
+    pkg = static_track("front-package-1", "front", PKG_BOX, 0, 20, "package")
+    person = path_track(
+        "front-person-1", "front", [(15, 1000, 660), (18, 630, 660), (20, 630, 660)]
+    )
+    assert of_type(build_events([pkg, person], sample_config, [], [_watch()]), "removed") == []
+
+
+def test_not_removed_when_static_object_at_edge_at_footage_end(sample_config: Config) -> None:
+    # A package resting at the frame edge (never moved) when the footage ends, with a person
+    # beside it, is not "carried out": the edge rule needs the object to have moved.
+    edge = Box(x1=1220, y1=600, x2=1280, y2=650)
+    pkg = static_track("front-package-1", "front", edge, 0, 20, "package")
+    person = path_track(
+        "front-person-1", "front", [(15, 900, 660), (18, 1250, 660), (20, 1250, 660)]
+    )
+    assert of_type(build_events([pkg, person], sample_config, [], [_watch()]), "removed") == []
+    obs = Observation.from_windows([_win("w0", "front", 0, 20.0)])
+    events = build_events([pkg, person], sample_config, [], [_watch()], observation=obs)
+    assert of_type(events, "removed") == []
+
+
 # ---------------------------------------------------------------------------
 # ids, ordering, clip ranges
 # ---------------------------------------------------------------------------

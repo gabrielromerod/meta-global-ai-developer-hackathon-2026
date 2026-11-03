@@ -254,6 +254,43 @@ def test_no_motion_triggers_gives_none_not_crash() -> None:
     assert m["met"]["alert_reduction"] is None
 
 
+def _window_rows(n_idle: int, n_processed: int, cam: str = "front") -> list[dict]:
+    statuses = ["idle"] * n_idle + ["processed"] * n_processed
+    return [
+        {"id": f"{cam}-{i}", "camera_id": cam, "t0": 8.0 * i, "t1": 8.0 * i + 10.0,
+         "trigger": "motion", "status": s}
+        for i, s in enumerate(statuses)
+    ]  # fmt: skip
+
+
+def test_tier0_skipped_window_share() -> None:
+    """Spec 11.9 Tier 0: share of windows the motion gate skipped before any model call."""
+    res = _results()
+    res[0]["windows"] = _window_rows(8, 2)
+    res[1]["windows"] = _window_rows(3, 1) + _window_rows(4, 0, cam="backyard")
+    # Scenario C reports no window list: it contributes nothing (not a fake 0%).
+    m = compute_metrics(_labels(), res)
+    row_a = next(r for r in m["scenarios"] if r["scenario"] == "A")
+    assert (row_a["windows_total"], row_a["windows_skipped"]) == (10, 8)
+    row_c = next(r for r in m["scenarios"] if r["scenario"] == "C")
+    assert (row_c["windows_total"], row_c["windows_skipped"]) == (0, 0)
+    t = m["totals"]
+    assert (t["windows_total"], t["windows_skipped"]) == (18, 15)
+    assert t["tier0_skipped_share"] == pytest.approx(15 / 18)
+    md = run.render_markdown(m)
+    assert "Tier 0 skipped-window share" in md
+    assert "83.3% (15/18 windows)" in md
+
+
+def test_tier0_skipped_share_is_none_without_windows() -> None:
+    m = compute_metrics(_labels(), _results())
+    assert m["totals"]["windows_total"] == 0
+    assert m["totals"]["tier0_skipped_share"] is None
+    assert "Tier 0 skipped-window share (11.9) | reported | n/a |" in run.render_markdown(m)
+    # A missing result contributes no windows either.
+    assert compute_metrics(_labels(), [])["totals"]["tier0_skipped_share"] is None
+
+
 def test_correct_verdict_target_is_10_of_12() -> None:
     labels, results = [], []
     for i in range(12):

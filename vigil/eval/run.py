@@ -101,6 +101,9 @@ def render_markdown(metrics: dict) -> str:
     t, m = metrics["totals"], metrics["met"]
     alerts_txt = f"{t['alerts']} alerts / {t['motion_triggers']} motion triggers"
     reolink_txt = f"{t['reolink_matched_by_sam']}/{t['reolink_person_events']}"
+    tier0_txt = _pct(t.get("tier0_skipped_share"))
+    if t.get("windows_total"):
+        tier0_txt += f" ({t['windows_skipped']}/{t['windows_total']} windows)"
     rows = [
         ("Alert reduction", TARGETS["alert_reduction"]["text"],
          f"{_pct(t['alert_reduction'])} ({alerts_txt})",
@@ -120,6 +123,7 @@ def render_markdown(metrics: dict) -> str:
         ("Reolink person events matched by SAM", "reported",
          f"{_pct(t['reolink_sam_agreement'])} ({reolink_txt})",
          None),
+        ("Tier 0 skipped-window share (11.9)", "reported", tier0_txt, None),
     ]  # fmt: skip
     lines = ["| Metric | Target | Measured | Result |", "| --- | --- | --- | --- |"]
     lines += [f"| {a} | {b} | {c} | {_met(d) if d is not None else '-'} |" for a, b, c, d in rows]

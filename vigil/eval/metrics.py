@@ -30,6 +30,10 @@ Definitions (pre-registered with the targets in EVAL.md):
   subjects, also split by lighting (day vs ``dusk``/``night_ir``). **Alerts caused** counts
   missed household subjects with a non-household part inside an alert visit. A scenario with
   no result counts every labelled role as missed (fails closed).
+- **Tier 0 skipped-window share** (spec 11.9) = windows the motion gate skipped before any
+  model call (``status == "idle"`` in ``result["windows"]``) / all windows, over all
+  scenarios. A result without a window list (or no result) contributes no windows; with no
+  windows at all the share is ``None``, never a fake 0%.
 """
 
 from __future__ import annotations
@@ -45,6 +49,8 @@ ALERT_VERDICTS: tuple[str, ...] = ("needs_attention",)
 VERDICT_ORDER = {"normal": 0, "noteworthy": 1, "cant_confirm": 2, "needs_attention": 3}
 GAP_MATCH_TOL_S = 1.0
 GAP_CLAIM_TOL_S = 0.5
+SKIPPED_STATUSES: tuple[str, ...] = ("idle",)
+"""Window statuses that mean "skipped by the motion gate, no model call" (FR-005, Tier 0)."""
 
 TARGETS: dict[str, dict[str, Any]] = {
     "alert_reduction": {"op": ">=", "value": 0.80, "text": "at least 80%"},
@@ -255,6 +261,7 @@ def _scenario_row(label: ScenarioLabel, result: dict | None) -> dict:
             visits=0, escalated=0, links=0, links_correct=0, claims_inside_gaps=0,
             uncited_sentences_shipped=0, positions_inside_gaps=0, sentences=0,
             gaps_matched=0, reolink_person_events=0, reolink_matched_by_sam=0, roles=[],
+            windows_total=0, windows_skipped=0,
             **_role_counts(label, None),
         )  # fmt: skip
         return row
@@ -328,8 +335,11 @@ def _scenario_row(label: ScenarioLabel, result: dict | None) -> dict:
             )
         )
 
+    windows = [w for w in result.get("windows") or [] if isinstance(w, dict)]
     row.update(
         status="ok",
+        windows_total=len(windows),
+        windows_skipped=sum(1 for w in windows if w.get("status") in SKIPPED_STATUSES),
         verdict=verdict,
         correct=verdict == label.expected_verdict,
         motion_triggers=int(result.get("motion_triggers") or 0),
@@ -356,7 +366,7 @@ _SUMS = (
     "claims_inside_gaps", "uncited_sentences_shipped", "positions_inside_gaps", "sentences",
     "gaps_labelled", "gaps_matched", "reolink_person_events", "reolink_matched_by_sam",
     "roles_labelled", "roles_correct", "household_subjects", "household_missed",
-    "role_miss_alerts",
+    "role_miss_alerts", "windows_total", "windows_skipped",
 )  # fmt: skip
 
 
@@ -387,6 +397,7 @@ def compute_metrics(labels: list[dict], results: list[dict]) -> dict:
     totals["reolink_sam_agreement"] = _ratio(
         totals["reolink_matched_by_sam"], totals["reolink_person_events"]
     )
+    totals["tier0_skipped_share"] = _ratio(totals["windows_skipped"], totals["windows_total"])
     totals["role_accuracy"] = _ratio(totals["roles_correct"], totals["roles_labelled"])
     totals["role_miss_rate"] = _ratio(totals["household_missed"], totals["household_subjects"])
     for part, keep in (("day", lambda lt: lt == "day"), ("night", NIGHT_LIGHTING.__contains__)):

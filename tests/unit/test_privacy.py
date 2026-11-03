@@ -302,6 +302,11 @@ needs_bash = pytest.mark.skipif(BASH is None, reason="no POSIX bash available")
 
 def run_meta(root: Path, exiftool: str) -> subprocess.CompletedProcess[str]:
     env = dict(os.environ, EXIFTOOL=exiftool)
+    if BASH:
+        # Put the chosen bash's folder first so `#!/usr/bin/env bash` in the fake exiftool
+        # (and sed in the script) resolve there, not to the WSL stub in System32 when pytest
+        # starts from PowerShell or cmd.
+        env["PATH"] = str(Path(BASH).parent) + os.pathsep + env.get("PATH", "")
     script = (REPO_ROOT / "scripts" / "metadata_scan.sh").as_posix()
     return subprocess.run(
         [BASH or "bash", script, root.as_posix()],

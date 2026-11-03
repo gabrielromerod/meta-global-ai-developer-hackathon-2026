@@ -53,6 +53,13 @@ disappearance needs 2 s of continuous observed absence. Containment uses the las
 box, and accumulated session tracks retain it across windows. The existing explicit
 carried-out-of-frame exception remains; a truncated-only track cannot establish removal.
 
+FR-035/038/039/040 GLB import (FIXTURE): `tests/unit/test_glb_import.py` covers generated
+geometry, node transforms plus `world_frame`, locate, coverage, CLI import, compression
+refusal, metadata stripping and the 15 MB limit. `test_session_export_generated_mp4` also
+exports the model with `twin.glb_url`; `tests/e2e/test_glb_viewer.py` covers a generated GLB
+load and visible Draco/meshopt errors. Ground extraction is approximate and real-scan
+calibration/coverage/accuracy remain Not verified. See `docs/runbooks/glb-import.md`.
+
 Source: [spec section 1](../spec/vigil-spec.md#1-functional-requirements), including [Added for the real-world environment](../spec/vigil-spec.md#added-for-the-real-world-environment-nov-2) and [Added for compute and budget](../spec/vigil-spec.md#added-for-compute-and-budget-nov-2), as revised by the [Nov 2 change set](../spec/changes/2026-11-02-business-corrections.md). The full requirement text and acceptance criteria are in the spec; this page is the tracking checklist.
 
 **Status as of Mon Nov 2, 2026 (docs sync after the Nov 2 spec revision).** Evidence, run on the working tree:

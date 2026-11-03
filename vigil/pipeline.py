@@ -890,6 +890,15 @@ def process_session(
     checkins = [CheckIn.model_validate(c) for c in meta.get("checkins", [])]
     expected, checkins = _owner_records(settings, expected, checkins)
     result_dir = data / "results" / session
+    calibrations, ground = None, None
+    spatial_model = data / "spatial" / "model.glb"
+    calibration_file = settings.config_path.parent / "calibration.json"
+    if spatial_model.exists() and calibration_file.exists():
+        from vigil.spatial.calibrate import load_calibrations
+        from vigil.spatial.glb import load_glb_scene
+
+        ground = load_glb_scene(spatial_model)
+        calibrations = load_calibrations(calibration_file)
     if cloud or client is not None:
         from vigil.cloud import run_cloud
         from vigil.meta.client import MetaClient
@@ -920,6 +929,8 @@ def process_session(
                 checkins=checkins,
                 confirm=confirm,
                 report=report,
+                calibrations=calibrations,
+                ground=ground,
             )
         finally:
             if own_client:
@@ -938,6 +949,8 @@ def process_session(
         session_start=session_start,
         expected_windows=expected,
         checkins=checkins,
+        calibrations=calibrations,
+        ground=ground,
     )
     write_visits_json(result, data / "results" / session / "visits.json")
     _save_owner_bindings(settings, result)

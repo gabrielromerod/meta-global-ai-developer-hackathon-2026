@@ -259,6 +259,8 @@ table.telemetry td.num, table.telemetry th.num { text-align: right; font-variant
 #owner-token-sheet { color: var(--ink); background: var(--panel); border: 1px solid var(--line);
   border-radius: var(--radius); max-width: min(480px, 94vw); }
 #owner-token-sheet::backdrop { background: #0009; }
+.twin-model-error { position: absolute; bottom: 8px; left: 8px; right: 8px; z-index: 3;
+  padding: 8px; border: 1px solid #df6f62; background: #321e1e; color: #ffdbd6; border-radius: 6px; }
 
 @media (max-width: 900px) {
   .layout, .layout.no-detail {

@@ -163,13 +163,22 @@ def export_session(session: str, out: Path, *, settings=None, synthetic: bool = 
             raise ValueError(f"camera {cam.id}: missing privacy declaration")
         clip = session_clip(windows, cam, root / "clips" / f"{cam.id}.mp4", t0, t1)
         media[f"clips/{session}/{cam.id}.mp4"] = clip
-    twin_file = settings.config_path.parent / "twin.json"
+    twin_file = settings.data_dir / "spatial" / "twin.json"
+    if not twin_file.exists():
+        twin_file = settings.config_path.parent / "twin.json"
     twin = (
         json.loads(twin_file.read_text(encoding="utf-8"))
         if twin_file.exists()
         else default_twin(cfg)
     )
     twin["synthetic"] = synthetic
+    imported_model = settings.data_dir / "spatial" / "model.glb"
+    if imported_model.exists():
+        from vigil.spatial.glb import load_glb_scene
+
+        load_glb_scene(imported_model)  # size, compression and embedded-resource checks
+        media["model.glb"] = imported_model
+        twin = {**default_twin(cfg), **twin, "glb_url": "/media/model.glb"}
     return export_bundle(
         out,
         Path(result["db_path"]),

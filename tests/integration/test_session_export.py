@@ -23,6 +23,15 @@ def test_export_session_generated_mp4(tmp_path):
     exporter = getattr(export, "export_session", None)
     assert callable(exporter), "processed sessions need a media-aware export entry"
     settings, _ = generated_session(tmp_path)
+    from tests.unit.test_glb_import import generated_glb
+    from vigil.spatial.glb import import_glb
+    from vigil.spatial.scan import world_frame
+
+    import_glb(
+        generated_glb(tmp_path / "fixture.glb"),
+        settings.data_dir / "spatial",
+        frame=world_frame([15, 0, 20], [15, 0, 21], [15, 1, 20]),
+    )
     with (
         respx.mock as router,
         MetaClient(
@@ -43,5 +52,7 @@ def test_export_session_generated_mp4(tmp_path):
         response = browser.get(scenario["cameras"][0]["clip_url"], headers={"Range": "bytes=0-31"})
         assert response.status_code == 206
         assert b"ftyp" in response.content
-        assert browser.get("/api/twin").status_code == 200
+        twin = browser.get("/api/twin").json()
+        assert twin["glb_url"] == "/media/model.glb"
+        assert browser.get(twin["glb_url"]).content.startswith(b"glTF")
     assert result["tracks"]

@@ -678,6 +678,29 @@ def reolink_capture(
 # ---------------------------------------------------------------------------
 
 
+@spatial.command("import-glb")
+def spatial_import_glb(
+    source: Annotated[Path, typer.Argument(help="Uncompressed GLB below 15 MB.")],
+    frame: Annotated[
+        Path, typer.Option(help="JSON: origin, x_point and up_point in scan coordinates.")
+    ],
+    out: Annotated[Path, typer.Option(help="Imported spatial model and twin metadata.")] = Path(
+        "data/spatial"
+    ),
+) -> None:
+    """Import a static GLB into the house frame for locate, coverage and the viewer."""
+    from vigil.spatial.glb import import_glb
+    from vigil.spatial.scan import world_frame
+
+    points = _read_json(frame)
+    try:
+        transform = world_frame(points["origin"], points["x_point"], points["up_point"])
+        model = import_glb(source, out, frame=transform)
+    except (ValueError, KeyError, OSError) as err:
+        _fail(str(err))
+    typer.echo(f"imported {model}; field acceptance remains Not verified")
+
+
 @spatial.command("build")
 def spatial_build(
     segments: Annotated[
@@ -903,7 +926,12 @@ def spatial_coverage(
     if not cams:
         _blocked(f"{cal_path} has no calibrated cameras (T-14)")
     try:
-        scene = _scene_from_site_plan(_read_json(site_plan))
+        if Path(site_plan).suffix.lower() == ".glb":
+            from vigil.spatial.glb import load_glb_scene
+
+            scene = load_glb_scene(site_plan)
+        else:
+            scene = _scene_from_site_plan(_read_json(site_plan))
     except (KeyError, IndexError, TypeError, ValueError) as err:
         _fail(f"{site_plan}: site plan is malformed: {err}")
     try:

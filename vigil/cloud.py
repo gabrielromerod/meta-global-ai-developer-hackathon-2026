@@ -41,6 +41,8 @@ def run_cloud(
     checkins: list,
     confirm: bool,
     report=None,
+    calibrations=None,
+    ground=None,
 ) -> dict:
     from vigil.ingest.windows import cut_window
     from vigil.meta import sam, spark, wonder
@@ -139,6 +141,8 @@ def run_cloud(
             writer=lambda ledger, failures: wonder.write_story(client, ledger, failures),
             expected_windows=expected,
             checkins=checkins,
+            calibrations=calibrations,
+            ground=ground,
         )
         accepted.update({w["id"]: w for w in result["watches"]["accepted"]})
         rejected.update({w["id"]: w for w in result["watches"]["rejected"]})

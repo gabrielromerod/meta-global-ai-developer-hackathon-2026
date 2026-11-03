@@ -88,7 +88,34 @@ async function createWebGL(container, twin, labels) {
   scene.add(base);
   const fallbackPlan = () => base.add(L.buildSitePlan(THREE, twin));
   if (twin.glb_url) {
-    new GLTFLoader().load(twin.glb_url, (gltf) => base.add(gltf.scene), undefined, fallbackPlan);
+    const loadModel = async () => {
+      const response = await fetch(twin.glb_url);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const limit = 15000000;
+      if (Number(response.headers.get("content-length")) >= limit) throw new Error("GLB must be below 15 MB");
+      const bytes = await response.arrayBuffer();
+      if (bytes.byteLength >= limit) throw new Error("GLB must be below 15 MB");
+      const header = new DataView(bytes);
+      if (bytes.byteLength < 20 || header.getUint32(0, true) !== 0x46546c67) throw new Error("Invalid GLB");
+      const length = header.getUint32(12, true);
+      const doc = new TextDecoder().decode(new Uint8Array(bytes, 20, length));
+      if (doc.includes("KHR_draco_mesh_compression") || doc.includes("EXT_meshopt_compression")) {
+        throw new Error("Draco/meshopt is unsupported. Export an uncompressed GLB below 15 MB.");
+      }
+      const root = new URL(".", new URL(twin.glb_url, location.href)).href;
+      const gltf = await new GLTFLoader().parseAsync(bytes, root);
+      base.add(gltf.scene);
+      container.dataset.glbLoaded = "1";
+    };
+    loadModel().catch(error => {
+      const notice = document.createElement("div");
+      notice.className = "twin-model-error";
+      notice.dataset.testid = "glb-error";
+      notice.setAttribute("role", "alert");
+      notice.textContent = `3D model not loaded: ${error.message}`;
+      container.appendChild(notice);
+      fallbackPlan();
+    });
   } else {
     fallbackPlan();
   }

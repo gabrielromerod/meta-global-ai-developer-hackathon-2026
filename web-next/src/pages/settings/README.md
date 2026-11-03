@@ -29,6 +29,14 @@ Default is the authored sandbox fixture. `context=edge` and `context=edge-owner`
 explicit UI test states: callbacks only show a verification dialog and never pretend
 to save to a server. `draft=1`, `notice=1`, `pending=1`, `error=1` exercise supplied props.
 `context=empty` tests empty camera, rule, protected-object and window lists.
+`review=1` is an explicit authored review-flag test state, not real-camera acceptance.
+Only an explicit successful flag shows Reviewed; a blocked status overrides it.
+
+Enabled form borders use the existing muted token to meet non-text contrast. A real
+rendered check failed at 1.89:1 dark / 1.62:1 light before the correction, then passed
+at 9.44:1 / 6.16:1. Disabled controls retain their disabled presentation.
+Window creation closes only after a matching new, non-recorded window arrives through
+props; firing a callback alone never simulates a save.
 
 ## Tests
 

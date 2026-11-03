@@ -20,6 +20,7 @@ function Preview(){
   const state=structuredClone(fixture) as unknown as UIState;
   if(context?.startsWith('edge')){state.mode='edge';state.owner.enabled=context.includes('owner');state.capabilities.owner=state.owner.enabled;}
   if(context==='empty'){state.cameras=[];state.rules=[];state.protected_objects=[];state.owner.windows=[];}
+  if(params.get('review')==='1'&&state.cameras.length>=3){state.cameras[0].privacy_reviewed=true;state.cameras[1].privacy_reviewed=false;state.cameras[2].privacy_reviewed=true;state.cameras[2].status='privacy_blocked';}
   const record=(label:string)=>setCallback(`${label} callback captured. This review fixture did not contact the home box or change stored state.`);
   const actionProps:Pick<PageProps,'ownerActions'|'ruleActions'>=context?.startsWith('edge')?{
     ownerActions:{saveToken:()=>record('Owner token (value not logged)'),checkIn:()=>record('Check-in'),createWindow:()=>record('Expected window'),cancelWindow:()=>record('Cancel window')},

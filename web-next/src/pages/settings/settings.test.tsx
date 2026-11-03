@@ -114,6 +114,32 @@ describe('Settings owner boundaries (FR-029, FR-044)',()=>{
     await userEvent.click(screen.getByRole('tab',{name:'Owner controls'}));
     expect(screen.getByText('Nov 2, 4:00 PM (UTC-08:00) – Nov 2, 4:45 PM (UTC-08:00)')).toBeVisible();
   });
+  it('closes window creation only after a matching server-owned window appears',async()=>{
+    const props=base();props.state.mode='edge';props.state.owner.enabled=true;const createWindow=vi.fn();
+    const view=render(<SettingsPage {...props} ownerActions={{createWindow}}/>);
+    await userEvent.click(screen.getByRole('tab',{name:'Owner controls'}));
+    await userEvent.click(screen.getByRole('button',{name:'New expected window'}));
+    await userEvent.type(screen.getByLabelText('Window label'),'Delivery');
+    fireEvent.change(screen.getByLabelText('Window starts'),{target:{value:'2026-11-04T12:00'}});
+    fireEvent.change(screen.getByLabelText('Window ends'),{target:{value:'2026-11-04T13:00'}});
+    await userEvent.click(screen.getByRole('button',{name:'Create expected window'}));
+    expect(screen.getByRole('dialog',{name:'New expected window'})).toBeVisible();
+    const received={...createWindow.mock.calls[0][0],id:'server-window',state:'scheduled',recorded:false,created_at:'2026-11-03T12:00:00Z'};
+    view.rerender(<SettingsPage {...props} state={{...props.state,owner:{...props.state.owner,windows:[...props.state.owner.windows,received]}}} ownerActions={{createWindow}}/>);
+    await vi.waitFor(()=>expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
+    expect(screen.getByRole('article',{name:'Delivery'})).toHaveTextContent('Scheduled');
+  });
+  it('shows a reviewed camera only from an explicit successful review flag and fails closed on blocked status',async()=>{
+    const props=base();props.state.cameras[0].privacy_reviewed=true;
+    props.state.cameras[1].privacy_reviewed=false;
+    props.state.cameras[2].privacy_reviewed=true;props.state.cameras[2].status='privacy_blocked';
+    render(<SettingsPage {...props}/>);
+    await userEvent.click(screen.getByRole('tab',{name:'Privacy'}));
+    expect(within(screen.getByRole('listitem',{name:'Front left Duo privacy review'})).getByText('Reviewed')).toBeVisible();
+    expect(within(screen.getByRole('listitem',{name:'Front right Duo privacy review'})).getByText('Review required')).toBeVisible();
+    expect(within(screen.getByRole('listitem',{name:'Doorbell privacy review'})).getByText('Review required')).toBeVisible();
+    expect(within(screen.getByRole('listitem',{name:'Porch privacy review'})).getByText('Review not confirmed')).toBeVisible();
+  });
 });
 
 describe('Rules and benchmark evidence (FR-012, FR-021, FR-022, FR-024)',()=>{

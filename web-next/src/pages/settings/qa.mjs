@@ -16,7 +16,7 @@ for(const [label,width,height] of selected){for(const theme of ['dark','light'])
  page.on('pageerror',e=>errors.push(e.message));page.on('console',m=>{if(m.type()==='error')errors.push(m.text());});
  page.on('requestfailed',r=>errors.push(`request ${r.url()}: ${r.failure()?.errorText}`));page.on('response',r=>{if(r.status()>=400)errors.push(`HTTP ${r.status()} ${r.url()}`);});
  const dir=path.join(root,`${label}-${width}x${height}`);await mkdir(dir,{recursive:true});
- const shot=async name=>page.screenshot({path:path.join(dir,`controls-${theme}-${String(index++).padStart(3,'0')}-${name}.png`),fullPage:width<=640,animations:'disabled'});
+ const shot=async name=>page.screenshot({path:path.join(dir,`controls-${theme}-${String(index++).padStart(3,'0')}-${name}.png`),fullPage:width<=640&&await page.locator('.v-dialog-content:visible').count()===0,animations:'disabled'});
  const go=async(route='settings',extra='')=>{await page.goto(`${base}?theme=${theme}&route=${route}${extra}`,{waitUntil:'networkidle'});await page.evaluate(()=>document.fonts.ready);await expect(page.locator('.controls-page')).toBeVisible();};
  const layout=async(name)=>{
   const value=await page.evaluate(()=>({width:innerWidth,height:innerHeight,sw:document.documentElement.scrollWidth,sh:document.documentElement.scrollHeight,scrollY,cardOverflow:[...document.querySelectorAll('.controls-page .v-card,.controls-window')].filter(e=>e.scrollWidth>e.clientWidth||e.scrollHeight>e.clientHeight).map(e=>({text:e.textContent.slice(0,80),cw:e.clientWidth,sw:e.scrollWidth,ch:e.clientHeight,sh:e.scrollHeight}))}));

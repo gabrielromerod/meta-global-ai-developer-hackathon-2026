@@ -15,7 +15,7 @@ are the durable progress record. Existing recorded-input contracts remain suppor
 | 0 | Sandbox reload server, invalid key, cache only, QA_NOTES.md, CMD commands | HTTP 200; server started |
 | 1 | .gitignore, local three runtime, WebGL-required judge-path E2E | Complete: 94f6786; 1419 default tests and WebGL E2E passed |
 | 2 | sam/spark upload guards; CameraCfg explicit none_needed; ingest preflight | Complete: 4dab0a6; 1425 default tests passed |
-| 3 | pipeline/process cloud orchestration, split cutter, tagged media, SQLite, estimate/confirm; respx generated MP4 integration | Pending |
+| 3 | pipeline/process cloud orchestration, split cutter, tagged media, SQLite, estimate/confirm; respx generated MP4 integration | Complete: 5abbbc7; 1428 default tests passed |
 | 4 | export clips/overlay/twin and actual video playback E2E | Pending |
 | 5 | time-ordered session watch feedback; next-window phrase regression | Pending |
 | 6 | main owner UI, session token, checkin countdown, Expected Windows CRUD, sandbox example; undo | Pending |

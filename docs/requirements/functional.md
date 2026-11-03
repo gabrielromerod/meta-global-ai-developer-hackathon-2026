@@ -12,6 +12,15 @@ cloud chain includes masked split uploads, burned-in SAM tags re-masked before S
 appearance, triage, cited Wonder story, validator, code verdict and a per-session SQLite
 snapshot. `vigil process --cloud` is the explicit opt-in; default processing stays offline.
 
+FR-018/027 processed-session delivery (FIXTURE):
+`tests/integration/test_session_export.py` covers masked clips, byte-range video responses,
+production `overlay_json` adaptation and explicit bundle selection;
+`tests/e2e/test_real_video.py::test_player_generated_mp4_decodes_seeks_and_draws_overlays`
+decodes, seeks, plays and draws SAM outlines on an actual generated MP4 in Chromium.
+Export with `vigil export --session SESSION --out data/bundles/SESSION`; set
+`VIGIL_BUNDLE_DIR=data/bundles/SESSION` when serving it. Session timeline holes are black,
+overlap frames are deduplicated, and privacy is rechecked after rendering.
+
 Source: [spec section 1](../spec/vigil-spec.md#1-functional-requirements), including [Added for the real-world environment](../spec/vigil-spec.md#added-for-the-real-world-environment-nov-2) and [Added for compute and budget](../spec/vigil-spec.md#added-for-compute-and-budget-nov-2), as revised by the [Nov 2 change set](../spec/changes/2026-11-02-business-corrections.md). The full requirement text and acceptance criteria are in the spec; this page is the tracking checklist.
 
 **Status as of Mon Nov 2, 2026 (docs sync after the Nov 2 spec revision).** Evidence, run on the working tree:

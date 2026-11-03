@@ -513,10 +513,23 @@ def export(
     out: Annotated[Path, typer.Option(help="Bundle folder.")] = Path("demo"),
     db_path: DbOpt = None,
     config: ConfigOpt = None,
+    session: Annotated[
+        str | None, typer.Option(help="Export a processed session with its masked video.")
+    ] = None,
 ) -> None:
     """Write the demo bundle from a processed DB (FR-027). Run the privacy gate before
     committing anything it writes."""
     from vigil.store.export import export_bundle
+
+    if session is not None:
+        from vigil.store.export import export_session
+
+        try:
+            path = export_session(session, out, settings=_settings())
+        except (FileNotFoundError, ValueError) as err:
+            _fail(str(err))
+        typer.echo(f"exported masked session to {path}")
+        return
 
     try:
         bundle = export_bundle(out, db_path, config=config)

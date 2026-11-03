@@ -369,7 +369,10 @@ def router() -> APIRouter:
         visit_ids = set(s["visit_ids"])
         cameras = [{**c, "pose": views.twin_camera(bundle, c["id"])} for c in s["cameras"]]
         overlays: dict[str, Any] = {}
-        for cam, tracks in bundle.overlays.items():
+        from vigil.perception.overlays import player_overlays
+
+        track_visits = {tid: v.id for v in bundle.visits for tid in v.track_ids}
+        for cam, tracks in player_overlays(bundle.overlays, track_visits).items():
             keep = {tid: o for tid, o in tracks.items() if o.get("visit_id") in visit_ids}
             if keep:
                 overlays[cam] = keep

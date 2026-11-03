@@ -60,3 +60,41 @@ def overlay_json(
             {"t": t, "objects": sorted(by_t[t], key=lambda o: o["track_id"])} for t in sorted(by_t)
         ]
     return {"version": OVERLAY_VERSION, "cameras": dict(sorted(cameras.items()))}
+
+
+def player_overlays(data: dict, visits: Mapping[str, str]) -> dict:
+    """Adapt production overlay_json to the player's per-track timeline, with mask outlines."""
+    if data.get("version") != OVERLAY_VERSION:
+        return data  # legacy synthetic bundles
+    import cv2
+    import numpy as np
+
+    from vigil.perception.rle import decode_rle
+
+    out = {}
+    for camera_id, camera in data.get("cameras", {}).items():
+        tracks = {}
+        for row in camera.get("frames", []):
+            for obj in row["objects"]:
+                tid = obj["track_id"]
+                tr = tracks.setdefault(
+                    tid,
+                    {
+                        "tag": obj["tag"],
+                        "cls": obj["cls"],
+                        "visit_id": visits.get(tid),
+                        "frames": [],
+                    },
+                )
+                outline = []
+                if obj.get("mask_rle"):
+                    mask = decode_rle(obj["mask_rle"], camera["height"], camera["width"])
+                    contours, _ = cv2.findContours(
+                        mask.astype(np.uint8), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE
+                    )
+                    if contours:
+                        contour = max(contours, key=cv2.contourArea)
+                        outline = cv2.approxPolyDP(contour, 1.0, True).reshape(-1, 2).tolist()
+                tr["frames"].append({"t": row["t"], "box": obj["box"], "outline": outline})
+        out[camera_id] = tracks
+    return out

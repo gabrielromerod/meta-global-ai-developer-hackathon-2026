@@ -97,6 +97,8 @@ def _scenarios(
         visits = by_scenario[sid]
         t0 = min(v["t0"] for v in visits) - pad
         t1 = max(v["t1"] for v in visits) + pad
+        if meta.get("clip_range"):
+            t0, t1 = meta["clip_range"]
         cams = []
         for cam in cameras:
             clip = next(
@@ -116,6 +118,76 @@ def _scenarios(
             }
         )
     return out
+
+
+def export_session(session: str, out: Path, *, settings=None, synthetic: bool = False) -> Path:
+    """Export a processed session's actual masked videos and overlay_json, never raw input."""
+    from vigil.ingest.config import load_config, privacy_polygons
+    from vigil.ingest.session_media import session_clip
+    from vigil.models import Window
+    from vigil.pipeline import bundle_trace
+    from vigil.settings import get_settings
+
+    if not session or Path(session).name != session or session in {".", ".."}:
+        raise ValueError("invalid session name")
+    settings = settings or get_settings()
+    root = settings.data_dir / "results" / session
+    result = json.loads((root / "visits.json").read_text(encoding="utf-8"))
+    windows = [
+        Window.model_validate(w)
+        for w in json.loads(
+            (settings.data_dir / "windows" / session / "windows.json").read_text(encoding="utf-8")
+        )
+    ]
+    cfg = load_config(settings.config_path)
+    cfg = cfg.model_copy(
+        update={
+            "cameras": [
+                c.model_copy(
+                    update={
+                        "privacy": privacy_polygons(
+                            cfg, c.id, settings.config_path.parent / "privacy"
+                        )
+                    }
+                )
+                for c in cfg.cameras
+            ]
+        }
+    )
+    t0, t1 = min(w.t0 for w in windows), max(w.t1 for w in windows)
+    media = {}
+    for cam in cfg.cameras:
+        if not any(w.camera_id == cam.id for w in windows):
+            continue
+        if not cam.privacy and not cam.privacy_none_needed:
+            raise ValueError(f"camera {cam.id}: missing privacy declaration")
+        clip = session_clip(windows, cam, root / "clips" / f"{cam.id}.mp4", t0, t1)
+        media[f"clips/{session}/{cam.id}.mp4"] = clip
+    twin_file = settings.config_path.parent / "twin.json"
+    twin = (
+        json.loads(twin_file.read_text(encoding="utf-8"))
+        if twin_file.exists()
+        else default_twin(cfg)
+    )
+    twin["synthetic"] = synthetic
+    return export_bundle(
+        out,
+        Path(result["db_path"]),
+        config=cfg,
+        media=media,
+        twin=twin,
+        overlays=result.get("overlays", {}),
+        trace=bundle_trace(result),
+        meta={
+            "synthetic": synthetic,
+            "label": "FIXTURE: generated test media"
+            if synthetic
+            else "Masked session; real-data acceptance not implied",
+            "clip_range": [t0, t1],
+            "session_start": result["session_start"],
+            "timezone": result["timezone"],
+        },
+    )
 
 
 def _summary(tables: dict[str, list[dict[str, Any]]]) -> dict[str, int]:

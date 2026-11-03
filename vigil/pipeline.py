@@ -582,6 +582,9 @@ def run_scenario(
         },
         "visits": visits_out,
     }
+    from vigil.perception.overlays import overlay_json
+
+    result["overlays"] = overlay_json(tracks, {c.id: (c.width, c.height) for c in cfg.cameras})
     return _canon(result)
 
 

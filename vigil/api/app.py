@@ -41,6 +41,8 @@ LAN_ONLY_PAGES = ("/calibrate",)
 
 def resolve_bundle_dir(settings: Settings) -> Path:
     """An exported bundle in demo/ wins; otherwise the committed synthetic bundle."""
+    if settings.bundle_dir is not None:
+        return Path(settings.bundle_dir)
     demo = Path(settings.demo_dir)
     if (demo / MANIFEST).exists():
         return demo

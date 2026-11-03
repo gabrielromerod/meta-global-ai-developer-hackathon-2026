@@ -132,9 +132,15 @@ class SyntheticClip {
 class VideoClip {
   constructor(video) {
     this.el = video;
+    this.target = 0;
+    video.addEventListener("loadedmetadata", () => { this.currentTime = this.target; });
   }
   get currentTime() { return this.el.currentTime; }
-  set currentTime(v) { try { this.el.currentTime = v; } catch { /* not seekable yet */ } }
+  set currentTime(v) {
+    this.target = v;
+    if (this.el.readyState < 1) return;
+    this.el.currentTime = Math.max(0, Math.min(v, this.el.duration || v));
+  }
   get paused() { return this.el.paused; }
   play() { this.el.play().catch(() => {}); }
   pause() { this.el.pause(); }
@@ -177,6 +183,7 @@ export class SyncedPlayer {
         v.playsInline = true;
         v.preload = "auto";
         v.src = cam.clip_url;
+        v.addEventListener("loadedmetadata", () => this._drawOverlays());
         v.dataset.camera = cam.id;
         fig.appendChild(v);
         clip = new VideoClip(v);

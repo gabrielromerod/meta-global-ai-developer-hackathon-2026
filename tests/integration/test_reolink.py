@@ -251,14 +251,12 @@ def test_probe_all_runs_every_camera(cams, creds) -> None:
     assert [r.camera_id for r in reports] == ["front", "backyard"]
 
 
-def test_real_adapter_without_reolink_aio_is_blocked() -> None:
-    try:
-        import reolink_aio  # noqa: F401
-    except ImportError:
-        with pytest.raises(probe.ReolinkUnavailable, match="reolink"):
-            probe.ReolinkAioAdapter()
-    else:  # pragma: no cover - optional group installed
-        pytest.skip("reolink_aio is installed")
+def test_real_adapter_without_reolink_aio_is_blocked(monkeypatch) -> None:
+    import sys
+
+    monkeypatch.setitem(sys.modules, "reolink_aio.api", None)
+    with pytest.raises(probe.ReolinkUnavailable, match="reolink"):
+        probe.ReolinkAioAdapter()
 
 
 # ---------------------------------------------------------------------------
@@ -404,19 +402,19 @@ def test_stream_ai_events_over_fake_adapter(cams) -> None:
     assert adapter.closed
 
 
-def test_stream_ai_events_without_reolink_aio_is_blocked(cams) -> None:
-    try:
-        import reolink_aio  # noqa: F401
-    except ImportError:
+def test_stream_ai_events_without_reolink_aio_is_blocked(cams, monkeypatch) -> None:
+    monkeypatch.setattr(
+        ai_events,
+        "import_reolink_host",
+        lambda: (_ for _ in ()).throw(ai_events.ReolinkUnavailable("reolink-aio missing")),
+    )
 
-        async def first():
-            async for _ in stream_ai_events(cams):
-                return
+    async def first():
+        async for _ in stream_ai_events(cams):
+            return
 
-        with pytest.raises(ai_events.ReolinkUnavailable):
-            asyncio.run(first())
-    else:  # pragma: no cover
-        pytest.skip("reolink_aio is installed")
+    with pytest.raises(ai_events.ReolinkUnavailable):
+        asyncio.run(first())
 
 
 # ---------------------------------------------------------------------------

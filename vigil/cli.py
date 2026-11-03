@@ -605,10 +605,18 @@ def _hosted_cameras(cfg) -> list:
 
 
 @reolink.command("probe")
-def reolink_probe(config: ConfigOpt = None, env_file: EnvFileOpt = Path(".env")) -> None:
+def reolink_probe(
+    config: ConfigOpt = None,
+    env_file: EnvFileOpt = Path(".env"),
+    camera: Annotated[str | None, typer.Option(help="Only this camera ID.")] = None,
+) -> None:
     """Probe every configured camera (FR-030). Prints one redacted JSON report per camera."""
     _load_env(env_file)
     cfg = _load_cfg(_config_path(config))
+    if camera is not None:
+        if camera not in {c.id for c in cfg.cameras}:
+            _fail(f"unknown camera {camera!r}")
+        cfg = cfg.model_copy(update={"cameras": [cfg.camera(camera)]})
     _hosted_cameras(cfg)
     from vigil.reolink import probe as rp
 
@@ -630,18 +638,22 @@ def reolink_capture(
     config: ConfigOpt = None,
     env_file: EnvFileOpt = Path(".env"),
     direct: Annotated[
-        bool, typer.Option(help="Read cameras directly instead of the go2rtc restream.")
-    ] = False,
+        bool, typer.Option(help="Read standalone Wi-Fi cameras directly (default).")
+    ] = True,
+    camera: Annotated[str | None, typer.Option(help="Only this camera ID.")] = None,
     max_restarts: Annotated[int | None, typer.Option(help="Stop after N restarts.")] = None,
 ) -> None:
-    """Run continuous capture until Ctrl+C (FR-031). Needs go2rtc (infra/go2rtc.yaml)
-    unless --direct."""
+    """Capture for a filming session until Ctrl+C. Direct Wi-Fi RTSP; battery cameras refused."""
     _load_env(env_file)
     cfg = _load_cfg(_config_path(config))
+    if camera is not None:
+        if camera not in {c.id for c in cfg.cameras}:
+            _fail(f"unknown camera {camera!r}")
+        cfg = cfg.model_copy(update={"cameras": [cfg.camera(camera)]})
     cams = _hosted_cameras(cfg)
     _require_ffmpeg()
     from vigil.reolink import capture as rc
-    from vigil.reolink.probe import CredentialsError
+    from vigil.reolink.probe import CredentialsError, ReolinkUnavailable
 
     try:
         sups = asyncio.run(
@@ -652,8 +664,10 @@ def reolink_capture(
     except KeyboardInterrupt:
         typer.echo("capture stopped")
         return
-    except CredentialsError as err:
+    except (CredentialsError, ReolinkUnavailable) as err:
         _blocked(err)
+    except ValueError as err:
+        _fail(str(err))
     for s in sups or []:
         outages = getattr(s, "outages", [])
         typer.echo(f"{s.camera_id}: {len(outages)} outages")

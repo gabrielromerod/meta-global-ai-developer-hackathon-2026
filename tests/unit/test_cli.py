@@ -574,7 +574,7 @@ def test_cli_reolink_capture_runs_supervisors(
     assert r.exit_code == 0, r.output
     assert seen["cams"] == ["front", "side_left"]
     assert Path(seen["out_dir"]) == tmp_path / "seg"
-    assert seen["via_restreamer"] is True
+    assert seen["via_restreamer"] is False
     assert seen["max_restarts"] == 0
 
 

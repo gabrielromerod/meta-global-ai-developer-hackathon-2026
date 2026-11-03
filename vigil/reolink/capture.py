@@ -36,7 +36,16 @@ from pathlib import Path
 from typing import Protocol
 
 from vigil.models import CameraCfg
-from vigil.reolink.probe import StreamUrl, camera_rtsp_url, redact
+from vigil.reolink.probe import (
+    CredentialsError,
+    ProbeAdapter,
+    ReolinkAioAdapter,
+    StreamUrl,
+    camera_credentials,
+    channel_index,
+    redact,
+    resolved_rtsp_url,
+)
 from vigil.settings import ffmpeg_bin
 
 log = logging.getLogger(__name__)
@@ -432,6 +441,7 @@ async def run_capture(
     max_restarts: int | None = None,
     ffmpeg: str | None = None,
     via_restreamer: bool = True,
+    adapter: ProbeAdapter | None = None,
     restream_base: str = RESTREAM_BASE,
     retention_s: float = RETENTION_S,
     cleanup_every_s: float = 600.0,
@@ -448,9 +458,21 @@ async def run_capture(
     for cam in cams:
         cam_dir = out_dir / cam.id
         cam_dir.mkdir(parents=True, exist_ok=True)
-        url: str | StreamUrl = (
-            restream_url(cam, base=restream_base) if via_restreamer else camera_rtsp_url(cam)
-        )
+        stream = cam.source.stream if cam.source else "main"
+        if via_restreamer:
+            url: str | StreamUrl = restream_url(cam, stream=stream, base=restream_base)
+        else:
+            adapter = adapter or ReolinkAioAdapter()
+            creds = camera_credentials(cam)
+            info = await adapter.host_info(
+                creds.host, creds.user.get_secret_value(), creds.password.get_secret_value()
+            )
+            if info.battery.get(channel_index(cam), False):
+                raise ValueError(f"camera {cam.id}: battery cameras are refused")
+            source = resolved_rtsp_url(info, cam, creds, stream)
+            if source is None:
+                raise CredentialsError(f"camera {cam.id}: {stream} stream unavailable")
+            url = source
 
         def factory(url: str | StreamUrl = url, cam_id: str = cam.id) -> list[str]:
             return ffmpeg_segment_cmd(url, out_dir, cam_id, segment_s, ffmpeg=ff)

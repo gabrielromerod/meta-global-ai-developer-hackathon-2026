@@ -79,7 +79,7 @@ class CameraSource(_Model):
     """Name of the env var holding the camera or NVR host, e.g. REOLINK_SIDE_LEFT_HOST."""
     channel: int | None = None
     """NVR channel (1-based) when the camera is behind a Reolink NVR."""
-    stream: Literal["main", "sub"] = "main"
+    stream: Literal["main", "sub", "ext"] = "main"
 
 
 class CameraCfg(_Model):

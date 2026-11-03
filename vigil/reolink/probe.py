@@ -35,7 +35,7 @@ HTTP_PORT = 80
 RTMP_PORT = 1935
 REDACTED = "***"
 
-StreamKind = Literal["main", "sub"]
+StreamKind = Literal["main", "sub", "ext"]
 
 
 class ReolinkUnavailable(RuntimeError):
@@ -261,6 +261,13 @@ def camera_rtsp_url(cam: CameraCfg, stream: StreamKind | None = None) -> StreamU
 # ---------------------------------------------------------------------------
 
 
+class StreamStats(BaseModel):
+    codec: str | None = None
+    bitrate: int | None = None
+    """Configured bitrate in bits/s (reolink-aio's kbit/s converted at the adapter)."""
+    fps: float | None = None
+
+
 class HostInfo(BaseModel):
     """What the adapter learns from the camera or NVR (reolink_aio `get_host_data`)."""
 
@@ -276,6 +283,11 @@ class HostInfo(BaseModel):
     ai_types: dict[int, list[str]] = Field(default_factory=dict)
     """reolink_aio `ai_supported_types(ch)`: "people", "vehicle", "dog_cat", ..."""
     battery: dict[int, bool] = Field(default_factory=dict)
+    wifi_signal: dict[int, int] = Field(default_factory=dict)
+    """reolink-aio reports dBm; missing/unsupported stays absent."""
+    stream_sources: dict[int, dict[str, SecretStr]] = Field(default_factory=dict)
+    stream_stats: dict[int, dict[str, StreamStats]] = Field(default_factory=dict)
+    sources_resolved: bool = False
     rtsp_port: int = RTSP_PORT
     http_port: int = HTTP_PORT
     rtmp_port: int = RTMP_PORT
@@ -304,6 +316,34 @@ class ProbeReport(BaseModel):
     ok: bool = False
     error: str | None = None
     notes: list[str] = Field(default_factory=list)
+    stream: StreamKind = "main"
+    codec: str | None = None
+    bitrate: int | None = None
+    """Configured bits/s, not a measured network throughput claim."""
+    fps: float | None = None
+    wifi_signal: int | None = None
+    wifi_weak: bool = False
+    rtsp_ext: bool = False
+
+
+def resolved_rtsp_url(
+    info: HostInfo, cam: CameraCfg, creds: Credentials, stream: str
+) -> StreamUrl | None:
+    """Use the SDK's stream source. Legacy fake adapters may omit source resolution."""
+    source = info.stream_sources.get(channel_index(cam), {}).get(stream)
+    user, password = creds.user.get_secret_value(), creds.password.get_secret_value()
+    if source:
+        return StreamUrl(source.get_secret_value(), "rtsp", stream, [user, password])
+    if info.sources_resolved:
+        return None
+    return rtsp_url(
+        creds.host,
+        user,
+        password,
+        cam.source.channel if cam.source else None,
+        stream,
+        info.rtsp_port,
+    )
 
 
 @runtime_checkable
@@ -342,30 +382,50 @@ async def probe(cam: CameraCfg, adapter: ProbeAdapter | None = None) -> ProbeRep
     report.ai_person = any(t in ("people", "person") for t in report.ai_types)
     report.ai_vehicle = "vehicle" in report.ai_types
     report.battery = bool(info.battery.get(ch, False))
+    report.stream = cam.source.stream if cam.source else "main"
+    report.wifi_signal = info.wifi_signal.get(ch)
+    report.wifi_weak = report.wifi_signal is not None and report.wifi_signal < -70
+    stats = info.stream_stats.get(ch, {}).get(report.stream)
+    if stats:
+        report.codec, report.bitrate, report.fps = stats.codec, stats.bitrate, stats.fps
+    if report.wifi_weak:
+        report.notes.append("weak Wi-Fi: below -70 dBm")
+    if report.wifi_signal is None:
+        report.notes.append("Wi-Fi signal unavailable from this device")
+    if report.battery:
+        report.error = "battery cameras are refused for session capture"
+        return report
     if info.channels and ch not in info.channels:
         report.error = f"channel index {ch} not offered by the device (has {info.channels})"
         log.warning("probe %s: %s", cam.id, report.error)
         return report
 
     nvr_channel = cam.source.channel if cam.source else None
-    main = rtsp_url(creds.host, user, password, nvr_channel, "main", info.rtsp_port)
-    sub = rtsp_url(creds.host, user, password, nvr_channel, "sub", info.rtsp_port)
-    flv = flv_url(creds.host, user, password, nvr_channel, "main", info.http_port, info.rtmp_port)
-    report.rtsp_url = str(main)
+    main = resolved_rtsp_url(info, cam, creds, "main")
+    sub = resolved_rtsp_url(info, cam, creds, "sub")
+    selected = resolved_rtsp_url(info, cam, creds, report.stream)
+    if selected is None:
+        report.error = f"device did not offer the selected {report.stream} RTSP stream"
+        return report
+    flv = flv_url(
+        creds.host, user, password, nvr_channel, report.stream, info.http_port, info.rtmp_port
+    )
+    report.rtsp_url = str(selected)
     report.rtsp_main, report.rtsp_sub, report.flv = await asyncio.gather(
         _safe_check(adapter, main, secrets),
         _safe_check(adapter, sub, secrets),
         _safe_check(adapter, flv, secrets),
     )
-    if not report.rtsp_main and report.flv:
-        report.notes.append("RTSP main unreachable; FLV reachable, use FLV fallback (spec 6)")
-    if report.battery:
-        report.notes.append("battery camera: event clips only, no continuous capture (spec 6)")
+    if report.stream == "ext":
+        report.rtsp_ext = await _safe_check(adapter, selected, secrets)
     if not report.ai_person:
         report.notes.append("no on-camera person detection; motion gate only")
-    report.ok = report.rtsp_main or report.flv
+    reached = {"main": report.rtsp_main, "sub": report.rtsp_sub, "ext": report.rtsp_ext}
+    if not reached[report.stream] and report.flv:
+        report.notes.append(f"RTSP {report.stream} unreachable; FLV reachable, use FLV fallback")
+    report.ok = reached[report.stream] or report.flv
     if not report.ok:
-        report.error = "no stream reachable (RTSP main and FLV both failed)"
+        report.error = f"no {report.stream} stream reachable (RTSP and FLV both failed)"
     log.info(
         "probe %s: model=%s fw=%s rtsp=%s/%s flv=%s ai=%s",
         cam.id,
@@ -379,7 +439,9 @@ async def probe(cam: CameraCfg, adapter: ProbeAdapter | None = None) -> ProbeRep
     return report
 
 
-async def _safe_check(adapter: ProbeAdapter, url: StreamUrl, secrets: list[str]) -> bool:
+async def _safe_check(adapter: ProbeAdapter, url: StreamUrl | None, secrets: list[str]) -> bool:
+    if url is None:
+        return False
     try:
         return bool(await adapter.check_stream(url))
     except Exception as err:
@@ -424,6 +486,35 @@ class ReolinkAioAdapter:
         try:
             await api.get_host_data()
             channels = list(api.channels)
+            battery = {ch: bool(api.supported(ch, "battery")) for ch in channels}
+            sources, stats = {}, {}
+            for ch in channels:
+                sources[ch], stats[ch] = {}, {}
+                if battery[ch]:
+                    continue
+                for stream in ("main", "sub", "ext"):
+                    url = await api.get_rtsp_stream_source(ch, stream, check=False)
+                    if url:
+                        sources[ch][stream] = SecretStr(url)
+                    try:
+                        bitrate, fps = api.bit_rate(ch, stream), api.frame_rate(ch, stream)
+                    except KeyError:
+                        bitrate, fps = None, None
+                    stats[ch][stream] = StreamStats(
+                        codec=api.encoding(ch, stream),
+                        bitrate=bitrate * 1000 if bitrate else None,
+                        fps=fps,
+                    )
+            if api.wifi_connection():
+                try:
+                    await api.get_state("GetWifiSignal")
+                except Exception:
+                    log.warning("Wi-Fi signal unavailable from device")
+            wifi = {
+                ch: value
+                for ch in channels
+                if (value := api.wifi_signal(ch) if api.is_nvr else api.wifi_signal()) is not None
+            }
             return HostInfo(
                 is_nvr=bool(api.is_nvr),
                 model=api.model,
@@ -432,7 +523,11 @@ class ReolinkAioAdapter:
                 channel_models={ch: api.camera_model(ch) for ch in channels},
                 channel_firmware={ch: api.camera_sw_version(ch) for ch in channels},
                 ai_types={ch: list(api.ai_supported_types(ch)) for ch in channels},
-                battery={ch: bool(api.supported(ch, "battery")) for ch in channels},
+                battery=battery,
+                wifi_signal=wifi,
+                stream_sources=sources,
+                stream_stats=stats,
+                sources_resolved=True,
                 rtsp_port=api.rtsp_port or RTSP_PORT,
                 http_port=api.port or HTTP_PORT,
                 rtmp_port=api.rtmp_port or RTMP_PORT,

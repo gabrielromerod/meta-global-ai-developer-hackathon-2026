@@ -1,5 +1,15 @@
 /** Public geometry is generic massing. Coordinates remain the supplied house frame. */
 export type Vec2 = [number, number];
+export function framingFov(base: number, aspect: number): number {
+  return (
+    (2 *
+      Math.atan(
+        Math.tan((base * Math.PI) / 360) / Math.min(1, aspect > 0 ? aspect : 1),
+      ) *
+      180) /
+    Math.PI
+  );
+}
 export type Vec3 = [number, number, number];
 export interface Ground {
   min: Vec2;

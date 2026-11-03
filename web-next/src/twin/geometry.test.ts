@@ -8,9 +8,17 @@ import {
   evidenceAtTime,
   hatchSegments,
   layoutLabels,
+  framingFov,
 } from "./geometry";
 
 describe("FR-040 generic house geometry and bounded orbit", () => {
+  it("preserves horizontal framing on a narrow phone canvas without changing world coordinates", () => {
+    const fov = framingFov(42, 0.58);
+    const horizontal =
+      (2 * Math.atan(Math.tan((fov * Math.PI) / 360) * 0.58) * 180) / Math.PI;
+    expect(horizontal).toBeCloseTo(42);
+    expect(framingFov(42, 2)).toBe(42);
+  });
   it("keeps all seven configured cameras and the physical right tree barrier", () => {
     const twin = parseTwin(fixture);
     expect(twin.cameras.map((c) => c.id)).toEqual(

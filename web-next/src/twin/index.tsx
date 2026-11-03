@@ -17,6 +17,7 @@ import { Camera, Eye, Layers3, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
 import { useReducedMotion } from "framer-motion";
 import {
   DoubleSide,
+  PerspectiveCamera,
   Shape,
   Vector2,
   Vector3,
@@ -28,6 +29,7 @@ import {
   clampOrbit,
   coneFootprint,
   evidenceAtTime,
+  framingFov,
   hatchSegments,
   layoutLabels,
   parseTwin,
@@ -732,7 +734,13 @@ function BoundedControls({
   onState: (position: Vec3, target: Vec3) => void;
 }) {
   const controls = useRef<OrbitControlsImpl>(null),
-    { camera } = useThree();
+    { camera, size } = useThree();
+  useEffect(() => {
+    if (camera instanceof PerspectiveCamera) {
+      camera.fov = framingFov(palette.fov, size.width / size.height);
+      camera.updateProjectionMatrix();
+    }
+  }, [camera, palette.fov, size.width, size.height]);
   const transition = useRef<{ position: Vector3; target: Vector3 } | null>(
     null,
   );

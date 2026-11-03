@@ -7,6 +7,7 @@ every httpx request as a safety net. The helpers at the top are shared with test
 from __future__ import annotations
 
 import json
+import re
 from collections.abc import Iterator
 from typing import Any
 
@@ -298,8 +299,15 @@ def test_web_shell_is_served(api: TestClient) -> None:
     page = api.get("/")
     assert page.status_code == 200
     assert "Vigil" in page.text
-    assert api.get("/app.js").status_code == 200
-    assert api.get("/twin/vendor/three/build/three.module.min.js").status_code == 200
+    scripts = re.findall(r'<script[^>]+src="([^"]+)"', page.text)
+    styles = re.findall(r'<link[^>]+href="([^"]+\.css)"', page.text)
+    assert scripts
+    assert styles
+    for asset in scripts + styles:
+        assert asset.startswith("/next/assets/")
+        assert api.get(asset).status_code == 200
+    assert api.get("/app.js").status_code == 404
+    assert api.get("/twin/vendor/three/build/three.module.min.js").status_code == 404
 
 
 def test_calibrate_page_is_hidden_in_the_sandbox(api: TestClient) -> None:

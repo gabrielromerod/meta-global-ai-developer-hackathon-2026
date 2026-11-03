@@ -46,7 +46,7 @@ RUN uv sync --locked --no-dev --no-install-project
 
 # Application code and the demo bundle.
 COPY vigil ./vigil
-COPY web ./web
+COPY tools/field-calibration ./tools/field-calibration
 COPY --from=ui-build /ui/dist ./web-next/dist
 COPY config ./config
 COPY demo ./demo

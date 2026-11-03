@@ -39,7 +39,8 @@ vigil/spatial/    scan, landmarks, calibrate (product path + audit harness), cov
 vigil/reasoning/  topology, visits, rules, triage, story, validator, verdict, loop, templates
 vigil/store/      schema.sql, db, export         vigil/api/   app, routes, voice, owner, live, guards
 vigil/eval/       run, metrics, baseline, spatial_eval
-web/ (index, cards, player; twin/ three.js viewer; calibrate/ LAN tool)   infra/go2rtc.yaml
+web-next/ (React/TypeScript consumer app, served at / and /next/)
+tools/field-calibration/ (private LAN worksheet)   infra/go2rtc.yaml
 eval/labels/ eval/hardware/ eval/budget.md    EVAL.md    demo/ (synthetic/, voice/)   data/ (gitignored)
 scripts/       tasks.ps1, smoke_meta.py, gpu_probe.py, privacy_scan.py, metadata_scan.sh, backlog/
 tests/         unit/ integration/ e2e/ fixtures/ (conftest.py shares sample_config, po_side_gate, rule_r7)

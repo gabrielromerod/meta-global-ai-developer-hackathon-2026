@@ -32,7 +32,7 @@ set VIGIL_BUNDLE_DIR=demo\synthetic
 uv run vigil serve --port 8000
 ```
 
-Open http://127.0.0.1:8000/next/ during the gated React preview. The current `/` stays available until both fresh final reviewers approve the cutover. Stop with Ctrl+C and repeat the last command to restart. Full setup, runtime assertions and field steps: [seven-camera runbook](docs/runbooks/seven-camera-setup.md).
+Open http://127.0.0.1:8000/ for the reviewed React app. `/next/` serves the same build. Stop with Ctrl+C and repeat the last command to restart. Full setup, runtime assertions and field steps: [seven-camera runbook](docs/runbooks/seven-camera-setup.md).
 
 Camera connections, Meta requests, paid work, ML/weight installs and go2rtc require the owner's explicit approval. Historical schedules and prior budget discussions are not fresh authorization. Models always use MetaClient's cache, budget guard and ledger. No judging/paid flag is set by this quickstart.
 
@@ -50,7 +50,7 @@ uv run python scripts/metadata_scan.py demo
 uv run python scripts/scan_ui_evidence.py
 ```
 
-Latest pre-cutover offline run: **1,541 passed**,44 E2E deselected. The complete React browser run passed43 cases; the additional focus-wrapper regression passed separately. Frontend134 tests/build pass. These are fixture results, not hardware accuracy, provider billing or physical-device certification. [Browser acceptance](tests/e2e/README.md) maps every original case to the new UI and records stronger privacy/media checks.
+Latest pre-cutover offline run: **1,543 passed** on Linux,44 E2E deselected; earlier Windows1,541 before the two new audit/line-ending cases. The complete React browser run passed44 cases against the local Docker sandbox. Frontend134 tests/build pass. These are fixture results, not hardware accuracy, provider billing or physical-device certification. [Browser acceptance](tests/e2e/README.md) maps every original case to the new UI and records stronger privacy/media checks.
 
 Committed screenshots make the repository large. For a code-only checkout, Git's blob filtering and sparse checkout can omit `qa/`; the reviewed evidence stays available in Git. Docker already excludes QA, secrets, raw data and local caches from its build context.
 

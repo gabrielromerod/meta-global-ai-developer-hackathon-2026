@@ -1,0 +1,20 @@
+:root { color-scheme: dark; font: 14px/1.5 system-ui, sans-serif; color: #e7edf3; background: #101418; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+a { color: #80b9ff; }
+.topbar, .tools-row, .panel-head { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+.topbar { padding: 16px; border-bottom: 1px solid #394552; }
+.brand { font-size: 20px; font-weight: 600; }
+.tagline { flex: 1; }
+.pill, .panel, input, select, button { border: 1px solid #596b7e; border-radius: 8px; }
+.pill { padding: 4px 8px; }
+.warn { color: #f6cc78; }
+.panel { min-width: 0; padding: 12px; }
+.panel-head { justify-content: space-between; }
+h2 { font-size: 16px; }
+.card-meta { color: #bac7d4; }
+.mono { font-family: ui-monospace, monospace; }
+input, select, button { color: inherit; background: #1a2530; padding: 8px; font: inherit; }
+button:not(:disabled) { cursor: pointer; }
+:focus-visible { outline: 2px solid #80b9ff; outline-offset: 3px; }
+button:disabled { opacity: .6; }

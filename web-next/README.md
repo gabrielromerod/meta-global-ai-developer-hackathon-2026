@@ -3,7 +3,7 @@
 React + TypeScript + Vite. shadcn/ui wrappers use Radix, Tailwind, lucide-react,
 Motion, TanStack Query, @react-three/fiber and @react-three/drei. No Preact.
 Build: `npm ci` then `npm run build`. Dev: `npm run dev -- --port 8100`.
-FastAPI serves the build at `/next/` while the existing `/` stays usable.
+FastAPI serves the independently reviewed React build at `/`. `/next/` remains an alias to the same compiled files; the legacy consumer UI has been removed.
 
 Lead alone owns contracts (`src/contracts.ts`), fixtures, tokens, root entrypoint,
 package files, backend, and integration state. Fixtures are authored synthetic

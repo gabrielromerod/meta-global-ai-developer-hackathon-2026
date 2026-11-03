@@ -15,6 +15,18 @@ pytestmark = pytest.mark.e2e
 video_server = generated_video_fixture
 
 
+def test_reviewed_react_app_is_the_root_application(page: Page, server_url):
+    page.goto(server_url + "/")
+    wait_ready(page)
+    expect(page.locator(".v-app-shell")).to_be_visible()
+    expect(page.get_by_role("button", name="Home", exact=True)).to_be_visible()
+    expect(page.get_by_text("Demo data", exact=True).first).to_be_visible()
+    page.goto(server_url + "/#/visit/v_c")
+    wait_ready(page)
+    expect(page.locator(".house-view")).to_be_visible()
+    expect(page.get_by_text("Needs your attention", exact=True).first).to_be_visible()
+
+
 def test_react_owner_token_countdown_and_expected_window_crud(page: Page, tmp_path):
     settings = Settings(
         _env_file=None,

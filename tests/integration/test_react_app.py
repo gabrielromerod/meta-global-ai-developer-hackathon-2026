@@ -1,4 +1,4 @@
-"""React build is served alongside the legacy app during review."""
+"""The reviewed React build owns both the root and preview alias."""
 
 from fastapi.testclient import TestClient
 
@@ -6,7 +6,7 @@ from vigil.api.app import create_app
 from vigil.settings import Settings
 
 
-def test_react_preview_keeps_current_app_available(tmp_path, monkeypatch):
+def test_react_build_is_served_at_root_and_preview_alias(tmp_path, monkeypatch):
     import vigil.api.app as module
 
     build = tmp_path / "dist"
@@ -17,4 +17,7 @@ def test_react_preview_keeps_current_app_available(tmp_path, monkeypatch):
         preview = client.get("/next/")
         assert preview.status_code == 200
         assert 'id="react-review"' in preview.text
-        assert client.get("/").status_code == 200
+        root = client.get("/")
+        assert root.status_code == 200
+        assert root.text == preview.text
+        assert 'id="react-review"' in root.text

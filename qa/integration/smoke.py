@@ -56,7 +56,7 @@ def main():
                 )
                 page.add_init_script(f"localStorage.setItem('vigil_theme', '{theme}')")
                 for route in PAGES:
-                    page.goto(BASE + "/next/#/" + route)
+                    page.goto(BASE + "/#/" + route)
                     page.wait_for_function("document.body.dataset.ready==='1'")
                     if route in {"home", "visit/v_c"}:
                         page.locator(".house-view canvas").wait_for()

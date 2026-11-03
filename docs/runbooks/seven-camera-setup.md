@@ -22,8 +22,7 @@ uv run python -c "from vigil.settings import Settings;s=Settings();assert s.mode
 uv run uvicorn vigil.api.app:create_app --factory --host 127.0.0.1 --port 8000 --reload --reload-dir vigil
 ```
 
-Only the VIGIL-prefixed cache/base/cache-directory names configure Settings; unprefixed META_* names do not. Stop with Ctrl+C; repeat the last line to restart. Current `/` remains usable until
-the final reviewed switch. React development build is served at `/next/`.
+Only the VIGIL-prefixed cache/base/cache-directory names configure Settings; unprefixed META_* names do not. Stop with Ctrl+C; repeat the last line to restart. The reviewed React app is served at `/`; `/next/` is an alias to the same compiled build.
 Build React with `cd web-next`, `npm ci`, `npm run build`, then restart FastAPI.
 
 ## Before field ingest

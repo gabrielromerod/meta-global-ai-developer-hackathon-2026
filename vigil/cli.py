@@ -886,7 +886,7 @@ def spatial_calibrate(
         _fail("--method must be pnp_ransac or homography")
     if pairs is None:
         _blocked(
-            "extrinsics need marker pairs (--pairs) clicked in web/calibrate on the LAN "
+            "extrinsics need marker pairs (--pairs) clicked in /calibrate/ on the LAN "
             "(field hardware, T-14)"
         )
     try:

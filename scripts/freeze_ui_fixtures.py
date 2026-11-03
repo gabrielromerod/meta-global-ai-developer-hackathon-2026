@@ -9,7 +9,7 @@ from vigil.api.app import create_app
 from vigil.settings import Settings
 
 ROOT = Path(__file__).resolve().parents[1]
-OUT = ROOT / "web" / "fixtures"
+OUT = ROOT / "web-next" / "src" / "fixtures"
 EVIDENCE = {
     "kind": "fixture",
     "label": "Demo data",

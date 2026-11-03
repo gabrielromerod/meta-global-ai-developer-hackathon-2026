@@ -14,6 +14,7 @@ for(const [label,width,height] of viewports) {
   const page=await context.newPage();
   const errors=[];
   page.on('pageerror',error=>errors.push(String(error)));
+  page.on('console',message=>{if(message.type()==='error')errors.push(`Console: ${message.text()}`);});
   page.on('requestfailed',request=>errors.push(`${request.method()} ${request.url()}: ${request.failure()?.errorText}`));
   page.on('response',response=>{if(response.status()>=400)errors.push(`${response.status()} ${response.url()}`);});
   const directory=path.join(root,`${label}-${width}x${height}`);
@@ -36,10 +37,14 @@ for(const [label,width,height] of viewports) {
     await tab.scrollIntoViewIfNeeded(); await tab.hover(); await shot(`view-${i}-hover`);
     await tab.click();
     if(await tab.getAttribute('aria-selected')!=='true')errors.push(`View tab ${i} did not select`);
+    const sceneHeight=await page.locator('.twin-canvas').evaluate(element=>element.getBoundingClientRect().height);
+    if(sceneHeight<180)errors.push(`Scene height after view ${i}: ${sceneHeight}px`);
   }
   await tabs.first().click();
   const touch=page.getByRole('button',{name:'Open household side gate visit'});
-  await touch.scrollIntoViewIfNeeded();await touch.hover();await shot('household-hover');await touch.focus();await shot('household-focus');
+  await touch.scrollIntoViewIfNeeded();await touch.hover();await shot('household-hover');await touch.focus();
+  await page.keyboard.press('Tab');await page.keyboard.press('Shift+Tab');await shot('household-focus');
+  if(!(await touch.evaluate(element=>getComputedStyle(element).outlineStyle==='solid')))errors.push('Keyboard focus outline missing');
   await page.keyboard.press('Enter'); await page.getByRole('dialog',{name:'Visit evidence'}).waitFor();await shot('household-dialog');
   await page.keyboard.press('Escape');
   if(!(await touch.evaluate(element=>element===document.activeElement)))errors.push('Dialog did not restore opener focus');

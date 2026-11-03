@@ -1,0 +1,55 @@
+{
+  "house": {
+    "x": 33,
+    "right": 357,
+    "width": 322,
+    "scrollWidth": 322
+  },
+  "buttons": [
+    {
+      "label": "Front",
+      "x": 42,
+      "right": 94.140625
+    },
+    {
+      "label": "Left passage",
+      "x": 94.140625,
+      "right": 168.34375
+    },
+    {
+      "label": "Backyard",
+      "x": 168.34375,
+      "right": 248.328125
+    },
+    {
+      "label": "Top-down",
+      "x": 248.328125,
+      "right": 291.25
+    },
+    {
+      "label": "Select camera",
+      "x": 291.25,
+      "right": 331.25
+    },
+    {
+      "label": "Toggle camera coverage",
+      "x": 331.25,
+      "right": 371.25
+    },
+    {
+      "label": "Zoom in",
+      "x": 371.25,
+      "right": 411.25
+    },
+    {
+      "label": "Zoom out",
+      "x": 411.25,
+      "right": 451.25
+    },
+    {
+      "label": "Reset view",
+      "x": 451.25,
+      "right": 491.25
+    }
+  ]
+}

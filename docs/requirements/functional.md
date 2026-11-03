@@ -4,6 +4,14 @@ Nov 3 offline handover additions (FIXTURE, never real-data acceptance): FR-003 a
 `tests/unit/test_upload_boundaries.py` covering both direct upload guards, malformed media,
 unmasked pixels, ingest refusal before writes, and explicit `privacy: none_needed`.
 
+FR-006/007/009/013–016/023 cloud orchestration: `tests/integration/test_cloud_process.py`
+exercises `test_process_cloud_end_to_end_generated_mp4`, `test_sam_window_split_cloud_generated_mp4`
+and `test_cloud_confirm_before_upload`. Evidence is authored HTTP FIXTURE replay via respx
+on ffmpeg-generated testsrc and a moving shape, not a recorded/live Meta response. The
+cloud chain includes masked split uploads, burned-in SAM tags re-masked before Spark,
+appearance, triage, cited Wonder story, validator, code verdict and a per-session SQLite
+snapshot. `vigil process --cloud` is the explicit opt-in; default processing stays offline.
+
 Source: [spec section 1](../spec/vigil-spec.md#1-functional-requirements), including [Added for the real-world environment](../spec/vigil-spec.md#added-for-the-real-world-environment-nov-2) and [Added for compute and budget](../spec/vigil-spec.md#added-for-compute-and-budget-nov-2), as revised by the [Nov 2 change set](../spec/changes/2026-11-02-business-corrections.md). The full requirement text and acceptance criteria are in the spec; this page is the tracking checklist.
 
 **Status as of Mon Nov 2, 2026 (docs sync after the Nov 2 spec revision).** Evidence, run on the working tree:

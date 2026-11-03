@@ -624,6 +624,10 @@ def _store(
 
     for cam in cfg.cameras:
         db.insert_camera(conn, cam)
+    for call in result.get("model_calls", []):
+        from vigil.models import ModelCall
+
+        db.insert_model_call(conn, ModelCall.model_validate(call))
     for w in result.get("windows", []):
         db.insert_window(conn, Window.model_validate(w))
     for e in result.get("camera_ai_events", []):
@@ -645,6 +649,13 @@ def _store(
         )
     for p in result.get("positions", []):
         db.insert_position(conn, Position.model_validate(p))
+    for track_id, notes in result.get("appearance", {}).items():
+        db.insert_appearance(
+            conn,
+            track_id,
+            Appearance.model_validate(notes),
+            result.get("appearance_calls", {}).get(track_id, ""),
+        )
     for w in result.get("expected_windows", []):
         db.insert_expected_window(conn, ExpectedWindow.model_validate(w))
     for c in result.get("checkins", []):
@@ -742,8 +753,16 @@ def _recorded_sam(sam_dir: Path, windows: list[Window]) -> dict[str, dict[str, A
     return out
 
 
-def process_session(session: str, *, confirm: bool = False, settings: Any = None) -> dict:
-    """Run the pipeline on a session's recorded inputs (the ``vigil process`` entry).
+def process_session(
+    session: str,
+    *,
+    confirm: bool = False,
+    settings: Any = None,
+    cloud: bool = False,
+    client: Any = None,
+    report=None,
+) -> dict:
+    """Process recorded inputs, or explicitly opt into the complete cloud adapters.
 
     Layout under ``settings.data_dir`` (gitignored):
 
@@ -755,16 +774,19 @@ def process_session(session: str, *, confirm: bool = False, settings: Any = None
     - ``sam/<session>/<window id>/<phrase>.txt`` (wire text) or ``.json`` (Responses events):
       recorded SAM 3.1 answers.
 
-    Writes ``results/<session>/visits.json`` and returns the result. Never calls the network:
-    without recorded SAM answers it raises ``RuntimeError("blocked: ...")``. ``confirm`` is
-    accepted for the CLI's paid-path contract; this offline path makes no paid call.
+    Writes ``results/<session>/visits.json``. The default path only parses recordings.
+    ``cloud=True`` (CLI --cloud), or an injected client in tests, uses MetaClient for SAM,
+    Spark and Wonder; sandbox/cache-only settings still prohibit network. It prints an
+    estimate before any upload and requires ``confirm`` above $5. The cloud result is
+    stored at ``results/<session>/result.sqlite``, preserving the owner's persistent DB.
     """
     from vigil.ingest.config import load_config
     from vigil.reasoning.rules import load_rules
     from vigil.settings import get_settings
 
-    del confirm  # no paid call happens on this path
     settings = settings or get_settings()
+    if not session or Path(session).name != session or session in {".", ".."}:
+        raise ValueError("invalid session name")
     data = Path(settings.data_dir)
     wdir = data / "windows" / session
     wfile = wdir / "windows.json"
@@ -786,7 +808,7 @@ def process_session(session: str, *, confirm: bool = False, settings: Any = None
     recorded = _recorded_sam(sam_dir, windows)
     active = [w for w in windows if w.status != "idle"]
     lacking = [w.id for w in active if not all(p in recorded.get(w.id, {}) for p in BASE_PHRASES)]
-    if not recorded or lacking:
+    if (not recorded or lacking) and not (cloud or client is not None):
         n = len(lacking) if recorded else len(active)
         raise _blocked(
             f"{n} of {len(active)} active windows have no recorded SAM 3.1 answers in {sam_dir}. "
@@ -800,11 +822,66 @@ def process_session(session: str, *, confirm: bool = False, settings: Any = None
     meta = json.loads(meta_file.read_text(encoding="utf-8"))
     session_start = datetime.fromisoformat(meta["session_start"])
     cfg = load_config(settings.config_path)
+    from vigil.ingest.config import privacy_polygons
+
+    cfg = cfg.model_copy(
+        update={
+            "cameras": [
+                c.model_copy(
+                    update={
+                        "privacy": privacy_polygons(
+                            cfg, c.id, settings.config_path.parent / "privacy"
+                        )
+                    }
+                )
+                for c in cfg.cameras
+            ]
+        }
+    )
     rules = [*load_rules(), *(Rule.model_validate(r) for r in meta.get("rules", []))]
     protected = [ProtectedObject.model_validate(p) for p in meta.get("protected_objects", [])]
     watches = [Watch.model_validate(w) for w in meta.get("watches", [])]
     expected = [ExpectedWindow.model_validate(w) for w in meta.get("expected_windows", [])]
     checkins = [CheckIn.model_validate(c) for c in meta.get("checkins", [])]
+    result_dir = data / "results" / session
+    if cloud or client is not None:
+        from vigil.cloud import run_cloud
+        from vigil.meta.client import MetaClient
+
+        for w in active:
+            cam = cfg.camera(w.camera_id)
+            if not cam.privacy and not cam.privacy_none_needed:
+                raise _blocked(
+                    f"camera {cam.id}: privacy polygons required or privacy: none_needed"
+                )
+        own_client = client is None
+        if own_client:
+            client = MetaClient(
+                settings, cache_only=settings.meta_cache_only or settings.mode == "sandbox"
+            )
+        try:
+            result = run_cloud(
+                client=client,
+                windows=windows,
+                cfg=cfg,
+                session=session,
+                session_start=session_start,
+                result_dir=result_dir,
+                rules=rules,
+                protected=protected,
+                watches=watches,
+                expected=expected,
+                checkins=checkins,
+                confirm=confirm,
+                report=report,
+            )
+        finally:
+            if own_client:
+                client.close()
+        result["db_path"] = str(result_dir / "result.sqlite")
+        store_result(result["db_path"], result, cfg=cfg, rules=rules, protected=protected)
+        write_visits_json(result, result_dir / "visits.json")
+        return result
     result = run_scenario(
         {"scenario": session, "windows": windows, "sam_outputs": recorded},
         cfg=cfg,

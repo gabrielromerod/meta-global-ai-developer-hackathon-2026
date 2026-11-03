@@ -342,6 +342,9 @@ def process(
     confirm: Annotated[
         bool, typer.Option(help="Allow a batch whose estimate is above $5 (spec 11.6).")
     ] = False,
+    cloud: Annotated[
+        bool, typer.Option(help="Explicitly opt into cloud adapters (cache-only in sandbox).")
+    ] = False,
 ) -> None:
     """Run perception and reasoning on a session (pre-flight estimate first)."""
     try:
@@ -352,7 +355,10 @@ def process(
     from vigil.meta.budget import BudgetExceeded, ConfirmRequired
 
     try:
-        result = process_session(session, confirm=confirm)
+        if cloud:
+            result = process_session(session, confirm=confirm, cloud=True, report=typer.echo)
+        else:
+            result = process_session(session, confirm=confirm)
     except ConfirmRequired as err:
         _fail(str(err))
     except BudgetExceeded as err:

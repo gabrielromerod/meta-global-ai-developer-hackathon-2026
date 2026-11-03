@@ -55,5 +55,5 @@
   --v-twin-tree: #3c7254; --v-twin-cone: #175bb5;
 }
 @media (prefers-reduced-motion: reduce) {
-  :root { --v-motion-fast: 0ms; --v-motion: 0ms; --v-motion-view: 0ms; --v-motion-pulse: 0ms; }
+  :root, [data-theme] { --v-motion-fast: 0ms; --v-motion: 0ms; --v-motion-view: 0ms; --v-motion-pulse: 0ms; --v-motion-seconds: 0; }
 }

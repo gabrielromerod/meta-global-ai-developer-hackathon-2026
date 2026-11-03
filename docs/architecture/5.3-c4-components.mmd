@@ -1,0 +1,46 @@
+flowchart LR
+  subgraph reolink["vigil/reolink"]
+    probe["probe.py"]
+    capture["capture.py"]
+    aievents["ai_events.py"]
+  end
+  subgraph ingest["vigil/ingest"]
+    privacy["privacy.py"] --> windows["windows.py"] --> motion["motion.py"]
+  end
+  subgraph metapkg["vigil/meta"]
+    client["client.py<br/>retry, cache, spend ledger"]
+    sam["sam.py"]
+    spark["spark.py"]
+    wonder["wonder.py"]
+    asr["asr.py"]
+  end
+  subgraph perception["vigil/perception"]
+    tracks["tracks.py"] --> events["events.py"]
+  end
+  subgraph spatial["vigil/spatial"]
+    scan["scan.py"]
+    calib["calibrate.py"]
+    coverage["coverage.py"]
+    locate["locate.py"]
+  end
+  subgraph reasoning["vigil/reasoning"]
+    visits["visits.py"] --> rules["rules.py"] --> triage["triage.py"] --> story["story.py"] --> validator["validator.py"] --> verdict["verdict.py"]
+    loop["loop.py"]
+  end
+  store[("vigil/store")]
+  capture --> privacy
+  aievents --> motion
+  motion --> sam --> tracks
+  tracks --> spark --> visits
+  tracks --> locate
+  scan --> calib --> locate
+  scan --> coverage --> visits
+  locate --> visits
+  events --> visits
+  story --> wonder
+  verdict --> store
+  validator --> loop --> sam
+  sam --> client
+  spark --> client
+  wonder --> client
+  asr --> client

@@ -1,0 +1,25 @@
+flowchart LR
+  subgraph ws["Workstation, home network: RTX 3090 24 GB (verify with H-01)"]
+    cpu["CPU work<br/>ffmpeg capture, privacy masks, events,<br/>Open3D scan build, PnP, coverage"]
+    samL["SAM 3.1 open weights<br/>image prompts + short video chunks"]
+    glim["Muse Glimmer 30B, 4-bit<br/>llama.cpp server, triage"]
+    guard["Budget guard + ledger<br/>every API call priced before sending"]
+  end
+  subgraph dgx["DGX Spark, 128 GB unified: OFF by default"]
+    samD["SAM 3.1 full 10 s windows<br/>only if gate H-02 fails"]
+  end
+  subgraph metaapi["Meta Model API: $150 credits, then card up to $25 during judging"]
+    samA["sam-3.1"]
+    spark["muse-spark-1.3"]
+    wonder["muse-wonder-1.0"]
+    asr["muse-voice-transcribe-1.0"]
+  end
+  host["Hosted sandbox<br/>CPU only, cached by default"]
+  cpu --> samL
+  samL --> glim
+  cpu -.->|"conditional, after notice"| samD
+  guard --> samA
+  guard --> spark
+  guard --> wonder
+  guard --> asr
+  host -->|"capped live calls"| guard

@@ -1,0 +1,16 @@
+stateDiagram-v2
+  direction LR
+  state Rule {
+    [*] --> Draft: compiled from voice or text
+    Draft --> Active: owner confirms
+    Draft --> Discarded: owner cancels
+    Active --> Disabled: owner turns off
+    Disabled --> Active: owner turns on
+  }
+  state Watch {
+    [*] --> Proposed: Wonder or owner tap
+    Proposed --> Rejected: not in allowlist or cap reached
+    Proposed --> Watching: accepted, owner notified
+    Watching --> Revoked: owner taps undo
+    Watching --> Expired: object gone or 24 h passed
+  }

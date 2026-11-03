@@ -1,0 +1,21 @@
+sequenceDiagram
+  autonumber
+  participant R as Reolink camera
+  participant E as ai_events.py
+  participant C as capture.py
+  participant P as pipeline
+  participant S as sam-3.1
+  participant L as locate.py
+  participant UI as LAN app, 3D view
+  R-)E: TCP push: person on Backyard
+  E-)UI: SSE camera_ai event
+  UI->>UI: Backyard view cone pulses, position pending
+  C->>C: segment closes after up to 10 s
+  C->>P: window = segment + last 2 s of previous
+  P->>P: privacy mask, motion score
+  P->>S: upload + concept prompt person
+  S-->>P: masks per frame
+  P->>L: foot points
+  L-->>P: ground positions with 95% radius
+  P-)UI: SSE tracks and 3D estimates
+  UI->>UI: draw discs, update path, show measured lag

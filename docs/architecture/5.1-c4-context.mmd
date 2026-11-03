@@ -1,0 +1,13 @@
+flowchart LR
+  owner["Homeowner<br/>[Person]<br/>live view on home network, rules, visit cards"]
+  judge["Judge<br/>[Person]<br/>opens the hosted sandbox"]
+  cams["4 Reolink cameras<br/>[External system]<br/>front, left side, right side, backyard<br/>RTSP streams + on-camera AI events"]
+  phone["iPhone Pro LiDAR scan<br/>[External input]<br/>4 scan segments, GLB or PLY"]
+  vigil["Vigil<br/>[Software system]<br/>one cited story per visit,<br/>placed in a 3D model of the house"]
+  meta["Meta Model API<br/>[External system]<br/>sam-3.1, muse-spark-1.3,<br/>muse-wonder-1.0, muse-voice-transcribe-1.0"]
+  cams -->|"video and AI events, home network only"| vigil
+  phone -->|"one-time scan export"| vigil
+  owner -->|"taps, rules"| vigil
+  vigil -->|"live view, 3D view, visit cards"| owner
+  judge -->|"recorded footage + live model calls"| vigil
+  vigil -->|"masked, audio-free clips, event JSON,<br/>spoken-rule audio (FR-022)"| meta

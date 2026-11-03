@@ -1,0 +1,34 @@
+sequenceDiagram
+  autonumber
+  participant V as visits.py
+  participant R as rules.py
+  participant T as triage.py
+  participant G as Glimmer or Spark
+  participant W as muse-wonder-1.0
+  participant X as validator.py
+  participant Y as verdict.py
+  V->>R: closed visit ledger: events, gaps, protected objects
+  R-->>V: fired rules, rule floor
+  V->>T: ledger summary
+  alt rule fired, protected object touched (not a 9.4 case-2 household touch), or unresolved gap
+    T-->>V: escalate, forced by code
+  else otherwise
+    T->>G: summary JSON
+    G-->>T: escalate true or false + reason
+  end
+  alt not escalated
+    V->>Y: templated story from events
+  else escalated
+    V->>W: ledger JSON + output schema
+    W-->>X: verdict proposal, sentences with ids, watch proposals
+    X->>X: every sentence cites ids in this visit, no action inside a gap
+    alt draft fails
+      X->>W: retry once with the failure list
+      W-->>X: second draft
+      opt fails again
+        X->>Y: fall back to templated story
+      end
+    end
+    X->>Y: validated sentences + proposal
+  end
+  Y->>Y: verdict = deterministic function of floor, gaps, proposal

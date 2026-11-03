@@ -1,0 +1,25 @@
+flowchart TB
+  subgraph house["Home network: no inbound ports"]
+    cams["4 Reolink cameras"]
+    pc["Team PC<br/>go2rtc, capture, pipeline, LAN app"]
+    phoneapp["Owner phone on home Wi-Fi"]
+  end
+  subgraph gh["GitHub public repo"]
+    code["Source, tests, EVAL.md, HACKATHON.md"]
+    bundle["demo bundle<br/>masked clips, overlays, DB, GLB, calibration"]
+    ci["GitHub Actions<br/>lint, unit, integration, E2E, secret scan,<br/>privacy and metadata scan"]
+  end
+  subgraph host["Container host, for example Fly.io or Render"]
+    app["Docker: FastAPI + static web + three.js<br/>VIGIL_MODE=sandbox"]
+    secret["Secret: MODEL_API_KEY, daily cap,<br/>VIGIL_ALLOW_PAID, VIGIL_JUDGING_CAP_USD"]
+  end
+  meta["api.meta.ai/v1"]
+  cams -->|"RTSP, AI events"| pc
+  pc -->|"WebRTC, SSE"| phoneapp
+  pc -->|"HTTPS outbound"| meta
+  pc -->|"vigil export, git push"| bundle
+  code --> ci
+  bundle --> app
+  code --> app
+  secret --> app
+  app -->|"live calls"| meta

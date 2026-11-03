@@ -1,0 +1,32 @@
+sequenceDiagram
+  autonumber
+  participant I as ingest
+  participant C as meta.client
+  participant S as sam-3.1
+  participant P as muse-spark-1.3
+  participant E as perception
+  participant V as reasoning
+  participant D as SQLite
+  I->>I: apply clock offset, black out privacy polygons, strip audio
+  I->>I: cut 10 s windows with 2 s overlap, motion score
+  alt motion below threshold
+    I->>D: store window as idle, no model call
+  else motion above threshold
+    I->>C: upload masked window, POST /v1/files
+    C-->>I: file_id
+    loop one request per noun phrase: person, car, plus active watches
+      I->>C: POST /v1/responses model sam-3.1, concept prompt
+      C->>S: streamed request
+      S-->>C: per-frame boxes and masks
+    end
+    C-->>E: parsed tracks, at most 16 ids per request
+    E->>E: stitch ids across overlapping windows by box IoU
+    E->>E: burn track tags into a preview clip
+    E->>C: tagged clip + JSON schema with enum of tags
+    C->>P: appearance notes request
+    P-->>C: notes per tag, schema-checked
+    E->>E: build events: enter, exit, cross, touch, remove, dwell
+    E->>V: events + notes
+    V->>V: link across cameras by topology and notes, record gaps
+    V->>D: visits, events, gaps, model_calls
+  end

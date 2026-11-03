@@ -1,0 +1,21 @@
+sequenceDiagram
+  autonumber
+  participant W as muse-wonder-1.0
+  participant X as validator.py
+  participant L as loop.py
+  participant D as SQLite watches
+  participant I as next porch window
+  participant S as sam-3.1
+  participant UI as Visit card
+  W-->>X: watch_proposals: porch, package
+  X->>L: proposals from a validated draft only
+  L->>L: camera exists, noun phrase in allowlist, under 4 watches per camera
+  alt rejected
+    L->>D: log rejected proposal with reason
+  else accepted
+    L->>D: watch w2 active, origin wonder, expires in 24 h
+    L-->>UI: Now watching: package on porch, with undo
+    I->>S: concept prompts person, car, package
+    S-->>I: package track
+    I->>I: package removed while a person overlaps, event e41
+  end

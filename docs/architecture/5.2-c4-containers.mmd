@@ -1,0 +1,30 @@
+flowchart TB
+  subgraph home["Home edge: the team PC on the home network"]
+    rs["Restreamer<br/>[go2rtc]<br/>one connection per camera, WebRTC for the LAN app"]
+    cap["Capture service<br/>[Python, ffmpeg]<br/>10 s segments, audio removed, 48 h ring"]
+    evt["Reolink events<br/>[reolink_aio, TCP push]<br/>person and vehicle per camera"]
+    pipe["Pipeline worker<br/>[Python package vigil]<br/>privacy, SAM, events, visits, 3D positions, rules, story"]
+    spat["Spatial tools<br/>[Python, Open3D, OpenCV]<br/>scan build, calibration, coverage"]
+    lan["LAN app<br/>[FastAPI + static web + three.js]<br/>live view, 3D view, cards"]
+    db[("SQLite + masked windows + GLB")]
+  end
+  subgraph cloud["Hosted sandbox: one Docker container"]
+    api["Web API + web app<br/>[FastAPI, three.js]"]
+    bundle[("Demo bundle<br/>masked clips, overlays, DB, GLB, calibration")]
+  end
+  cams["4 Reolink cameras"]
+  meta["Meta Model API"]
+  cams -->|"RTSP"| rs
+  cams -->|"AI events"| evt
+  rs --> cap
+  cap --> pipe
+  evt --> pipe
+  spat --> db
+  pipe <--> db
+  pipe -->|"HTTPS"| meta
+  lan --> db
+  rs -->|"WebRTC"| lan
+  pipe -->|"server-sent events"| lan
+  pipe -->|"vigil export"| bundle
+  api --> bundle
+  api -->|"live: protect, transcribe, compile rule, re-run story"| meta

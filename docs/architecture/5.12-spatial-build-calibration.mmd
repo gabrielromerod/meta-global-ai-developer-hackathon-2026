@@ -1,0 +1,47 @@
+flowchart TB
+  subgraph capture["One-time capture"]
+    scan["Scan 4 LiDAR loops<br/>with overlaps"]
+    stills["Calibration still<br/>per camera"]
+    fov["Nominal FOV<br/>from the camera model datasheet"]
+    profile["Optional lens profile per camera model<br/>checkerboard, about 20 views"]
+  end
+  subgraph build["vigil spatial build"]
+    scale{"Scale error under 2%?"}
+    reg["Register segments<br/>3 point pairs, then ICP"]
+    frame["World frame<br/>origin at front door"]
+    ground["Ground mesh + height grid"]
+    glb["GLB under 15 MB,<br/>metadata stripped"]
+  end
+  subgraph cal["vigil spatial calibrate: product path"]
+    intr["Intrinsics: lens profile if RMS under 1 px,<br/>else nominal FOV, flagged"]
+    propose["SAM 3.1 proposes landmarks<br/>door, gate, fence post, window"]
+    pnp["Accept 6 landmarks, click each on the mesh,<br/>PnP with RANSAC on 6"]
+    reproj{"Landmark reprojection under 6 px nominal<br/>or 4 px profile?"}
+    json[("calibration.json")]
+  end
+  subgraph audit["Audit harness: benchmark only"]
+    markers["6 surveyed markers per camera<br/>never used for calibration"]
+    held{"Held-out ground error<br/>under 0.25 m?"}
+    report[("Audit report in EVAL")]
+  end
+  cov["vigil spatial coverage<br/>visibility grid, blind regions"]
+  yaml[("cameras.yaml<br/>blind-spot polygons")]
+  scan --> scale
+  scale -->|"yes"| reg
+  scale -->|"no: rescale"| reg
+  reg --> frame --> ground --> glb
+  fov --> intr
+  profile --> intr
+  stills --> propose --> pnp
+  intr --> pnp
+  glb --> pnp
+  pnp --> reproj
+  reproj -->|"yes"| json
+  reproj -->|"no: SAM proposes more, drop worst point"| pnp
+  json --> held
+  markers --> held
+  held -->|"yes"| report
+  held -->|"no: record a lens profile for that model, re-solve"| profile
+  json --> cov
+  glb --> cov
+  cov --> yaml

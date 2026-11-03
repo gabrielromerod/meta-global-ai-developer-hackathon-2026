@@ -1,0 +1,27 @@
+flowchart LR
+  subgraph home["Home: raw data never leaves the house"]
+    cams["Reolink cameras<br/>on-camera privacy masks, audio off"]
+    raw[("Raw segments<br/>48 h ring, gitignored")]
+    mask["privacy.py<br/>exact polygons to black, audio removed"]
+    check{"Pre-upload check<br/>polygon pixels all zero?<br/>no audio stream?"}
+    masked[("Masked windows")]
+    locate["locate.py<br/>foot point to ground,<br/>uncertainty radius"]
+    glb[("LiDAR model + calibration")]
+  end
+  subgraph metaapi["Meta Model API, Standard mode"]
+    sam["sam-3.1<br/>tracks and masks"]
+    spark["muse-spark-1.3<br/>appearance notes, rule compile"]
+    wonder["muse-wonder-1.0<br/>story from JSON only"]
+  end
+  ledger[("Event ledger<br/>events, gaps, 3D estimates;<br/>no pixels")]
+  cams --> raw --> mask --> check
+  check -->|"pass"| masked
+  check -->|"fail: block upload"| mask
+  masked --> sam
+  masked -->|"tagged clip"| spark
+  sam --> locate
+  glb --> locate
+  locate --> ledger
+  sam --> ledger
+  spark --> ledger
+  ledger --> wonder

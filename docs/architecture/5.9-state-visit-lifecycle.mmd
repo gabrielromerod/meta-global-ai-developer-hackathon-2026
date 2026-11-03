@@ -1,0 +1,16 @@
+stateDiagram-v2
+  [*] --> Open: first event on any camera
+  Open --> Open: linked event within transit window
+  Open --> InGap: subject leaves toward a blind spot
+  InGap --> Open: re-linked within max transit
+  InGap --> Closed: max transit exceeded, gap stays unresolved
+  Open --> Closed: no linked event for 60 s
+  Closed --> Triaged: rules evaluated, triage done
+  Triaged --> Templated: not escalated
+  Triaged --> Drafted: escalated to Wonder
+  Drafted --> Validated: every sentence passes
+  Drafted --> Drafted: rejected once, retry
+  Drafted --> Templated: rejected twice
+  Validated --> Published
+  Templated --> Published
+  Published --> [*]

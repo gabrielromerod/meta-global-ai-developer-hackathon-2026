@@ -1,0 +1,27 @@
+sequenceDiagram
+  autonumber
+  actor O as Owner or judge
+  participant UI as Web app
+  participant API as FastAPI
+  participant S as sam-3.1
+  participant A as muse-voice-transcribe-1.0
+  participant P as muse-spark-1.3
+  O->>UI: tap the side gate on a still frame
+  UI->>API: POST /api/protect camera, frame_ts, point
+  API->>S: image + point prompt
+  S-->>API: box + mask
+  API-->>UI: protected object po_3, mask outline, latency, cost
+  O->>UI: hold mic (or tap a sample-audio button): tell me if anyone except family opens this gate after dark
+  UI->>API: POST /api/voice/transcribe WAV, max 30 s and 2 MB
+  API->>A: transcribe
+  A-->>API: transcript
+  API-->>UI: editable transcript, call ID, latency, cost
+  O->>UI: accept or edit the transcript
+  UI->>API: POST /api/rules/compile text
+  API->>P: transcript + schema, targets limited to existing objects and zones
+  P-->>API: rule draft JSON
+  API->>API: validate draft, map identity phrases to applies_to, note what Vigil cannot do
+  API-->>UI: draft card: non-household touches po_3, 17:30 to 06:00, basis note
+  O->>UI: confirm
+  UI->>API: POST /api/rules/r7/confirm
+  API-->>UI: rule active

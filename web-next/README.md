@@ -44,3 +44,12 @@ scroll only with stable scrollbar gutters; phone single column may scroll. Both
 themes, visible focus, reduced motion, no false online states or invented metrics.
 Verdict always icon and word. All user-requested viewports need actual screenshots,
 opened and inspected. Findings end APPROVED or CHANGES REQUESTED. Three rounds max.
+
+
+## Integrated production entry
+
+src/app owns same-origin Query data, HashRouter deep links, shared chat/drafts, guarded owner actions and the actual video clock. It never imports fixtures as a runtime fallback. A service failure is explicit and retryable. Chat event links use `#/visit/<id>?event=<event_id>`; each selection seeks the normalized event/camera. Native transport is coupled to the same shared clock and tested on two generated MP4s at the original0.2-second drift limit.
+
+A schematic Day/Night selection changes diagram illumination and labels that choice; it never relabels a clip. Public HouseView ignores private GLB URLs. The 2D fallback reuses the same geometry/evidence selectors. Motion and R3F share a unit-aware time parser and a reactive native preference bridge. Popup entrance hooks mount with portaled content.
+
+Point selection in Settings requires owner access and an actual reviewed exported PNG. Cached examples are labelled and never overlaid on an unbound frame. A future point-model request requires service availability and explicit cost confirmation; tests inject FakeBackend only. No model/camera call is authorized by the software review. Recorded clocks preserve the session-start ISO offset and show date/zone across viewer timezones.

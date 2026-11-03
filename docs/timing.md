@@ -70,3 +70,7 @@ Initial baseline wall times are approximate; durations come from pytest. Later f
 - FIXTURE final-review repairs: frontend134 tests/build passed (07:22 PT); integrated React+genuine-video E2E18 passed in55.79s, completion observed 2026-11-03T07:24:41.563408-08:00. First-failing regressions cover native transport/drift, chat initial error/retry, confirmation, group presets, microphone cleanup, viewer timezone, phone toolbar, minified time units/live preference and exact chat citations. Full pre-main gates remain required.
 
 | Complete React browser E2E | 2026-11-03T07:39:18.758670-08:00 | 2026-11-03T07:40:39.366738-08:00 | exit 0; output data/react-e2e-full.log |
+
+| Pre-cutover full offline regression | 2026-11-03T07:50:32.378802-08:00 | 2026-11-03T07:53:20.956739-08:00 | exit 0; output data/react-precutover-full.log |
+
+| Complete tracked screenshot provenance audit (bounded unchanged checks) | 2026-11-03T08:04:13.068329-08:00 | 2026-11-03T08:08:28.227415-08:00 | exit 0; output data/final-ui-provenance-parallel.log |

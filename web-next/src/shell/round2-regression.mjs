@@ -18,6 +18,7 @@ for(const [name,width,height] of selected){
   page.on('pageerror',e=>report.errors.push({name,error:e.message}));
   page.on('console',message=>{if(message.type()==='error')report.errors.push({name,error:message.text()});});
   page.on('response',response=>{if(response.status()>=400)report.requests.push({name,url:response.url(),status:response.status()});});
+  page.on('requestfailed',request=>report.requests.push({name,url:request.url(),failure:request.failure()}));
   await page.route('**/src/fixtures/state.json*',route=>route.fulfill({contentType:'text/javascript',body:`export default ${JSON.stringify(stress)};`}));
   await page.goto(base);await page.locator('[data-testid="twin-canvas"][data-webgl="ready"]').waitFor();await page.evaluate(()=>document.fonts.ready);
   const dir=path.join(folder,`${width}x${height}`);await fs.mkdir(dir,{recursive:true});

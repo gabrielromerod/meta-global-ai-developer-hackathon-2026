@@ -29,3 +29,4 @@ Initial baseline wall times are approximate; durations come from pytest. Later f
 
 | Wave 1 shell Python verification | 2026-11-03T03:12:07-08:00 | 2026-11-03T03:16:51-08:00 (completion observed) | REAL logic / FIXTURE inputs: ruff check + format check passed; pytest 1474 passed, 24 deselected, 1 dependency deprecation warning; pytest runtime 212.80s |
 | Wave 1 shell Chromium final state capture | 2026-11-03T03:21:38-08:00 | 2026-11-03T03:23:26-08:00 | FIXTURE: 11 viewports, 448 state PNGs, no desktop document scroll, 0 console errors, 0 failed requests; source f2ca626 |
+| Wave 1 shell round 2 affected UI matrix | 2026-11-03T04:02:08.272000-08:00 | 2026-11-03T04:02:35.931000-08:00 | FIXTURE: 11 viewports, both themes for Clips/Media, keyboard and pointer notification focus, dropdown layering; 0 failures/errors/failed requests. npm test 40 passed; build passed. |

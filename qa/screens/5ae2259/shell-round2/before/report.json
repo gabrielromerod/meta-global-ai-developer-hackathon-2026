@@ -1,0 +1,216 @@
+{
+  "phase": "before",
+  "sha": "5ae2259",
+  "started": "2026-11-03T11:57:42.194Z",
+  "results": [
+    {
+      "name": "win150",
+      "width": 1280,
+      "height": 600,
+      "cards": [
+        {
+          "theme": "dark",
+          "route": "Clips",
+          "cards": [
+            {
+              "id": "2:42 PMMedia unavailableNormalSomeone who came out of the house was seen on the Front entrance camera at 2:42 PM.Authored scene",
+              "client": 186,
+              "scroll": 325,
+              "cardBottom": 292,
+              "captionBottom": 430.484375
+            },
+            {
+              "id": "6:02 PMMedia unavailableNormalSomeone who came out of the house was seen on the Front entrance camera at 6:02 PM.Authored scene",
+              "client": 186,
+              "scroll": 325,
+              "cardBottom": 292,
+              "captionBottom": 430.484375
+            },
+            {
+              "id": "3:31 PMMedia unavailableNoteworthySomeone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.Authored scene",
+              "client": 186,
+              "scroll": 326,
+              "cardBottom": 292,
+              "captionBottom": 430.5
+            },
+            {
+              "id": "4:20 PMMedia unavailableNormalAn expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.Authored scene",
+              "client": 186,
+              "scroll": 325,
+              "cardBottom": 496,
+              "captionBottom": 634.484375
+            },
+            {
+              "id": "6:13 PMMedia unavailableNeeds attentionSomeone who arrived from outside the property came into view on the Left side camera at 6:13 PM.Authored scene",
+              "client": 186,
+              "scroll": 325,
+              "cardBottom": 496,
+              "captionBottom": 634.484375
+            }
+          ]
+        },
+        {
+          "theme": "dark",
+          "route": "Media library",
+          "cards": [
+            {
+              "id": "2:42 PMMedia unavailableNormalSomeone who came out of the house was seen on the Front entrance camera at 2:42 PM.Authored scene",
+              "client": 186,
+              "scroll": 325,
+              "cardBottom": 292,
+              "captionBottom": 430.484375
+            },
+            {
+              "id": "6:02 PMMedia unavailableNormalSomeone who came out of the house was seen on the Front entrance camera at 6:02 PM.Authored scene",
+              "client": 186,
+              "scroll": 325,
+              "cardBottom": 292,
+              "captionBottom": 430.484375
+            },
+            {
+              "id": "3:31 PMMedia unavailableNoteworthySomeone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.Authored scene",
+              "client": 186,
+              "scroll": 326,
+              "cardBottom": 292,
+              "captionBottom": 430.5
+            },
+            {
+              "id": "4:20 PMMedia unavailableNormalAn expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.Authored scene",
+              "client": 186,
+              "scroll": 325,
+              "cardBottom": 496,
+              "captionBottom": 634.484375
+            },
+            {
+              "id": "6:13 PMMedia unavailableNeeds attentionSomeone who arrived from outside the property came into view on the Left side camera at 6:13 PM.Authored scene",
+              "client": 186,
+              "scroll": 325,
+              "cardBottom": 496,
+              "captionBottom": 634.484375
+            }
+          ]
+        },
+        {
+          "theme": "light",
+          "route": "Clips",
+          "cards": [
+            {
+              "id": "2:42 PMMedia unavailableNormalSomeone who came out of the house was seen on the Front entrance camera at 2:42 PM.Authored scene",
+              "client": 186,
+              "scroll": 325,
+              "cardBottom": 292,
+              "captionBottom": 430.484375
+            },
+            {
+              "id": "6:02 PMMedia unavailableNormalSomeone who came out of the house was seen on the Front entrance camera at 6:02 PM.Authored scene",
+              "client": 186,
+              "scroll": 325,
+              "cardBottom": 292,
+              "captionBottom": 430.484375
+            },
+            {
+              "id": "3:31 PMMedia unavailableNoteworthySomeone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.Authored scene",
+              "client": 186,
+              "scroll": 326,
+              "cardBottom": 292,
+              "captionBottom": 430.5
+            },
+            {
+              "id": "4:20 PMMedia unavailableNormalAn expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.Authored scene",
+              "client": 186,
+              "scroll": 325,
+              "cardBottom": 496,
+              "captionBottom": 634.484375
+            },
+            {
+              "id": "6:13 PMMedia unavailableNeeds attentionSomeone who arrived from outside the property came into view on the Left side camera at 6:13 PM.Authored scene",
+              "client": 186,
+              "scroll": 325,
+              "cardBottom": 496,
+              "captionBottom": 634.484375
+            }
+          ]
+        },
+        {
+          "theme": "light",
+          "route": "Media library",
+          "cards": [
+            {
+              "id": "2:42 PMMedia unavailableNormalSomeone who came out of the house was seen on the Front entrance camera at 2:42 PM.Authored scene",
+              "client": 186,
+              "scroll": 325,
+              "cardBottom": 292,
+              "captionBottom": 430.484375
+            },
+            {
+              "id": "6:02 PMMedia unavailableNormalSomeone who came out of the house was seen on the Front entrance camera at 6:02 PM.Authored scene",
+              "client": 186,
+              "scroll": 325,
+              "cardBottom": 292,
+              "captionBottom": 430.484375
+            },
+            {
+              "id": "3:31 PMMedia unavailableNoteworthySomeone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.Authored scene",
+              "client": 186,
+              "scroll": 326,
+              "cardBottom": 292,
+              "captionBottom": 430.5
+            },
+            {
+              "id": "4:20 PMMedia unavailableNormalAn expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.Authored scene",
+              "client": 186,
+              "scroll": 325,
+              "cardBottom": 496,
+              "captionBottom": 634.484375
+            },
+            {
+              "id": "6:13 PMMedia unavailableNeeds attentionSomeone who arrived from outside the property came into view on the Left side camera at 6:13 PM.Authored scene",
+              "client": 186,
+              "scroll": 325,
+              "cardBottom": 496,
+              "captionBottom": 634.484375
+            }
+          ]
+        }
+      ],
+      "focus": "BODY",
+      "stacking": {
+        "menu": 30,
+        "chat": 40
+      },
+      "bounds": {
+        "width": 1280,
+        "height": 600,
+        "scrollWidth": 1280,
+        "scrollHeight": 600
+      }
+    }
+  ],
+  "failures": [
+    "win150: notification visit focus returned to BODY",
+    "win150: notification layer 30 is below chat 40",
+    "win150/dark/Clips: card caption clips 139px",
+    "win150/dark/Clips: card caption clips 139px",
+    "win150/dark/Clips: card caption clips 140px",
+    "win150/dark/Clips: card caption clips 139px",
+    "win150/dark/Clips: card caption clips 139px",
+    "win150/dark/Media library: card caption clips 139px",
+    "win150/dark/Media library: card caption clips 139px",
+    "win150/dark/Media library: card caption clips 140px",
+    "win150/dark/Media library: card caption clips 139px",
+    "win150/dark/Media library: card caption clips 139px",
+    "win150/light/Clips: card caption clips 139px",
+    "win150/light/Clips: card caption clips 139px",
+    "win150/light/Clips: card caption clips 140px",
+    "win150/light/Clips: card caption clips 139px",
+    "win150/light/Clips: card caption clips 139px",
+    "win150/light/Media library: card caption clips 139px",
+    "win150/light/Media library: card caption clips 139px",
+    "win150/light/Media library: card caption clips 140px",
+    "win150/light/Media library: card caption clips 139px",
+    "win150/light/Media library: card caption clips 139px"
+  ],
+  "errors": [],
+  "requests": [],
+  "finished": "2026-11-03T11:57:49.112Z"
+}

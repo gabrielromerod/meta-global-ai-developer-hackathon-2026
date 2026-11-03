@@ -16,3 +16,7 @@ it('navigates every configured destination and labels synthetic evidence',()=>{
   expect(onNavigate).toHaveBeenCalledWith('media');
   expect(screen.getByRole('button',{name:'Home',current:'page'})).toBeVisible();
 });
+it('applies the chosen theme to portal overlays as well as the shell',()=>{
+  render(<AppShell route="home" onNavigate={vi.fn()} state={fixture as UIState} theme="light" onThemeChange={vi.fn()} onOpenVisit={vi.fn()}>Evidence</AppShell>);
+  expect(document.documentElement.dataset.theme).toBe('light');
+});

@@ -165,6 +165,7 @@ try {
           return el instanceof HTMLElement
             ? {
                 tag: el.tagName,
+                html: el.outerHTML.slice(0,600),
                 label: el.getAttribute("aria-label") ?? el.textContent,
                 outline: getComputedStyle(el).outlineStyle,
               }
@@ -174,7 +175,7 @@ try {
           assert.notEqual(
             focus.outline,
             "none",
-            `visible keyboard focus: ${focus.label}`,
+            `visible keyboard focus: ${JSON.stringify(focus)}`,
           );
       }
       await capture("keyboard-focus");

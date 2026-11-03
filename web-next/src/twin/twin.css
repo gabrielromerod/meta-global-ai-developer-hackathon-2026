@@ -1,4 +1,6 @@
 .house-view {
+  width: var(--v-full);
+  flex: var(--v-one);
   container-type: size;
   container-name: twin;
   display: flex;
@@ -57,9 +59,65 @@
 }
 .twin-presets:focus-visible,
 .twin-presets:focus {
-  outline: var(--v-focus-width) solid var(--v-accent);
+  outline: var(--v-focus-width) solid var(--v-accent) !important;
   outline-offset: var(--v-focus-offset);
   border-radius: var(--v-radius-sm);
+}
+.twin-preset-compact,
+.house-view button.twin-camera-menu {
+  display: none;
+}
+.twin-camera-dropdown,
+.twin-tooltip {
+  z-index: var(--v-z-dropdown);
+  font-family: var(--v-font);
+  font-size: var(--v-text-sm);
+  color: var(--v-text);
+  background: var(--v-overlay);
+  border: var(--v-line) solid var(--v-border);
+  border-radius: var(--v-radius-md);
+  padding: var(--v-space-1);
+  box-shadow: var(--v-shadow-high);
+  backdrop-filter: blur(var(--v-overlay-blur));
+  max-width: var(--v-popup-width);
+}
+.twin-camera-dropdown {
+  max-height: var(--radix-dropdown-menu-content-available-height);
+  overflow: auto;
+  scrollbar-gutter: stable;
+}
+.twin-camera-dropdown [role="menuitemradio"] {
+  display: flex;
+  align-items: center;
+  gap: var(--v-space-1);
+  padding: var(--v-space-1);
+  min-height: var(--v-target);
+  border-radius: var(--v-radius-sm);
+  cursor: pointer;
+  outline: none;
+}
+.twin-camera-dropdown [role="menuitemradio"][data-highlighted] {
+  background: var(--v-raised);
+  outline: var(--v-focus-width) solid var(--v-accent);
+  outline-offset: calc(-1 * var(--v-focus-width));
+}
+.twin-camera-dropdown [role="menuitemradio"][data-state="checked"] {
+  color: var(--v-accent);
+}
+.twin-camera-dropdown svg {
+  width: var(--v-icon-sm);
+  height: var(--v-icon-sm);
+}
+.twin-camera-dropdown [role="group"] > div,
+.twin-menu-status {
+  font-size: var(--v-text-xs);
+}
+.twin-menu-status {
+  color: var(--v-muted);
+  margin-left: auto;
+}
+.twin-tooltip svg {
+  fill: var(--v-overlay);
 }
 .house-view button[data-state="active"],
 .house-view button[aria-pressed="true"] {
@@ -238,9 +296,33 @@
   .twin-toolbar {
     padding: var(--v-space-1);
     gap: var(--v-zero);
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+  .twin-toolbar > div,
+  .twin-tools {
+    flex-shrink: var(--v-zero);
+  }
+  .twin-presets,
+  .twin-tools {
+    gap: var(--v-zero);
+    flex-wrap: nowrap;
+  }
+  .house-view .twin-presets button {
+    padding: var(--v-space-1);
+  }
+  .twin-preset-full,
+  .twin-camera-list {
+    display: none;
+  }
+  .twin-preset-compact {
+    display: inline;
+  }
+  .house-view button.twin-camera-menu {
+    display: grid;
   }
   .twin-footer {
-    padding: var(--v-zero) var(--v-space-2) var(--v-space-1);
+    display: none;
   }
   .twin-footer > span:not(.twin-selection) {
     display: none;

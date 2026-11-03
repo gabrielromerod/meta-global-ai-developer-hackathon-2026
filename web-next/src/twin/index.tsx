@@ -11,6 +11,8 @@ import {
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Line, OrbitControls } from "@react-three/drei";
 import * as RadixTabs from "@radix-ui/react-tabs";
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import * as Tooltip from "@radix-ui/react-tooltip";
 import { Camera, Eye, Layers3, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
 import { useReducedMotion } from "framer-motion";
 import {
@@ -352,18 +354,33 @@ function HouseAnnotations({
       position: [center[0], palette.clearance, center[1]],
       priority: 5,
       children: (
-        <button
-          type="button"
-          className="twin-blind-label"
-          onMouseEnter={() => setHovered(region.id)}
-          onMouseLeave={() => setHovered(null)}
-          onFocus={() => setHovered(region.id)}
-          onBlur={() => setHovered(null)}
-          aria-label={`Unobserved region: ${region.name}`}
-        >
-          <Eye aria-hidden="true" />
-          <span>{hovered === region.id ? region.name : "Unobserved"}</span>
-        </button>
+        <Tooltip.Provider delayDuration={0}>
+          <Tooltip.Root
+            open={hovered === region.id}
+            onOpenChange={(open) => setHovered(open ? region.id : null)}
+          >
+            <Tooltip.Trigger asChild>
+              <button
+                type="button"
+                className="twin-blind-label"
+                aria-label={`Unobserved region: ${region.name}`}
+              >
+                <Eye aria-hidden="true" />
+                <span>Unobserved</span>
+              </button>
+            </Tooltip.Trigger>
+            <Tooltip.Portal>
+              <Tooltip.Content
+                className="twin-tooltip"
+                sideOffset={8}
+                collisionPadding={8}
+              >
+                {region.name}
+                <Tooltip.Arrow />
+              </Tooltip.Content>
+            </Tooltip.Portal>
+          </Tooltip.Root>
+        </Tooltip.Provider>
       ),
     });
   });
@@ -826,13 +843,53 @@ export function HouseView({
               ["backyard", "Backyard"],
               ["top", "Top-down"],
             ].map(([id, label]) => (
-              <RadixTabs.Trigger key={id} value={id}>
-                {label}
+              <RadixTabs.Trigger key={id} value={id} aria-label={label}>
+                <span className="twin-preset-full">{label}</span>
+                <span className="twin-preset-compact" aria-hidden="true">
+                  {id === "left" ? "Passage" : id === "top" ? "Top" : label}
+                </span>
               </RadixTabs.Trigger>
             ))}
           </RadixTabs.List>
         </RadixTabs.Root>
         <div className="twin-tools">
+          <DropdownMenu.Root>
+            <DropdownMenu.Trigger asChild>
+              <button
+                type="button"
+                className="twin-camera-menu"
+                aria-label="Select camera"
+                title="Select camera"
+                disabled={!onCameraSelect}
+              >
+                <Camera aria-hidden="true" />
+              </button>
+            </DropdownMenu.Trigger>
+            <DropdownMenu.Portal>
+              <DropdownMenu.Content
+                className="twin-camera-dropdown"
+                sideOffset={8}
+                collisionPadding={8}
+                align="end"
+              >
+                <DropdownMenu.Label>Configured cameras</DropdownMenu.Label>
+                <DropdownMenu.RadioGroup
+                  value={activeCameraId ?? ""}
+                  onValueChange={(id) => onCameraSelect?.(id)}
+                >
+                  {model.cameras.map((camera) => (
+                    <DropdownMenu.RadioItem key={camera.id} value={camera.id}>
+                      <Camera aria-hidden="true" />
+                      <span>{camera.name}</span>
+                      <span className="twin-menu-status">
+                        {camera.source_label}
+                      </span>
+                    </DropdownMenu.RadioItem>
+                  ))}
+                </DropdownMenu.RadioGroup>
+              </DropdownMenu.Content>
+            </DropdownMenu.Portal>
+          </DropdownMenu.Root>
           <button
             type="button"
             aria-label="Toggle camera coverage"

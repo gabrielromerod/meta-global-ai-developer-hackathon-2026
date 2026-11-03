@@ -1,0 +1,558 @@
+{
+  "source": "0a7f99a1",
+  "rows": [
+    {
+      "viewport": [
+        1470,
+        870
+      ],
+      "theme": "dark",
+      "transport": {
+        "mouse_play_times": [
+          1.3177,
+          1.3112
+        ],
+        "keyboard_play_times": [
+          1.6701,
+          1.7157
+        ],
+        "common_clock": 1.7,
+        "both_paused": true
+      },
+      "proofs": [
+        "qa\\screens\\0a7f99a1\\proofs\\control-8017ef2367ece40d.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-a745be8bd2e220c7.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-80b9b2810758b61b.json"
+      ]
+    },
+    {
+      "viewport": [
+        1470,
+        870
+      ],
+      "theme": "light",
+      "transport": {
+        "mouse_play_times": [
+          1.3161,
+          1.3079
+        ],
+        "keyboard_play_times": [
+          1.67,
+          1.701
+        ],
+        "common_clock": 1.7,
+        "both_paused": true
+      },
+      "proofs": [
+        "qa\\screens\\0a7f99a1\\proofs\\control-9304fcd8797cffcf.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-a745be8bd2e220c7.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-52a2b3f6920d5fe1.json"
+      ]
+    },
+    {
+      "viewport": [
+        1512,
+        895
+      ],
+      "theme": "dark",
+      "transport": {
+        "mouse_play_times": [
+          1.3212,
+          1.3083
+        ],
+        "keyboard_play_times": [
+          1.6731,
+          1.7184
+        ],
+        "common_clock": 1.7,
+        "both_paused": true
+      },
+      "proofs": [
+        "qa\\screens\\0a7f99a1\\proofs\\control-f403050c591040e4.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-80e8fd7436cb0aeb.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-9bdbf81b38554f2a.json"
+      ]
+    },
+    {
+      "viewport": [
+        1512,
+        895
+      ],
+      "theme": "light",
+      "transport": {
+        "mouse_play_times": [
+          1.3218,
+          1.3113
+        ],
+        "keyboard_play_times": [
+          1.6846,
+          1.7302
+        ],
+        "common_clock": 1.71,
+        "both_paused": true
+      },
+      "proofs": [
+        "qa\\screens\\0a7f99a1\\proofs\\control-28a458b3ecbbcdf0.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-80e8fd7436cb0aeb.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-d9a1c718d77573de.json"
+      ]
+    },
+    {
+      "viewport": [
+        1728,
+        1030
+      ],
+      "theme": "dark",
+      "transport": {
+        "mouse_play_times": [
+          1.3159,
+          1.3073
+        ],
+        "keyboard_play_times": [
+          1.6742,
+          1.7161
+        ],
+        "common_clock": 1.7,
+        "both_paused": true
+      },
+      "proofs": [
+        "qa\\screens\\0a7f99a1\\proofs\\control-6a7809180d647cb9.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-a745be8bd2e220c7.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-86b664af228e1879.json"
+      ]
+    },
+    {
+      "viewport": [
+        1728,
+        1030
+      ],
+      "theme": "light",
+      "transport": {
+        "mouse_play_times": [
+          1.3156,
+          1.3066
+        ],
+        "keyboard_play_times": [
+          1.6467,
+          1.6715
+        ],
+        "common_clock": 1.71,
+        "both_paused": true
+      },
+      "proofs": [
+        "qa\\screens\\0a7f99a1\\proofs\\control-2313f9b6fcbbb285.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-a745be8bd2e220c7.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-f819d7f4da500a07.json"
+      ]
+    },
+    {
+      "viewport": [
+        1920,
+        960
+      ],
+      "theme": "dark",
+      "transport": {
+        "mouse_play_times": [
+          1.3156,
+          1.306
+        ],
+        "keyboard_play_times": [
+          1.6541,
+          1.7024
+        ],
+        "common_clock": 1.69,
+        "both_paused": true
+      },
+      "proofs": [
+        "qa\\screens\\0a7f99a1\\proofs\\control-8528c4242a934f2c.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-a745be8bd2e220c7.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-e0e9d5797bd0f885.json"
+      ]
+    },
+    {
+      "viewport": [
+        1920,
+        960
+      ],
+      "theme": "light",
+      "transport": {
+        "mouse_play_times": [
+          1.3143,
+          1.3049
+        ],
+        "keyboard_play_times": [
+          1.6452,
+          1.6703
+        ],
+        "common_clock": 1.69,
+        "both_paused": true
+      },
+      "proofs": [
+        "qa\\screens\\0a7f99a1\\proofs\\control-8b10124bcaae0070.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-a745be8bd2e220c7.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-38e2a75939f0de9b.json"
+      ]
+    },
+    {
+      "viewport": [
+        1536,
+        730
+      ],
+      "theme": "dark",
+      "transport": {
+        "mouse_play_times": [
+          1.321,
+          1.3088
+        ],
+        "keyboard_play_times": [
+          1.6599,
+          1.6801
+        ],
+        "common_clock": 1.69,
+        "both_paused": true
+      },
+      "proofs": [
+        "qa\\screens\\0a7f99a1\\proofs\\control-8ae1dc24749eaa16.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-a745be8bd2e220c7.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-e44a419eb323fd23.json"
+      ]
+    },
+    {
+      "viewport": [
+        1536,
+        730
+      ],
+      "theme": "light",
+      "transport": {
+        "mouse_play_times": [
+          1.3149,
+          1.3061
+        ],
+        "keyboard_play_times": [
+          1.6369,
+          1.6902
+        ],
+        "common_clock": 1.66,
+        "both_paused": true
+      },
+      "proofs": [
+        "qa\\screens\\0a7f99a1\\proofs\\control-ce81b49c20cac96f.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-a745be8bd2e220c7.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-8092fc46c993b723.json"
+      ]
+    },
+    {
+      "viewport": [
+        1280,
+        600
+      ],
+      "theme": "dark",
+      "transport": {
+        "mouse_play_times": [
+          1.3148,
+          1.3021
+        ],
+        "keyboard_play_times": [
+          1.6348,
+          1.6782
+        ],
+        "common_clock": 1.66,
+        "both_paused": true
+      },
+      "proofs": [
+        "qa\\screens\\0a7f99a1\\proofs\\control-b9220eb744ff2974.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-e3342c704fe47f8f.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-96d0ded83719109c.json"
+      ]
+    },
+    {
+      "viewport": [
+        1280,
+        600
+      ],
+      "theme": "light",
+      "transport": {
+        "mouse_play_times": [
+          1.3153,
+          1.3061
+        ],
+        "keyboard_play_times": [
+          1.6341,
+          1.683
+        ],
+        "common_clock": 1.66,
+        "both_paused": true
+      },
+      "proofs": [
+        "qa\\screens\\0a7f99a1\\proofs\\control-699ea022b7ee8d84.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-e3342c704fe47f8f.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-f549b456f485a275.json"
+      ]
+    },
+    {
+      "viewport": [
+        1366,
+        650
+      ],
+      "theme": "dark",
+      "transport": {
+        "mouse_play_times": [
+          1.3207,
+          1.3091
+        ],
+        "keyboard_play_times": [
+          1.6688,
+          1.6984
+        ],
+        "common_clock": 1.7,
+        "both_paused": true
+      },
+      "proofs": [
+        "qa\\screens\\0a7f99a1\\proofs\\control-6f7eaca5d2dbeb75.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-e3342c704fe47f8f.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-1911473e2d563fa3.json"
+      ]
+    },
+    {
+      "viewport": [
+        1366,
+        650
+      ],
+      "theme": "light",
+      "transport": {
+        "mouse_play_times": [
+          1.3158,
+          1.3061
+        ],
+        "keyboard_play_times": [
+          1.6424,
+          1.6932
+        ],
+        "common_clock": 1.68,
+        "both_paused": true
+      },
+      "proofs": [
+        "qa\\screens\\0a7f99a1\\proofs\\control-b2effcc3685e9159.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-e3342c704fe47f8f.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-b4fbfe66b466c337.json"
+      ]
+    },
+    {
+      "viewport": [
+        1024,
+        768
+      ],
+      "theme": "dark",
+      "transport": {
+        "mouse_play_times": [
+          1.3161,
+          1.3051
+        ],
+        "keyboard_play_times": [
+          1.6355,
+          1.6607
+        ],
+        "common_clock": 1.66,
+        "both_paused": true
+      },
+      "proofs": [
+        "qa\\screens\\0a7f99a1\\proofs\\control-d2dc886cae252dec.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-a745be8bd2e220c7.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-0a2d9eecfa7bb5d2.json"
+      ]
+    },
+    {
+      "viewport": [
+        1024,
+        768
+      ],
+      "theme": "light",
+      "transport": {
+        "mouse_play_times": [
+          1.3189,
+          1.3079
+        ],
+        "keyboard_play_times": [
+          1.6405,
+          1.6803
+        ],
+        "common_clock": 1.67,
+        "both_paused": true
+      },
+      "proofs": [
+        "qa\\screens\\0a7f99a1\\proofs\\control-d538f9c6e30ef970.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-a745be8bd2e220c7.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-ce190ab322b7d09b.json"
+      ]
+    },
+    {
+      "viewport": [
+        1180,
+        820
+      ],
+      "theme": "dark",
+      "transport": {
+        "mouse_play_times": [
+          1.3237,
+          1.3112
+        ],
+        "keyboard_play_times": [
+          1.6891,
+          1.7235
+        ],
+        "common_clock": 1.72,
+        "both_paused": true
+      },
+      "proofs": [
+        "qa\\screens\\0a7f99a1\\proofs\\control-00794f98d11f5a41.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-a745be8bd2e220c7.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-8172a9e2a3ec107f.json"
+      ]
+    },
+    {
+      "viewport": [
+        1180,
+        820
+      ],
+      "theme": "light",
+      "transport": {
+        "mouse_play_times": [
+          1.3149,
+          1.3074
+        ],
+        "keyboard_play_times": [
+          1.7003,
+          1.7182
+        ],
+        "common_clock": 1.73,
+        "both_paused": true
+      },
+      "proofs": [
+        "qa\\screens\\0a7f99a1\\proofs\\control-ed9f48adbde80484.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-a745be8bd2e220c7.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-481ebcfa1a4d9747.json"
+      ]
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "transport": {
+        "mouse_play_times": [
+          1.3159,
+          1.3074
+        ],
+        "keyboard_play_times": [
+          1.6692,
+          1.7382
+        ],
+        "common_clock": 1.7,
+        "both_paused": true
+      },
+      "proofs": [
+        "qa\\screens\\0a7f99a1\\proofs\\control-cd421b69c5b02f07.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-a745be8bd2e220c7.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-36404b56ef6587da.json"
+      ]
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "transport": {
+        "mouse_play_times": [
+          1.3176,
+          1.3086
+        ],
+        "keyboard_play_times": [
+          1.6566,
+          1.7011
+        ],
+        "common_clock": 1.68,
+        "both_paused": true
+      },
+      "proofs": [
+        "qa\\screens\\0a7f99a1\\proofs\\control-47bdc9300d5c18e5.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-a745be8bd2e220c7.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-b805e12914d8e423.json"
+      ]
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "transport": {
+        "mouse_play_times": [
+          1.332,
+          1.3197
+        ],
+        "keyboard_play_times": [
+          1.6541,
+          1.7024
+        ],
+        "common_clock": 1.68,
+        "both_paused": true
+      },
+      "proofs": [
+        "qa\\screens\\0a7f99a1\\proofs\\control-542753b1ac09454b.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-28818f5b256bea1e.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-27573b9f4cf6dbee.json"
+      ]
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "transport": {
+        "mouse_play_times": [
+          1.3258,
+          1.3118
+        ],
+        "keyboard_play_times": [
+          1.7234,
+          1.7619
+        ],
+        "common_clock": 1.75,
+        "both_paused": true
+      },
+      "proofs": [
+        "qa\\screens\\0a7f99a1\\proofs\\control-9264f95d203067e6.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-28818f5b256bea1e.json",
+        "qa\\screens\\0a7f99a1\\proofs\\control-58b57110c117b2dd.json"
+      ]
+    }
+  ],
+  "backend": "FakeBackend",
+  "calls": [
+    "protect",
+    "protect",
+    "protect",
+    "protect",
+    "protect",
+    "protect",
+    "protect",
+    "protect",
+    "protect",
+    "protect",
+    "protect",
+    "protect",
+    "protect",
+    "protect",
+    "protect",
+    "protect",
+    "protect",
+    "protect",
+    "protect",
+    "protect",
+    "protect",
+    "protect"
+  ]
+}

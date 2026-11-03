@@ -1,0 +1,1 @@
+{"evidence": {"kind": "fixture"}, "media_hidden_for_control_crop": true, "observed": {"backend": "FakeBackend", "calls_before_approval": 5, "estimate_usd": 0.0025}, "source": "0a7f99a1"}

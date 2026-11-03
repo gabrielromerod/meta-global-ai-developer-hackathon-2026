@@ -1,0 +1,10 @@
+{
+  "port": 8178,
+  "mode": "sandbox",
+  "meta_cache_only": true,
+  "closed_loopback_model_base": "http://127.0.0.1:9/v1",
+  "cache_dir": "data\\qa-final-a-b3-main\\cache",
+  "db_path": "data\\qa-final-a-b3-main\\vigil.db",
+  "ledger_path": "data\\qa-final-a-b3-main\\ledger.db",
+  "invalid_key_verified": true
+}

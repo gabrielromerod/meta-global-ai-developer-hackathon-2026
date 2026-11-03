@@ -1,0 +1,14 @@
+{
+  "evidence": {
+    "kind": "fixture"
+  },
+  "source": "29e0c690",
+  "observed": {
+    "role": "tabpanel",
+    "label": null,
+    "class": "v-tab-panel",
+    "pseudo": true,
+    "outline": "rgb(117, 174, 255) solid 2px",
+    "shadow": "none"
+  }
+}

@@ -1,0 +1,4894 @@
+{
+  "source": "0a7f99a1",
+  "rows": [
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-initial",
+      "screenshot": "2560x1000/final-a-dark-0001-home-initial.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-0",
+      "screenshot": "2560x1000/final-a-dark-0002-home-hover-0.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-1",
+      "screenshot": "2560x1000/final-a-dark-0003-home-hover-1.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-2",
+      "screenshot": "2560x1000/final-a-dark-0004-home-hover-2.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-3",
+      "screenshot": "2560x1000/final-a-dark-0005-home-hover-3.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-4",
+      "screenshot": "2560x1000/final-a-dark-0006-home-hover-4.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-5",
+      "screenshot": "2560x1000/final-a-dark-0007-home-hover-5.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-6",
+      "screenshot": "2560x1000/final-a-dark-0008-home-hover-6.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-7",
+      "screenshot": "2560x1000/final-a-dark-0009-home-hover-7.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-8",
+      "screenshot": "2560x1000/final-a-dark-0010-home-hover-8.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-9",
+      "screenshot": "2560x1000/final-a-dark-0011-home-hover-9.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-10",
+      "screenshot": "2560x1000/final-a-dark-0012-home-hover-10.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-11",
+      "screenshot": "2560x1000/final-a-dark-0013-home-hover-11.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-12",
+      "screenshot": "2560x1000/final-a-dark-0014-home-hover-12.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-13",
+      "screenshot": "2560x1000/final-a-dark-0015-home-hover-13.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-14",
+      "screenshot": "2560x1000/final-a-dark-0016-home-hover-14.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-15",
+      "screenshot": "2560x1000/final-a-dark-0017-home-hover-15.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-16",
+      "screenshot": "2560x1000/final-a-dark-0018-home-hover-16.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-17",
+      "screenshot": "2560x1000/final-a-dark-0019-home-hover-17.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-18",
+      "screenshot": "2560x1000/final-a-dark-0020-home-hover-18.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-19",
+      "screenshot": "2560x1000/final-a-dark-0021-home-hover-19.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-20",
+      "screenshot": "2560x1000/final-a-dark-0022-home-hover-20.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-21",
+      "screenshot": "2560x1000/final-a-dark-0023-home-hover-21.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-23",
+      "screenshot": "2560x1000/final-a-dark-0024-home-hover-23.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-24",
+      "screenshot": "2560x1000/final-a-dark-0025-home-hover-24.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-25",
+      "screenshot": "2560x1000/final-a-dark-0026-home-hover-25.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-26",
+      "screenshot": "2560x1000/final-a-dark-0027-home-hover-26.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-27",
+      "screenshot": "2560x1000/final-a-dark-0028-home-hover-27.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-28",
+      "screenshot": "2560x1000/final-a-dark-0029-home-hover-28.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-29",
+      "screenshot": "2560x1000/final-a-dark-0030-home-hover-29.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-30",
+      "screenshot": "2560x1000/final-a-dark-0031-home-hover-30.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-31",
+      "screenshot": "2560x1000/final-a-dark-0032-home-hover-31.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-32",
+      "screenshot": "2560x1000/final-a-dark-0033-home-hover-32.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-33",
+      "screenshot": "2560x1000/final-a-dark-0034-home-hover-33.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-34",
+      "screenshot": "2560x1000/final-a-dark-0035-home-hover-34.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-35",
+      "screenshot": "2560x1000/final-a-dark-0036-home-hover-35.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-36",
+      "screenshot": "2560x1000/final-a-dark-0037-home-hover-36.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-37",
+      "screenshot": "2560x1000/final-a-dark-0038-home-hover-37.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-38",
+      "screenshot": "2560x1000/final-a-dark-0039-home-hover-38.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-39",
+      "screenshot": "2560x1000/final-a-dark-0040-home-hover-39.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-40",
+      "screenshot": "2560x1000/final-a-dark-0041-home-hover-40.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-hover-41",
+      "screenshot": "2560x1000/final-a-dark-0042-home-hover-41.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-view-0",
+      "screenshot": "2560x1000/final-a-dark-0043-home-view-0.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-view-1",
+      "screenshot": "2560x1000/final-a-dark-0044-home-view-1.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-view-2",
+      "screenshot": "2560x1000/final-a-dark-0045-home-view-2.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-view-3",
+      "screenshot": "2560x1000/final-a-dark-0046-home-view-3.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-view-4",
+      "screenshot": "2560x1000/final-a-dark-0047-home-view-4.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-view-5",
+      "screenshot": "2560x1000/final-a-dark-0048-home-view-5.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-view-6",
+      "screenshot": "2560x1000/final-a-dark-0049-home-view-6.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-view-7",
+      "screenshot": "2560x1000/final-a-dark-0050-home-view-7.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-view-8",
+      "screenshot": "2560x1000/final-a-dark-0051-home-view-8.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-view-9",
+      "screenshot": "2560x1000/final-a-dark-0052-home-view-9.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-view-10",
+      "screenshot": "2560x1000/final-a-dark-0053-home-view-10.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-view-11",
+      "screenshot": "2560x1000/final-a-dark-0054-home-view-11.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-view-12",
+      "screenshot": "2560x1000/final-a-dark-0055-home-view-12.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "home-view-13",
+      "screenshot": "2560x1000/final-a-dark-0056-home-view-13.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "area-preset-Front garden-Top-down",
+      "screenshot": "2560x1000/final-a-dark-0057-area-preset-front-garden-top-down.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "area-preset-Front garden-Front",
+      "screenshot": "2560x1000/final-a-dark-0058-area-preset-front-garden-front.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "area-preset-Porch-Top-down",
+      "screenshot": "2560x1000/final-a-dark-0059-area-preset-porch-top-down.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "area-preset-Porch-Front",
+      "screenshot": "2560x1000/final-a-dark-0060-area-preset-porch-front.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "area-preset-Left passage-Top-down",
+      "screenshot": "2560x1000/final-a-dark-0061-area-preset-left-passage-top-down.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "area-preset-Left passage-Front",
+      "screenshot": "2560x1000/final-a-dark-0062-area-preset-left-passage-front.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "area-preset-Backyard-Top-down",
+      "screenshot": "2560x1000/final-a-dark-0063-area-preset-backyard-top-down.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "area-preset-Backyard-Front",
+      "screenshot": "2560x1000/final-a-dark-0064-area-preset-backyard-front.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "preset-Front",
+      "screenshot": "2560x1000/final-a-dark-0065-preset-front.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "preset-Left passage",
+      "screenshot": "2560x1000/final-a-dark-0066-preset-left-passage.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "preset-Backyard",
+      "screenshot": "2560x1000/final-a-dark-0067-preset-backyard.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "preset-Top-down",
+      "screenshot": "2560x1000/final-a-dark-0068-preset-top-down.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "label": "case-failure",
+      "screenshot": "2560x1000/final-a-dark-0069-case-failure.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-initial",
+      "screenshot": "2560x1000/final-a-light-0070-home-initial.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-0",
+      "screenshot": "2560x1000/final-a-light-0071-home-hover-0.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-1",
+      "screenshot": "2560x1000/final-a-light-0072-home-hover-1.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-2",
+      "screenshot": "2560x1000/final-a-light-0073-home-hover-2.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-3",
+      "screenshot": "2560x1000/final-a-light-0074-home-hover-3.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-4",
+      "screenshot": "2560x1000/final-a-light-0075-home-hover-4.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-5",
+      "screenshot": "2560x1000/final-a-light-0076-home-hover-5.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-6",
+      "screenshot": "2560x1000/final-a-light-0077-home-hover-6.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-7",
+      "screenshot": "2560x1000/final-a-light-0078-home-hover-7.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-8",
+      "screenshot": "2560x1000/final-a-light-0079-home-hover-8.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-9",
+      "screenshot": "2560x1000/final-a-light-0080-home-hover-9.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-10",
+      "screenshot": "2560x1000/final-a-light-0081-home-hover-10.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-11",
+      "screenshot": "2560x1000/final-a-light-0082-home-hover-11.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-12",
+      "screenshot": "2560x1000/final-a-light-0083-home-hover-12.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-13",
+      "screenshot": "2560x1000/final-a-light-0084-home-hover-13.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-14",
+      "screenshot": "2560x1000/final-a-light-0085-home-hover-14.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-15",
+      "screenshot": "2560x1000/final-a-light-0086-home-hover-15.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-16",
+      "screenshot": "2560x1000/final-a-light-0087-home-hover-16.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-17",
+      "screenshot": "2560x1000/final-a-light-0088-home-hover-17.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-18",
+      "screenshot": "2560x1000/final-a-light-0089-home-hover-18.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-19",
+      "screenshot": "2560x1000/final-a-light-0090-home-hover-19.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-20",
+      "screenshot": "2560x1000/final-a-light-0091-home-hover-20.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-21",
+      "screenshot": "2560x1000/final-a-light-0092-home-hover-21.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-23",
+      "screenshot": "2560x1000/final-a-light-0093-home-hover-23.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-24",
+      "screenshot": "2560x1000/final-a-light-0094-home-hover-24.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-25",
+      "screenshot": "2560x1000/final-a-light-0095-home-hover-25.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-26",
+      "screenshot": "2560x1000/final-a-light-0096-home-hover-26.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-27",
+      "screenshot": "2560x1000/final-a-light-0097-home-hover-27.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-28",
+      "screenshot": "2560x1000/final-a-light-0098-home-hover-28.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-29",
+      "screenshot": "2560x1000/final-a-light-0099-home-hover-29.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-30",
+      "screenshot": "2560x1000/final-a-light-0100-home-hover-30.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-31",
+      "screenshot": "2560x1000/final-a-light-0101-home-hover-31.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-32",
+      "screenshot": "2560x1000/final-a-light-0102-home-hover-32.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-33",
+      "screenshot": "2560x1000/final-a-light-0103-home-hover-33.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-34",
+      "screenshot": "2560x1000/final-a-light-0104-home-hover-34.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-35",
+      "screenshot": "2560x1000/final-a-light-0105-home-hover-35.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-36",
+      "screenshot": "2560x1000/final-a-light-0106-home-hover-36.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-37",
+      "screenshot": "2560x1000/final-a-light-0107-home-hover-37.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-38",
+      "screenshot": "2560x1000/final-a-light-0108-home-hover-38.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-39",
+      "screenshot": "2560x1000/final-a-light-0109-home-hover-39.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-40",
+      "screenshot": "2560x1000/final-a-light-0110-home-hover-40.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-hover-41",
+      "screenshot": "2560x1000/final-a-light-0111-home-hover-41.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-view-0",
+      "screenshot": "2560x1000/final-a-light-0112-home-view-0.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-view-1",
+      "screenshot": "2560x1000/final-a-light-0113-home-view-1.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-view-2",
+      "screenshot": "2560x1000/final-a-light-0114-home-view-2.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-view-3",
+      "screenshot": "2560x1000/final-a-light-0115-home-view-3.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-view-4",
+      "screenshot": "2560x1000/final-a-light-0116-home-view-4.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-view-5",
+      "screenshot": "2560x1000/final-a-light-0117-home-view-5.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-view-6",
+      "screenshot": "2560x1000/final-a-light-0118-home-view-6.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-view-7",
+      "screenshot": "2560x1000/final-a-light-0119-home-view-7.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-view-8",
+      "screenshot": "2560x1000/final-a-light-0120-home-view-8.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-view-9",
+      "screenshot": "2560x1000/final-a-light-0121-home-view-9.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-view-10",
+      "screenshot": "2560x1000/final-a-light-0122-home-view-10.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-view-11",
+      "screenshot": "2560x1000/final-a-light-0123-home-view-11.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-view-12",
+      "screenshot": "2560x1000/final-a-light-0124-home-view-12.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "home-view-13",
+      "screenshot": "2560x1000/final-a-light-0125-home-view-13.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "area-preset-Front garden-Top-down",
+      "screenshot": "2560x1000/final-a-light-0126-area-preset-front-garden-top-down.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "area-preset-Front garden-Front",
+      "screenshot": "2560x1000/final-a-light-0127-area-preset-front-garden-front.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "area-preset-Porch-Top-down",
+      "screenshot": "2560x1000/final-a-light-0128-area-preset-porch-top-down.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "area-preset-Porch-Front",
+      "screenshot": "2560x1000/final-a-light-0129-area-preset-porch-front.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "area-preset-Left passage-Top-down",
+      "screenshot": "2560x1000/final-a-light-0130-area-preset-left-passage-top-down.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "area-preset-Left passage-Front",
+      "screenshot": "2560x1000/final-a-light-0131-area-preset-left-passage-front.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "area-preset-Backyard-Top-down",
+      "screenshot": "2560x1000/final-a-light-0132-area-preset-backyard-top-down.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "area-preset-Backyard-Front",
+      "screenshot": "2560x1000/final-a-light-0133-area-preset-backyard-front.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "preset-Front",
+      "screenshot": "2560x1000/final-a-light-0134-preset-front.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "preset-Left passage",
+      "screenshot": "2560x1000/final-a-light-0135-preset-left-passage.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "preset-Backyard",
+      "screenshot": "2560x1000/final-a-light-0136-preset-backyard.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "preset-Top-down",
+      "screenshot": "2560x1000/final-a-light-0137-preset-top-down.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "label": "case-failure",
+      "screenshot": "2560x1000/final-a-light-0138-case-failure.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-initial",
+      "screenshot": "390x844/final-a-dark-0139-home-initial.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-hover-0",
+      "screenshot": "390x844/final-a-dark-0140-home-hover-0.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-hover-1",
+      "screenshot": "390x844/final-a-dark-0141-home-hover-1.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-hover-2",
+      "screenshot": "390x844/final-a-dark-0142-home-hover-2.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-hover-3",
+      "screenshot": "390x844/final-a-dark-0143-home-hover-3.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-hover-4",
+      "screenshot": "390x844/final-a-dark-0144-home-hover-4.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-hover-5",
+      "screenshot": "390x844/final-a-dark-0145-home-hover-5.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-hover-6",
+      "screenshot": "390x844/final-a-dark-0146-home-hover-6.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-hover-7",
+      "screenshot": "390x844/final-a-dark-0147-home-hover-7.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-hover-8",
+      "screenshot": "390x844/final-a-dark-0148-home-hover-8.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-hover-9",
+      "screenshot": "390x844/final-a-dark-0149-home-hover-9.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-hover-10",
+      "screenshot": "390x844/final-a-dark-0150-home-hover-10.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-hover-11",
+      "screenshot": "390x844/final-a-dark-0151-home-hover-11.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-hover-12",
+      "screenshot": "390x844/final-a-dark-0152-home-hover-12.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-hover-13",
+      "screenshot": "390x844/final-a-dark-0153-home-hover-13.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-hover-14",
+      "screenshot": "390x844/final-a-dark-0154-home-hover-14.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-hover-15",
+      "screenshot": "390x844/final-a-dark-0155-home-hover-15.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-hover-16",
+      "screenshot": "390x844/final-a-dark-0156-home-hover-16.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-hover-17",
+      "screenshot": "390x844/final-a-dark-0157-home-hover-17.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-hover-18",
+      "screenshot": "390x844/final-a-dark-0158-home-hover-18.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-hover-19",
+      "screenshot": "390x844/final-a-dark-0159-home-hover-19.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-hover-20",
+      "screenshot": "390x844/final-a-dark-0160-home-hover-20.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-hover-21",
+      "screenshot": "390x844/final-a-dark-0161-home-hover-21.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-hover-22",
+      "screenshot": "390x844/final-a-dark-0162-home-hover-22.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-hover-27",
+      "screenshot": "390x844/final-a-dark-0163-home-hover-27.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-hover-28",
+      "screenshot": "390x844/final-a-dark-0164-home-hover-28.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-hover-29",
+      "screenshot": "390x844/final-a-dark-0165-home-hover-29.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-hover-30",
+      "screenshot": "390x844/final-a-dark-0166-home-hover-30.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-hover-31",
+      "screenshot": "390x844/final-a-dark-0167-home-hover-31.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-hover-32",
+      "screenshot": "390x844/final-a-dark-0168-home-hover-32.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-hover-33",
+      "screenshot": "390x844/final-a-dark-0169-home-hover-33.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-view-0",
+      "screenshot": "390x844/final-a-dark-0170-home-view-0.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-view-1",
+      "screenshot": "390x844/final-a-dark-0171-home-view-1.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-view-2",
+      "screenshot": "390x844/final-a-dark-0172-home-view-2.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-view-3",
+      "screenshot": "390x844/final-a-dark-0173-home-view-3.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-view-4",
+      "screenshot": "390x844/final-a-dark-0174-home-view-4.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-view-5",
+      "screenshot": "390x844/final-a-dark-0175-home-view-5.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-view-6",
+      "screenshot": "390x844/final-a-dark-0176-home-view-6.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-view-7",
+      "screenshot": "390x844/final-a-dark-0177-home-view-7.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-view-8",
+      "screenshot": "390x844/final-a-dark-0178-home-view-8.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-view-9",
+      "screenshot": "390x844/final-a-dark-0179-home-view-9.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-view-10",
+      "screenshot": "390x844/final-a-dark-0180-home-view-10.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-view-11",
+      "screenshot": "390x844/final-a-dark-0181-home-view-11.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-view-12",
+      "screenshot": "390x844/final-a-dark-0182-home-view-12.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-view-13",
+      "screenshot": "390x844/final-a-dark-0183-home-view-13.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "area-preset-Front garden-Top-down",
+      "screenshot": "390x844/final-a-dark-0184-area-preset-front-garden-top-down.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "area-preset-Front garden-Front",
+      "screenshot": "390x844/final-a-dark-0185-area-preset-front-garden-front.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "area-preset-Porch-Top-down",
+      "screenshot": "390x844/final-a-dark-0186-area-preset-porch-top-down.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "area-preset-Porch-Front",
+      "screenshot": "390x844/final-a-dark-0187-area-preset-porch-front.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "area-preset-Left passage-Top-down",
+      "screenshot": "390x844/final-a-dark-0188-area-preset-left-passage-top-down.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "area-preset-Left passage-Front",
+      "screenshot": "390x844/final-a-dark-0189-area-preset-left-passage-front.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "area-preset-Backyard-Top-down",
+      "screenshot": "390x844/final-a-dark-0190-area-preset-backyard-top-down.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "area-preset-Backyard-Front",
+      "screenshot": "390x844/final-a-dark-0191-area-preset-backyard-front.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "preset-Front",
+      "screenshot": "390x844/final-a-dark-0192-preset-front.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "preset-Left passage",
+      "screenshot": "390x844/final-a-dark-0193-preset-left-passage.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "preset-Backyard",
+      "screenshot": "390x844/final-a-dark-0194-preset-backyard.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "preset-Top-down",
+      "screenshot": "390x844/final-a-dark-0195-preset-top-down.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "camera-menu-front_left_duo",
+      "screenshot": "390x844/final-a-dark-0196-camera-menu-front-left-duo.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "camera-menu-front_right_duo",
+      "screenshot": "390x844/final-a-dark-0197-camera-menu-front-right-duo.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "camera-menu-doorbell",
+      "screenshot": "390x844/final-a-dark-0198-camera-menu-doorbell.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "camera-menu-porch",
+      "screenshot": "390x844/final-a-dark-0199-camera-menu-porch.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "camera-menu-side_left",
+      "screenshot": "390x844/final-a-dark-0200-camera-menu-side-left.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "camera-menu-backyard_1",
+      "screenshot": "390x844/final-a-dark-0201-camera-menu-backyard-1.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "camera-menu-backyard_2",
+      "screenshot": "390x844/final-a-dark-0202-camera-menu-backyard-2.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "camera-action-Zoom in",
+      "screenshot": "390x844/final-a-dark-0203-camera-action-zoom-in.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "camera-action-Zoom out",
+      "screenshot": "390x844/final-a-dark-0204-camera-action-zoom-out.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "camera-action-Reset view",
+      "screenshot": "390x844/final-a-dark-0205-camera-action-reset-view.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "coverage-off",
+      "screenshot": "390x844/final-a-dark-0206-coverage-off.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "drag-and-zoom-bounds",
+      "screenshot": "390x844/final-a-dark-0207-drag-and-zoom-bounds.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-keyboard-0",
+      "screenshot": "390x844/final-a-dark-0208-home-keyboard-0.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-keyboard-9",
+      "screenshot": "390x844/final-a-dark-0209-home-keyboard-9.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-keyboard-18",
+      "screenshot": "390x844/final-a-dark-0210-home-keyboard-18.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-keyboard-27",
+      "screenshot": "390x844/final-a-dark-0211-home-keyboard-27.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-keyboard-36",
+      "screenshot": "390x844/final-a-dark-0212-home-keyboard-36.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-keyboard-45",
+      "screenshot": "390x844/final-a-dark-0213-home-keyboard-45.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "home-keyboard-54",
+      "screenshot": "390x844/final-a-dark-0214-home-keyboard-54.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "clips-hover-0",
+      "screenshot": "390x844/final-a-dark-0215-clips-hover-0.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "clips-hover-1",
+      "screenshot": "390x844/final-a-dark-0216-clips-hover-1.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "clips-hover-3",
+      "screenshot": "390x844/final-a-dark-0217-clips-hover-3.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "clips-hover-5",
+      "screenshot": "390x844/final-a-dark-0218-clips-hover-5.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "clips-hover-6",
+      "screenshot": "390x844/final-a-dark-0219-clips-hover-6.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "clips-hover-7",
+      "screenshot": "390x844/final-a-dark-0220-clips-hover-7.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "clips-hover-8",
+      "screenshot": "390x844/final-a-dark-0221-clips-hover-8.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "clips-hover-9",
+      "screenshot": "390x844/final-a-dark-0222-clips-hover-9.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "clips-hover-10",
+      "screenshot": "390x844/final-a-dark-0223-clips-hover-10.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "clips-hover-11",
+      "screenshot": "390x844/final-a-dark-0224-clips-hover-11.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "clips-hover-12",
+      "screenshot": "390x844/final-a-dark-0225-clips-hover-12.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "clips-hover-13",
+      "screenshot": "390x844/final-a-dark-0226-clips-hover-13.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "clips-hover-14",
+      "screenshot": "390x844/final-a-dark-0227-clips-hover-14.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "clips-hover-15",
+      "screenshot": "390x844/final-a-dark-0228-clips-hover-15.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "clips-hover-16",
+      "screenshot": "390x844/final-a-dark-0229-clips-hover-16.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "clips-hover-17",
+      "screenshot": "390x844/final-a-dark-0230-clips-hover-17.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "clips-Camera-option-0",
+      "screenshot": "390x844/final-a-dark-0231-clips-camera-option-0.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "clips-Camera-option-1",
+      "screenshot": "390x844/final-a-dark-0232-clips-camera-option-1.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "clips-Camera-option-2",
+      "screenshot": "390x844/final-a-dark-0233-clips-camera-option-2.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "clips-Camera-option-3",
+      "screenshot": "390x844/final-a-dark-0234-clips-camera-option-3.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "clips-Camera-option-4",
+      "screenshot": "390x844/final-a-dark-0235-clips-camera-option-4.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "clips-Camera-option-5",
+      "screenshot": "390x844/final-a-dark-0236-clips-camera-option-5.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "clips-Camera-option-6",
+      "screenshot": "390x844/final-a-dark-0237-clips-camera-option-6.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "clips-Camera-option-7",
+      "screenshot": "390x844/final-a-dark-0238-clips-camera-option-7.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "clips-Verdict-option-0",
+      "screenshot": "390x844/final-a-dark-0239-clips-verdict-option-0.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "clips-Verdict-option-1",
+      "screenshot": "390x844/final-a-dark-0240-clips-verdict-option-1.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "clips-Verdict-option-2",
+      "screenshot": "390x844/final-a-dark-0241-clips-verdict-option-2.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "clips-Verdict-option-3",
+      "screenshot": "390x844/final-a-dark-0242-clips-verdict-option-3.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "clips-Verdict-option-4",
+      "screenshot": "390x844/final-a-dark-0243-clips-verdict-option-4.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "clips-clear-result",
+      "screenshot": "390x844/final-a-dark-0244-clips-clear-result.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "clips-server-result",
+      "screenshot": "390x844/final-a-dark-0245-clips-server-result.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "clips-clear-result",
+      "screenshot": "390x844/final-a-dark-0246-clips-clear-result.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "clips-kind-0",
+      "screenshot": "390x844/final-a-dark-0247-clips-kind-0.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "clips-kind-1",
+      "screenshot": "390x844/final-a-dark-0248-clips-kind-1.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "clips-kind-2",
+      "screenshot": "390x844/final-a-dark-0249-clips-kind-2.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "clips-kind-3",
+      "screenshot": "390x844/final-a-dark-0250-clips-kind-3.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "label": "case-failure",
+      "screenshot": "390x844/final-a-dark-0251-case-failure.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-initial",
+      "screenshot": "390x844/final-a-light-0252-home-initial.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-hover-0",
+      "screenshot": "390x844/final-a-light-0253-home-hover-0.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-hover-1",
+      "screenshot": "390x844/final-a-light-0254-home-hover-1.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-hover-2",
+      "screenshot": "390x844/final-a-light-0255-home-hover-2.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-hover-3",
+      "screenshot": "390x844/final-a-light-0256-home-hover-3.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-hover-4",
+      "screenshot": "390x844/final-a-light-0257-home-hover-4.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-hover-5",
+      "screenshot": "390x844/final-a-light-0258-home-hover-5.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-hover-6",
+      "screenshot": "390x844/final-a-light-0259-home-hover-6.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-hover-7",
+      "screenshot": "390x844/final-a-light-0260-home-hover-7.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-hover-8",
+      "screenshot": "390x844/final-a-light-0261-home-hover-8.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-hover-9",
+      "screenshot": "390x844/final-a-light-0262-home-hover-9.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-hover-10",
+      "screenshot": "390x844/final-a-light-0263-home-hover-10.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-hover-11",
+      "screenshot": "390x844/final-a-light-0264-home-hover-11.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-hover-12",
+      "screenshot": "390x844/final-a-light-0265-home-hover-12.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-hover-13",
+      "screenshot": "390x844/final-a-light-0266-home-hover-13.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-hover-14",
+      "screenshot": "390x844/final-a-light-0267-home-hover-14.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-hover-15",
+      "screenshot": "390x844/final-a-light-0268-home-hover-15.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-hover-16",
+      "screenshot": "390x844/final-a-light-0269-home-hover-16.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-hover-17",
+      "screenshot": "390x844/final-a-light-0270-home-hover-17.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-hover-18",
+      "screenshot": "390x844/final-a-light-0271-home-hover-18.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-hover-19",
+      "screenshot": "390x844/final-a-light-0272-home-hover-19.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-hover-20",
+      "screenshot": "390x844/final-a-light-0273-home-hover-20.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-hover-21",
+      "screenshot": "390x844/final-a-light-0274-home-hover-21.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-hover-22",
+      "screenshot": "390x844/final-a-light-0275-home-hover-22.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-hover-27",
+      "screenshot": "390x844/final-a-light-0276-home-hover-27.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-hover-28",
+      "screenshot": "390x844/final-a-light-0277-home-hover-28.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-hover-29",
+      "screenshot": "390x844/final-a-light-0278-home-hover-29.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-hover-30",
+      "screenshot": "390x844/final-a-light-0279-home-hover-30.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-hover-31",
+      "screenshot": "390x844/final-a-light-0280-home-hover-31.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-hover-32",
+      "screenshot": "390x844/final-a-light-0281-home-hover-32.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-hover-33",
+      "screenshot": "390x844/final-a-light-0282-home-hover-33.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-view-0",
+      "screenshot": "390x844/final-a-light-0283-home-view-0.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-view-1",
+      "screenshot": "390x844/final-a-light-0284-home-view-1.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-view-2",
+      "screenshot": "390x844/final-a-light-0285-home-view-2.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-view-3",
+      "screenshot": "390x844/final-a-light-0286-home-view-3.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-view-4",
+      "screenshot": "390x844/final-a-light-0287-home-view-4.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-view-5",
+      "screenshot": "390x844/final-a-light-0288-home-view-5.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-view-6",
+      "screenshot": "390x844/final-a-light-0289-home-view-6.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-view-7",
+      "screenshot": "390x844/final-a-light-0290-home-view-7.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-view-8",
+      "screenshot": "390x844/final-a-light-0291-home-view-8.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-view-9",
+      "screenshot": "390x844/final-a-light-0292-home-view-9.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-view-10",
+      "screenshot": "390x844/final-a-light-0293-home-view-10.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-view-11",
+      "screenshot": "390x844/final-a-light-0294-home-view-11.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-view-12",
+      "screenshot": "390x844/final-a-light-0295-home-view-12.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-view-13",
+      "screenshot": "390x844/final-a-light-0296-home-view-13.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "area-preset-Front garden-Top-down",
+      "screenshot": "390x844/final-a-light-0297-area-preset-front-garden-top-down.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "area-preset-Front garden-Front",
+      "screenshot": "390x844/final-a-light-0298-area-preset-front-garden-front.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "area-preset-Porch-Top-down",
+      "screenshot": "390x844/final-a-light-0299-area-preset-porch-top-down.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "area-preset-Porch-Front",
+      "screenshot": "390x844/final-a-light-0300-area-preset-porch-front.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "area-preset-Left passage-Top-down",
+      "screenshot": "390x844/final-a-light-0301-area-preset-left-passage-top-down.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "area-preset-Left passage-Front",
+      "screenshot": "390x844/final-a-light-0302-area-preset-left-passage-front.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "area-preset-Backyard-Top-down",
+      "screenshot": "390x844/final-a-light-0303-area-preset-backyard-top-down.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "area-preset-Backyard-Front",
+      "screenshot": "390x844/final-a-light-0304-area-preset-backyard-front.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "preset-Front",
+      "screenshot": "390x844/final-a-light-0305-preset-front.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "preset-Left passage",
+      "screenshot": "390x844/final-a-light-0306-preset-left-passage.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "preset-Backyard",
+      "screenshot": "390x844/final-a-light-0307-preset-backyard.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "preset-Top-down",
+      "screenshot": "390x844/final-a-light-0308-preset-top-down.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "camera-menu-front_left_duo",
+      "screenshot": "390x844/final-a-light-0309-camera-menu-front-left-duo.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "camera-menu-front_right_duo",
+      "screenshot": "390x844/final-a-light-0310-camera-menu-front-right-duo.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "camera-menu-doorbell",
+      "screenshot": "390x844/final-a-light-0311-camera-menu-doorbell.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "camera-menu-porch",
+      "screenshot": "390x844/final-a-light-0312-camera-menu-porch.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "camera-menu-side_left",
+      "screenshot": "390x844/final-a-light-0313-camera-menu-side-left.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "camera-menu-backyard_1",
+      "screenshot": "390x844/final-a-light-0314-camera-menu-backyard-1.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "camera-menu-backyard_2",
+      "screenshot": "390x844/final-a-light-0315-camera-menu-backyard-2.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "camera-action-Zoom in",
+      "screenshot": "390x844/final-a-light-0316-camera-action-zoom-in.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "camera-action-Zoom out",
+      "screenshot": "390x844/final-a-light-0317-camera-action-zoom-out.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "camera-action-Reset view",
+      "screenshot": "390x844/final-a-light-0318-camera-action-reset-view.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "coverage-off",
+      "screenshot": "390x844/final-a-light-0319-coverage-off.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "drag-and-zoom-bounds",
+      "screenshot": "390x844/final-a-light-0320-drag-and-zoom-bounds.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-keyboard-0",
+      "screenshot": "390x844/final-a-light-0321-home-keyboard-0.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-keyboard-9",
+      "screenshot": "390x844/final-a-light-0322-home-keyboard-9.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-keyboard-18",
+      "screenshot": "390x844/final-a-light-0323-home-keyboard-18.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-keyboard-27",
+      "screenshot": "390x844/final-a-light-0324-home-keyboard-27.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-keyboard-36",
+      "screenshot": "390x844/final-a-light-0325-home-keyboard-36.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-keyboard-45",
+      "screenshot": "390x844/final-a-light-0326-home-keyboard-45.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "home-keyboard-54",
+      "screenshot": "390x844/final-a-light-0327-home-keyboard-54.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "clips-hover-0",
+      "screenshot": "390x844/final-a-light-0328-clips-hover-0.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "clips-hover-1",
+      "screenshot": "390x844/final-a-light-0329-clips-hover-1.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "clips-hover-3",
+      "screenshot": "390x844/final-a-light-0330-clips-hover-3.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "clips-hover-5",
+      "screenshot": "390x844/final-a-light-0331-clips-hover-5.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "clips-hover-6",
+      "screenshot": "390x844/final-a-light-0332-clips-hover-6.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "clips-hover-7",
+      "screenshot": "390x844/final-a-light-0333-clips-hover-7.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "clips-hover-8",
+      "screenshot": "390x844/final-a-light-0334-clips-hover-8.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "clips-hover-9",
+      "screenshot": "390x844/final-a-light-0335-clips-hover-9.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "clips-hover-10",
+      "screenshot": "390x844/final-a-light-0336-clips-hover-10.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "clips-hover-11",
+      "screenshot": "390x844/final-a-light-0337-clips-hover-11.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "clips-hover-12",
+      "screenshot": "390x844/final-a-light-0338-clips-hover-12.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "clips-hover-13",
+      "screenshot": "390x844/final-a-light-0339-clips-hover-13.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "clips-hover-14",
+      "screenshot": "390x844/final-a-light-0340-clips-hover-14.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "clips-hover-15",
+      "screenshot": "390x844/final-a-light-0341-clips-hover-15.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "clips-hover-16",
+      "screenshot": "390x844/final-a-light-0342-clips-hover-16.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "clips-hover-17",
+      "screenshot": "390x844/final-a-light-0343-clips-hover-17.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "clips-Camera-option-0",
+      "screenshot": "390x844/final-a-light-0344-clips-camera-option-0.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "clips-Camera-option-1",
+      "screenshot": "390x844/final-a-light-0345-clips-camera-option-1.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "clips-Camera-option-2",
+      "screenshot": "390x844/final-a-light-0346-clips-camera-option-2.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "clips-Camera-option-3",
+      "screenshot": "390x844/final-a-light-0347-clips-camera-option-3.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "clips-Camera-option-4",
+      "screenshot": "390x844/final-a-light-0348-clips-camera-option-4.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "clips-Camera-option-5",
+      "screenshot": "390x844/final-a-light-0349-clips-camera-option-5.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "clips-Camera-option-6",
+      "screenshot": "390x844/final-a-light-0350-clips-camera-option-6.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "clips-Camera-option-7",
+      "screenshot": "390x844/final-a-light-0351-clips-camera-option-7.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "clips-Verdict-option-0",
+      "screenshot": "390x844/final-a-light-0352-clips-verdict-option-0.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "clips-Verdict-option-1",
+      "screenshot": "390x844/final-a-light-0353-clips-verdict-option-1.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "clips-Verdict-option-2",
+      "screenshot": "390x844/final-a-light-0354-clips-verdict-option-2.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "clips-Verdict-option-3",
+      "screenshot": "390x844/final-a-light-0355-clips-verdict-option-3.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "clips-Verdict-option-4",
+      "screenshot": "390x844/final-a-light-0356-clips-verdict-option-4.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "clips-clear-result",
+      "screenshot": "390x844/final-a-light-0357-clips-clear-result.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "clips-server-result",
+      "screenshot": "390x844/final-a-light-0358-clips-server-result.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "clips-clear-result",
+      "screenshot": "390x844/final-a-light-0359-clips-clear-result.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "clips-kind-0",
+      "screenshot": "390x844/final-a-light-0360-clips-kind-0.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "clips-kind-1",
+      "screenshot": "390x844/final-a-light-0361-clips-kind-1.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "clips-kind-2",
+      "screenshot": "390x844/final-a-light-0362-clips-kind-2.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "clips-kind-3",
+      "screenshot": "390x844/final-a-light-0363-clips-kind-3.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "label": "case-failure",
+      "screenshot": "390x844/final-a-light-0364-case-failure.png",
+      "proof": "api-state-5f5275ad338add99.json"
+    }
+  ],
+  "failures": [
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "dark",
+      "reason": "Locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for get_by_test_id(\"house-view\").get_by_role(\"button\", name=\"Camera and view controls\")\n"
+    },
+    {
+      "viewport": [
+        2560,
+        1000
+      ],
+      "theme": "light",
+      "reason": "Locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for get_by_test_id(\"house-view\").get_by_role(\"button\", name=\"Camera and view controls\")\n"
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "dark",
+      "reason": "Page.wait_for_function: Timeout 1000ms exceeded."
+    },
+    {
+      "viewport": [
+        390,
+        844
+      ],
+      "theme": "light",
+      "reason": "Page.wait_for_function: Timeout 1000ms exceeded."
+    }
+  ],
+  "focus": [
+    {
+      "label": "Top-down",
+      "step": 0,
+      "tag": "BUTTON",
+      "role": "tab",
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Camera and view controls",
+      "step": 1,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Front left Duo",
+      "step": 2,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(0, 0, 0, 0.25) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Front right Duo",
+      "step": 3,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(0, 0, 0, 0.25) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Doorbell",
+      "step": 4,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(0, 0, 0, 0.25) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Porch",
+      "step": 5,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(0, 0, 0, 0.25) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Left passage",
+      "step": 6,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(0, 0, 0, 0.25) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Backyard 1",
+      "step": 7,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(0, 0, 0, 0.25) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Backyard 2",
+      "step": 8,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(0, 0, 0, 0.25) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Messages",
+      "step": 9,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(0, 0, 0, 0.25) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "VigilHomeHomeAttentionClipsMedia libraryMessagesRules and pr",
+      "step": 10,
+      "tag": "BODY",
+      "role": null,
+      "pseudo": false,
+      "ring": false,
+      "shadow": "none",
+      "visible": false,
+      "body": true
+    },
+    {
+      "label": "Open navigation",
+      "step": 11,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Use light theme",
+      "step": 12,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Notifications, 5 unread",
+      "step": 13,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Open household side gate visit",
+      "step": 14,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Open external side gate visit",
+      "step": 15,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Visits to review",
+      "step": 16,
+      "tag": "DIV",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Open visit C \u00b7 After dark: side gate and the shed gap",
+      "step": 17,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Open visit B \u00b7 Delivery on the porch",
+      "step": 18,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "House views",
+      "step": 19,
+      "tag": "DIV",
+      "role": "tablist",
+      "pseudo": true,
+      "ring": false,
+      "shadow": "rgb(117, 174, 255) 0px 0px 0px 2px inset",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Backyard",
+      "step": 20,
+      "tag": "BUTTON",
+      "role": "tab",
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "FrontFrontLeft passagePassageBackyardBackyardTop-downTop3D v",
+      "step": 21,
+      "tag": "DIV",
+      "role": "tabpanel",
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Backyard",
+      "step": 22,
+      "tag": "BUTTON",
+      "role": "tab",
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Camera and view controls",
+      "step": 23,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Front left Duo",
+      "step": 24,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(0, 0, 0, 0.25) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Front right Duo",
+      "step": 25,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(0, 0, 0, 0.25) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Doorbell",
+      "step": 26,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(0, 0, 0, 0.25) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Porch",
+      "step": 27,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(0, 0, 0, 0.25) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Left passage",
+      "step": 28,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(0, 0, 0, 0.25) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Backyard 1",
+      "step": 29,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(0, 0, 0, 0.25) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Backyard 2",
+      "step": 30,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(0, 0, 0, 0.25) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Unobserved region: behind the shed",
+      "step": 31,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Messages",
+      "step": 32,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(0, 0, 0, 0.25) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "VigilHomeHomeAttentionClipsMedia libraryMessagesRules and pr",
+      "step": 33,
+      "tag": "BODY",
+      "role": null,
+      "pseudo": false,
+      "ring": false,
+      "shadow": "none",
+      "visible": false,
+      "body": true
+    },
+    {
+      "label": "Open navigation",
+      "step": 34,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Use light theme",
+      "step": 35,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Notifications, 5 unread",
+      "step": 36,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Open household side gate visit",
+      "step": 37,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Open external side gate visit",
+      "step": 38,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Visits to review",
+      "step": 39,
+      "tag": "DIV",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Open visit C \u00b7 After dark: side gate and the shed gap",
+      "step": 40,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Open visit B \u00b7 Delivery on the porch",
+      "step": 41,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Backyard",
+      "step": 42,
+      "tag": "BUTTON",
+      "role": "tab",
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "FrontFrontLeft passagePassageBackyardBackyardTop-downTop3D v",
+      "step": 43,
+      "tag": "DIV",
+      "role": "tabpanel",
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Backyard",
+      "step": 44,
+      "tag": "BUTTON",
+      "role": "tab",
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Camera and view controls",
+      "step": 45,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Front left Duo",
+      "step": 46,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(0, 0, 0, 0.25) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Front right Duo",
+      "step": 47,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(0, 0, 0, 0.25) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Doorbell",
+      "step": 48,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(0, 0, 0, 0.25) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Porch",
+      "step": 49,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(0, 0, 0, 0.25) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Left passage",
+      "step": 50,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(0, 0, 0, 0.25) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Backyard 1",
+      "step": 51,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(0, 0, 0, 0.25) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Backyard 2",
+      "step": 52,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(0, 0, 0, 0.25) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Unobserved region: behind the shed",
+      "step": 53,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Messages",
+      "step": 54,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(0, 0, 0, 0.25) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Top-down",
+      "step": 0,
+      "tag": "BUTTON",
+      "role": "tab",
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Camera and view controls",
+      "step": 1,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Front left Duo",
+      "step": 2,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(19, 37, 60, 0.15) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Front right Duo",
+      "step": 3,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(19, 37, 60, 0.15) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Doorbell",
+      "step": 4,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(19, 37, 60, 0.15) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Porch",
+      "step": 5,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(19, 37, 60, 0.15) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Left passage",
+      "step": 6,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(19, 37, 60, 0.15) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Backyard 1",
+      "step": 7,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(19, 37, 60, 0.15) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Backyard 2",
+      "step": 8,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(19, 37, 60, 0.15) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Messages",
+      "step": 9,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(19, 37, 60, 0.15) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "VigilHomeHomeAttentionClipsMedia libraryMessagesRules and pr",
+      "step": 10,
+      "tag": "BODY",
+      "role": null,
+      "pseudo": false,
+      "ring": false,
+      "shadow": "none",
+      "visible": false,
+      "body": true
+    },
+    {
+      "label": "Open navigation",
+      "step": 11,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Use dark theme",
+      "step": 12,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Notifications, 5 unread",
+      "step": 13,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Open household side gate visit",
+      "step": 14,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Open external side gate visit",
+      "step": 15,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Visits to review",
+      "step": 16,
+      "tag": "DIV",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Open visit C \u00b7 After dark: side gate and the shed gap",
+      "step": 17,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Open visit B \u00b7 Delivery on the porch",
+      "step": 18,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "House views",
+      "step": 19,
+      "tag": "DIV",
+      "role": "tablist",
+      "pseudo": true,
+      "ring": false,
+      "shadow": "rgb(23, 91, 181) 0px 0px 0px 2px inset",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Backyard",
+      "step": 20,
+      "tag": "BUTTON",
+      "role": "tab",
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "FrontFrontLeft passagePassageBackyardBackyardTop-downTop3D v",
+      "step": 21,
+      "tag": "DIV",
+      "role": "tabpanel",
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Backyard",
+      "step": 22,
+      "tag": "BUTTON",
+      "role": "tab",
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Camera and view controls",
+      "step": 23,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Front left Duo",
+      "step": 24,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(19, 37, 60, 0.15) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Front right Duo",
+      "step": 25,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(19, 37, 60, 0.15) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Doorbell",
+      "step": 26,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(19, 37, 60, 0.15) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Porch",
+      "step": 27,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(19, 37, 60, 0.15) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Left passage",
+      "step": 28,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(19, 37, 60, 0.15) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Backyard 1",
+      "step": 29,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(19, 37, 60, 0.15) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Backyard 2",
+      "step": 30,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(19, 37, 60, 0.15) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Unobserved region: behind the shed",
+      "step": 31,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Messages",
+      "step": 32,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(19, 37, 60, 0.15) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "VigilHomeHomeAttentionClipsMedia libraryMessagesRules and pr",
+      "step": 33,
+      "tag": "BODY",
+      "role": null,
+      "pseudo": false,
+      "ring": false,
+      "shadow": "none",
+      "visible": false,
+      "body": true
+    },
+    {
+      "label": "Open navigation",
+      "step": 34,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Use dark theme",
+      "step": 35,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Notifications, 5 unread",
+      "step": 36,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Open household side gate visit",
+      "step": 37,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Open external side gate visit",
+      "step": 38,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Visits to review",
+      "step": 39,
+      "tag": "DIV",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Open visit C \u00b7 After dark: side gate and the shed gap",
+      "step": 40,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Open visit B \u00b7 Delivery on the porch",
+      "step": 41,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Backyard",
+      "step": 42,
+      "tag": "BUTTON",
+      "role": "tab",
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "FrontFrontLeft passagePassageBackyardBackyardTop-downTop3D v",
+      "step": 43,
+      "tag": "DIV",
+      "role": "tabpanel",
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Backyard",
+      "step": 44,
+      "tag": "BUTTON",
+      "role": "tab",
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Camera and view controls",
+      "step": 45,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Front left Duo",
+      "step": 46,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(19, 37, 60, 0.15) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Front right Duo",
+      "step": 47,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(19, 37, 60, 0.15) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Doorbell",
+      "step": 48,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(19, 37, 60, 0.15) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Porch",
+      "step": 49,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(19, 37, 60, 0.15) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Left passage",
+      "step": 50,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(19, 37, 60, 0.15) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Backyard 1",
+      "step": 51,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(19, 37, 60, 0.15) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Select Backyard 2",
+      "step": 52,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(19, 37, 60, 0.15) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Unobserved region: behind the shed",
+      "step": 53,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "none",
+      "visible": true,
+      "body": false
+    },
+    {
+      "label": "Messages",
+      "step": 54,
+      "tag": "BUTTON",
+      "role": null,
+      "pseudo": true,
+      "ring": true,
+      "shadow": "rgba(19, 37, 60, 0.15) 0px 8px 32px 0px",
+      "visible": true,
+      "body": false
+    }
+  ],
+  "proofs": [
+    "qa\\screens\\0a7f99a1\\proofs\\api-state-5f5275ad338add99.json"
+  ]
+}

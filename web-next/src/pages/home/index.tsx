@@ -11,6 +11,8 @@ export function HomePage({state, onOpenVisit, onOpenClip, onViewChange, activeVi
   const [localView, setLocalView] = useState(state.views[0]?.id ?? '');
   const selectedView = activeView ?? localView;
   const cameras = viewCameras(state, selectedView);
+  const cameraClip = cameras.length === 1 ? state.clips.find(clip =>
+    clip.camera_id === cameras[0].id && (!cameras[0].clip_url || clip.clip_url === cameras[0].clip_url)) : undefined;
   const ranked = attentionVisits(state);
   const comparison = touchComparison(state);
   function changeView(id: string) {setLocalView(id); onViewChange?.(id);}
@@ -49,7 +51,7 @@ export function HomePage({state, onOpenVisit, onOpenClip, onViewChange, activeVi
         </Tabs> : <EmptyState title="No camera views configured" description="Camera views appear after the home configuration is loaded."/>}
         <div className="home-player">
           {playerSlot ?? (cameras.length === 1
-            ? <VideoTile camera={cameras[0]} onOpen={onOpenClip}/>
+            ? <VideoTile camera={cameras[0]} clip={cameraClip} onOpen={cameraClip ? onOpenClip : undefined}/>
             : <p className="home-camera-hint"><Camera aria-hidden="true"/>Select a camera in the house view to inspect its recorded evidence.</p>)}
         </div>
       </Card>

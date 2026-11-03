@@ -1,4 +1,4 @@
-import {chromium} from '@playwright/test';
+import {chromium,expect} from '@playwright/test';
 import {mkdir,writeFile} from 'node:fs/promises';
 import {execFileSync} from 'node:child_process';
 import path from 'node:path';
@@ -47,7 +47,8 @@ for(const [label,width,height] of viewports) {
   if(!(await touch.evaluate(element=>getComputedStyle(element).outlineStyle==='solid')))errors.push('Keyboard focus outline missing');
   await page.keyboard.press('Enter'); await page.getByRole('dialog',{name:'Visit evidence'}).waitFor();await shot('household-dialog');
   await page.keyboard.press('Escape');
-  if(!(await touch.evaluate(element=>element===document.activeElement)))errors.push('Dialog did not restore opener focus');
+  try {await expect(touch).toBeFocused({timeout:1000});}
+  catch {errors.push('Dialog did not restore opener focus');}
   const external=page.getByRole('button',{name:'Open external side gate visit'});
   await external.scrollIntoViewIfNeeded();await external.hover();await shot('external-hover');await external.click();
   await page.getByRole('dialog',{name:'Visit evidence'}).waitFor();await shot('external-dialog');await page.keyboard.press('Escape');

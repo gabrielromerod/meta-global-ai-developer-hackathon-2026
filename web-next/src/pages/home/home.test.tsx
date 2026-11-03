@@ -52,6 +52,15 @@ describe('Home cards and selection (FR-017, FR-044)', () => {
     expect(screen.getByText('No visits to review')).toBeVisible();
     expect(screen.queryByRole('region',{name:'Same action, different context'})).not.toBeInTheDocument();
   });
+  it('opens the matching clip ID rather than treating a configured camera ID as a clip', async () => {
+    const props = callbacks();
+    const camera = {...state.cameras[0],clip_url:'/media/recorded-event.mp4'};
+    const clip = {...state.clips[0],id:'clip-front-left',camera_id:camera.id,clip_url:camera.clip_url};
+    render(<HomePage state={{...state,cameras:[camera,...state.cameras.slice(1)],clips:[clip]}}
+      activeView={`camera_${camera.id}`} {...props}/>);
+    await userEvent.click(screen.getByRole('button',{name:`Open ${camera.name} clip`}));
+    expect(props.onOpenClip).toHaveBeenCalledWith(clip.id);
+  });
 });
 
 describe('Attention center', () => {

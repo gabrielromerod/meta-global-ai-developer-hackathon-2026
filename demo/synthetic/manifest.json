@@ -5,7 +5,7 @@
   "overlays.json": "286a8548dac521b95a54453b3daff3637a347d475b0b6bd747ba5bab6bf5e97b",
   "presets.json": "28877f0999b3d8682e8767912d5fdb855b1dc5802c9f8786d8b2a0389ad6835c",
   "scenarios.json": "d6bfba6a0fe286a4813e1156409b85d515b496462dbb1bb8353718930d2bf463",
-  "tables/appearance.json": "6afb19fd8ccf349964488770ebe914725acf0b4657222889688b5754cab594ae",
+  "tables/appearance.json": "b046f13ed565002b21a9eaf036c4fc47bdd28979077ca5712ffaff12ad6a7b21",
   "tables/camera_ai_events.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
   "tables/cameras.json": "721efa0b6c70d4df9442a4380b39aaa75e3608c6ed2bb9d74d4ab61bd93b9d23",
   "tables/checkins.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
@@ -23,7 +23,7 @@
   "tables/validations.json": "49715b5033f35f9b939c6f984db16da6bd938b6be92b206d25f8a16424baeade",
   "tables/visits.json": "a9448707f010de2cd78674668c1a4795354c9a2b1e47324606928cc078086c8b",
   "tables/watches.json": "9bdce0ae415184144bc96cc88825c2e14a17696bdfb20d6167a1bd726aad1e24",
-  "tables/windows.json": "2e4131f6076cbef734c12740d80d4a74685ab980022174a8df41d4037ab2fae6",
+  "tables/windows.json": "73516b7cfe3dacd1c57d1d2e8d18ba02cc98f17832530acfe97b86ac6eef0960",
   "trace.json": "b88f833c8d9dc7c5111e654fe3f8dd3455c968d81c2d20d0cfeb8ca9f628e2c2",
   "twin.json": "090aa50c23e4538b9c6442ea9e50bac55a6e9ddfe1c28b5b3dfd0888cdcc3160"
  },

@@ -32,10 +32,7 @@ import sys
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-try:
-    import vigil  # noqa: F401
-except ImportError:  # pragma: no cover - running without the package installed
-    sys.path.insert(0, str(REPO_ROOT))
+sys.path.insert(0, str(REPO_ROOT))
 
 from vigil.ingest.config import ConfigError, load_config, privacy_polygons  # noqa: E402
 from vigil.ingest.media import IMAGE_EXTS, VIDEO_EXTS  # noqa: E402
@@ -107,10 +104,23 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--config", type=Path, default=REPO_ROOT / "config" / "cameras.yaml")
     ap.add_argument("--privacy-dir", type=Path, default=None)
     ap.add_argument("--allow-unmapped", action="store_true")
+    ap.add_argument(
+        "--ui-manifest", type=Path, help="scan only named reviewed static UI PNGs; never footage"
+    )
     ap.add_argument("--quiet", action="store_true", help="print failures and the summary only")
     args = ap.parse_args(argv)
 
     root: Path = args.root
+    if args.ui_manifest:
+        from scripts.ui_evidence import validate_manifest
+
+        count, failures = validate_manifest(root, args.ui_manifest)
+        for failure in failures:
+            print(f"FAIL {failure}")
+        print(
+            f"UI provenance + decode/audio + metadata: {count} named PNGs; {len(failures)} failed"
+        )
+        return int(bool(failures))
     if not root.exists():
         print(f"privacy scan: {root} does not exist; 0 media files scanned. PASS")
         return 0

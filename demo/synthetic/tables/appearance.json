@@ -4,6 +4,7 @@
   "notes_json": {
    "carrying": [],
    "class": "person",
+   "illumination": "unknown",
    "lower_color": "grey",
    "tag": "T1",
    "upper_color": "navy",
@@ -17,6 +18,7 @@
   "notes_json": {
    "carrying": [],
    "class": "vehicle",
+   "illumination": "unknown",
    "lower_color": null,
    "tag": "T2",
    "upper_color": null,
@@ -30,6 +32,7 @@
   "notes_json": {
    "carrying": [],
    "class": "person",
+   "illumination": "unknown",
    "lower_color": "grey",
    "tag": "T1",
    "upper_color": "navy",
@@ -43,6 +46,7 @@
   "notes_json": {
    "carrying": [],
    "class": "person",
+   "illumination": "unknown",
    "lower_color": "unknown",
    "tag": "T1",
    "upper_color": "unknown",
@@ -56,6 +60,7 @@
   "notes_json": {
    "carrying": [],
    "class": "person",
+   "illumination": "unknown",
    "lower_color": "unknown",
    "tag": "T1",
    "upper_color": "unknown",
@@ -71,6 +76,7 @@
     "box"
    ],
    "class": "person",
+   "illumination": "unknown",
    "lower_color": "brown",
    "tag": "T1",
    "upper_color": "brown",
@@ -86,6 +92,7 @@
     "box"
    ],
    "class": "person",
+   "illumination": "unknown",
    "lower_color": "brown",
    "tag": "T1",
    "upper_color": "brown",
@@ -99,6 +106,7 @@
   "notes_json": {
    "carrying": [],
    "class": "person",
+   "illumination": "unknown",
    "lower_color": "unknown",
    "tag": "T1",
    "upper_color": "unknown",
@@ -112,6 +120,7 @@
   "notes_json": {
    "carrying": [],
    "class": "person",
+   "illumination": "unknown",
    "lower_color": "unknown",
    "tag": "T1",
    "upper_color": "unknown",
@@ -125,6 +134,7 @@
   "notes_json": {
    "carrying": [],
    "class": "person",
+   "illumination": "unknown",
    "lower_color": "unknown",
    "tag": "T1",
    "upper_color": "unknown",

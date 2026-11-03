@@ -19,6 +19,9 @@ def session_clip(
     t1: float,
     fps: float = 10,
 ) -> Path:
+    from vigil.ingest.review import require_privacy_review
+
+    require_privacy_review(cam)
     mine = sorted((w for w in windows if w.camera_id == cam.id), key=lambda w: (w.t0, w.id))
     if not mine or any(not w.path for w in mine):
         raise ValueError(f"camera {cam.id}: masked window media missing")

@@ -60,6 +60,19 @@ def test_metadata_scan_rejects_unreadable_media(tmp_path):
     assert "FAIL" in result.stdout
 
 
+def test_metadata_scan_rejects_all_exif_not_just_gps(tmp_path):
+    image = tmp_path / "generated.jpg"
+    assert cv2.imwrite(str(image), np.full((24, 24, 3), 120, dtype=np.uint8))
+    subprocess.run(
+        ["exiftool", "-overwrite_original", "-DateTimeOriginal=2026:11:03 01:00:00", str(image)],
+        capture_output=True,
+        check=True,
+    )
+    result = scan(tmp_path)
+    assert result.returncode == 1
+    assert "DateTimeOriginal" in result.stdout
+
+
 def test_metadata_scan_glb_checks_json_metadata(tmp_path):
     source = ROOT / "demo/synthetic/media/ground.glb"
     target = tmp_path / "massing.glb"

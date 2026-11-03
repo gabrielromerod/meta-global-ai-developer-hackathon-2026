@@ -76,6 +76,7 @@ VOICE = "muse-voice-transcribe-1.0"
 # never changes when config/cameras.yaml is edited for the real cameras.
 SYNTHETIC_CONFIG: dict[str, Any] = {
     "timezone": "America/Los_Angeles",
+    "evidence_kind": "fixture",
     "cameras": [
         {"id": "front", "name": "Front entrance", "hfov_deg": 100.0, "zones": {
             "front_door_egress": {"kind": "egress",

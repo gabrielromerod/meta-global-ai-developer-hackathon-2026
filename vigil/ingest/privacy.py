@@ -168,6 +168,10 @@ def assert_uploadable(
             )
         )
     report = scan_media(path, polygons, ref_size=ref_size)
+    if report.ok:
+        from vigil.ingest.metadata import scan
+
+        report.reasons.extend(scan(Path(path)))
     if not report.ok:
         raise PrivacyViolation(report)
     return report

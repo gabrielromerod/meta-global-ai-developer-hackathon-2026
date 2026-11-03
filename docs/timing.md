@@ -11,3 +11,5 @@ All times include timezone. Full suites are required before each merge to main.
 | Privacy/panorama/retention focus | not captured | not captured | 67 passed; 26.08s |
 
 Initial baseline wall times are approximate; durations come from pytest. Later full pre-main suites record exact start/end automatically.
+
+| Backend full regression | 2026-11-03T03:24:12.435244-08:00 | 2026-11-03T03:26:48.933844-08:00 | pytest exit 1; see captured command output |

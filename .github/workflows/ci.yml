@@ -58,8 +58,8 @@ jobs:
       - uses: astral-sh/setup-uv@v10.3.3
         with:
           enable-cache: true
-      - name: ffmpeg
-        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg
+      - name: ffmpeg + exiftool
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg libimage-exiftool-perl
       - run: uv sync --locked
       - name: 3. Blocking P0 suites 1-4 (privacy, validator, verdict + rules, guards + budget)
         run: >-

@@ -174,6 +174,9 @@ def check_readiness(
                 )
             )
             host_env = camera.source.host_env if camera.source else None
+            imported = camera.power_profile == "import" or (
+                camera.power_profile == "battery_wifi" and camera.hub_present is not True
+            )
             host = values.get(host_env, "") if host_env else ""
             try:
                 ipaddress.ip_address(host or "")
@@ -183,8 +186,10 @@ def check_readiness(
             checks.append(
                 Check(
                     host_env or f"host:{camera.id}",
-                    host_valid,
-                    "IP present in .env (not probed)"
+                    host_valid or imported,
+                    "Imported clips; camera host is not required"
+                    if imported
+                    else "IP present in .env (not probed)"
                     if host_valid
                     else f"set this camera IP in {env_file.name}; values are never printed",
                 )

@@ -51,3 +51,7 @@
 - 2026-11-03: Share one unit-aware time-token parser between Motion and R3F because production CSS minification normalizes milliseconds to seconds. Palette timing refreshes on the shared reduced-motion preference without resetting orbit state.
 
 - 2026-11-03: CI hands the exact frontend build artifact to backend/API tests; compiled files remain uncommitted. The model-ID guard scans TypeScript and fails on scanner errors. POSIX shell wrappers must have LF bytes in working copies as well as Git; the Linux verifier snapshots committed blobs to match CI checkout rather than copying Windows line endings.
+
+- 2026-11-03: At the reviewed cutover, remove the legacy consumer bundle and retain its standalone LAN calibration worksheet as a maintenance utility outside web-next. This preserves the existing owner-coordinate API workflow without serving the old consumer UI; sandbox access remains404. The utility is not claimed field-accepted.
+
+- 2026-11-03: Import-only battery cameras do not require network hosts in doctor. AC/Hub access still requires its configured host, and privacy/clock reviews remain independent blockers. This matches the owner-confirmed no-Hub workflow without encouraging a battery connection.

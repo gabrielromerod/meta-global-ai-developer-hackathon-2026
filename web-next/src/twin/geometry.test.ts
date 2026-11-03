@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { PerspectiveCamera, Vector3 } from "three";
 import fixture from "../fixtures/twin.json";
 import {
   parseTwin,
@@ -9,6 +10,7 @@ import {
   hatchSegments,
   layoutLabels,
   framingFov,
+  fitPose,
 } from "./geometry";
 
 describe("FR-040 generic house geometry and bounded orbit", () => {
@@ -19,6 +21,29 @@ describe("FR-040 generic house geometry and bounded orbit", () => {
     expect(horizontal).toBeCloseTo(42);
     expect(framingFov(42, 2)).toBe(42);
   });
+  it.each(["front", "left", "backyard", "top"])(
+    "fits the entire generic property in the narrow %s preset",
+    (name) => {
+      const ground = {
+          min: [-9, -10] as [number, number],
+          max: [9, 14] as [number, number],
+        },
+        aspect = 0.6,
+        fov = framingFov(42, aspect),
+        pose = fitPose(presetPose(name, ground), ground, 3, fov, aspect);
+      const camera = new PerspectiveCamera(fov, aspect, 0.1, 300);
+      camera.position.fromArray(pose.position);
+      camera.lookAt(new Vector3(...pose.target));
+      camera.updateMatrixWorld();
+      for (const x of [-9, 9])
+        for (const y of [0, 3])
+          for (const z of [-10, 14]) {
+            const p = new Vector3(x, y, z).project(camera);
+            expect(Math.abs(p.x)).toBeLessThanOrEqual(0.96);
+            expect(Math.abs(p.y)).toBeLessThanOrEqual(0.96);
+          }
+    },
+  );
   it("keeps all seven configured cameras and the physical right tree barrier", () => {
     const twin = parseTwin(fixture);
     expect(twin.cameras.map((c) => c.id)).toEqual(

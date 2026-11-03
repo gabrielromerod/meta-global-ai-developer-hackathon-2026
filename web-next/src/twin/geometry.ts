@@ -1,3 +1,4 @@
+import { Vector3 } from "three";
 /** Public geometry is generic massing. Coordinates remain the supplied house frame. */
 export type Vec2 = [number, number];
 export function framingFov(base: number, aspect: number): number {
@@ -11,6 +12,49 @@ export function framingFov(base: number, aspect: number): number {
   );
 }
 export type Vec3 = [number, number, number];
+export function fitPose(
+  pose: OrbitPose,
+  ground: Ground,
+  height: number,
+  fov: number,
+  aspect: number,
+): OrbitPose {
+  const target = new Vector3(...pose.target),
+    forward = target
+      .clone()
+      .sub(new Vector3(...pose.position))
+      .normalize(),
+    right = forward
+      .clone()
+      .cross(new Vector3(0, 1, 0))
+      .normalize(),
+    up = right.clone().cross(forward).normalize();
+  const tanV = Math.tan((fov * Math.PI) / 360),
+    tanH = tanV * Math.max(aspect, Number.EPSILON);
+  let required = 0;
+  for (const x of [ground.min[0], ground.max[0]])
+    for (const y of [0, height])
+      for (const z of [ground.min[1], ground.max[1]]) {
+        const relative = new Vector3(x, y, z).sub(target),
+          depth = relative.dot(forward);
+        required = Math.max(
+          required,
+          Math.abs(relative.dot(right)) / tanH - depth,
+          Math.abs(relative.dot(up)) / tanV - depth,
+        );
+      }
+  const distance = Math.max(
+    new Vector3(...pose.position).distanceTo(target),
+    required + height,
+  );
+  return {
+    target: pose.target,
+    position: target
+      .clone()
+      .addScaledVector(forward, -distance)
+      .toArray() as Vec3,
+  };
+}
 export interface Ground {
   min: Vec2;
   max: Vec2;

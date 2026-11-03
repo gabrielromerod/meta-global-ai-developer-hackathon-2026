@@ -119,6 +119,29 @@ try {
       for (const preset of ["Left passage", "Backyard", "Top-down", "Front"]) {
         await page.getByRole("tab", { name: preset, exact: true }).click();
         await page.waitForTimeout(600);
+        const framing = await page
+          .locator("[data-testid=twin-canvas]")
+          .evaluate((element) => ({
+            fov: Number(element.dataset.cameraFov),
+            aspect: element.clientWidth / element.clientHeight,
+            base: parseFloat(
+              getComputedStyle(document.documentElement).getPropertyValue(
+                "--v-twin-camera-fov",
+              ),
+            ),
+          }));
+        const expectedFov =
+          (2 *
+            Math.atan(
+              Math.tan((framing.base * Math.PI) / 360) /
+                Math.min(1, framing.aspect),
+            ) *
+            180) /
+          Math.PI;
+        assert.ok(
+          Math.abs(framing.fov - expectedFov) < 0.01,
+          `camera framing reset after ${preset}: ${JSON.stringify(framing)}`,
+        );
         await capture(`preset-${preset.toLowerCase().replaceAll(" ", "-")}`);
       }
       await page.getByRole("button", { name: "Zoom in", exact: true }).click();

@@ -30,6 +30,7 @@ import {
   coneFootprint,
   evidenceAtTime,
   framingFov,
+  fitPose,
   hatchSegments,
   layoutLabels,
   parseTwin,
@@ -725,13 +726,15 @@ function BoundedControls({
   zoom,
   reduced,
   onState,
+  height,
 }: {
   ground: Ground;
   palette: Palette;
   preset: string;
   zoom: { factor: number; serial: number };
   reduced: boolean;
-  onState: (position: Vec3, target: Vec3) => void;
+  onState: (position: Vec3, target: Vec3, fov: number) => void;
+  height: number;
 }) {
   const controls = useRef<OrbitControlsImpl>(null),
     { camera, size } = useThree();
@@ -745,12 +748,18 @@ function BoundedControls({
     null,
   );
   useEffect(() => {
-    const pose = presetPose(preset.split(":")[0], ground);
+    const pose = fitPose(
+      presetPose(preset.split(":")[0], ground),
+      ground,
+      height,
+      framingFov(palette.fov, size.width / size.height),
+      size.width / size.height,
+    );
     transition.current = {
       position: new Vector3(...pose.position),
       target: new Vector3(...pose.target),
     };
-  }, [preset, ground]);
+  }, [preset, ground, height, palette.fov, size.width, size.height]);
   useEffect(() => {
     const c = controls.current;
     if (!c) return;
@@ -787,7 +796,11 @@ function BoundedControls({
     camera.position.fromArray(pose.position);
     c.target.fromArray(pose.target);
     c.update();
-    onState(pose.position, pose.target);
+    onState(
+      pose.position,
+      pose.target,
+      camera instanceof PerspectiveCamera ? camera.fov : 0,
+    );
   });
   return (
     <OrbitControls
@@ -831,7 +844,15 @@ export function HouseView({
     );
   const actualPreset = controlledPreset ?? preset;
   const activeCamera = model.cameras.find((c) => c.id === activeCameraId);
-  const pose = presetPose("front", model.ground);
+  const canvasCamera = useMemo(
+    () => ({
+      position: presetPose("front", model.ground).position,
+      fov: palette.fov,
+      near: 0.1,
+      far: 300,
+    }),
+    [model.ground, palette.fov],
+  );
   return (
     <section
       className="house-view"
@@ -943,12 +964,7 @@ export function HouseView({
         <AnnotationRegistry.Provider value={registry.current}>
           <CanvasBoundary>
             <Canvas
-              camera={{
-                position: pose.position,
-                fov: palette.fov,
-                near: 0.1,
-                far: 300,
-              }}
+              camera={canvasCamera}
               dpr={[1, 2]}
               gl={{ antialias: true, alpha: false }}
               fallback={
@@ -999,13 +1015,15 @@ export function HouseView({
               <Evidence data={positions} time={time} palette={palette} />
               <BoundedControls
                 ground={model.ground}
+                height={Math.max(0, ...model.boxes.map((box) => box.h))}
                 palette={palette}
                 preset={`${actualPreset}:${reset}`}
                 zoom={zoom}
                 reduced={reduced}
-                onState={(position, target) => {
+                onState={(position, target, fov) => {
                   if (container.current) {
                     container.current.dataset.cameraY = String(position[1]);
+                    container.current.dataset.cameraFov = String(fov);
                     container.current.dataset.orbitDistance = String(
                       Math.hypot(...position.map((n, i) => n - target[i])),
                     );

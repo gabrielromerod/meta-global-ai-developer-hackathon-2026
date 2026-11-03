@@ -10,6 +10,7 @@ import shutil
 from datetime import datetime
 from functools import lru_cache
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -40,8 +41,21 @@ class Settings(BaseSettings):
     judging_cap_usd: float = 25.0
     """Post-window (card-paid) total during judging (11.6 item 6, NFR-037)."""
     judging_daily_cap_usd: float = 5.0
-    judging_end: datetime | None = None
+    judging_end: datetime | None = datetime(
+        2026, 11, 10, 23, 59, tzinfo=ZoneInfo("America/Los_Angeles")
+    )
     """VIGIL_JUDGING_END (Nov 10 23:59 PT): no paid call after it."""
+    ledger_path: Path | None = None
+    """VIGIL_LEDGER_PATH: durable SQLite call ledger shared by the budget guard and the sandbox
+    guards, so caps survive restarts. None: in-memory (tests); live paid calls then fail closed."""
+
+    # Owner (LAN) endpoints: check-in, expected windows, spatial (FR-029, FR-044)
+    owner_token: SecretStr | None = None
+    """VIGIL_OWNER_TOKEN: required on owner endpoints; None disables them (fail closed)."""
+    trusted_hosts: list[str] = Field(
+        default_factory=lambda: ["127.0.0.1", "localhost", "testserver"]
+    )
+    """VIGIL_TRUSTED_HOSTS (JSON list): Host header allowlist against DNS rebinding."""
 
     # Sandbox guards (NFR-015)
     live_rate_per_min: int = 10

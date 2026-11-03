@@ -20,7 +20,8 @@ CREATE TABLE visits(id TEXT PRIMARY KEY, scenario TEXT, t0 REAL, t1 REAL, state 
   proposal TEXT, verdict TEXT, escalated INT, story_json TEXT);
 CREATE TABLE gaps(id TEXT PRIMARY KEY, visit_id TEXT, kind TEXT, t0 REAL, t1 REAL,
   from_camera TEXT, to_camera TEXT, region_id TEXT, resolved INT);
-CREATE TABLE rules(id TEXT PRIMARY KEY, json TEXT, applies_to TEXT, source TEXT, state TEXT,
+CREATE TABLE rules(id TEXT PRIMARY KEY, json TEXT, applies_to TEXT
+  CHECK(applies_to IN ('anyone','external_visitor_only','non_household')), source TEXT, state TEXT,
   created_at TEXT);
 CREATE TABLE rule_hits(rule_id TEXT, visit_id TEXT, event_id TEXT);
 CREATE TABLE model_calls(id TEXT PRIMARY KEY, model TEXT, purpose TEXT, visit_id TEXT, req_hash TEXT,
@@ -40,6 +41,8 @@ CREATE TABLE subjects(id TEXT PRIMARY KEY, visit_id TEXT, track_ids_json TEXT, a
   CHECK(actor_role IN ('household_insider','expected_visitor','external_visitor','unknown')),
   role_basis TEXT);
 CREATE TABLE expected_windows(id TEXT PRIMARY KEY, label TEXT, starts_at TEXT, ends_at TEXT,
-  cameras_json TEXT, zones_json TEXT, state TEXT, created_at TEXT);
+  cameras_json TEXT, zones_json TEXT,
+  state TEXT CHECK(state IN ('scheduled','active','expired','cancelled')), created_at TEXT);
 CREATE TABLE checkins(id TEXT PRIMARY KEY, session_id TEXT, starts_at TEXT, expires_at TEXT,
   bound_subject TEXT, revoked INT);
+CREATE TABLE feedback(visit_id TEXT, kind TEXT, created_at TEXT);

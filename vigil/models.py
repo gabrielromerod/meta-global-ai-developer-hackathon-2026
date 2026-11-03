@@ -382,6 +382,9 @@ class ExpectedWindow(_Model):
     cameras: list[str] = Field(default_factory=list)
     zones: list[str] = Field(default_factory=list)
     state: Literal["scheduled", "active", "expired", "cancelled"] = "scheduled"
+    created_at: datetime | None = None
+    """When the owner set the window. A track counts only if it starts at or after both
+    start and created_at, so a window is never retroactive (FR-029)."""
 
     @model_validator(mode="after")
     def _max_12h(self) -> ExpectedWindow:
@@ -412,6 +415,8 @@ class RuleHit(_Model):
 class RuleResult(_Model):
     hits: list[RuleHit] = Field(default_factory=list)
     floor: Severity = "normal"
+    scoped_out: list[str] = Field(default_factory=list)
+    """Event ids whose household touch every in-force rule excluded (spec 9.4 case 2)."""
 
 
 # ---------------------------------------------------------------------------
@@ -470,7 +475,7 @@ class StoryDraft(_Model):
 class ValidationFailure(_Model):
     check: Literal[
         "schema", "sentence_count", "uncited", "foreign_event", "time_mismatch",
-        "time_in_gap", "camera_mismatch", "banned_word", "unknown_gap",
+        "time_in_gap", "camera_mismatch", "banned_word", "unknown_gap", "role_claim",
     ]  # fmt: skip
     sentence_index: int | None = None
     detail: str
@@ -553,10 +558,10 @@ class Intrinsics(_Model):
     height: int
     rms_px: float | None = None
     fov_fallback: bool = False
+    """True when focal length came from the lens field of view (flagged low accuracy)."""
     source: IntrinsicsSource = "lens_profile"
     """fov_nominal: focal length from the datasheet HFOV, no distortion (primary, flagged);
     lens_profile: checkerboard RMS < 1 px, recorded once per camera model (FR-036)."""
-    """True when focal length came from the lens field of view (flagged low accuracy)."""
 
 
 class Extrinsics(_Model):

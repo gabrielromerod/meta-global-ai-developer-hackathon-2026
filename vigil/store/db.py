@@ -304,7 +304,12 @@ def insert_subject(conn: sqlite3.Connection, s: Subject) -> None:
 def insert_expected_window(
     conn: sqlite3.Connection, w: ExpectedWindow, created_at: str | None = None
 ) -> None:
-    """Expected Guest / Delivery Window (FR-029), wall-clock ISO-8601 with its offset."""
+    """Expected Guest / Delivery Window (FR-029), wall-clock ISO-8601 with its offset.
+
+    ``created_at`` defaults to the window's own ``created_at`` (when it was set), which the
+    role assignment reads back so a window is never retroactive."""
+    if created_at is None and w.created_at is not None:
+        created_at = w.created_at.isoformat()
     insert_raw(
         conn,
         "expected_windows",
@@ -382,6 +387,7 @@ def expected_window_from_row(row: dict[str, Any]) -> ExpectedWindow:
         cameras=list(data.get("cameras_json") or []),
         zones=list(data.get("zones_json") or []),
         state=data.get("state") or "scheduled",
+        created_at=datetime.fromisoformat(data["created_at"]) if data.get("created_at") else None,
     )
 
 

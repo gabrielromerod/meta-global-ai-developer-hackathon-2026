@@ -201,10 +201,29 @@ def test_expected_window_round_trip_and_cancel(tmp_path: Path) -> None:
                        end=datetime.fromisoformat("2026-11-03T17:00:00-08:00"),
                        cameras=["front"], state="scheduled")  # fmt: skip
     db.insert_expected_window(conn, w, created_at="2026-11-03T09:00:00-08:00")
-    assert db.expected_windows(conn) == [w]
+    created = datetime.fromisoformat("2026-11-03T09:00:00-08:00")
+    assert db.expected_windows(conn) == [w.model_copy(update={"created_at": created})]
     assert db.cancel_expected_window(conn, "w3") is True
     assert db.expected_windows(conn)[0].state == "cancelled"
     assert db.cancel_expected_window(conn, "nope") is False
+
+
+def test_window_is_never_retroactive_created_at_round_trips(tmp_path: Path) -> None:
+    """FR-029: a window's created_at survives the store, so roles read from the edge DB
+    still require track.t_first >= max(start, created_at)."""
+    from datetime import datetime
+
+    conn = db.open_db(tmp_path / "x.db")
+    w = ExpectedWindow(id="w4", label="guest",
+                       start=datetime.fromisoformat("2026-11-03T13:00:00-08:00"),
+                       end=datetime.fromisoformat("2026-11-03T17:00:00-08:00"),
+                       cameras=["front"], state="scheduled",
+                       created_at=datetime.fromisoformat("2026-11-03T14:30:00-08:00"))  # fmt: skip
+    db.insert_expected_window(conn, w)
+    assert db.expected_windows(conn) == [w]
+    legacy = w.model_copy(update={"id": "w5", "created_at": None})
+    db.insert_expected_window(conn, legacy)
+    assert db.expected_windows(conn)[1].created_at is None
 
 
 def test_checkin_round_trip_and_binding(tmp_path: Path) -> None:

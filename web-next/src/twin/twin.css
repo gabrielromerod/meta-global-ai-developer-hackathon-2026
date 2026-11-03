@@ -1,0 +1,244 @@
+.house-view {
+  display: flex;
+  flex-direction: column;
+  min-width: var(--v-zero);
+  min-height: var(--v-zero);
+  height: var(--v-full);
+  border: var(--v-line) solid var(--v-border);
+  border-radius: var(--v-radius-lg);
+  background: var(--v-surface);
+  overflow: hidden;
+  color: var(--v-text);
+  font-family: var(--v-font);
+}
+.twin-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--v-space-1);
+  padding: var(--v-space-2);
+  flex-wrap: wrap;
+  border-bottom: var(--v-line) solid var(--v-border);
+}
+.twin-presets {
+  display: flex;
+  gap: var(--v-space-1);
+  flex-wrap: wrap;
+}
+.twin-tools {
+  display: flex;
+  gap: var(--v-space-1);
+}
+.house-view button {
+  font: inherit;
+  font-size: var(--v-text-sm);
+  line-height: var(--v-leading-tight);
+  background: var(--v-transparent);
+  color: var(--v-muted);
+  border: var(--v-line) solid var(--v-transparent);
+  border-radius: var(--v-radius-sm);
+  min-height: var(--v-target);
+  padding: var(--v-space-1) var(--v-space-2);
+  cursor: pointer;
+  transition:
+    background var(--v-motion-fast) var(--v-ease),
+    color var(--v-motion-fast) var(--v-ease);
+}
+.house-view button:hover:not(:disabled) {
+  background: var(--v-raised);
+  color: var(--v-text);
+}
+.house-view button:focus-visible {
+  outline: var(--v-focus-width) solid var(--v-accent);
+  outline-offset: var(--v-focus-offset);
+}
+.house-view button[data-state="active"],
+.house-view button[aria-pressed="true"] {
+  background: var(--v-raised);
+  color: var(--v-accent);
+  border-color: var(--v-border);
+}
+.house-view button:disabled {
+  cursor: default;
+  opacity: var(--v-disabled-opacity);
+}
+.house-view svg {
+  width: var(--v-icon-sm);
+  height: var(--v-icon-sm);
+  stroke-width: var(--v-line);
+  flex-shrink: var(--v-zero);
+}
+.twin-tools button {
+  display: grid;
+  place-items: center;
+  width: var(--v-target);
+  padding: var(--v-space-1);
+}
+.twin-canvas {
+  position: relative;
+  min-height: var(--v-twin-min);
+  flex: var(--v-one);
+  overflow: hidden;
+  isolation: isolate;
+  touch-action: none;
+}
+.twin-canvas > div {
+  position: absolute !important;
+  inset: var(--v-zero);
+}
+.twin-region-label {
+  display: block;
+  white-space: nowrap;
+  font-size: var(--v-text-xs);
+  font-weight: var(--v-weight-medium);
+  color: var(--v-text);
+  background: var(--v-overlay);
+  border: var(--v-line) solid var(--v-border);
+  border-radius: var(--v-radius-sm);
+  padding: var(--v-space-1);
+  box-shadow: var(--v-shadow);
+  backdrop-filter: blur(var(--v-overlay-blur));
+}
+.house-view .twin-pin {
+  display: flex;
+  align-items: center;
+  gap: var(--v-space-1);
+  border: var(--v-line) solid var(--v-border);
+  background: var(--v-overlay);
+  box-shadow: var(--v-shadow);
+  backdrop-filter: blur(var(--v-overlay-blur));
+  padding: var(--v-space-1);
+  color: var(--v-accent);
+  white-space: nowrap;
+  min-height: var(--v-target);
+}
+.twin-pin span {
+  display: none;
+}
+.twin-pin:hover span,
+.twin-pin:focus-visible span,
+.twin-pin.is-selected span {
+  display: inline;
+}
+.twin-pin.is-selected {
+  border-color: var(--v-accent);
+}
+.twin-annotation {
+  width: max-content;
+  pointer-events: none;
+}
+.twin-annotation > button {
+  pointer-events: auto;
+}
+.house-view .twin-blind-label {
+  display: flex;
+  align-items: center;
+  gap: var(--v-space-1);
+  white-space: nowrap;
+  background: var(--v-overlay);
+  border-color: var(--v-border);
+  backdrop-filter: blur(var(--v-overlay-blur));
+  padding: var(--v-space-1);
+  font-size: var(--v-text-xs);
+  color: var(--v-text);
+}
+.twin-map-note {
+  position: absolute;
+  left: var(--v-space-2);
+  bottom: var(--v-space-2);
+  font-size: var(--v-text-xs);
+  color: var(--v-muted);
+  pointer-events: none;
+}
+.twin-camera-list {
+  display: flex;
+  gap: var(--v-space-1);
+  padding: var(--v-space-1) var(--v-space-2);
+  overflow-x: auto;
+  scrollbar-gutter: stable;
+  flex-shrink: var(--v-zero);
+  border-top: var(--v-line) solid var(--v-border);
+}
+.twin-camera-list button {
+  display: flex;
+  align-items: center;
+  gap: var(--v-space-1);
+  white-space: nowrap;
+}
+.twin-footer {
+  display: flex;
+  align-items: center;
+  gap: var(--v-space-2);
+  flex-wrap: wrap;
+  padding: var(--v-space-1) var(--v-space-2) var(--v-space-2);
+  font-size: var(--v-text-xs);
+  color: var(--v-muted);
+}
+.twin-footer > span {
+  display: flex;
+  align-items: center;
+  gap: var(--v-space-1);
+}
+.twin-selection {
+  margin-left: auto;
+}
+.twin-key {
+  display: inline-block;
+  width: var(--v-icon-sm);
+  height: var(--v-line);
+  background: var(--v-accent);
+}
+.twin-key-evidence {
+  background: var(--v-warning);
+}
+.twin-key-gap {
+  background: var(--v-transparent);
+  border-top: var(--v-line) dashed var(--v-muted);
+}
+.twin-gap-summary {
+  margin: var(--v-zero);
+  padding: var(--v-space-1) var(--v-space-2);
+  font-size: var(--v-text-xs);
+  color: var(--v-muted);
+  border-top: var(--v-line) solid var(--v-border);
+}
+.twin-unavailable {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--v-space-2);
+  height: var(--v-full);
+  padding: var(--v-space-3);
+  text-align: center;
+  color: var(--v-muted);
+}
+@media (max-width: 640px) {
+  .twin-toolbar {
+    padding: var(--v-space-1);
+  }
+  .twin-presets {
+    gap: var(--v-zero);
+  }
+  .house-view .twin-presets button {
+    padding: var(--v-space-1);
+  }
+  .twin-map-note {
+    left: var(--v-space-1);
+    bottom: var(--v-space-1);
+  }
+  .twin-footer {
+    gap: var(--v-space-1);
+  }
+  .twin-selection {
+    margin-left: var(--v-zero);
+    flex-basis: var(--v-full);
+  }
+  .twin-region-label {
+    font-size: var(--v-text-xs);
+    padding: var(--v-space-1);
+  }
+  .twin-pin.is-selected span {
+    display: none;
+  }
+}

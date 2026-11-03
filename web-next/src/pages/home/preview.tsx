@@ -7,6 +7,8 @@ import '@fontsource/inter/600.css';
 import '../../styles/tokens.css';
 import '../../styles/base.css';
 import fixture from '../../fixtures/state.json';
+import twinFixture from '../../fixtures/twin.json';
+import {HouseView} from '../../twin';
 import type {UIState, Route} from '../../contracts';
 import {EmptyState, Modal, VerdictBadge} from '../../components/ui';
 import {AppShell} from '../../shell';
@@ -22,7 +24,11 @@ function Preview() {
   const state = fixture as unknown as UIState;
   document.documentElement.dataset.theme = theme;
   const visit = state.visits.find(item=>item.id===visitId);
-  const props = {state,onOpenVisit:setVisitId,onOpenClip:setClipId};
+  const [cameraId,setCameraId] = useState<string|null>(null);
+  const props = {state,onOpenVisit:setVisitId,onOpenClip:setClipId,
+    activeView:cameraId ? `camera_${cameraId}` : undefined,
+    onViewChange:()=>setCameraId(null),
+    twinSlot:<HouseView twin={twinFixture} activeCameraId={cameraId} onCameraSelect={setCameraId}/>};
   return <><AppShell route={route} onNavigate={setRoute} state={state} theme={theme}
     onThemeChange={setTheme} onOpenVisit={setVisitId}>
     {route==='attention' ? <AttentionPage {...props}/> : route==='home' ? <HomePage {...props}/>

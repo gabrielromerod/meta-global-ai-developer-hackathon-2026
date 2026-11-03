@@ -25,34 +25,32 @@ export function HomePage({state, onOpenVisit, onOpenClip, onViewChange, activeVi
       </p>}
     </section>
     <div className="home-workspace">
-      <div className="home-primary">
-        <Card title="Your home" className="home-house" actions={<Chip>{state.cameras.length} configured cameras</Chip>}>
-          {state.views.length > 0 ? <Tabs className="home-view-tabs" items={state.views} value={selectedView}
-            onChange={changeView} label="House views">
-            <div className="home-twin" aria-label="House view">
-              {twinSlot ?? <EmptyState title="House view unavailable" description="A house model has not been loaded."/>}
-            </div>
-          </Tabs> : <EmptyState title="No camera views configured" description="Camera views appear after the home configuration is loaded."/>}
-          <div className="home-player">
-            {playerSlot ?? (cameras.length === 1
-              ? <VideoTile camera={cameras[0]} onOpen={onOpenClip}/>
-              : <p className="home-camera-hint"><Camera aria-hidden="true"/>Select a camera in the house view to inspect its recorded evidence.</p>)}
-          </div>
-        </Card>
-        {comparison && <section className="home-context" aria-label="Same action, different context">
+      {comparison && <section className="home-context" aria-label="Same action, different context">
           <header><h2>Same action, different context</h2><p>Roles follow the observed route.</p></header>
           <div className="home-context-grid">
             <TouchCard evidence={comparison.household} label={comparison.label} context="household" onOpen={onOpenVisit}/>
             <TouchCard evidence={comparison.external} label={comparison.label} context="external" onOpen={onOpenVisit}/>
           </div>
-        </section>}
-      </div>
+      </section>}
       <Card title="Attention center" className="home-attention" actions={<Chip>{ranked.length} to review</Chip>}>
         <p className="home-section-note">Visits worth a closer look, in relevance order.</p>
         <div className="home-attention-list" tabIndex={0} aria-label="Visits to review">
           {ranked.length > 0 ? ranked.map(visit => <VisitCard key={visit.id} visit={visit}
             cameras={state.cameras} onOpen={onOpenVisit}/>)
             : <EmptyState title="No visits to review" description="New visits will appear when there is evidence to review."/>}
+        </div>
+      </Card>
+      <Card title="Your home" className="home-house" actions={<Chip>{state.cameras.length} configured cameras</Chip>}>
+        {state.views.length > 0 ? <Tabs className="home-view-tabs" items={state.views} value={selectedView}
+          onChange={changeView} label="House views">
+          <div className="home-twin" aria-label="House view">
+            {twinSlot ?? <EmptyState title="House view unavailable" description="A house model has not been loaded."/>}
+          </div>
+        </Tabs> : <EmptyState title="No camera views configured" description="Camera views appear after the home configuration is loaded."/>}
+        <div className="home-player">
+          {playerSlot ?? (cameras.length === 1
+            ? <VideoTile camera={cameras[0]} onOpen={onOpenClip}/>
+            : <p className="home-camera-hint"><Camera aria-hidden="true"/>Select a camera in the house view to inspect its recorded evidence.</p>)}
         </div>
       </Card>
     </div>

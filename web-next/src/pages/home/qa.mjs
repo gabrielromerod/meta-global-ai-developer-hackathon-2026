@@ -26,6 +26,7 @@ for(const [label,width,height] of viewports) {
   if(layout.docWidth>width)errors.push(`Document horizontal overflow ${layout.docWidth}>${width}`);
   if(width>640&&layout.docHeight>height)errors.push(`Desktop document scroll ${layout.docHeight}>${height}`);
   if(width>640&&layout.comparisonBottom>height)errors.push(`Comparison clipped at ${layout.comparisonBottom}`);
+  if(width>640&&layout.twinHeight<184)errors.push(`House hero collapsed to ${layout.twinHeight}px`);
   const tabs=page.getByRole('tab');
   const tabCount=await tabs.count();
   for(let i=0;i<tabCount;i++) {

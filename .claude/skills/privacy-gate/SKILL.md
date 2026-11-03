@@ -1,6 +1,6 @@
 ---
 name: privacy-gate
-description: Use when about to run vigil export, change anything under demo/, commit or upload images, video, GLB/PLY scans or stills, publish the sandbox or video, or when a diff touches media, fixtures from real cameras, scan exports or config privacy polygons.
+description: Use when about to run vigil export, change anything under demo/ (including the demo/voice/ audio fixtures), commit or upload images, video, audio, GLB/PLY scans or stills, publish the sandbox or video, or when a diff touches media, fixtures from real cameras, scan exports or config privacy polygons.
 ---
 
 # Privacy gate
@@ -25,6 +25,11 @@ git status --porcelain                          # nothing under data/, no .env, 
 - If exiftool or gitleaks is not installed, say so in your report; CI still runs gitleaks.
   Do not mark the gate passed on a skipped check.
 - Run the scans on any other directory you are about to commit media from, not only `demo/`.
+- **Audio (NFR-002):** the only audio files allowed anywhere in the repo are the consented
+  voice-rule fixtures in `demo/voice/`, each listed by SHA-256 in `config/audio_fixtures.json`.
+  CI fails on any tracked `.wav`, `.mp3`, `.m4a`, `.ogg` or `.webm` not on that list. Before
+  adding a fixture: consenting adult team member, 16 kHz mono 16-bit PCM, under 30 s and 2 MB,
+  no other voices or identifying background, hash and consent note recorded in the list.
 
 ## Manual frame review (every published frame set)
 

@@ -4,7 +4,7 @@
 | --- | --- |
 | When | Mon Nov 2, 2026, after phase 3 |
 | Owner | Integrator, with the owner's GitHub account (`gh` CLI) |
-| Status | Not started |
+| Status | Done: issues #1 to #80, labels and milestones created by `scripts/backlog/backlog.py` ([backlog](../backlog.md)) |
 
 ## Goal
 

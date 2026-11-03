@@ -4,7 +4,7 @@
 | --- | --- |
 | When | Mon Nov 2, 2026, from about 12:00 PT |
 | Workstreams | 9 in parallel, each with exclusive write ownership of its paths |
-| Status | In progress |
+| Status | Done offline: 1275 tests pass on Nov 2, including the Nov 2 spec changes ([readiness](../readiness.md)) |
 
 ## Goal
 

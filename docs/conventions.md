@@ -84,18 +84,19 @@ Consequences: keep `main` releasable at every push; never push a red tree; if CI
 
 - No real footage, raw segments, scans, credentials, GPS or personal data in the repository. `data/` and media files are gitignored; only masked demo assets go in `demo/`.
 - Privacy polygons are blacked out and audio removed before anything is stored for upload; uploads are refused otherwise (FR-003).
-- No code, schema, prompt or UI produces face, age, gender, skin or ethnicity attributes; stories say "a person" or "they"; no judgements such as "suspicious", "intruder" or "thief" (NFR-003, validator check 5).
-- Vigil never identifies people. Rules that mention identity are rewritten to "anyone" with a disclaimer.
+- No code, schema, prompt or UI produces face, age, gender, skin, ethnicity, height, gait, body-measurement, voice-feature or name fields (NFR-003); stories say "a person", "they" or an allowed role phrase from `config/role_phrases.json`; no judgements such as "suspicious", "intruder" or "thief" (validator checks 5 and 7).
+- Vigil does not identify anyone and creates no face, voice or body templates. A person's `actor_role` comes only from spatial origin (house egress, explicit check-in, expected window, perimeter); `unknown` fails closed. Identity phrases in rules map to `applies_to` (`non_household`, `external_visitor_only`), never to a person.
+- Camera audio never enters the repo; the only audio files allowed are the consented voice fixtures listed in `config/audio_fixtures.json` (NFR-002, checked repository-wide in CI).
 - Standard mode only: no `-contributor` model IDs (NFR-004; CI greps for them).
 - Credentials only in `.env` on the edge machine; never logged (NFR-014, NFR-031).
 - Consent from everyone filmed; plates covered with "VIGIL-01"; no house number or street-facing frames (NFR-032).
 
 ## Budget rules
 
-- Every Meta call goes through `MetaClient`, which prices it before sending and enforces the total cap ($140), the feature budgets ([11.4](spec/vigil-spec.md#114-cost-by-feature)) and the daily cap ($10 in the sandbox).
+- Every Meta call goes through `MetaClient`, which prices it before sending and enforces the total cap ($140), the feature budgets ([11.4](spec/vigil-spec.md#114-cost-by-feature)) the daily cap ($10 in the sandbox), counting `credit`-tagged spend only.
 - Cache first: identical requests are never paid twice.
 - Batch commands print a pre-flight estimate and need `--confirm` above $5.
-- After the credit window, live calls are disabled unless the owner sets `VIGIL_ALLOW_PAID=1` (NFR-037).
+- After the credit window, live calls are disabled unless the owner sets `VIGIL_ALLOW_PAID=1`; with it, `paid` spend is capped at $25 in total and $5 per PT day, and stops at `VIGIL_JUDGING_END` (Nov 10, 23:59 PT) (NFR-037). Owner decision of Nov 2: on during judging.
 - Tests never make billed calls; `live` tests are run by hand and logged.
 - Reconcile the ledger with the Billing page daily ([credits runbook](runbooks/credits-billing.md)).
 

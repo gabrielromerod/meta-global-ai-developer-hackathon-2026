@@ -1,22 +1,23 @@
 # Runbook: LiDAR scan of the house
 
-Task: **T-06** (Mon 16:30 PT, **before dusk**), then T-10. Requirements: FR-035, NFR-032. Spec: [Scan capture](../spec/vigil-spec.md#scan-capture), [Processing](../spec/vigil-spec.md#processing-vigil-spatial-build), [Fallback ladder](../spec/vigil-spec.md#fallback-ladder-for-the-3d-model), diagram [5.12](../architecture/README.md#512-spatial-build-and-calibration-pipeline).
+Task: **T-06** (done by **Mon 15:45 PT**, in the daylight block, before sunset at 16:55), then T-10. Requirements: FR-035, FR-037 (landmarks), NFR-024 to NFR-026 (audit markers), NFR-032. Spec: [Scan capture](../spec/vigil-spec.md#scan-capture), [Processing](../spec/vigil-spec.md#processing-vigil-spatial-build), [Camera calibration](../spec/vigil-spec.md#camera-calibration), [Fallback ladder](../spec/vigil-spec.md#fallback-ladder-for-the-3d-model), diagram [5.12](../architecture/README.md#512-spatial-build-and-calibration-pipeline).
 
-**Blocked-by: hardware.** Needs an iPhone Pro with LiDAR, Scaniverse (free), markers and a tape measure. The build step needs the optional `spatial` extra (Open3D), which is not installed by default.
+**Blocked-by: hardware.** Needs an iPhone Pro with LiDAR, Scaniverse (free), tape crosses or cones and a tape measure. The build step needs the optional `spatial` extra (Open3D), which is not installed by default, and `build_model` is still blocked in code (see [readiness](../readiness.md#remaining-gaps-no-credits-or-hardware-needed-to-start)).
 
 ## Kit
 
 - iPhone Pro with LiDAR, charged; Scaniverse installed
-- 8 ground markers **per camera view** (tape crosses or cones), plus one on the **front-door threshold** (world origin)
-- Tape measure; notebook for 2 measured distances
-- The printed checkerboard on a rigid board (for [calibration](calibration.md), done in the same session)
+- **6 audit markers per camera** (24 in total: tape crosses or cones on the ground), plus one on the **front-door threshold** (world origin)
+- Tape measure and a marker survey sheet; notebook for 2 measured distances
+- Optional: a checkerboard on a rigid board, only for a lens profile per camera *model* ([calibration](calibration.md#1-intrinsics-fr-036))
 
-## 1. Place markers first
+## 1. Place markers and pick landmarks first
 
 1. Put the origin marker on the front-door threshold.
-2. For each camera, place 8 ground markers spread across its view, near and far, all on the ground and visible both to the camera and to the scan. Two of them will be held out for the accuracy check.
-3. Measure **2 known distances** between fixed features (for example two fence posts, or two markers far apart) with the tape. Write them down; they are the scale check.
-4. Take one calibration still per camera from the main stream while the markers are in place.
+2. **Landmarks (product path, FR-037):** for each camera, check that at least 6 fixed landmarks are visible both in the camera view and to the scan: door frames, gate posts, shed corners, window corners. These are what the calibration solves on.
+3. **Audit markers (benchmark only, NFR-024 to NFR-026):** for each camera, place 6 ground markers spread across its view, near and far. **Survey** each one into the world frame with the tape (distances from the origin and from fixed features) and write them on the survey sheet. They are **never used in the solve**; they give the held-out ground error and are the stand points for the T-15 marker walk. Leave them in place or mark their positions so they can be re-placed on Tuesday.
+4. Measure **2 known distances** between fixed features (for example two fence posts) with the tape: the scale check.
+5. Take one calibration still per camera from the main stream with the markers in place.
 
 ## 2. Scan 4 loops
 

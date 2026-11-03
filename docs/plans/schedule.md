@@ -1,96 +1,100 @@
 # Schedule: Mon Nov 2 to Wed Nov 4, 2026 (PT)
 
-Derived from the spec's [task table (9.7)](../spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence), [hardware tasks (10.2)](../spec/vigil-spec.md#102-hardware-verification-tasks-added-to-section-9) and [phase D-1 (10.4)](../spec/vigil-spec.md#104-advance-notice-dgx-spark-phase-d-1-conditional-not-yet-triggered). All times are Pacific Time. The bootstrap phases ([phase 0](phase-0-baseline.md) to [phase 5](phase-5-readiness.md)) run on Monday around T-01 and T-02.
+Derived from the revised [task table (spec 9.7)](../spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence), [hardware tasks (10.2)](../spec/vigil-spec.md#102-hardware-verification-tasks-added-to-section-9) and [phase D-1 (10.4)](../spec/vigil-spec.md#104-advance-notice-dgx-spark-phase-d-1-conditional-not-yet-triggered), re-baselined on Nov 2 ([change set](../spec/changes/2026-11-02-business-corrections.md)). All times are Pacific Time. Sunset Mon Nov 2 is **4:55 PM PT** (owner-supplied; about 4:59 PM if the house is in Los Angeles), so field tasks that need daylight come first, and the night scenarios are filmed after about 17:55 (nautical dusk), with the cameras in IR. Software tasks whose offline code already landed on Nov 2 keep their slot for **real-data acceptance only**. Each task is a GitHub issue ([backlog](../backlog.md)).
 
-**Tracks:** A pipeline · B models and reasoning · C app and 3D · D field work and evidence.
+**Tracks:** A pipeline · B models and reasoning · C app and 3D · D field work and evidence. **Needs:** credits (billed Meta calls), hardware (cameras, LiDAR, filming, RTX 3090), DGX (phase D-1 only), owner (account, billing, consent, licence, host, submission).
 
-**Dependency columns** (✔ = the task cannot be finished without it):
+## Done
 
-- **Credits:** billed Meta Model API calls (credits claimed, $140 limit set, budget guard on).
-- **Hardware:** field hardware or field work: Reolink cameras, iPhone Pro LiDAR, filming with consent, RTX 3090.
-- **DGX:** the DGX Spark (phase D-1 only).
-- **Owner:** an owner action or decision (account, billing, consent, licence, host, submission).
+| Task | Evidence |
+| --- | --- |
+| T-01 audit part ✓ (the owner part stays open, see below) | [audit/2026-11-02-repo-audit.md](../audit/2026-11-02-repo-audit.md) |
+| T-02 Scaffold and CI ✓ | Commit `3d53d05`; issue #46 closed; latest green run [41587853241](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/actions/runs/41587853241) on `46c5b68` |
+| H-01 GPU probe ✓ | `eval/hardware/3090.json`: Ready (torch 2.14.1 for CUDA 13.0, about 64 TFLOPS burn, 67 °C peak); issue #76 closed |
 
 ## Monday Nov 2
 
-| Time | Task | Track | Depends on | Credits | Hardware | DGX | Owner | Done when |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 11:30 | T-01 Audit; claim credits and set spend limit; pick track; commit EVAL.md targets incl. NFR-025, NFR-026 | D | none | | | | ✔ claim, limit, track | Audit done ([phase 0](phase-0-baseline.md)); EVAL.md targets committed; owner items open |
-| 12:30 | T-02 Scaffold and CI | A | T-01 | | | | | CI green: ruff, pytest, gitleaks ([phase 1](phase-1-foundation.md)) |
-| 12:30 | T-03 Meta smoke tests; resolve the 3 open API questions | B | T-01 | ✔ | | | ✔ keys | One recorded response per model; findings in spec 5.14 |
-| 12:30 | T-04 Reolink probe; on-camera privacy masks; audio off | D | T-01 | | ✔ cameras | | ✔ camera models, NVR | FR-030 passes; mask confirmed in RTSP ([runbook](../runbooks/reolink.md)) |
-| 12:30 | H-01 GPU probe | (hw) | none | | ✔ RTX 3090 | | ✔ OS / WSL2 | `eval/hardware/3090.json` ([runbook](../runbooks/gpu-h01-h04.md)) |
-| 14:00 | T-05 Restreamer and capture service | A | T-04 | | ✔ | | | 30 min test without gaps; 2 h overnight (NFR-029) |
-| 16:30 (before dusk) | T-06 Markers, 4 LiDAR loops, checkerboard views, calibration stills | D | T-04 | | ✔ iPhone Pro, markers, board | | | Exports on disk; 2 distances measured ([runbook](../runbooks/lidar-scan.md)) |
-| 17:00 | T-08 Privacy, windows, motion gate, privacy scan | A | T-05 | | (real footage for acceptance) | | | FR-003 to FR-005 tests pass |
-| 18:00 | T-09 Meta client, cache, ledger; SAM concept tracking | B | T-03 | ✔ fixtures from T-03 | | | | FR-006, FR-023 pass on fixtures |
-| 20:00 | T-10 3D model build | C | T-06 | | ✔ scan (Open3D extra) | | | FR-035 passes |
-| 21:00 | T-07 Film 12 scenarios with consent; labels before processing | D | T-05 | | ✔ filming | | ✔ consent | 12 labelled scenarios; consent held privately |
-| 21:00 | T-11 Track stitching and overlays | A | T-09 | | | | | FR-007 passes |
-| **22:00** | **H-02 Local SAM 3.1 benchmark (gate)** | (hw) | H-01 | | ✔ RTX 3090 + weights | | ✔ HF licence | Gate decision: 3090 passes, or API SAM ([runbook](../runbooks/gpu-h01-h04.md#gate-h-02-mon-2200-pt)) |
-| 23:00 | T-12 Calibration tool and solver | C | T-10 | | ✔ checkerboard views | | | FR-036 passes for 4 cameras |
-| **23:00** | **G1** | all | | | | | | Footage and labels committed; SAM tracks for A, B, C; GLB built |
+| Done by | Task | Track | Depends on | Needs | Done when |
+| --- | --- | --- | --- | --- | --- |
+| 13:00 | T-01 rest: claim credits, set the $140 spend limit, pick the track, commit EVAL.md targets | D | none | owner | Credits claimed; $140 limit set; targets committed |
+| **Daylight block 13:00–16:55** | | | | | |
+| **13:45** | T-04 Reolink probe; on-camera privacy masks; audio off | D | T-01 | hardware, owner (camera models, NVR) | FR-030 passes; mask confirmed in the RTSP stream; zone `kind`s drawn (egress, perimeter) ([runbook](../runbooks/reolink.md)) |
+| 14:30 | T-05 Restreamer and capture service | A | T-04 | hardware | Capturing before T-07a starts; 2 h test runs overnight. Fallback: NVR or camera recording export |
+| 14:30 | T-03 Meta smoke tests; the 3 open API questions (incl. Voice Transcribe with WAV) | B | T-01 (credits) | credits, owner | One recorded response per model |
+| **15:45** | T-06 LiDAR loops; **6 landmark pairs per camera** (nominal FOV); place and survey **6 audit markers per camera**; 2 scale distances | D | T-04 | hardware | Exports on disk; landmarks visible in each still; marker survey sheet written ([runbook](../runbooks/lidar-scan.md)) |
+| **16:50** | **T-07a** Film daytime scenarios **A, B, B′** (and the other daytime benchmark scenarios) with consent; labels before processing; record the 3 voice fixtures | D | T-05 | hardware, owner (consent) | Labelled before sunset; A filmed before B and B′, with nobody crossing the front-door egress polygon from outside in the 10 min before A; 3 consented WAVs in `demo/voice/`, SHA-256 in `config/audio_fixtures.json` |
+| **Night block: 17:15 setup; filming after about 17:55 (IR) until 19:00** | | | | | |
+| **19:00** | **T-07b** Film night scenarios **A′** (front-door egress, side-gate touch after 17:30) and **C** (side-alley entry, gate touch, 41 s shed gap), and the other night scenarios; optional labelled take of a household member returning through the side alley without a check-in | D | T-07a | hardware, owner (consent) | Labelled; r7's 17:30–06:00 window covers A′ and C; the A′ actor goes inside at least 10 min before the take (egress voiding) |
+| 20:00 | T-08 Privacy, windows, motion gate on real footage | A | T-07a | (real footage) | FR-003 to FR-005 pass on real footage |
+| 20:00 | T-10 3D model build | C | T-06 | hardware (scan; Open3D extra) | FR-035 passes (the build code is still blocked, see [readiness](../readiness.md#remaining-gaps-no-credits-or-hardware-needed-to-start)) |
+| 21:00 | T-09 SAM concept tracking on the 5 demo scenarios | B | T-03, T-07b | credits or local GPU | Real SAM tracks for A, A′, B, B′, C |
+| **22:00** | **H-02 Local SAM 3.1 benchmark (gate)** | B | H-01 | hardware, owner (HF licence, torch install) | Chunk settings chosen, or API fallback ([runbook](../runbooks/gpu-h01-h04.md)) |
+| 22:00 | T-11 Track stitching and overlays on real tracks | A | T-09 | | FR-007 passes on real tracks |
+| 23:00 | T-12 Landmark tool (SAM proposals + mesh clicks) and solver | C | T-10 | hardware | FR-036 (nominal or profile) for 4 cameras |
+| **23:00** | **G1** | all | | | Footage and labels committed; SAM tracks for A, A′, B, B′, C; GLB built |
 
-Overnight: 2 h capture endurance test (NFR-029, NFR-033); notice for D-1 issued at 22:00 only if H-02 fails.
+Overnight: 2 h capture endurance (NFR-029, NFR-033); the D-1 notice is issued at 22:00 only if H-02 fails.
 
 ## Tuesday Nov 3
 
-| Time | Task | Track | Depends on | Credits | Hardware | DGX | Owner | Done when |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 08:00 to 12:00 | D-1 (conditional) Full-window SAM on the DGX Spark | (hw) | H-02 fails, G1 | | | ✔ | ✔ connect by 08:00 | Validated or powered down ([runbook](../runbooks/dgx-spark-d1.md)) |
-| 09:00 | T-13 Event builder | A | T-11 | | | | | FR-008 passes |
-| **10:00 cut-off** | **T-14 Extrinsics accepted, or switch to the fallback** | C | T-12 | | ✔ markers, stills | | | FR-037 passes, or site-plan fallback active ([runbook](../runbooks/calibration.md#the-tue-1000-cut-off)) |
-| 10:00 | T-16 Appearance notes | B | T-11 | ✔ Spark | | | | FR-009 passes |
-| 11:00 | T-15 Marker walk for 3D accuracy | D | T-14 | | ✔ | | | Recordings of 6 markers per camera |
-| 11:00 | T-17 Coverage and blind regions | C | T-14 | | ✔ walk test | | | FR-038 passes |
-| 12:00 | T-18 Topology, visits, gaps | B | T-13, T-16, T-17 | | (labelled set) | | | FR-010, FR-011 pass |
-| 12:00 | T-19 Position estimates | C | T-14 | | (real calibration) | | | FR-039 unit tests pass |
-| 12:00 | H-03 Local Glimmer benchmark | (hw) | H-01 | | ✔ RTX 3090 + GGUF | | | Tokens/s, VRAM, JSON-valid rate, agreement with Spark |
-| 12:00 | H-04 Local versus API SAM parity | (hw) | H-02 | ✔ API side | ✔ RTX 3090 | | | Mean IoU and ID switches (NFR-035) |
-| 13:00 | T-20 Rules, story, validator, verdict | B | T-18 | ✔ Wonder | | | | FR-012, FR-014 to FR-016 pass |
-| **13:00** | **G2** | all | | | | | | Scenario C end to end, with 3D positions and the gap |
-| 15:00 | T-21 API, export, cards, synced player | C | G2 | | | | | FR-017, FR-018, FR-027 pass |
-| 16:00 | T-22 Tap-to-protect, typed rules | B | G2 | ✔ SAM image, Spark | | | | FR-019, FR-021 pass |
-| 17:00 | T-23 Triage and closed loop | B | T-20 | ✔ Spark fallback | (Glimmer on 3090) | | | FR-013, FR-020 pass |
-| 17:30 | T-24 3D viewer | C | T-21, T-19 | | (real GLB) | | | FR-040 passes |
-| 18:00 | T-25 Guards and telemetry panel | C | T-21 | | | | | FR-023 UI, FR-026 pass |
-| **18:00** | **G3 MVP freeze** | all | | | | | | All P0 pass in CI |
-| 21:00 | T-26 Reolink events, live loop, LAN live view | A | G3 | (if API SAM) | ✔ cameras | | | FR-032 to FR-034 pass |
-| 22:00 | T-27 Benchmark, spatial accuracy, baseline | D | G3, T-15 | ✔ | ✔ GPU, footage | | | Results committed, misses included |
-| 23:00 | T-28 Deploy sandbox; E2E suite in CI | C | G3 | (sandbox live cap) | | | ✔ host account, secrets | Live URL passes E2E from CI |
-| **23:00** | **G4** | all | | | | | | Evidence complete; sandbox opened on a phone |
+| Done by | Task | Track | Depends on | Needs | Done when |
+| --- | --- | --- | --- | --- | --- |
+| 08:00–12:00 | D-1 (conditional) Full-window SAM on the DGX Spark | B | H-02 fails, G1 | DGX, owner | Validated or powered down ([runbook](../runbooks/dgx-spark-d1.md)) |
+| 09:00 | T-13 Event builder with origin tagging (real tracks) | A | T-11 | | FR-008 on real tracks; origins match labels |
+| **10:00 cut-off** | **T-14 Extrinsics from landmarks accepted, or switch to the fallback** | C | T-12 | hardware | FR-037 passes, or the site-plan fallback is active ([runbook](../runbooks/calibration.md#the-tue-1000-cut-off)) |
+| 10:00 | T-16 Appearance notes | B | T-11 | credits | FR-009 passes |
+| 10:30 | T-15 Audit-harness marker walk (daylight) | D | T-06 | hardware | Person on 6 markers per camera, recorded |
+| 11:00 | T-17 Coverage and blind regions | C | T-14 | hardware | FR-038 passes |
+| 12:00 | T-18 Topology, visits, gaps, **roles** | B | T-13, T-16, T-17 | (labelled set) | FR-010, FR-011, FR-044 pass on real data |
+| 12:00 | T-19 Position estimates | C | T-14 | (real calibration) | FR-039 passes; audit radii applied |
+| 12:00 | H-03 Local Glimmer benchmark | B | H-01 | hardware, owner (GGUF) | Tokens/s, VRAM, JSON-valid rate, agreement with Spark |
+| 12:00 | H-04 Local versus API SAM parity | B | H-02 | credits, hardware | Mean IoU and ID switches (NFR-035) |
+| 13:00 | T-20 Rules (with `applies_to`), story, validator (check 7), verdict | B | T-18 | credits | FR-012, FR-014 to FR-016 pass |
+| **13:00** | **G2** | all | | | Scenario C end to end, including 3D positions, the gap and its role |
+| 15:00 | T-21 API, export, cards, synced player | C | G2 | | FR-017, FR-018, FR-027 pass |
+| 16:00 | T-22 Tap-to-protect; **voice and typed rules** (mic, 3 audio fixture buttons, typing); expected windows and owner check-in | B | G2 | credits | FR-019, FR-021, FR-022, FR-029 pass |
+| 17:00 | T-23 Triage and closed loop | B | T-20 | (Glimmer on 3090) | FR-013, FR-020 pass |
+| 17:30 | T-24 3D viewer | C | T-21, T-19 | (real GLB) | FR-040 passes |
+| 18:00 | T-25 Guards (incl. judging cap) and telemetry panel | C | T-21 | | FR-023 UI, FR-026, FR-043 pass |
+| **18:00** | **G3 MVP freeze** | all | | | The 5 blocking P0 CI suites ([spec 12.1](../spec/vigil-spec.md#121-test-suites)) pass |
+| 21:00 | T-26 Reolink events, live loop, LAN live view | A | G3 | hardware | FR-032 to FR-034 pass |
+| 22:00 | T-27 Benchmark, audit harness, baseline, unit-economics measurements (11.9) | D | G3, T-15 | credits, hardware | Results committed, misses included; Tier 0 / Tier 1 rates measured |
+| 23:00 | T-28 Deploy the sandbox with the judging config (`VIGIL_ALLOW_PAID=1` from window end, `VIGIL_JUDGING_CAP_USD=25`, `VIGIL_JUDGING_END`); E2E in CI | C | G3 | owner (host, secrets) | Live URL passes E2E from CI; the judging cap is verified by test |
+| **23:00** | **G4** | all | | | Evidence complete; sandbox opened on a phone |
 
 ## Wednesday Nov 4
 
-| Time | Task | Track | Depends on | Credits | Hardware | DGX | Owner | Done when |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| 12:00 | T-29 Record live home clip; edit video; README; HACKATHON.md | D | G4 | (video live calls) | ✔ live home mode | | ✔ video, consent statement | Video under 3:00; link tested privately |
-| **14:00** | **T-30 Final scans and submission** | D | T-29 | | | | ✔ submit form | [Submission checklist](../runbooks/submission.md) ticked; submitted |
-| 18:00 (= 9 PM ET) | Credits claim deadline and judging-period live-call decision | owner | | ✔ | | | ✔ | Credits claimed earlier (needed Monday); decision recorded ([runbook](../runbooks/credits-billing.md)) |
+| Done by | Task | Track | Depends on | Needs | Done when |
+| --- | --- | --- | --- | --- | --- |
+| 12:00 | T-29 Record live home clip; edit video; README; HACKATHON.md | D | G4 | hardware, owner | Video under 3:00, link tested privately |
+| **14:00** | **T-30 Final scans and submission** | D | T-29 | owner | [Spec 13.5 checklist](../runbooks/submission.md) ticked; submitted |
+| 18:00 (9 PM ET) | Credits claim deadline; `VIGIL_CREDIT_WINDOW_END` set; Billing second stop checked | owner | | credits, owner | Recorded in the [credits runbook](../runbooks/credits-billing.md) |
+
+Judging runs Nov 5–10 PT with live calls on under the $25 cap; no paid call after `VIGIL_JUDGING_END` (Nov 10, 23:59 PT).
 
 ## Gates
 
 | Gate | When (PT) | Pass condition | If it fails |
 | --- | --- | --- | --- |
 | H-02 | Mon 22:00 | A 10 s window processed in chunks in 10 s or less; at most 1 extra ID switch per window versus the API | Live mode and benchmark use API SAM; D-1 becomes optional (notice issued) |
-| G1 | Mon 23:00 | Footage and labels committed; SAM tracks for A, B, C; GLB built | The gates decide the cuts (spec 9 intro); team decision, record it here |
-| Spatial cut-off | Tue 10:00 | Extrinsics accepted (FR-037) | Switch to the measured site-plan fallback and keep going (spec 0, 7) |
-| G2 | Tue 13:00 | Scenario C end to end | Team decision; if one person builds alone, T-25 and the baseline (FR-025) become optional (spec 9 intro) |
-| G3 | Tue 18:00 | All P0 pass in CI (MVP freeze) | P2 is built only if G3 passes early (spec 1) |
-| G4 | Tue 23:00 | Evidence complete; sandbox on a phone | Team decision; the README must link the 90-second fallback recording either way (spec 4 fallbacks) |
-| Submission | Wed 14:00 | Submission checklist ticked | Submit; EVAL.md reports misses (spec 2, 12) |
+| G1 | Mon 23:00 | Footage and labels committed; SAM tracks for A, A′, B, B′, C; GLB built | Team decision on cuts; record it here |
+| Spatial cut-off | Tue 10:00 | Landmark extrinsics accepted (FR-037) | Switch to the measured site-plan fallback and keep going (spec 0, 7) |
+| G2 | Tue 13:00 | Scenario C end to end, including its role | Team decision; T-25 and the baseline (FR-025) can become optional |
+| G3 | Tue 18:00 | The 5 blocking P0 suites green in CI (MVP freeze); report-only reds have an open issue | P2 is built only if G3 passes early |
+| G4 | Tue 23:00 | Evidence complete; sandbox on a phone | Team decision; the README links the 90-second fallback recording either way |
+| Submission | Wed 14:00 | Spec 13.5 checklist ticked | Submit; EVAL.md reports misses |
 
 ## Blockers (spec 13.4)
 
-Owner actions that hold the schedule. Tracked in [readiness](../readiness.md#blockers-to-clear-today).
+Owner actions that hold the schedule; tracked with tick boxes in [readiness](../readiness.md#blockers-to-clear-today).
 
 | Blocker | Blocks | Kind |
 | --- | --- | --- |
-| Claim credits; set the $140 Billing limit; separate dev and sandbox keys | T-03 and every task marked Credits | owner, credits |
-| Read the Credit Terms (expiry, per-model coverage, zero balance) | NFR-037 window end; judging-period decision | owner |
+| Claim credits; set the $140 Billing limit; separate dev and sandbox keys | T-03 and every task that needs credits | owner, credits |
+| Read the Credit Terms (expiry, per-model coverage, zero balance) | `VIGIL_CREDIT_WINDOW_END`, the judging-cap switch | owner |
 | Reolink models and any NVR or Home Hub | T-04, T-05, T-26 | owner, hardware |
-| iPhone Pro with LiDAR before dusk Monday | T-06, T-10, T-12 to T-17 | hardware |
+| iPhone Pro with LiDAR before sunset Monday | T-06, T-10, T-12 to T-17 | hardware |
+| Consent from everyone on camera or in a voice fixture | T-07a, T-07b, T-15, T-29 | owner |
 | Track (Indie or Startup) and team members | T-30, HACKATHON.md | owner |
-| Consent from everyone on camera | T-07, T-15, T-29 | owner |
-| H-01 on the 3090; workstation OS (Windows with WSL2, or Linux) | H-02 to H-04, FR-028, FR-042 | hardware, owner |
-| Live calls during judging: cached-only (default) or a separate cap | Sandbox config after Nov 4 | owner |
+| SAM 3.1 licence, torch install, Glimmer GGUF | H-02 to H-04, FR-028, FR-042 | owner, hardware |
+| Hosting account and `MODEL_API_KEY` secret | T-28 | owner |

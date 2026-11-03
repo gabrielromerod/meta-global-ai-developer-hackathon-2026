@@ -4,7 +4,7 @@
 | --- | --- |
 | When | Mon Nov 2, 2026, after phase 2 merges; H-01 due Mon 12:30 PT per spec |
 | Owner | Integrator (CI); owner at the workstation (H-01) |
-| Status | Not started |
+| Status | Done: blocking and report-only CI lanes green ([CI run 41587853241](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/actions/runs/41587853241)); H-01 Ready (`eval/hardware/3090.json`) |
 
 ## Goal
 

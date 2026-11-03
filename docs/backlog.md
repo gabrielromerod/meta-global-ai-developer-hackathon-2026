@@ -1,139 +1,120 @@
 # Backlog
 
-Markdown mirror of the GitHub issues created in [bootstrap phase 4](plans/phase-4-github-backlog.md). This file and GitHub must agree; when they differ, update both. Times are PT. Schedule: [plans/schedule.md](plans/schedule.md).
+The backlog lives in **GitHub issues [#1 to #80](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/issues?q=is%3Aissue)**, created and kept in sync from the spec by [`scripts/backlog/backlog.py`](../scripts/backlog/backlog.py) (bootstrap [phase 4](plans/phase-4-github-backlog.md)). GitHub is the source of truth; this page is a read-only snapshot of it taken on Mon Nov 2, 2026. Requirement status lives in the [functional](requirements/functional.md) and [non-functional](requirements/non-functional.md) checklists; times in the [schedule](plans/schedule.md).
+
+## How the issues are made
+
+- `uv run python scripts/backlog/backlog.py build` parses the spec (sections 1, 9.7 and 10.2) into `scripts/backlog/backlog.json`: 44 FRs, 31 build tasks (T-01 to T-30, with T-07 split into T-07a and T-07b) and 5 hardware items (H-01 to H-04, D-1).
+- `sync` is a dry run; `sync --apply` creates the labels, milestones and issues with the owner's `gh` login. Issues are matched by their ID prefix (`FR-001:`, `T-07a:`, `H-02:`), so re-running is idempotent. Labels are reconciled; titles and bodies are never overwritten, so edits made on GitHub survive.
+- `scripts/backlog/status.json` adds the `offline-done` label to the FRs it lists and closes finished items with a comment. It still lists the 25 FRs that were offline-done at the first sync; the checklists now show 36 *Offline-verified* FRs, so the labels lag until the owner updates `status.json` and re-runs `sync --apply`.
 
 ## Labels
 
 | Group | Label | Meaning |
 | --- | --- | --- |
-| Track | `track:A` | Pipeline |
-| | `track:B` | Models and reasoning |
-| | `track:C` | App and 3D |
-| | `track:D` | Field work and evidence |
-| Priority | `P0` | Required for a working demo |
-| | `P1` | Required for a top score |
-| | `P2` | Optional; only if G3 passes early |
-| Type | `type:task` | Build task T-01 to T-30 |
-| | `type:hardware` | H-01 to H-04, D-1 |
-| | `type:requirement` | FR-001 to FR-043 (and the NFR tracking issue) |
-| | `type:gate` | Gate decisions (optional; gates are milestones) |
-| | `type:docs` | Documentation |
-| Blocked | `blocked:credits` | Needs billed Meta API calls |
-| | `blocked:hardware` | Needs cameras, LiDAR, filming or the RTX 3090 |
-| | `blocked:dgx` | Needs the DGX Spark (D-1 only) |
-| | `blocked:owner` | Needs an owner action or decision |
+| Type | `type:fr` | Functional requirement (spec 1) |
+| | `type:task` | Build-plan task (spec 9.7) |
+| | `type:hw` | Hardware verification (spec 10.2) and D-1 |
+| Priority | `P0`, `P1`, `P2` | FR priority from the spec |
+| Track | `track:A` to `track:D` | Pipeline · models and reasoning · app and 3D · field work and evidence |
+| Blocked | `blocked:credits`, `blocked:hardware`, `blocked:dgx`, `blocked:owner` | What still stands between the item and its acceptance |
+| Status | `offline-done` | Offline part implemented and green in CI on synthetic data; real-data acceptance pending |
 
 ## Milestones
 
 | Milestone | Due (PT) | Done when |
 | --- | --- | --- |
-| G1 | Mon Nov 2, 23:00 | Footage and labels committed; SAM tracks for A, B, C; GLB built |
+| G1 | Mon Nov 2, 23:00 | Footage and labels committed; SAM tracks for the demo scenarios; GLB built |
 | G2 | Tue Nov 3, 13:00 | Scenario C end to end, including 3D positions and the gap |
-| G3 | Tue Nov 3, 18:00 | MVP freeze: all P0 pass in CI |
+| G3 MVP freeze | Tue Nov 3, 18:00 | The 5 blocking P0 suites pass in CI |
 | G4 | Tue Nov 3, 23:00 | Evidence complete; sandbox opened on a phone |
-| Submission | Wed Nov 4, 14:00 | Submission checklist ticked; submitted |
+| Submission | Wed Nov 4, 14:00 | Spec 13.5 checklist ticked; form submitted |
 
-## Build tasks (30)
+The G1 and G3 descriptions on GitHub (from `MILESTONES` in `backlog.py`) still say "SAM tracks for A, B, C" and "all P0 pass in CI"; the [schedule](plans/schedule.md#gates) has the revised wording (5 scenarios; the 5 blocking P0 suites). GitHub keeps only the due date, not the time, so the times above are the ones that count.
 
-| ID | Title | Labels | Milestone | Due | Depends on | Closes |
-| --- | --- | --- | --- | --- | --- | --- |
-| T-01 | Audit repo; claim credits and set spend limit; pick track; commit EVAL.md targets | `track:D` `P0` `type:task` `blocked:owner` | G1 | Mon 11:30 | none | EVAL pre-registration |
-| T-02 | Scaffold and CI | `track:A` `P0` `type:task` | G1 | Mon 12:30 | T-01 | CI steps 1 to 3 |
-| T-03 | Meta smoke tests; resolve the 3 open API questions | `track:B` `P0` `type:task` `blocked:credits` `blocked:owner` | G1 | Mon 12:30 | T-01 | Spec 5.14 open items |
-| T-04 | Reolink probe; on-camera privacy masks; audio off | `track:D` `P0` `type:task` `blocked:hardware` | G1 | Mon 12:30 | T-01 | FR-030, FR-001 (real config) |
-| T-05 | Restreamer and capture service | `track:A` `P0` `type:task` `blocked:hardware` | G1 | Mon 14:00 | T-04 | FR-031, NFR-029 |
-| T-06 | Markers, 4 LiDAR loops, checkerboard views, calibration stills | `track:D` `P0` `type:task` `blocked:hardware` | G1 | Mon 16:30 | T-04 | Inputs for FR-035 to FR-037 |
-| T-07 | Film 12 scenarios with consent; write labels before processing | `track:D` `P0` `type:task` `blocked:hardware` `blocked:owner` | G1 | Mon 21:00 | T-05 | FR-002 (sync clap), labels for FR-024 |
-| T-08 | Privacy, windows, motion gate, privacy scan | `track:A` `P0` `type:task` | G1 | Mon 17:00 | T-05 | FR-003, FR-004, FR-005 |
-| T-09 | Meta client, cache, ledger; SAM concept tracking | `track:B` `P0` `type:task` `blocked:credits` | G1 | Mon 18:00 | T-03 | FR-006, FR-023, FR-043 |
-| T-10 | 3D model build | `track:C` `P0` `type:task` `blocked:hardware` | G1 | Mon 20:00 | T-06 | FR-035 |
-| T-11 | Track stitching and overlays | `track:A` `P0` `type:task` | G1 | Mon 21:00 | T-09 | FR-007 |
-| T-12 | Calibration tool and solver | `track:C` `P0` `type:task` `blocked:hardware` | G1 | Mon 23:00 | T-10 | FR-036 |
-| T-13 | Event builder | `track:A` `P0` `type:task` | G2 | Tue 09:00 | T-11 | FR-008 |
-| T-14 | Extrinsics accepted, or switch to the fallback (Tue 10:00 cut-off) | `track:C` `P0` `type:task` `blocked:hardware` | G2 | Tue 10:00 | T-12 | FR-037 |
-| T-15 | Marker walk for 3D accuracy | `track:D` `P0` `type:task` `blocked:hardware` | G2 | Tue 11:00 | T-14 | NFR-025, NFR-026 inputs |
-| T-16 | Appearance notes | `track:B` `P0` `type:task` `blocked:credits` | G2 | Tue 10:00 | T-11 | FR-009 |
-| T-17 | Coverage and blind regions | `track:C` `P0` `type:task` `blocked:hardware` | G2 | Tue 11:00 | T-14 | FR-038 |
-| T-18 | Topology, visits, gaps | `track:B` `P0` `type:task` | G2 | Tue 12:00 | T-13, T-16, T-17 | FR-010, FR-011 |
-| T-19 | Position estimates | `track:C` `P0` `type:task` | G2 | Tue 12:00 | T-14 | FR-039 |
-| T-20 | Rules, story, validator, verdict | `track:B` `P0` `type:task` `blocked:credits` | G2 | Tue 13:00 | T-18 | FR-012, FR-014, FR-015, FR-016 |
-| T-21 | API, export, cards, synced player | `track:C` `P0` `type:task` | G3 | Tue 15:00 | G2 | FR-017, FR-018, FR-027 |
-| T-22 | Tap-to-protect, typed rules | `track:B` `P0` `type:task` `blocked:credits` | G3 | Tue 16:00 | G2 | FR-019, FR-021 |
-| T-23 | Triage and closed loop | `track:B` `P1` `type:task` `blocked:credits` | G3 | Tue 17:00 | T-20 | FR-013, FR-020, FR-028 |
-| T-24 | 3D viewer | `track:C` `P0` `type:task` | G3 | Tue 17:30 | T-21, T-19 | FR-040 |
-| T-25 | Guards and telemetry panel | `track:C` `P0` `type:task` | G3 | Tue 18:00 | T-21 | FR-023 (UI), FR-026 |
-| T-26 | Reolink events, live loop, LAN live view | `track:A` `P1` `type:task` `blocked:hardware` | G4 | Tue 21:00 | G3 | FR-032, FR-033, FR-034 |
-| T-27 | Benchmark, spatial accuracy, baseline | `track:D` `P0` `type:task` `blocked:credits` `blocked:hardware` | G4 | Tue 22:00 | G3, T-15 | FR-024, FR-025, NFR-023 to NFR-026 |
-| T-28 | Deploy sandbox; E2E suite in CI | `track:C` `P0` `type:task` `blocked:owner` | G4 | Tue 23:00 | G3 | CI steps 6 to 8, NFR-005, NFR-009 |
-| T-29 | Record live home clip; edit video; README; HACKATHON.md | `track:D` `P0` `type:task` `blocked:hardware` `blocked:owner` | Submission | Wed 12:00 | G4 | Video, README, HACKATHON.md |
-| T-30 | Final scans and submission | `track:D` `P0` `type:task` `blocked:owner` | Submission | Wed 14:00 | T-29 | [Submission checklist](runbooks/submission.md) |
+## Issue index (snapshot, Nov 2)
 
-## Hardware tasks and the conditional phase (5)
+#1–#44 are FR-001 to FR-044, #45–#75 the build tasks, #76–#80 the hardware items. Closed: #46 (T-02) and #76 (H-01).
 
-The spec assigns these no track; they gate the model backends, so they carry `track:B`.
-
-| ID | Title | Labels | Milestone | Due | Depends on | Closes |
-| --- | --- | --- | --- | --- | --- | --- |
-| H-01 | GPU probe on the RTX 3090 | `track:B` `P1` `type:hardware` `blocked:hardware` | G1 | Mon 12:30 | none | NFR-034 |
-| H-02 | Local SAM 3.1 benchmark (gate Mon 22:00) | `track:B` `P1` `type:hardware` `blocked:hardware` `blocked:owner` | G1 | Mon 22:00 | H-01 | FR-042 (SAM local) |
-| H-03 | Local Glimmer benchmark | `track:B` `P1` `type:hardware` `blocked:hardware` | G2 | Tue 12:00 | H-01 | FR-028, FR-042 (triage local) |
-| H-04 | Local versus API SAM parity | `track:B` `P1` `type:hardware` `blocked:hardware` `blocked:credits` | G2 | Tue 12:00 | H-02 | NFR-035 |
-| D-1 | DGX Spark full-window SAM (conditional; only if H-02 fails) | `track:B` `P1` `type:hardware` `blocked:dgx` `blocked:owner` | G2 | Tue 08:00 to 12:00 | H-02 fails, G1 | FR-042 (remote backend) |
-
-## Requirements (43)
-
-Milestone = the milestone of the task that closes the requirement. Full rows: [functional checklist](requirements/functional.md).
-
-| ID | Title | Labels | Milestone | Closed by |
-| --- | --- | --- | --- | --- |
-| FR-001 | Camera config loader | `track:A` `P0` `type:requirement` | G1 | T-04, T-08 |
-| FR-002 | Clock alignment | `track:A` `P0` `type:requirement` `blocked:hardware` | G1 | T-07, T-08 |
-| FR-003 | Privacy at source | `track:A` `P0` `type:requirement` | G1 | T-08 |
-| FR-004 | Windowing | `track:A` `P0` `type:requirement` `blocked:credits` | G1 | T-08 |
-| FR-005 | Motion gate | `track:A` `P0` `type:requirement` `blocked:hardware` | G1 | T-08 |
-| FR-006 | SAM 3.1 tracking | `track:B` `P0` `type:requirement` `blocked:credits` | G1 | T-09 |
-| FR-007 | Track stitching | `track:A` `P0` `type:requirement` | G1 | T-11 |
-| FR-008 | Event builder | `track:A` `P0` `type:requirement` `blocked:hardware` | G2 | T-13 |
-| FR-009 | Appearance notes | `track:B` `P0` `type:requirement` `blocked:credits` | G2 | T-16 |
-| FR-010 | Visit assembly | `track:B` `P0` `type:requirement` `blocked:hardware` | G2 | T-18 |
-| FR-011 | Gaps | `track:B` `P0` `type:requirement` `blocked:hardware` | G2 | T-18 |
-| FR-012 | Rules engine | `track:B` `P0` `type:requirement` | G2 | T-20 |
-| FR-013 | Triage | `track:B` `P1` `type:requirement` `blocked:credits` | G3 | T-23 |
-| FR-014 | Story | `track:B` `P0` `type:requirement` `blocked:credits` `blocked:hardware` | G2 | T-20 |
-| FR-015 | Citation validator | `track:B` `P0` `type:requirement` | G2 | T-20 |
-| FR-016 | Verdict | `track:B` `P0` `type:requirement` | G2 | T-20 |
-| FR-017 | Visit cards | `track:C` `P0` `type:requirement` | G3 | T-21 |
-| FR-018 | Synced player | `track:C` `P0` `type:requirement` | G3 | T-21 |
-| FR-019 | Tap-to-protect | `track:B` `P0` `type:requirement` `blocked:credits` | G3 | T-22 |
-| FR-020 | Closed loop | `track:B` `P1` `type:requirement` `blocked:credits` `blocked:hardware` | G3 | T-23 |
-| FR-021 | Typed rules | `track:B` `P0` `type:requirement` `blocked:credits` | G3 | T-22 |
-| FR-022 | Voice rules | `track:B` `P2` `type:requirement` `blocked:credits` | G4 | after G3, only if it passes early |
-| FR-023 | Call ledger and telemetry | `track:B` `P0` `type:requirement` | G3 | T-09, T-25 |
-| FR-024 | Evaluation harness | `track:D` `P0` `type:requirement` `blocked:hardware` | G4 | T-27 |
-| FR-025 | Naive baseline | `track:D` `P1` `type:requirement` `blocked:credits` `blocked:hardware` | G4 | T-27 |
-| FR-026 | Sandbox modes and guards | `track:C` `P0` `type:requirement` | G3 | T-25 |
-| FR-027 | Export and scenario switcher | `track:C` `P0` `type:requirement` `blocked:hardware` | G3 | T-21 |
-| FR-028 | Glimmer triage on the RTX 3090 | `track:B` `P1` `type:requirement` `blocked:hardware` | G3 | T-23, H-03 |
-| FR-029 | Owner label "This was expected" | `track:C` `P2` `type:requirement` | G4 | after G3, only if it passes early |
-| FR-030 | Reolink connection and probe | `track:D` `P0` `type:requirement` `blocked:hardware` | G1 | T-04 |
-| FR-031 | Continuous capture | `track:A` `P0` `type:requirement` `blocked:hardware` | G1 | T-05 |
-| FR-032 | Reolink AI events | `track:A` `P1` `type:requirement` `blocked:hardware` | G4 | T-26 |
-| FR-033 | Near-real-time loop | `track:A` `P1` `type:requirement` `blocked:hardware` | G4 | T-26 |
-| FR-034 | LAN live view | `track:A` `P1` `type:requirement` `blocked:hardware` | G4 | T-26 |
-| FR-035 | 3D model build | `track:C` `P0` `type:requirement` `blocked:hardware` | G1 | T-10 |
-| FR-036 | Intrinsic calibration | `track:C` `P0` `type:requirement` `blocked:hardware` | G1 | T-12 |
-| FR-037 | Extrinsic calibration | `track:C` `P0` `type:requirement` `blocked:hardware` | G2 | T-14 |
-| FR-038 | Coverage and blind regions | `track:C` `P0` `type:requirement` `blocked:hardware` | G2 | T-17 |
-| FR-039 | 3D position estimates | `track:C` `P0` `type:requirement` `blocked:hardware` | G2 | T-19, T-15 |
-| FR-040 | 3D viewer | `track:C` `P0` `type:requirement` `blocked:hardware` | G3 | T-24 |
-| FR-041 | Wi-Fi motion annotation (after the hackathon) | `track:A` `P2` `type:requirement` `blocked:hardware` | none (after Nov 4) | not scheduled |
-| FR-042 | Local inference backends | `track:B` `P1` `type:requirement` `blocked:hardware` `blocked:owner` | G2 | H-02 to H-04 (D-1 if triggered) |
-| FR-043 | Budget guard | `track:B` `P0` `type:requirement` `blocked:credits` `blocked:owner` | G1 | T-09 (before any paid call) |
-
-## Non-functional tracking (1)
-
-| ID | Title | Labels | Milestone | Body |
-| --- | --- | --- | --- | --- |
-| NFR | NFR-001 to NFR-037 tracking | `type:requirement` | G4 | Checklist linking each row of [non-functional.md](requirements/non-functional.md) |
-
-**Total issues: 79** (30 tasks + 5 hardware and conditional + 43 requirements + 1 NFR tracking).
+| Issue | ID | Title | Pri | Track | Milestone | Blocked | offline-done | State |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| #1 | FR-001 | Camera config | P0 | A | G3 MVP freeze |  | yes | open |
+| #2 | FR-002 | Clock alignment | P0 | A | G3 MVP freeze | hardware | yes | open |
+| #3 | FR-003 | Privacy at source | P0 | A | G3 MVP freeze |  | yes | open |
+| #4 | FR-004 | Windowing | P0 | A | G3 MVP freeze | credits | yes | open |
+| #5 | FR-005 | Motion gate | P0 | A | G3 MVP freeze | hardware | yes | open |
+| #6 | FR-006 | SAM 3.1 tracking | P0 | A | G3 MVP freeze | credits | yes | open |
+| #7 | FR-007 | Track stitching | P0 | A | G3 MVP freeze |  | yes | open |
+| #8 | FR-008 | Event builder with origin tagging | P0 | A | G3 MVP freeze |  |  | open |
+| #9 | FR-009 | Appearance notes | P0 | B | G3 MVP freeze | credits | yes | open |
+| #10 | FR-010 | Visit assembly | P0 | B | G3 MVP freeze | hardware |  | open |
+| #11 | FR-011 | Gaps | P0 | B | G3 MVP freeze | hardware | yes | open |
+| #12 | FR-012 | Rules engine | P0 | B | G3 MVP freeze |  |  | open |
+| #13 | FR-013 | Triage | P1 | B | G4 | credits |  | open |
+| #14 | FR-014 | Story | P0 | B | G3 MVP freeze | credits | yes | open |
+| #15 | FR-015 | Citation validator | P0 | B | G3 MVP freeze |  | yes | open |
+| #16 | FR-016 | Verdict | P0 | B | G3 MVP freeze |  | yes | open |
+| #17 | FR-017 | Visit cards | P0 | C | G3 MVP freeze |  | yes | open |
+| #18 | FR-018 | Synced player | P0 | C | G3 MVP freeze |  | yes | open |
+| #19 | FR-019 | Tap-to-protect | P0 | B | G3 MVP freeze | credits | yes | open |
+| #20 | FR-020 | Closed loop | P1 | B | G4 | credits | yes | open |
+| #21 | FR-021 | Typed rules | P0 | B | G3 MVP freeze | credits |  | open |
+| #22 | FR-022 | Voice rules ("tap and speak") | P0 | B | G3 MVP freeze | credits |  | open |
+| #23 | FR-023 | Call ledger and telemetry | P0 | B | G3 MVP freeze |  | yes | open |
+| #24 | FR-024 | Evaluation harness | P0 | D | G3 MVP freeze | hardware | yes | open |
+| #25 | FR-025 | Naive baseline | P1 | D | G4 | credits | yes | open |
+| #26 | FR-026 | Sandbox modes and guards | P0 | C | G3 MVP freeze |  | yes | open |
+| #27 | FR-027 | Export and scenario switcher | P0 | C | G3 MVP freeze | hardware |  | open |
+| #28 | FR-028 | Glimmer triage | P1 | B | G4 | hardware, owner |  | open |
+| #29 | FR-029 | Expected Guest / Delivery Window and owner check-in (was "owner label") | P1 | C | G4 |  |  | open |
+| #30 | FR-030 | Reolink connection and probe | P0 | A | G3 MVP freeze | hardware | yes | open |
+| #31 | FR-031 | Continuous capture | P0 | A | G3 MVP freeze | hardware | yes | open |
+| #32 | FR-032 | Reolink AI events | P1 | A | G4 | hardware | yes | open |
+| #33 | FR-033 | Near-real-time loop | P1 | A | G4 | credits, hardware |  | open |
+| #34 | FR-034 | LAN live view | P1 | C | G4 | hardware |  | open |
+| #35 | FR-035 | 3D model build | P0 | C | G3 MVP freeze | hardware |  | open |
+| #36 | FR-036 | Intrinsics | P0 | C | G3 MVP freeze | hardware |  | open |
+| #37 | FR-037 | Extrinsics from landmarks | P0 | C | G3 MVP freeze | hardware |  | open |
+| #38 | FR-038 | Coverage and blind regions | P0 | C | G3 MVP freeze | hardware | yes | open |
+| #39 | FR-039 | 3D position estimates | P0 | C | G3 MVP freeze | hardware | yes | open |
+| #40 | FR-040 | 3D viewer | P0 | C | G3 MVP freeze | hardware |  | open |
+| #41 | FR-041 | Wi-Fi motion annotation (after the hackathon): ESPectre over MQTT, ann | P2 | D | none | hardware |  | open |
+| #42 | FR-042 | Local inference backends | P1 | B | G4 | hardware, owner |  | open |
+| #43 | FR-043 | Budget guard | P0 | B | G3 MVP freeze | credits |  | open |
+| #44 | FR-044 | Spatial origin roles (new; no identification) | P0 | B | G3 MVP freeze | hardware |  | open |
+| #45 | T-01 | Audit repo ✓; claim credits and set the spend limit; pick track; commit EVAL.md targets |  | D | G1 | owner |  | open |
+| #46 | T-02 | Scaffold and CI ✓ |  | A | G1 |  |  | closed |
+| #47 | T-04 | Reolink probe; on-camera privacy masks; audio off |  | D | G1 | hardware |  | open |
+| #48 | T-05 | Restreamer and capture service |  | A | G1 | hardware |  | open |
+| #49 | T-03 | Meta smoke tests; resolve the 3 open API questions (incl. Voice WAV) |  | B | G1 | credits |  | open |
+| #50 | T-06 | LiDAR loops; 6 landmark pairs per camera (nominal FOV); place and survey 6 audit marker… |  | D | G1 | hardware |  | open |
+| #51 | T-07a | Film daytime scenarios A, B, B′ (and the other daytime benchmark scenarios) with consen… |  | D | G1 | hardware, owner |  | open |
+| #52 | T-07b | Film night scenarios A′ (front-door egress, side-gate touch after 17:30) and C (side-al… |  | D | G1 | hardware, owner |  | open |
+| #53 | T-08 | Privacy, windows, motion gate on real footage |  | A | G1 |  |  | open |
+| #54 | T-09 | SAM concept tracking on the 5 demo scenarios |  | B | G1 |  |  | open |
+| #55 | T-10 | 3D model build |  | C | G1 | hardware |  | open |
+| #56 | T-11 | Track stitching and overlays on real tracks |  | A | G1 |  |  | open |
+| #57 | T-12 | Landmark tool (SAM proposals + mesh clicks) and solver |  | C | G1 | hardware |  | open |
+| #58 | T-13 | Event builder with origin tagging (real tracks) |  | A | G2 |  |  | open |
+| #59 | T-15 | Audit-harness marker walk (daylight) |  | D | G2 | hardware |  | open |
+| #60 | T-14 | Extrinsics from landmarks accepted, or switch to the fallback |  | C | G2 | hardware |  | open |
+| #61 | T-16 | Appearance notes |  | B | G2 | credits |  | open |
+| #62 | T-17 | Coverage and blind regions |  | C | G2 | hardware |  | open |
+| #63 | T-18 | Topology, visits, gaps, roles |  | B | G2 |  |  | open |
+| #64 | T-19 | Position estimates |  | C | G2 | hardware |  | open |
+| #65 | T-20 | Rules (with `applies_to`), story, validator (check 7), verdict |  | B | G2 | credits |  | open |
+| #66 | T-21 | API, export, cards, synced player |  | C | G3 MVP freeze |  |  | open |
+| #67 | T-22 | Tap-to-protect; voice and typed rules (mic, 3 audio fixture buttons, typing); expected… |  | B | G3 MVP freeze | credits |  | open |
+| #68 | T-23 | Triage and closed loop |  | B | G3 MVP freeze | hardware |  | open |
+| #69 | T-24 | 3D viewer |  | C | G3 MVP freeze |  |  | open |
+| #70 | T-25 | Guards (incl. judging cap) and telemetry panel |  | C | G3 MVP freeze |  |  | open |
+| #71 | T-26 | Reolink events, live loop, LAN live view |  | A | G4 | hardware |  | open |
+| #72 | T-27 | Benchmark, audit harness, baseline, unit-economics measurements (11.9) |  | D | G4 | credits, hardware |  | open |
+| #73 | T-28 | Deploy sandbox with judging config (`VIGIL_ALLOW_PAID=1` from window end, `VIGIL_JUDGIN… |  | C | G4 | owner |  | open |
+| #74 | T-29 | Record live home clip; edit video; README; HACKATHON.md |  | D | Submission | hardware, owner |  | open |
+| #75 | T-30 | Final scans and submission |  | D | Submission | owner |  | open |
+| #76 | H-01 | GPU probe |  | B | G1 |  |  | closed |
+| #77 | H-02 | Local SAM 3.1 benchmark |  | B | G1 | hardware, owner |  | open |
+| #78 | H-03 | Local Glimmer benchmark |  | B | G2 | hardware, owner |  | open |
+| #79 | H-04 | Local versus API SAM parity |  | B | G2 | credits |  | open |
+| #80 | D-1 | DGX Spark full-window SAM 3.1 (conditional: only if gate H-02 fails) |  | B | G2 | dgx |  | open |

@@ -1,6 +1,6 @@
 ---
 name: budget-check
-description: Use when about to take any live or paid Meta Model API action - pytest -m live, scripts/smoke_meta.py --live, vigil process or vigil eval that may call the API, enabling sandbox live buttons, recording fixtures - and when reconciling spend, checking the $140 cap, the $10/day sandbox cap, the credit window end, or eval/budget.md.
+description: Use when about to take any live or paid Meta Model API action - pytest -m live, scripts/smoke_meta.py --live, vigil process or vigil eval that may call the API, enabling sandbox live buttons, recording fixtures - and when reconciling spend, checking the $140 credit cap, the $10/day sandbox cap, the $25 judging cap, the credit window end, VIGIL_JUDGING_END, or eval/budget.md.
 ---
 
 # Budget check
@@ -17,12 +17,15 @@ Account steps (claiming credits, Credit Terms, Billing limit, keys) are in
 
 | Limit | Value | Setting |
 | --- | --- | --- |
-| Total hard cap | $140 (of $150 credits) | `VIGIL_TOTAL_CAP_USD` |
-| Sandbox daily cap | $10/day | `VIGIL_DAILY_CAP_USD` |
+| Credit cap | $140 (of $150 credits), `credit`-tagged spend only | `VIGIL_TOTAL_CAP_USD` |
+| Sandbox daily cap (before window end) | $10/day | `VIGIL_DAILY_CAP_USD` |
 | Feature budgets | spec 11.4 table | budget guard |
 | Warnings | 50%, 75%, 90% | budget guard |
 | Credit window end | owner-confirmed ISO time | `VIGIL_CREDIT_WINDOW_END` |
-| Paid after window | forbidden unless owner sets it | `VIGIL_ALLOW_PAID` (owner only) |
+| Paid after window | only with `VIGIL_ALLOW_PAID=1` (owner only; decided ON for judging, Nov 2) | `VIGIL_ALLOW_PAID` |
+| Judging cap (post-window `paid` spend) | $25 total; binds before the daily cap | `VIGIL_JUDGING_CAP_USD` |
+| Judging daily cap | $5 per PT calendar day | `VIGIL_JUDGING_DAILY_CAP_USD` |
+| Judging end | no paid call after Nov 10, 23:59 PT (default when unset) | `VIGIL_JUDGING_END` |
 | Batch `--confirm` | required above $5 | CLI |
 
 Allowed models: `sam-3.1`, `muse-spark-1.3`, `muse-wonder-1.0`, `muse-voice-transcribe-1.0`.
@@ -39,8 +42,10 @@ Never a `-contributor` ID, web-search tool or Muse Image.
 2. **Check headroom:** ledger total so far (the `model_calls` table, `cost_usd` where
    `cached = 0`) plus the estimate stays under $140, under the feature budget and, for the
    sandbox, under today's $10.
-3. **Check the window:** now is before `VIGIL_CREDIT_WINDOW_END`. If unset or past, stop:
-   cached only, unless the owner approves a separate cap in writing.
+3. **Check the window:** before `VIGIL_CREDIT_WINDOW_END` the call is `credit`-funded. After it,
+   the call is `paid` and allowed only with `VIGIL_ALLOW_PAID=1`, within the $25 / $5-per-day
+   judging cap and before `VIGIL_JUDGING_END`. The allowance is set for the judges'
+   sandbox (T-28); any other paid call needs the owner's explicit approval.
 4. **Prefer free paths:** cache hit, recorded fixture, local SAM / Glimmer, template story.
 5. **Ask the owner** with the estimate, models, call count and purpose. Proceed only on an
    explicit yes in this session. Never set `VIGIL_ALLOW_PAID` or raise a cap yourself.
@@ -49,10 +54,10 @@ Never a `-contributor` ID, web-search tool or Muse Image.
 
 Append one row per day to `eval/budget.md`:
 
-| Date (PT) | Ledger total USD | Billing page USD | Drift % | Action |
-| --- | --- | --- | --- | --- |
+| Date (PT) | Ledger `credit` USD | Ledger `paid` USD | Billing page USD | Drift % | Action |
+| --- | --- | --- | --- | --- | --- |
 
-- Ledger total comes from the `model_calls` table; the Billing page figure comes from the
+- Ledger totals come from the `model_calls` table (split by `funding`); the Billing page figure comes from the
   owner (Claude cannot log in to Billing).
 - Drift over 10%: stop paid calls and update the price table in `vigil/meta/budget.py`
   (via a `vigil-fr-tdd` change with tests) before spending more.
@@ -63,4 +68,5 @@ Append one row per day to `eval/budget.md`:
 - "It's only one call" without an estimate or approval.
 - Running `pytest -m live` or `--live` scripts in CI, a loop or a background job.
 - Bypassing `MetaClient` (direct httpx) so the guard never sees the call.
-- Live calls after the credit window, or "the Billing page limit will stop it" (it may not).
+- Paid calls outside the sandbox after the credit window, past the judging cap or after
+  `VIGIL_JUDGING_END`, or "the Billing page limit will stop it" (it may not).

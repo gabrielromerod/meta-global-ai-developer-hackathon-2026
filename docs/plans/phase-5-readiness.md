@@ -4,7 +4,7 @@
 | --- | --- |
 | When | Mon Nov 2, 2026, end of the bootstrap; then repeated before each gate |
 | Owner | Integrator |
-| Status | Not started |
+| Status | In progress: checklists and [readiness](../readiness.md) synced on Nov 2; CI for the final commit pending |
 
 ## Goal
 

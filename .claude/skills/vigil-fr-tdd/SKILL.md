@@ -1,6 +1,6 @@
 ---
 name: vigil-fr-tdd
-description: Use when implementing, changing or fixing a Vigil functional or non-functional requirement (FR-001 to FR-043, NFR-001 to NFR-037), replacing a NotImplementedError stub in vigil/, adding a spec 12.1 test, or when asked to "build FR-0xx", "make test_xxx pass" or update requirement status and traceability.
+description: Use when implementing, changing or fixing a Vigil functional or non-functional requirement (FR-001 to FR-044, NFR-001 to NFR-037), replacing a NotImplementedError stub in vigil/, adding a spec 12.1 test, or when asked to "build FR-0xx", "make test_xxx pass" or update requirement status and traceability.
 ---
 
 # Vigil FR, test-first
@@ -56,7 +56,8 @@ requirement table says so. Code that exists before its test is deleted and rewri
 - Optional heavy deps (`open3d`, `trimesh`, `reolink-aio`, `torch`): lazy import inside the
   function, raise a clear "optional dependency missing" error, never needed by tests.
 - Invariants from `CLAUDE.md` override convenience: verdict stays pure, only rules give
-  `needs_attention`, gap sentences come from code, all model calls via `MetaClient`.
+  `needs_attention`, gap sentences come from code, all model calls via `MetaClient`, roles come
+  from spatial origin with `unknown` failing closed, rules fire only by `applies_to`.
 
 ## Status levels
 
@@ -65,6 +66,7 @@ Use the legend in `docs/requirements/functional.md` (same for `non-functional.md
 | Evidence | Status you may write |
 | --- | --- |
 | No passing evidence yet, or some tests red/skipped | Not verified |
+| Some offline behaviour green, some missing | Partial (offline), saying which part is missing |
 | Offline tests green on synthetic data or recorded fixtures | Offline-verified, with test names |
 | Spec acceptance met on real data, CI green or manual check logged with a date | Verified |
 | Cannot progress until the *Blocked-by* item (credits, hardware, DGX, owner) clears | Blocked |

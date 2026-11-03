@@ -5,7 +5,7 @@
 | When | Mon Nov 2, 2026, about 11:55 to 12:00 PT (covers spec T-02) |
 | Commit | `3d53d05` build: project foundation, shared contracts, package skeleton and CI |
 | Owner | Integrator |
-| Status | Committed; CI result to be confirmed by the integrator |
+| Status | Done: commit `3d53d05`; latest [CI run 41587853241](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/actions/runs/41587853241) green on `46c5b68` |
 
 ## Goal
 

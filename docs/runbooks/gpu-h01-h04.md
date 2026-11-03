@@ -20,6 +20,7 @@ Spec: [section 10](../spec/vigil-spec.md#10-compute-plan-rtx-3090-first-dgx-spar
 | Runs | `scripts/gpu_probe.py`: `nvidia-smi`, driver, CUDA, `torch.cuda` check, free VRAM, a 30 s matrix-multiply burn to confirm clocks and temperatures |
 | Output | `eval/hardware/3090.json` (committed) |
 | Done when | The 3090 is marked **Ready** or **Not ready** |
+| Result | **Done, Ready** (probed 2026-11-02T20:50:57Z; torch 2.14.1 for CUDA 13.0, about 64 TFLOPS burn, 67 °C peak, about 48 W idle and 349 W under load as GPU board power); issue #76 closed. torch was run from outside the project environment; installing it into the project for H-02 to H-04 needs owner approval |
 
 Commit the report even if it says Not ready; that is evidence too.
 
@@ -44,7 +45,7 @@ The 3090 **passes** if:
 | Outcome | Action |
 | --- | --- |
 | Pass | `VIGIL_SAM_BACKEND=local` for live home mode and the benchmark; the DGX Spark stays off |
-| Fail | Live mode and benchmark fall back to API SAM (costed in [spec 11](../spec/vigil-spec.md#11-meta-api-credit-plan-150)); phase [D-1](dgx-spark-d1.md) becomes optional and the owner gets the notice at least 10 hours before the Spark would be needed |
+| Fail | Live mode and benchmark fall back to API SAM (costed in [spec 11](../spec/vigil-spec.md#11-meta-api-credit-plan--commercial-unit-economics)); phase [D-1](dgx-spark-d1.md) becomes optional and the owner gets the notice at least 10 hours before the Spark would be needed |
 
 ## H-03 Local Glimmer benchmark
 

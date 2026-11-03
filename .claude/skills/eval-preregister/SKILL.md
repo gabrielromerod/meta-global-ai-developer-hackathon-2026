@@ -15,10 +15,14 @@ submission checklist "EVAL.md: targets commit earlier than the results commit").
 
 1. **Targets commit.** Edit `EVAL.md` targets section: alert reduction >= 80%, correct
    verdict >= 10/12, link precision >= 90%, 0 claims inside gaps, 0 uncited sentences
-   (NFR-023), plus NFR-024 to NFR-026 spatial targets, NFR-035 parity, and any latency
-   target marked as a first estimate. State the metric definition and the data it runs on.
+   (NFR-023), plus NFR-024 to NFR-026 spatial targets (landmark reprojection < 6 px nominal
+   FOV or < 4 px lens profile; audit held-out < 0.25 m), NFR-035 parity, NFR-012/036/037 cost,
+   and any latency target marked as a first estimate. Reported-only measures (role miss rate
+   day and night, FR-044; 11.9 Tier 0 / Tier 1 rates, T-27) are registered with a definition
+   and no target. State the metric definition and the data it runs on.
 2. **Labels commit.** Write `eval/labels/<scenario>.json` from the footage **before**
-   processing it (T-07): events, visits, expected verdict, gaps with times, links.
+   processing it (T-07a, T-07b): events, visits, expected verdict, gaps with times, links,
+   each subject's role as staged (never an identity), and day or night.
    Same commit as targets, or an earlier/later one, but before step 3.
 3. Confirm both are committed and pushed: `git log --format="%h %ad %s" --date=iso -- EVAL.md eval/labels`.
    Ask the owner to commit if you are not allowed to.

@@ -1,6 +1,6 @@
 # Runbook: Reolink cameras
 
-Task: **T-04** (Mon 12:30 PT), then T-05 and T-26. Requirements: FR-030, FR-031, FR-032, NFR-029, NFR-031. Spec: [section 6](../spec/vigil-spec.md#6-reolink-integration-real-world-environment).
+Task: **T-04** (done by **Mon 13:45 PT**, first in the daylight block), then T-05 (14:30) and T-26. Requirements: FR-030, FR-031, FR-032, FR-001 and FR-008 (zone kinds), NFR-029, NFR-031. Spec: [section 6](../spec/vigil-spec.md#6-reolink-integration-real-world-environment).
 
 **Blocked-by: hardware.** Needs the 4 home cameras on the home network and the owner's admin access. Open item from the spec: the 4 camera models, and whether an NVR or Home Hub is used.
 
@@ -59,13 +59,28 @@ The spec flags that it is not yet confirmed whether the RTSP stream carries the 
 3. Repeat for the sub stream.
 4. Record the result per camera in the T-04 issue. If a stream does not carry the mask, Vigil's polygons are the only layer for that stream: tighten them and re-run the privacy scan.
 
-## 5. Audio off
+## 5. Zone kinds to draw (FR-001, FR-008)
+
+Spatial origin roles (FR-044) depend on each zone's `kind` in `config/cameras.yaml`. Draw them on a still of each camera while you are at it, and keep zone names unique across cameras. Format: `zone_name: {kind: <kind>, polygon: [[x, y], ...]}` in the processed 1280 px frame; a plain polygon list loads as `interior_yard`.
+
+| Kind | Draw it over | Example (spec 9.4) |
+| --- | --- | --- |
+| `egress` | A door **of the house itself**, where a person steps out into view | `front_door_egress` (front), `back_door_egress` (backyard) |
+| `perimeter` | Where outsiders enter the property: street edge, driveway entry, side alley | `driveway_entry` (front), `side_alley` (side_left) |
+| `interior_yard` | Everything else: porch, lawn, paths | `porch` (front) |
+
+- A **garage door**, or any opening an outsider can reach without first appearing on a camera, is `interior_yard`, never `egress`.
+- A person's origin is the zone holding their foot point in most of their first 10 frames (1 s). A track starting mid-yard has no origin and counts as `unknown`, which fails closed (rules for non-household still fire).
+- Keep the egress polygons tight around the door: a track re-born there within 10 min of a non-egress person last seen on the door area (polygon dilated by 50%) loses its egress origin.
+- `uv run pytest tests/unit/test_config.py -q` checks the kinds and names; an unknown kind fails with the line number.
+
+## 6. Audio off
 
 - Turn audio recording **off** on every camera for the hackathon period.
 - ffmpeg removes audio again during capture (`-an`) and the privacy check refuses any window with an audio stream (NFR-002).
 - Verify: `ffprobe` on a captured segment shows no audio stream.
 
-## 6. Restreamer (go2rtc)
+## 7. Restreamer (go2rtc)
 
 Browsers cannot play RTSP, so the LAN app uses go2rtc (WebRTC or MSE). It also holds one connection per camera, which reduces camera load.
 
@@ -74,11 +89,12 @@ Browsers cannot play RTSP, so the LAN app uses go2rtc (WebRTC or MSE). It also h
 - ⚠️ Check go2rtc's licence on its repository and record it in the README credits before shipping.
 - Capture (`vigil/reolink/capture.py`) reads from go2rtc and writes 10 s segments by stream copy, audio removed, into the 48 h ring under `data/` (gitignored).
 
-## 7. Acceptance
+## 8. Acceptance
 
 | Check | Pass when | Requirement |
 | --- | --- | --- |
 | Probe | All 4 cameras pass; no credentials in output or logs | FR-030 |
+| Zone kinds | Every camera's `egress` and `perimeter` zones drawn; `test_config.py` passes on `config/cameras.yaml` | FR-001, FR-008 |
 | 30 min capture | No segment gap over 1 s | FR-031 (T-05) |
 | 2 h capture overnight plus a cable pull | No gap over 1 s; reconnect within 30 s; average CPU logged | NFR-029, NFR-033 |
 | AI events | At least 9 of 10 staged walk-ins produce an event; latency measured | FR-032 |

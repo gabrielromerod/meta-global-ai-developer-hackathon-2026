@@ -1,7 +1,8 @@
 -- Vigil SQLite schema (spec 9.3). Times are seconds on the aligned session clock.
 CREATE TABLE cameras(id TEXT PRIMARY KEY, name TEXT, width INT, height INT, offset_s REAL);
 CREATE TABLE windows(id TEXT PRIMARY KEY, camera_id TEXT, t0 REAL, t1 REAL, path TEXT,
-  file_id TEXT, motion REAL, trigger TEXT, status TEXT);
+  file_id TEXT, motion REAL, trigger TEXT, status TEXT,
+  illumination TEXT DEFAULT 'unknown');
 CREATE TABLE camera_ai_events(id TEXT PRIMARY KEY, camera_id TEXT, kind TEXT, t0 REAL, t1 REAL);
 CREATE TABLE tracks(id TEXT PRIMARY KEY, camera_id TEXT, cls TEXT, t_first REAL, t_last REAL,
   overlay_path TEXT, origin_zone TEXT);

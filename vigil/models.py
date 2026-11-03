@@ -25,7 +25,7 @@ VerdictProposal = Literal["normal", "noteworthy"]
 """Wonder may only propose these two (spec 9.4 Story contract)."""
 
 EventType = Literal["enter", "exit", "cross", "touch", "removed", "dwell"]
-GapKind = Literal["blind_spot", "ambiguous_link", "outage"]
+GapKind = Literal["blind_spot", "ambiguous_link", "outage", "battery_wake", "clock_drift"]
 RuleTrigger = Literal["touch", "cross", "enter", "removed", "dwell"]
 TargetKind = Literal["protected_object", "zone", "line", "watch"]
 RuleState = Literal["draft", "active", "disabled", "discarded"]
@@ -85,6 +85,20 @@ class CameraSource(_Model):
 class CameraCfg(_Model):
     id: str
     name: str
+    evidence_kind: Literal["real", "fixture"] = "real"
+    model: str | None = None
+    power_profile: Literal["plugin_wifi", "doorbell", "battery_wifi", "import"] = "plugin_wifi"
+    frame_layout: Literal["planar", "duo_panorama"] = "planar"
+    panorama_hfov_deg: float = 90.0
+    panorama_homographies: dict[str, list[list[float]]] = Field(default_factory=dict)
+    panorama_r95_m: float | None = None
+    privacy_reviewed: bool = False
+    privacy_still_sha256: str | None = None
+    privacy_polygons_sha256: str | None = None
+    clock_offset_s: float | None = None
+    hub_present: bool | None = None
+    zone_rings: dict[str, Literal["outer", "middle", "inner"]] = Field(default_factory=dict)
+    privacy_regions: dict[str, Polygon] = Field(default_factory=dict)
     source: CameraSource | None = None
     width: int = 1280
     height: int = 720
@@ -149,13 +163,24 @@ class TopologyEdge(_Model):
     min_s: float | None = None
     max_s: float | None = None
     blind: bool = False
+    transit_measured: bool = True
 
 
 class Config(_Model):
     timezone: str = "America/Los_Angeles"
+    evidence_kind: Literal["real", "fixture"] = "real"
     cameras: list[CameraCfg]
     blind_regions: list[BlindRegion] = Field(default_factory=list)
     topology: list[TopologyEdge] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def _evidence_scope(self) -> Config:
+        if self.evidence_kind == "fixture":
+            for camera in self.cameras:
+                camera.evidence_kind = "fixture"
+        elif any(camera.evidence_kind != "real" for camera in self.cameras):
+            raise ValueError("real camera config cannot contain fixture cameras")
+        return self
 
     def camera(self, camera_id: str) -> CameraCfg:
         for cam in self.cameras:
@@ -170,6 +195,7 @@ class Config(_Model):
 
 
 class Window(_Model):
+    illumination: Literal["colour", "infrared", "mixed", "unknown"] = "unknown"
     id: str
     camera_id: str
     t0: float
@@ -293,6 +319,7 @@ class Appearance(_Model):
     """No face, age, gender, skin or ethnicity fields exist, by design (NFR-003)."""
 
     tag: str
+    illumination: Literal["colour", "infrared", "mixed", "unknown"] = "unknown"
     class_: Literal["person", "vehicle", "object"] = Field(alias="class")
     upper_color: str | None = None
     lower_color: str | None = None

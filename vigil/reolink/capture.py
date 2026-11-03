@@ -29,6 +29,7 @@ import itertools
 import logging
 import os
 import re
+import shutil
 import time
 from collections.abc import Awaitable, Callable, Sequence
 from dataclasses import dataclass
@@ -90,7 +91,14 @@ def ffmpeg_segment_cmd(
     src = url.secret() if isinstance(url, StreamUrl) else str(url)
     binary = ffmpeg or ffmpeg_bin()
     if src.startswith(("rtsp://", "rtsps://")):
-        input_opts = ["-rtsp_transport", "tcp", "-timeout", str(io_timeout_us)]
+        input_opts = [
+            "-rtsp_transport",
+            "tcp",
+            "-allowed_media_types",
+            "video",
+            "-timeout",
+            str(io_timeout_us),
+        ]
     elif src.startswith(("http://", "https://")):
         input_opts = [
             "-reconnect", "1",
@@ -211,7 +219,12 @@ def build_window(
 
 
 def cleanup_ring(
-    root: Path, retention_s: float = RETENTION_S, now: float | None = None
+    root: Path,
+    retention_s: float = RETENTION_S,
+    now: float | None = None,
+    *,
+    free_floor_bytes: int = 0,
+    free_bytes: Callable[[], int] | None = None,
 ) -> list[Path]:
     """Delete media files under `root` older than `retention_s` (48 h by default).
 
@@ -220,20 +233,37 @@ def cleanup_ring(
     """
     now = time.time() if now is None else now
     cutoff = now - retention_s
+    from vigil.reolink.retention import PinIndex
+
+    root = Path(root).resolve()
+    if not root.exists():
+        return []
+    index = PinIndex(root)
+    free_bytes = free_bytes or (lambda: shutil.disk_usage(root).free)
+    candidates = []
+    for path in root.rglob("*"):
+        if (
+            path.is_file()
+            and not path.is_symlink()
+            and path.suffix.lower() in MEDIA_SUFFIXES
+            and path.resolve().is_relative_to(root)
+        ):
+            candidates.append((parse_segment_time(path) or path.stat().st_mtime, path))
     deleted: list[Path] = []
-    for p in sorted(Path(root).rglob("*")):
-        if not p.is_file() or p.suffix.lower() not in MEDIA_SUFFIXES:
-            continue
-        t = parse_segment_time(p)
-        if t is None:
-            t = p.stat().st_mtime
-        if t < cutoff:
-            try:
-                p.unlink()
-            except OSError as err:  # pragma: no cover - file in use on Windows
-                log.warning("could not delete %s: %s", p.name, err)
+    with index.transaction() as conn:
+        for timestamp, path in sorted(candidates):
+            if conn.execute(
+                "SELECT 1 FROM pins WHERE path=? LIMIT 1", (index.relative(path),)
+            ).fetchone():
                 continue
-            deleted.append(p)
+            if timestamp >= cutoff and (not free_floor_bytes or free_bytes() >= free_floor_bytes):
+                continue
+            try:
+                path.unlink()
+            except OSError as err:  # pragma: no cover - file in use on Windows
+                log.warning("could not delete %s: %s", path.name, err)
+                continue
+            deleted.append(path)
     if deleted:
         log.info(
             "ring cleanup: deleted %d segments older than %.0f h", len(deleted), retention_s / 3600

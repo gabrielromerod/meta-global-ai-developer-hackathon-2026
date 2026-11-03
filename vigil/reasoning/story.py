@@ -75,7 +75,14 @@ def gap_sentence(
 ) -> StorySentence:
     """The code-written sentence for one gap (never produced by a model)."""
     dur = _duration(gap.duration_s)
-    if gap.kind == "outage":
+    if gap.kind in {"battery_wake", "clock_drift"}:
+        reason = (
+            "battery wake" if gap.kind == "battery_wake" else "camera clock drift above 2 seconds"
+        )
+        text = (
+            f"Vigil can't confirm what happened for {dur}: {reason}. The sightings remain unlinked."
+        )
+    elif gap.kind == "outage":
         cam = camera_names.get(gap.from_camera or "", gap.from_camera or "a")
         text = f"Vigil can't confirm what happened for {dur} while the {cam} camera was offline."
     elif gap.kind == "ambiguous_link":

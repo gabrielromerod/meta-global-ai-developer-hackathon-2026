@@ -33,6 +33,7 @@ runner = CliRunner()
 CONFIG_YAML = """\
 # test config: this comment must survive `vigil ingest` (offsets are not written back)
 timezone: America/Los_Angeles
+evidence_kind: fixture
 cameras:
   - id: front
     name: Front entrance

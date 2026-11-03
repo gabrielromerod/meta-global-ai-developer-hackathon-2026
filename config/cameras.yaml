@@ -1,76 +1,564 @@
-# Vigil camera configuration (spec 9.4, FR-001, FR-008, FR-030).
-# Hosts and credentials come from .env on the edge machine; never put them here.
-# Pixel coordinates are in the processed 1280x720 window frame.
-# NOTE: geometry below is a SAMPLE used by tests and synthetic scenarios until the
-# real cameras are probed (T-04) and calibrated (T-14). offset_s values come from T-07.
-#
-# Zones carry a `kind` (spec 9.4), which drives FR-008 origin tagging and FR-044 roles:
-#   egress        a door of the house itself (never a garage door or any opening an outsider
-#                 can reach without first appearing on a camera)
-#   perimeter     where outsiders enter: street, driveway entry, side alley
-#   interior_yard everything else (a plain polygon list is also read as interior_yard)
-# Zone and line names are unique across all cameras (rule targets name them alone).
-#
-# hfov_deg: PLACEHOLDER nominal horizontal field of view (FR-036 fov_nominal intrinsics).
-# Replace each value with the camera model's datasheet figure once T-04 confirms the models;
-# until then 90.0 matches vigil.spatial.calibrate.DEFAULT_HFOV_DEG.
+# Real inventory; UNREVIEWED pixel templates. No Home Hub (owner confirmed Nov 3).
+# Ingest blocked until exact still/mask review; transit times unmeasured.
 timezone: America/Los_Angeles
+evidence_kind: real
 cameras:
-  - id: front
-    name: Front entrance
-    source: {host_env: REOLINK_FRONT_HOST, channel: null}
-    offset_s: 0.0
-    hfov_deg: 90.0                                      # PLACEHOLDER until T-04 datasheet
-    zones:
-      front_door_egress: {kind: egress,        polygon: [[560, 300], [700, 300], [700, 560], [560, 560]]}
-      porch:             {kind: interior_yard, polygon: [[420, 380], [860, 380], [860, 720], [420, 720]]}
-      driveway:          {kind: interior_yard, polygon: [[0, 300], [400, 300], [400, 720], [0, 720]]}
-      driveway_entry:    {kind: perimeter,     polygon: [[0, 300], [180, 300], [180, 720], [0, 720]]}
-    privacy:
-      - [[0, 0], [1280, 0], [1280, 140], [0, 140]]        # street and houses across
-    exits:
-      to_side_left: [[1180, 260], [1280, 260], [1280, 720], [1180, 720]]
-  - id: side_left
-    name: Left side
-    source: {host_env: REOLINK_SIDE_LEFT_HOST, channel: null}
-    offset_s: -0.42
-    hfov_deg: 90.0                                      # PLACEHOLDER until T-04 datasheet
-    zones:
-      side_alley: {kind: perimeter,     polygon: [[200, 300], [420, 300], [420, 720], [200, 720]]}
-      side_yard:  {kind: interior_yard, polygon: [[200, 300], [1100, 300], [1100, 720], [200, 720]]}
-    lines:
-      side_gate: [[812, 410], [870, 655]]
-    exits:
-      to_shed_back: [[1100, 380], [1280, 380], [1280, 720], [1100, 720]]
-    privacy:
-      - [[0, 0], [180, 0], [180, 720], [0, 720]]          # neighbour's wall and window
-  - id: side_right
-    name: Right side
-    source: {host_env: REOLINK_SIDE_RIGHT_HOST, channel: null}
-    offset_s: 0.0
-    hfov_deg: 90.0                                      # PLACEHOLDER until T-04 datasheet
-    zones:
-      side_path: {kind: interior_yard, polygon: [[150, 280], [1130, 280], [1130, 720], [150, 720]]}
-    privacy:
-      - [[1100, 0], [1280, 0], [1280, 720], [1100, 720]]  # neighbour's house
-  - id: backyard
-    name: Backyard
-    source: {host_env: REOLINK_BACKYARD_HOST, channel: null}
-    offset_s: 0.0
-    hfov_deg: 90.0                                      # PLACEHOLDER until T-04 datasheet
-    zones:
-      back_door_egress: {kind: egress,        polygon: [[600, 260], [760, 260], [760, 520], [600, 520]]}
-      backyard:         {kind: interior_yard, polygon: [[0, 260], [1280, 260], [1280, 720], [0, 720]]}
-blind_regions:            # written by `vigil spatial coverage` (FR-038); sample until T-17
-  - {id: shed_back, name: behind the shed, polygon_m: [[4.1, 9.0], [7.3, 9.0], [7.3, 11.2], [4.1, 11.2]]}
+- id: front_left_duo
+  name: Front left Duo
+  model: Duo Floodlight Wi-Fi
+  power_profile: plugin_wifi
+  frame_layout: duo_panorama
+  source:
+    host_env: REOLINK_FRONT_LEFT_DUO_HOST
+    channel: null
+    stream: sub
+  width: 1920
+  height: 720
+  offset_s: 0
+  clock_offset_s: null
+  privacy_reviewed: false
+  zones:
+    left_street:
+      kind: perimeter
+      polygon:
+      - - 0
+        - 260
+      - - 1920
+        - 260
+      - - 1920
+        - 380
+      - - 0
+        - 380
+    left_garden:
+      kind: interior_yard
+      polygon:
+      - - 0
+        - 380
+      - - 1920
+        - 380
+      - - 1920
+        - 720
+      - - 0
+        - 720
+    left_driveway:
+      kind: interior_yard
+      polygon:
+      - - 1248.0
+        - 400
+      - - 1920
+        - 400
+      - - 1920
+        - 720
+      - - 1248.0
+        - 720
+  zone_rings:
+    left_street: outer
+    left_garden: middle
+    left_driveway: middle
+  privacy_regions:
+    sky_ridgeline: &id001
+    - - 0
+      - 0
+    - - 1920
+      - 0
+    - - 1920
+      - 160
+    - - 0
+      - 160
+    opposite_houses_cars: &id002
+    - - 0
+      - 150
+    - - 1920
+      - 150
+    - - 1920
+      - 260
+    - - 0
+      - 260
+    neighbour_left: &id003
+    - - 0
+      - 260
+    - - 160
+      - 260
+    - - 160
+      - 720
+    - - 0
+      - 720
+    neighbour_right: &id004
+    - - 1760
+      - 260
+    - - 1920
+      - 260
+    - - 1920
+      - 720
+    - - 1760
+      - 720
+    curb_numbers: &id005
+    - - 0
+      - 350
+    - - 1920
+      - 350
+    - - 1920
+      - 380
+    - - 0
+      - 380
+    timestamp_watermark: &id006
+    - - 0
+      - 0
+    - - 1920
+      - 0
+    - - 1920
+      - 90
+    - - 0
+      - 90
+  privacy:
+  - *id001
+  - *id002
+  - *id003
+  - *id004
+  - *id005
+  - *id006
+  hub_present: false
+- id: front_right_duo
+  name: Front right Duo
+  model: Duo Floodlight Wi-Fi
+  power_profile: plugin_wifi
+  frame_layout: duo_panorama
+  source:
+    host_env: REOLINK_FRONT_RIGHT_DUO_HOST
+    channel: null
+    stream: sub
+  width: 1920
+  height: 720
+  offset_s: 0
+  clock_offset_s: null
+  privacy_reviewed: false
+  zones:
+    right_street:
+      kind: perimeter
+      polygon:
+      - - 0
+        - 260
+      - - 1920
+        - 260
+      - - 1920
+        - 380
+      - - 0
+        - 380
+    right_garden:
+      kind: interior_yard
+      polygon:
+      - - 0
+        - 380
+      - - 1920
+        - 380
+      - - 1920
+        - 720
+      - - 0
+        - 720
+    right_driveway:
+      kind: interior_yard
+      polygon:
+      - - 1248.0
+        - 400
+      - - 1920
+        - 400
+      - - 1920
+        - 720
+      - - 1248.0
+        - 720
+  zone_rings:
+    right_street: outer
+    right_garden: middle
+    right_driveway: middle
+  privacy_regions:
+    sky_ridgeline: &id007
+    - - 0
+      - 0
+    - - 1920
+      - 0
+    - - 1920
+      - 160
+    - - 0
+      - 160
+    opposite_houses_cars: &id008
+    - - 0
+      - 150
+    - - 1920
+      - 150
+    - - 1920
+      - 260
+    - - 0
+      - 260
+    neighbour_left: &id009
+    - - 0
+      - 260
+    - - 160
+      - 260
+    - - 160
+      - 720
+    - - 0
+      - 720
+    neighbour_right: &id010
+    - - 1760
+      - 260
+    - - 1920
+      - 260
+    - - 1920
+      - 720
+    - - 1760
+      - 720
+    curb_numbers: &id011
+    - - 0
+      - 350
+    - - 1920
+      - 350
+    - - 1920
+      - 380
+    - - 0
+      - 380
+    timestamp_watermark: &id012
+    - - 0
+      - 0
+    - - 1920
+      - 0
+    - - 1920
+      - 90
+    - - 0
+      - 90
+  privacy:
+  - *id007
+  - *id008
+  - *id009
+  - *id010
+  - *id011
+  - *id012
+  hub_present: false
+- id: doorbell
+  name: Doorbell
+  model: Video doorbell Wi-Fi
+  power_profile: doorbell
+  frame_layout: planar
+  source:
+    host_env: REOLINK_DOORBELL_HOST
+    channel: null
+    stream: sub
+  width: 1280
+  height: 720
+  offset_s: 0
+  clock_offset_s: null
+  privacy_reviewed: false
+  zones:
+    front_door_egress:
+      kind: egress
+      polygon:
+      - - 500
+        - 250
+      - - 780
+        - 250
+      - - 780
+        - 620
+      - - 500
+        - 620
+    doorbell_entry:
+      kind: interior_yard
+      polygon:
+      - - 0
+        - 300
+      - - 1280
+        - 300
+      - - 1280
+        - 720
+      - - 0
+        - 720
+  zone_rings:
+    front_door_egress: inner
+    doorbell_entry: inner
+  privacy_regions:
+    timestamp_watermark: &id013
+    - - 0
+      - 0
+    - - 1280
+      - 0
+    - - 1280
+      - 140
+    - - 0
+      - 140
+    neighbour_boundary: &id014
+    - - 0
+      - 0
+    - - 120
+      - 0
+    - - 120
+      - 720
+    - - 0
+      - 720
+  privacy:
+  - *id013
+  - *id014
+  hub_present: false
+- id: porch
+  name: Porch
+  model: null
+  power_profile: plugin_wifi
+  frame_layout: planar
+  source:
+    host_env: REOLINK_PORCH_HOST
+    channel: null
+    stream: sub
+  width: 1280
+  height: 720
+  offset_s: 0
+  clock_offset_s: null
+  privacy_reviewed: false
+  zones:
+    porch:
+      kind: interior_yard
+      polygon:
+      - - 100
+        - 250
+      - - 1180
+        - 250
+      - - 1180
+        - 720
+      - - 100
+        - 720
+  zone_rings:
+    porch: inner
+  privacy_regions:
+    timestamp_watermark: &id015
+    - - 0
+      - 0
+    - - 1280
+      - 0
+    - - 1280
+      - 140
+    - - 0
+      - 140
+    neighbour_boundary: &id016
+    - - 0
+      - 0
+    - - 120
+      - 0
+    - - 120
+      - 720
+    - - 0
+      - 720
+  privacy:
+  - *id015
+  - *id016
+  hub_present: false
+- id: side_left
+  name: Left passage
+  model: Argus
+  power_profile: battery_wifi
+  frame_layout: planar
+  source:
+    host_env: REOLINK_SIDE_LEFT_HOST
+    channel: null
+    stream: main
+  width: 1280
+  height: 720
+  offset_s: 0
+  clock_offset_s: null
+  privacy_reviewed: false
+  zones:
+    side_alley:
+      kind: perimeter
+      polygon:
+      - - 200
+        - 300
+      - - 420
+        - 300
+      - - 420
+        - 720
+      - - 200
+        - 720
+    side_yard:
+      kind: interior_yard
+      polygon:
+      - - 420
+        - 300
+      - - 1100
+        - 300
+      - - 1100
+        - 720
+      - - 420
+        - 720
+  zone_rings:
+    side_alley: middle
+    side_yard: middle
+  lines:
+    side_gate:
+    - - 812
+      - 410
+    - - 870
+      - 655
+  privacy_regions:
+    timestamp_watermark: &id017
+    - - 0
+      - 0
+    - - 1280
+      - 0
+    - - 1280
+      - 140
+    - - 0
+      - 140
+    neighbour_boundary: &id018
+    - - 0
+      - 0
+    - - 120
+      - 0
+    - - 120
+      - 720
+    - - 0
+      - 720
+  privacy:
+  - *id017
+  - *id018
+  hub_present: false
+- id: backyard_1
+  name: Backyard 1
+  model: Argus PT Solar
+  power_profile: battery_wifi
+  frame_layout: planar
+  source:
+    host_env: REOLINK_BACKYARD_1_HOST
+    channel: null
+    stream: main
+  width: 1280
+  height: 720
+  offset_s: 0
+  clock_offset_s: null
+  privacy_reviewed: false
+  zones:
+    backyard_1_lawn:
+      kind: interior_yard
+      polygon:
+      - - 0
+        - 250
+      - - 1280
+        - 250
+      - - 1280
+        - 720
+      - - 0
+        - 720
+  zone_rings:
+    backyard_1_lawn: middle
+  privacy_regions:
+    timestamp_watermark: &id019
+    - - 0
+      - 0
+    - - 1280
+      - 0
+    - - 1280
+      - 140
+    - - 0
+      - 140
+    neighbour_boundary: &id020
+    - - 0
+      - 0
+    - - 120
+      - 0
+    - - 120
+      - 720
+    - - 0
+      - 720
+  privacy:
+  - *id019
+  - *id020
+  hub_present: false
+- id: backyard_2
+  name: Backyard 2
+  model: Argus PT Solar
+  power_profile: battery_wifi
+  frame_layout: planar
+  source:
+    host_env: REOLINK_BACKYARD_2_HOST
+    channel: null
+    stream: main
+  width: 1280
+  height: 720
+  offset_s: 0
+  clock_offset_s: null
+  privacy_reviewed: false
+  zones:
+    backyard_2_lawn:
+      kind: interior_yard
+      polygon:
+      - - 0
+        - 250
+      - - 1280
+        - 250
+      - - 1280
+        - 720
+      - - 0
+        - 720
+  zone_rings:
+    backyard_2_lawn: middle
+  privacy_regions:
+    timestamp_watermark: &id021
+    - - 0
+      - 0
+    - - 1280
+      - 0
+    - - 1280
+      - 140
+    - - 0
+      - 140
+    neighbour_boundary: &id022
+    - - 0
+      - 0
+    - - 120
+      - 0
+    - - 120
+      - 720
+    - - 0
+      - 720
+  privacy:
+  - *id021
+  - *id022
+  hub_present: false
+blind_regions: []
 topology:
-  - {from: side_left, exit: to_shed_back, to: shed_back, blind: true}
-  - {from: shed_back, to: side_left, min_s: 5, max_s: 180, blind: true}
-  - {from: front, to: side_left, min_s: 2, max_s: 20}
-  - {from: side_left, to: front, min_s: 2, max_s: 20}
-  - {from: side_left, to: backyard, min_s: 3, max_s: 30}
-  - {from: backyard, to: side_left, min_s: 3, max_s: 30}
-  - {from: front, to: side_right, min_s: 2, max_s: 20}
-  - {from: side_right, to: front, min_s: 2, max_s: 20}
-  - {from: side_right, to: backyard, min_s: 3, max_s: 30}
-  - {from: backyard, to: side_right, min_s: 3, max_s: 30}
+- from: front_left_duo
+  to: porch
+  transit_measured: false
+- from: porch
+  to: front_left_duo
+  transit_measured: false
+- from: front_right_duo
+  to: porch
+  transit_measured: false
+- from: porch
+  to: front_right_duo
+  transit_measured: false
+- from: doorbell
+  to: porch
+  transit_measured: false
+- from: porch
+  to: doorbell
+  transit_measured: false
+- from: front_left_duo
+  to: side_left
+  transit_measured: false
+- from: side_left
+  to: front_left_duo
+  transit_measured: false
+- from: porch
+  to: side_left
+  transit_measured: false
+- from: side_left
+  to: porch
+  transit_measured: false
+- from: side_left
+  to: backyard_1
+  transit_measured: false
+- from: backyard_1
+  to: side_left
+  transit_measured: false
+- from: side_left
+  to: backyard_2
+  transit_measured: false
+- from: backyard_2
+  to: side_left
+  transit_measured: false

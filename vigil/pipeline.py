@@ -212,20 +212,29 @@ def _positions(
     tracks: list[Track],
     calibrations: Mapping[str, Calibration] | Sequence[Calibration] | None,
     ground: Any,
+    cfg: Config | None = None,
 ) -> list[Position]:
-    if not calibrations or ground is None:
-        return []
     from vigil.spatial.locate import locate_track
 
     cals = (
         dict(calibrations)
         if isinstance(calibrations, Mapping)
-        else {c.camera_id: c for c in calibrations}
+        else {c.camera_id: c for c in calibrations or []}
     )
     out: list[Position] = []
     for t in sorted(tracks, key=lambda t: t.id):
+        camera = cfg.camera(t.camera_id) if cfg else None
+        if camera and camera.frame_layout == "duo_panorama":
+            from vigil.spatial.panorama import locate_panorama
+
+            out.extend(
+                position
+                for frame in t.frames
+                if (position := locate_panorama(frame, camera, t.id)) is not None
+            )
+            continue
         cal = cals.get(t.camera_id)
-        if cal is None or t.cls not in SUBJECT_CLASSES or not t.frames:
+        if cal is None or ground is None or t.cls not in SUBJECT_CLASSES or not t.frames:
             continue
         rng = np.random.default_rng(_seed(t.id))  # reproducible r95 (NFR-011)
         out.extend(locate_track(t.frames, cal, ground, rng, track_id=t.id))
@@ -410,8 +419,15 @@ def run_scenario(
         observation=observation,
         session_start=session_start,
     )
+    from vigil.perception.noise import property_evidence
+
+    tracks, events, noise_counts = property_evidence(tracks, events, cfg)
     appearance = _notes(notes, tracks)
-    positions = _positions(tracks, calibrations, ground)
+    for track in tracks:
+        modes = {w.illumination for w in windows if w.id in track.window_ids} - {"unknown"}
+        if track.id in appearance and modes:
+            appearance[track.id].illumination = "mixed" if len(modes) > 1 else next(iter(modes))
+    positions = _positions(tracks, calibrations, ground, cfg)
 
     # reasoning -------------------------------------------------------------
     asm = assemble_visits(
@@ -576,6 +592,7 @@ def run_scenario(
             for w in windows
         ],
         "sam_missing": sam_missing,
+        "noise_counts": noise_counts,
         "tracks": [_track_row(t) for t in sorted(tracks, key=lambda t: t.id)],
         "events": [e.model_dump(mode="json") for e in asm.events],
         "gaps": [g.model_dump(mode="json") for g in asm.gaps],
@@ -738,6 +755,9 @@ def upload_window(client: Uploader, window: Window, cam: CameraCfg) -> str:
         raise ValueError(f"window {window.id} has no file to upload")
     if window.camera_id != cam.id:
         raise ValueError(f"window {window.id} is on {window.camera_id}, not {cam.id}")
+    from vigil.ingest.review import require_privacy_review
+
+    require_privacy_review(cam)
     assert_uploadable(window.path, cam.privacy, ref_size=(cam.width, cam.height))
     window.file_id = client.upload(Path(window.path))
     return window.file_id
@@ -922,6 +942,11 @@ def process_session(
         }
     )
     rules = [*load_rules(), *(Rule.model_validate(r) for r in meta.get("rules", []))]
+    from vigil.ingest.review import require_privacy_review
+
+    for camera in cfg.cameras:
+        if any(window.camera_id == camera.id for window in windows):
+            require_privacy_review(camera)
     protected = [ProtectedObject.model_validate(p) for p in meta.get("protected_objects", [])]
     watches = [Watch.model_validate(w) for w in meta.get("watches", [])]
     expected = [ExpectedWindow.model_validate(w) for w in meta.get("expected_windows", [])]

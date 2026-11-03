@@ -144,7 +144,11 @@ def test_yard_with_shed_finds_behind_the_shed_region():
 
 
 def test_blind_regions_written_into_cameras_yaml_dict(tmp_path, repo_root):
-    raw = yaml.safe_load((repo_root / "config" / "cameras.yaml").read_text(encoding="utf-8"))
+    raw = yaml.safe_load(
+        (repo_root / "tests" / "fixtures" / "config" / "synthetic-cameras.yaml").read_text(
+            encoding="utf-8"
+        )
+    )
     new = [
         BlindRegion(
             id="shed_back", name="behind the shed", polygon_m=[(4, 11), (8, 11), (8, 14), (4, 14)]

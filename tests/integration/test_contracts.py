@@ -548,6 +548,7 @@ def test_upload_window_checks_privacy_before_upload(tmp_path: Path) -> None:
     cam = CameraCfg(
         id="side_left",
         name="Left side",
+        evidence_kind="fixture",
         width=320,
         height=180,
         privacy=[[(0, 0), (80, 0), (80, 180), (0, 180)]],
@@ -604,7 +605,13 @@ def test_process_session_blocked_without_recorded_sam(tmp_path: Path) -> None:
     data = tmp_path / "data"
     _write_session(data, "evening-1", SCENARIOS["C"](), sam=False)
     with pytest.raises(RuntimeError, match=r"^blocked: ") as ei:
-        process_session("evening-1", settings=Settings(data_dir=data))
+        process_session(
+            "evening-1",
+            settings=Settings(
+                data_dir=data,
+                config_path=Path(__file__).parents[1] / "fixtures/config/synthetic-cameras.yaml",
+            ),
+        )
     msg = str(ei.value)
     assert "H-02" in msg
     assert "credits" in msg
@@ -620,7 +627,13 @@ def test_process_session_runs_offline_on_recorded_sam(
     }
     _write_session(data, "evening-1", SCENARIOS["C"](), sam=True, extra=extra)
     with respx.mock(assert_all_called=False):  # nothing may touch the network
-        result = process_session("evening-1", settings=Settings(data_dir=data))
+        result = process_session(
+            "evening-1",
+            settings=Settings(
+                data_dir=data,
+                config_path=Path(__file__).parents[1] / "fixtures/config/synthetic-cameras.yaml",
+            ),
+        )
     (v,) = result["visits"]
     assert v["verdict"] == "needs_attention"
     assert {h["rule_id"] for h in v["rule_hits"]} == {"r7"}
@@ -640,7 +653,13 @@ def test_process_session_reads_expected_windows_and_checkins(
     data = tmp_path / "data"
     _write_session(data, "evening-1", sc, sam=True, extra=sc.session_json())
     with respx.mock(assert_all_called=False):
-        result = process_session("evening-1", settings=Settings(data_dir=data))
+        result = process_session(
+            "evening-1",
+            settings=Settings(
+                data_dir=data,
+                config_path=Path(__file__).parents[1] / "fixtures/config/synthetic-cameras.yaml",
+            ),
+        )
     (s,) = result["visits"][0]["subjects"]
     assert (s["actor_role"], s["role_basis"]) == ("expected_visitor", "window:w3")
     assert [w["id"] for w in result["expected_windows"]] == ["w3"]
@@ -655,7 +674,13 @@ def test_process_session_reads_expected_windows_and_checkins(
         data2, "evening-1", sc, sam=True, extra={**sc.session_json(), "checkins": [checkin]}
     )
     with respx.mock(assert_all_called=False):
-        result2 = process_session("evening-1", settings=Settings(data_dir=data2))
+        result2 = process_session(
+            "evening-1",
+            settings=Settings(
+                data_dir=data2,
+                config_path=Path(__file__).parents[1] / "fixtures/config/synthetic-cameras.yaml",
+            ),
+        )
     (s2,) = result2["visits"][0]["subjects"]
     assert (s2["actor_role"], s2["role_basis"]) == ("household_insider", "checkin:c1")
     assert result2["checkins"][0]["bound_subject"] == s2["id"]

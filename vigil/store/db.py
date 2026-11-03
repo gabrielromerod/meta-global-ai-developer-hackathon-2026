@@ -88,6 +88,10 @@ def init_db(conn: sqlite3.Connection) -> None:
     if have == 0:
         conn.executescript(SCHEMA_PATH.read_text(encoding="utf-8"))
         conn.commit()
+    elif conn.execute("SELECT 1 FROM sqlite_master WHERE name='windows'").fetchone():
+        if "illumination" not in columns(conn, "windows"):
+            conn.execute("ALTER TABLE windows ADD COLUMN illumination TEXT DEFAULT 'unknown'")
+            conn.commit()
 
 
 def open_db(path: Path | str) -> sqlite3.Connection:

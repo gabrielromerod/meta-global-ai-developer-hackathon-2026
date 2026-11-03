@@ -194,8 +194,10 @@ def polygon_mask(
     w, h = size
     mask = np.zeros((h, w), np.uint8)
     pts = [p for p in scale_polygons(polygons, size, ref_size) if len(p) >= 3]
-    if pts:
-        cv2.fillPoly(mask, pts, 255)
+    # A single fillPoly call applies even-odd contours, cutting holes at overlaps.
+    # Privacy polygons are a union, including contained watermark/sky polygons.
+    for polygon in pts:
+        cv2.fillPoly(mask, [polygon], 255)
     if margin_px > 0 and pts:
         k = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (2 * margin_px + 1, 2 * margin_px + 1))
         mask = cv2.dilate(mask, k)

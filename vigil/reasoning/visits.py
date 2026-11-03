@@ -185,7 +185,11 @@ def appearance_agrees(a: Appearance | None, b: Appearance | None) -> bool:
         (a.lower_color, b.lower_color),
         (a.vehicle_color, b.vehicle_color),
     ]
-    if not all(_colours_agree(x, y) for x, y in pairs):
+    changing_light = a.illumination in {"mixed", "infrared"} or b.illumination in {
+        "mixed",
+        "infrared",
+    }
+    if not changing_light and not all(_colours_agree(x, y) for x, y in pairs):
         return False
     return not (a.vehicle_body and b.vehicle_body and a.vehicle_body != b.vehicle_body)
 
@@ -307,6 +311,7 @@ def assemble_visits(
     headed: dict[str, str | None] = {}
     route_max: dict[str, float] = {}
     cands: dict[str, dict[str, Route]] = {}
+    blocked_handoffs: dict[str, tuple[Track, str]] = {}
     for t in subjects:
         exit_region = _exit_region(t, events)
         toward = _toward_region(t, positions, cfg) if exit_region is None else None
@@ -326,6 +331,22 @@ def assemble_visits(
                 (r for r in rs if r.to_camera == s.camera_id and r.fits(gap)), key=_route_rank
             )
             if ok:
+                if t.camera_id != s.camera_id:
+                    cameras = [cfg.camera(t.camera_id), cfg.camera(s.camera_id)]
+                    reason = None
+                    if any(
+                        c.clock_offset_s is not None and abs(c.clock_offset_s) > 2 for c in cameras
+                    ):
+                        reason = "clock_drift"
+                    elif gap > 0 and any(
+                        c.power_profile in {"battery_wifi", "import"} for c in cameras
+                    ):
+                        reason = "battery_wake"
+                    if reason:
+                        previous = blocked_handoffs.get(t.id)
+                        if previous is None or s.t_first < previous[0].t_first:
+                            blocked_handoffs[t.id] = (s, reason)
+                        continue
                 fitting[s.id] = ok[0]
         # first arrival per camera, plus anyone arriving while it is still in view
         first: dict[str, Track] = {}
@@ -389,6 +410,9 @@ def assemble_visits(
             to_cam = next(iter(cams)) if len(cams) == 1 else None
             t1 = max(s.t_first for s in succ)
             raw_gaps.append((t.id, _gap("ambiguous_link", t, t1, to_cam, region, resolved=False)))
+        elif t.id in blocked_handoffs:
+            successor, reason = blocked_handoffs[t.id]
+            raw_gaps.append((t.id, _gap(reason, t, successor.t_first, None, None, resolved=False)))
         elif region is not None:
             t1 = t.t_last + route_max[t.id]
             raw_gaps.append((t.id, _gap("blind_spot", t, t1, None, region, resolved=False)))

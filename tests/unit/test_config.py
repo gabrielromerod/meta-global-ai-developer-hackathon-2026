@@ -64,7 +64,7 @@ def write(tmp_path: Path, text: str, name: str = "cameras.yaml") -> Path:
 
 
 def test_sample_config_loads(sample_config: Config) -> None:
-    cfg = load_config(REPO_ROOT / "config" / "cameras.yaml")
+    cfg = load_config(REPO_ROOT / "tests" / "fixtures" / "config" / "synthetic-cameras.yaml")
     assert cfg == sample_config
     assert [c.id for c in cfg.cameras] == ["front", "side_left", "side_right", "backyard"]
     assert cfg.blind_regions[0].id == "shed_back"

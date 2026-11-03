@@ -44,9 +44,10 @@ class Route(BaseModel):
     max_s: float
     blind: bool
     kind: RouteKind
+    transit_measured: bool = True
 
     def fits(self, gap_s: float) -> bool:
-        return self.min_s <= gap_s <= self.max_s
+        return self.transit_measured and self.min_s <= gap_s <= self.max_s
 
 
 def edges(cfg: Config) -> list[TopologyEdge]:
@@ -91,6 +92,7 @@ def routes(cfg: Config) -> list[Route]:
                     max_s=e.max_s if e.max_s is not None else DEFAULT_TRANSIT_MAX_S,
                     blind=e.blind,
                     kind="direct",
+                    transit_measured=e.transit_measured,
                 )
             )
         elif e.from_ in cams and e.to in regions:
@@ -108,6 +110,7 @@ def routes(cfg: Config) -> list[Route]:
                         + (e2.max_s if e2.max_s is not None else DEFAULT_TRANSIT_MAX_S),
                         blind=True,
                         kind="via_region",
+                        transit_measured=e.transit_measured and e2.transit_measured,
                     )
                 )
     for cam in _camera_ids(cfg):

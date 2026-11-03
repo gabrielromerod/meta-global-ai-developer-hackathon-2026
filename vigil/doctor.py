@@ -1,7 +1,9 @@
 """Offline handover diagnostics. Never authenticates, probes cameras, or changes paid flags."""
 
 import ipaddress
+import math
 import os
+import shutil
 import subprocess
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -11,6 +13,7 @@ from pathlib import Path
 from dotenv import dotenv_values
 
 from vigil.ingest.config import load_config, privacy_polygons
+from vigil.ingest.review import require_privacy_review
 from vigil.meta.client import CallLedger
 from vigil.settings import Settings, ffmpeg_bin, ffprobe_bin
 
@@ -95,6 +98,26 @@ def check_readiness(
                 name, ready, "executable found" if ready else "install ffmpeg or set its override"
             )
         )
+    exiftool = os.environ.get("EXIFTOOL") or shutil.which("exiftool")
+    try:
+        ready = (
+            bool(exiftool)
+            and subprocess.run(
+                [exiftool, "-ver"], capture_output=True, timeout=10, check=False
+            ).returncode
+            == 0
+        )
+    except (OSError, subprocess.SubprocessError):
+        ready = False
+    checks.append(
+        Check(
+            "exiftool",
+            ready,
+            "executable found; metadata scans are mandatory"
+            if ready
+            else "install exiftool; metadata scan fails closed",
+        )
+    )
     try:
         cfg = load_config(settings.config_path)
     except ValueError:
@@ -104,15 +127,50 @@ def check_readiness(
             try:
                 polygons = privacy_polygons(cfg, camera.id, settings.config_path.parent / "privacy")
                 private = bool(polygons) or camera.privacy_none_needed
+                require_privacy_review(camera, polygons)
             except (ValueError, OSError, ZeroDivisionError, TypeError):
                 private = False
             checks.append(
                 Check(
                     f"privacy:{camera.id}",
                     private,
-                    "declared; field placement still needs owner review"
+                    (
+                        "exact still and polygons reviewed"
+                        if camera.evidence_kind == "real"
+                        else "FIXTURE declaration"
+                    )
                     if private
-                    else "add polygons or explicit privacy: none_needed",
+                    else "owner privacy review of a real still and exact masks is required",
+                )
+            )
+            checks.append(Check(f"power:{camera.id}", True, camera.power_profile))
+            if camera.power_profile in {"battery_wifi", "import"}:
+                checks.append(
+                    Check(
+                        f"hub:{camera.id}",
+                        camera.hub_present is not None,
+                        "Home Hub event access; no continuous stream"
+                        if camera.hub_present
+                        else "Imported clips; no camera stream"
+                        if camera.hub_present is False
+                        else "Hub presence unconfirmed; use import mode",
+                    )
+                )
+            offset = camera.clock_offset_s
+            clock_ready = camera.evidence_kind == "fixture" or (
+                offset is not None and math.isfinite(offset) and abs(offset) <= 2
+            )
+            checks.append(
+                Check(
+                    f"clock:{camera.id}",
+                    clock_ready,
+                    "FIXTURE; not a hardware clock measurement"
+                    if camera.evidence_kind == "fixture"
+                    else "unmeasured; cross-camera links are not accepted"
+                    if offset is None
+                    else "drift above 2 seconds; resync before linking"
+                    if not clock_ready
+                    else "measured drift within 2 seconds",
                 )
             )
             host_env = camera.source.host_env if camera.source else None

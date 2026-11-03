@@ -68,7 +68,7 @@ def test_doctor_ready_configuration_never_echoes_secrets(tmp_path, monkeypatch):
     )
     config = tmp_path / "cameras.yaml"
     config.write_text(
-        "cameras:\n- id: front\n  name: Front\n  privacy: none_needed\n"
+        "evidence_kind: fixture\ncameras:\n- id: front\n  name: Front\n  privacy: none_needed\n"
         "  source: {host_env: DOCTOR_FRONT_HOST}\n"
     )
     settings = Settings(_env_file=env, config_path=config)
@@ -94,3 +94,30 @@ def test_doctor_binary_resolvers_accept_explicit_settings():
     settings = Settings(_env_file=None, ffmpeg="fixture-ffmpeg", ffprobe="fixture-ffprobe")
     assert ffmpeg_bin(settings) == "fixture-ffmpeg"
     assert ffprobe_bin(settings) == "fixture-ffprobe"
+
+
+def test_doctor_real_inventory_privacy_power_hub_clock_and_exiftool(tmp_path):
+    from pathlib import Path
+
+    from vigil.doctor import check_readiness
+    from vigil.settings import Settings
+
+    settings = Settings(
+        _env_file=None, config_path=Path(__file__).parents[2] / "config/cameras.yaml"
+    )
+    checks = {c.name: c for c in check_readiness(settings, tmp_path / "missing.env")}
+    assert checks["exiftool"].ready
+    for camera in (
+        "front_left_duo",
+        "front_right_duo",
+        "doorbell",
+        "porch",
+        "side_left",
+        "backyard_1",
+        "backyard_2",
+    ):
+        assert checks["power:" + camera].ready
+        assert not checks["privacy:" + camera].ready
+        assert not checks["clock:" + camera].ready
+    assert checks["hub:side_left"].ready
+    assert "import" in checks["hub:side_left"].detail.lower()

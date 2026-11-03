@@ -230,6 +230,7 @@ def ingest(
     from vigil.ingest.config import ConfigError, privacy_polygons
     from vigil.ingest.media import MediaError
     from vigil.ingest.motion import gate_window, select_active
+    from vigil.ingest.review import require_privacy_review, require_silent_source
     from vigil.ingest.sync import SyncError, apply_offsets, sync_session
     from vigil.ingest.windows import WindowError, cut_windows
 
@@ -242,8 +243,10 @@ def ingest(
             polys = privacy_polygons(cfg, cam_id, privacy_dir=privacy_dir)
             if not polys and not cam.privacy_none_needed:
                 _fail(f"camera {cam_id}: privacy polygons required, or set privacy: none_needed")
+            require_privacy_review(cam, polys)
+            require_silent_source(clips[cam_id])
             privacy_by_camera[cam_id] = polys
-    except ConfigError as err:
+    except (ConfigError, ValueError) as err:
         _fail(f"privacy: {err}")
 
     meta: dict[str, Any] = {
@@ -288,7 +291,12 @@ def ingest(
                 session_start_s=cam.offset_s,
                 polygons=polys,
                 ref_size=(cam.width, cam.height),
+                max_width=1920 if cam.frame_layout == "duo_panorama" else 1280,
             )
+            from vigil.ingest.panorama import illumination_mode
+
+            for window in cut:
+                window.illumination = illumination_mode(window.path)
             windows += [gate_window(w, cam, polygons=polys) for w in cut]
     except FileNotFoundError as err:
         _blocked(err)
@@ -693,6 +701,49 @@ def reolink_capture(
     for s in sups or []:
         outages = getattr(s, "outages", [])
         typer.echo(f"{s.camera_id}: {len(outages)} outages")
+
+
+@reolink.command("import")
+def reolink_import(
+    camera_id: str,
+    config: ConfigOpt = None,
+    incoming: Annotated[
+        Path | None, typer.Option(help="Defaults to data/import/<camera_id>.")
+    ] = None,
+    session: str = "imported",
+) -> None:
+    """Ingest timestamped app exports, without connecting to a battery camera."""
+    from vigil.ingest.imports import import_clips
+
+    if not _SESSION_RE.fullmatch(session):
+        _fail("invalid session name")
+    settings = _settings()
+    cfg = _load_cfg(_config_path(config))
+    try:
+        camera = cfg.camera(camera_id)
+        result = import_clips(
+            camera,
+            incoming or settings.data_dir / "import" / camera_id,
+            settings.data_dir / "windows" / session,
+        )
+    except (KeyError, ValueError, OSError) as err:
+        _fail(str(err))
+    typer.echo(f"Imported clips: {len(result['windows'])} windows; start {result['session_start']}")
+
+
+@reolink.command("guard")
+def reolink_guard(config: ConfigOpt = None, env_file: EnvFileOpt = Path(".env")) -> None:
+    """Owner-run AC event capture; battery cameras remain in import mode."""
+    from vigil.reolink.event_capture import run_event_capture
+
+    _load_env(env_file)
+    cfg = _load_cfg(_config_path(config))
+    try:
+        asyncio.run(run_event_capture(cfg.cameras, _settings().data_dir / "capture"))
+    except KeyboardInterrupt:
+        typer.echo("event capture stopped; pinned evidence retained")
+    except (OSError, RuntimeError, ValueError) as err:
+        _fail(str(err))
 
 
 # ---------------------------------------------------------------------------

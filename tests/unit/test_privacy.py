@@ -63,6 +63,15 @@ def test_polygon_mask_scales_from_reference_frame() -> None:
     assert not dilated[77:].any()
 
 
+def test_overlapping_privacy_polygons_are_union_never_holes():
+    polys = [
+        [(0, 0), (40, 0), (40, 40), (0, 40)],
+        [(10, 10), (30, 10), (30, 30), (10, 30)],
+    ]
+    mask = polygon_mask((50, 50), polys)
+    assert mask[:41, :41].all()
+
+
 def test_every_pixel_inside_polygons_is_zero_in_every_frame(masked_clip: Path) -> None:
     cap = cv2.VideoCapture(str(masked_clip))
     inside = exact_inside(640, 360)
@@ -315,56 +324,51 @@ def run_meta(root: Path, exiftool: str) -> subprocess.CompletedProcess[str]:
 
 
 @needs_bash
-def test_metadata_scan_skips_without_exiftool(tmp_path: Path) -> None:
+def test_metadata_scan_fails_without_exiftool(tmp_path: Path) -> None:
     r = run_meta(tmp_path, "definitely-not-exiftool-xyz")
-    assert r.returncode == 0, r.stdout + r.stderr
-    assert "exiftool not found" in (r.stdout + r.stderr)
+    assert r.returncode == 1, r.stdout + r.stderr
+    assert "exiftool" in r.stdout
+    assert "FAIL" in r.stdout
 
 
 @needs_bash
-def test_metadata_scan_missing_dir_passes(tmp_path: Path) -> None:
+def test_metadata_scan_missing_dir_fails(tmp_path: Path) -> None:
     r = run_meta(tmp_path / "nope", "definitely-not-exiftool-xyz")
-    assert r.returncode == 0
+    assert r.returncode == 1
+    assert "does not exist" in r.stdout
 
 
-def _fake_exiftool(tmp_path: Path, gps: str, device: str) -> str:
-    """A stand-in exiftool: prints canned lines for GPS / device queries."""
-    fake = tmp_path / "fake_exiftool"
-    fake.write_text(
-        "#!/usr/bin/env bash\n"
-        'case "$*" in\n'
-        f'  *GPS*) printf "%s" "{gps}" ;;\n'
-        f'  *Make*) printf "%s" "{device}" ;;\n'
-        "esac\n"
-        "exit 0\n",
-        encoding="utf-8",
-        newline="\n",
-    )
-    fake.chmod(0o755)
-    return fake.as_posix()
+def _metadata_fixture(tmp_path: Path, *tags: str) -> str:
+    image = tmp_path / "generated.jpg"
+    assert cv2.imwrite(str(image), np.full((24, 24, 3), 120, dtype=np.uint8))
+    binary = shutil.which("exiftool") or "exiftool"
+    if tags:
+        subprocess.run(
+            [binary, "-overwrite_original", *tags, str(image)], check=True, capture_output=True
+        )
+    return binary
 
 
 @needs_bash
 def test_metadata_scan_fails_on_gps(tmp_path: Path) -> None:
-    (tmp_path / "demo").mkdir()
-    fake = _fake_exiftool(tmp_path, "demo/scan.jpg\\n", "")
-    r = run_meta(tmp_path / "demo", fake)
+    binary = _metadata_fixture(tmp_path, "-GPSLatitude=1", "-GPSLongitude=2")
+    r = run_meta(tmp_path, binary)
     assert r.returncode == 1, r.stdout + r.stderr
     assert "GPS" in r.stdout
 
 
 @needs_bash
 def test_metadata_scan_fails_on_device_metadata(tmp_path: Path) -> None:
-    (tmp_path / "demo").mkdir()
-    fake = _fake_exiftool(tmp_path, "", "demo/still.jpg: Apple iPhone\\n")
-    r = run_meta(tmp_path / "demo", fake)
+    binary = _metadata_fixture(tmp_path, "-Make=Generated", "-Model=Test")
+    r = run_meta(tmp_path, binary)
     assert r.returncode == 1, r.stdout + r.stderr
-    assert "device" in r.stdout.lower()
+    assert "Make" in r.stdout
+    assert "Model" in r.stdout
 
 
 @needs_bash
 def test_metadata_scan_clean(tmp_path: Path) -> None:
-    (tmp_path / "demo").mkdir()
-    fake = _fake_exiftool(tmp_path, "", "")
-    r = run_meta(tmp_path / "demo", fake)
+    binary = _metadata_fixture(tmp_path)
+    r = run_meta(tmp_path, binary)
     assert r.returncode == 0, r.stdout + r.stderr
+    assert "PASS" in r.stdout

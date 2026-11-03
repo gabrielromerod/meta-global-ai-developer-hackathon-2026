@@ -20,6 +20,7 @@ import logging
 import os
 import re
 from collections.abc import Iterable
+from datetime import UTC, datetime
 from typing import Literal, Protocol, runtime_checkable
 from urllib.parse import quote
 
@@ -274,6 +275,8 @@ class HostInfo(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     is_nvr: bool = False
+    is_hub: bool = False
+    clock_offset_s: float | None = None
     model: str | None = None
     firmware: str | None = None
     channels: list[int] = Field(default_factory=list)
@@ -299,6 +302,10 @@ class ProbeReport(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     camera_id: str
+    hub_present: bool | None = None
+    clock_offset_s: float | None = None
+    source_mode: str = "stream"
+    source_label: str = "Not connected"
     host_env: str | None = None
     channel: int = 0
     """0-based reolink_aio channel index."""
@@ -357,6 +364,13 @@ async def probe(cam: CameraCfg, adapter: ProbeAdapter | None = None) -> ProbeRep
     """Probe one camera. Never raises for camera-side failures: they go in `error`."""
     host_env = cam.source.host_env if cam.source else None
     report = ProbeReport(camera_id=cam.id, host_env=host_env, channel=channel_index(cam))
+    if cam.power_profile in {"battery_wifi", "import"} and cam.hub_present is False:
+        report.hub_present = False
+        report.battery = True
+        report.source_mode, report.source_label = "import", "Imported clips"
+        report.ok = True
+        report.notes.append("No Home Hub; import mode does not connect to the battery camera")
+        return report
     try:
         creds = camera_credentials(cam)
     except CredentialsError as err:
@@ -375,6 +389,8 @@ async def probe(cam: CameraCfg, adapter: ProbeAdapter | None = None) -> ProbeRep
         return report
 
     ch = report.channel
+    report.hub_present = info.is_hub
+    report.clock_offset_s = info.clock_offset_s
     report.nvr = info.is_nvr
     report.model = info.channel_models.get(ch) or info.model
     report.firmware = info.channel_firmware.get(ch) or info.firmware
@@ -393,6 +409,12 @@ async def probe(cam: CameraCfg, adapter: ProbeAdapter | None = None) -> ProbeRep
     if report.wifi_signal is None:
         report.notes.append("Wi-Fi signal unavailable from this device")
     if report.battery:
+        if cam.power_profile in {"battery_wifi", "import"}:
+            report.source_mode = "hub_events" if info.is_hub else "import"
+            report.source_label = "Home Hub event clips" if info.is_hub else "Imported clips"
+            report.ok = True
+            report.notes.append("Battery camera: no stream opened or held")
+            return report
         report.error = "battery cameras are refused for session capture"
         return report
     if info.channels and ch not in info.channels:
@@ -515,8 +537,19 @@ class ReolinkAioAdapter:
                 for ch in channels
                 if (value := api.wifi_signal(ch) if api.is_nvr else api.wifi_signal()) is not None
             }
+            clock_offset = None
+            if hasattr(api, "async_get_time"):
+                try:
+                    before = datetime.now(UTC).timestamp()
+                    remote = await api.async_get_time()
+                    after = datetime.now(UTC).timestamp()
+                    clock_offset = remote.timestamp() - (before + after) / 2
+                except Exception:
+                    log.warning("camera clock unavailable; no drift measurement recorded")
             return HostInfo(
                 is_nvr=bool(api.is_nvr),
+                is_hub=bool(getattr(api, "is_hub", False)),
+                clock_offset_s=clock_offset,
                 model=api.model,
                 firmware=api.sw_version,
                 channels=channels,

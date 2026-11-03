@@ -1,6 +1,7 @@
 """FIXTURE: the browser's persisted owner state feeds the same session processor."""
 
 from datetime import timedelta
+from pathlib import Path
 
 import pytest
 
@@ -16,7 +17,13 @@ def test_process_reads_and_consumes_persisted_owner_checkin(tmp_path):
     scenario = SCENARIOS["B-prime"]()
     data = tmp_path / "data"
     _write_session(data, "owner", scenario, sam=True)
-    settings = Settings(_env_file=None, mode="edge", data_dir=data, db_path=tmp_path / "owner.db")
+    settings = Settings(
+        _env_file=None,
+        mode="edge",
+        config_path=Path(__file__).parents[1] / "fixtures/config/synthetic-cameras.yaml",
+        data_dir=data,
+        db_path=tmp_path / "owner.db",
+    )
     tap = scenario.session_start + timedelta(seconds=1)
     conn = db.open_db(settings.db_path)
     with conn:
@@ -47,7 +54,13 @@ def test_process_uses_persisted_windows_and_cancellations(tmp_path, cancelled):
     data = tmp_path / "data"
     extra = scenario.session_json() if cancelled else None
     _write_session(data, "owner", scenario, sam=True, extra=extra)
-    settings = Settings(_env_file=None, mode="edge", data_dir=data, db_path=tmp_path / "owner.db")
+    settings = Settings(
+        _env_file=None,
+        mode="edge",
+        config_path=Path(__file__).parents[1] / "fixtures/config/synthetic-cameras.yaml",
+        data_dir=data,
+        db_path=tmp_path / "owner.db",
+    )
     window = scenario.expected_windows[0]
     if cancelled:
         window = window.model_copy(update={"state": "cancelled"})

@@ -29,8 +29,10 @@ def fixtures_dir() -> Path:
 
 @pytest.fixture
 def sample_config() -> Config:
-    """The sample config/cameras.yaml parsed straight into the contract (no loader logic)."""
-    raw = yaml.safe_load((REPO_ROOT / "config" / "cameras.yaml").read_text(encoding="utf-8"))
+    """Original synthetic scenarios, kept separate from the uncalibrated real inventory."""
+    raw = yaml.safe_load(
+        (FIXTURES / "config" / "synthetic-cameras.yaml").read_text(encoding="utf-8")
+    )
     return Config.model_validate(raw)
 
 

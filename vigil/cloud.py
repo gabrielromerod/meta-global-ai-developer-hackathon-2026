@@ -81,6 +81,7 @@ def run_cloud(
                 t1 - parent.t0,
                 polygons=cam.privacy,
                 ref_size=(cam.width, cam.height),
+                max_width=1920 if cam.frame_layout == "duo_panorama" else 1280,
             )
             return dst
 

@@ -56,6 +56,7 @@ def generated_session(tmp_path):
     config.write_text(
         json.dumps(
             {
+                "evidence_kind": "fixture",
                 "cameras": [
                     {
                         "id": "side_left",
@@ -63,7 +64,7 @@ def generated_session(tmp_path):
                         "privacy": polys,
                         "zones": {"yard": [[0, 0], [1280, 0], [1280, 720], [0, 720]]},
                     }
-                ]
+                ],
             }
         ),
         encoding="utf-8",

@@ -334,6 +334,11 @@ def _check(cfg: Config) -> None:
     named: dict[str, str] = {}
     for i, cam in enumerate(cfg.cameras):
         base: Loc = ("cameras", i)
+        for name in cam.zone_rings:
+            if name not in cam.zones:
+                raise UnknownZoneError(f"ring names unknown zone {name!r}", ref=name)
+        for name, poly in cam.privacy_regions.items():
+            _check_polygon(poly, (*base, "privacy_regions", name), name, cam)
         for name, poly in cam.zones.items():
             _check_polygon(poly, (*base, "zones", name), f"zone {name!r}", cam)
         for name, kind in cam.zone_kinds.items():

@@ -20,8 +20,8 @@ gitleaks git --redact --verbose --exit-code 1 . # NFR-014/031: no secrets (if gi
 git status --porcelain                          # nothing under data/, no .env, no stray media
 ```
 
-- Shortcut: `make scan` runs the first two. `pwsh scripts/tasks.ps1 scan` runs only the
-  privacy scan, so on Windows run the metadata scan separately (needs Git Bash and exiftool).
+- Shortcut: `make scan` and `pwsh scripts/tasks.ps1 scan` run both checks. The Windows
+  task calls the same shared Python metadata scanner directly, without Bash/WSL.
 - If exiftool or gitleaks is not installed, say so in your report; CI still runs gitleaks.
   Do not mark the gate passed on a skipped check.
 - Run the scans on any other directory you are about to commit media from, not only `demo/`.

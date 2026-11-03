@@ -99,3 +99,7 @@ Initial baseline wall times are approximate; durations come from pytest. Later f
 | Post-cutover Ruff check | 2026-11-03T09:01:12.909850-08:00 | 2026-11-03T09:01:13.028470-08:00 | exit 0; output data/postcutover-check.log |
 
 | Post-cutover Ruff format | 2026-11-03T09:01:13.033493-08:00 | 2026-11-03T09:01:13.138467-08:00 | exit 0; output data/postcutover-format.log |
+
+| Reviewed history Gitleaks | 2026-11-03T09:02:01.538269-08:00 | 2026-11-03T09:02:49.833140-08:00 | exit 0; output data/postcutover-gitleaks.log |
+
+| Complete post-cutover tracked QA audit | 2026-11-03T08:58:01.939382-08:00 | 2026-11-03T09:03:58.087226-08:00 | exit 0; output data/postcutover-ui-audit.log |

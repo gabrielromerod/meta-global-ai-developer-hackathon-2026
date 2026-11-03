@@ -44,5 +44,5 @@ will include the implementation commit SHA after verification.
 - FONT-001: Inter selected by the owner in chat on Nov 3 after the three-font study. Default retained; decision commit recorded in docs/decisions.md.
 - CAMERA-001: No Reolink Home Hub. The three battery cameras use imported clips.
 
-- QA-CUTOVER-001 — REAL logic / FIXTURE: reviewed React now owns `/`, old consumer asset routes return404, preview alias matches byte-for-byte, actual root→visit navigation passes. Fix:060c583c. Both final UI reviews APPROVED; A mechanical recheck APPROVED9e3aa161.
+- QA-CUTOVER-001 — REAL logic / FIXTURE: reviewed React now owns `/`, old consumer asset routes return404, preview alias matches byte-for-byte, actual root→visit navigation passes. Fix:060c583c. Both final UI reviews APPROVED; Both mechanical rechecks APPROVED: A9e3aa161 and Bd9a4e270.
 - QA-WINDOWS-001 — REAL logic / FIXTURE: scan task invokes shared Python metadata scanner directly instead of an unavailable WSL Bash. Actual PowerShell scan passes. Fix:dd77d169.

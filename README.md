@@ -50,7 +50,7 @@ uv run python scripts/metadata_scan.py demo
 uv run python scripts/scan_ui_evidence.py
 ```
 
-Latest pre-cutover offline run: **1,543 passed** on Linux,44 E2E deselected; earlier Windows1,541 before the two new audit/line-ending cases. The complete React browser run passed44 cases against the local Docker sandbox. Frontend134 tests/build pass. These are fixture results, not hardware accuracy, provider billing or physical-device certification. [Browser acceptance](tests/e2e/README.md) maps every original case to the new UI and records stronger privacy/media checks.
+Post-cutover verification: **1,543 backend tests**, **134 frontend tests** and **45 browser tests** pass; the same45 browser cases also pass against the reviewed Docker sandbox. Earlier Linux full offline verification passed1,543 tests with networking disabled before the mechanical route switch. Frontend production build and Ruff pass. These are fixture results, not hardware accuracy, provider billing or physical-device certification. [Browser acceptance](tests/e2e/README.md) maps every original case to the new UI and records stronger privacy/media checks.
 
 Committed screenshots make the repository large. For a code-only checkout, Git's blob filtering and sparse checkout can omit `qa/`; the reviewed evidence stays available in Git. Docker already excludes QA, secrets, raw data and local caches from its build context.
 

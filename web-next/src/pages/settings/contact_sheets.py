@@ -7,13 +7,16 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 root = Path(sys.argv[1])
-out = root.parent / "inspection"
+out = root.parent / ("inspection" if root.name == "final" else f"{root.name}-inspection")
 out.mkdir(parents=True, exist_ok=True)
 font_path = Path("C:/Windows/Fonts/segoeui.ttf")
 font = ImageFont.truetype(str(font_path), 14) if font_path.exists() else ImageFont.load_default()
-for directory in sorted(p for p in root.iterdir() if p.is_dir()):
+directories = sorted(p for p in root.iterdir() if p.is_dir())
+if any(root.glob("*.png")):
+    directories.append(root)
+for directory in directories:
     for theme in ("dark", "light"):
-        files = sorted(directory.glob(f"controls-{theme}-*.png"))
+        files = sorted(directory.glob(f"*-{theme}-*.png"))
         for offset in range(0, len(files), 15):
             batch = files[offset : offset + 15]
             sheet = Image.new("RGB", (1920, math.ceil(len(batch) / 3) * 400), "#e6e9ee")

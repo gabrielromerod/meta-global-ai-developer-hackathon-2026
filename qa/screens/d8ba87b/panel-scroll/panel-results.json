@@ -1,0 +1,976 @@
+{
+  "sha": "d8ba87b",
+  "started": "2026-11-03T13:04:35.632Z",
+  "cases": [
+    {
+      "width": 1470,
+      "height": 870,
+      "theme": "dark",
+      "tab": "Cameras",
+      "actual": {
+        "docHeight": 870,
+        "scrollY": 0,
+        "selected": "Cameras"
+      }
+    },
+    {
+      "width": 1470,
+      "height": 870,
+      "theme": "dark",
+      "tab": "Privacy",
+      "actual": {
+        "docHeight": 870,
+        "scrollY": 0,
+        "selected": "Privacy"
+      }
+    },
+    {
+      "width": 1470,
+      "height": 870,
+      "theme": "dark",
+      "tab": "Household",
+      "actual": {
+        "docHeight": 870,
+        "scrollY": 0,
+        "selected": "Household"
+      }
+    },
+    {
+      "width": 1470,
+      "height": 870,
+      "theme": "dark",
+      "tab": "Owner controls",
+      "actual": {
+        "docHeight": 870,
+        "scrollY": 0,
+        "selected": "Owner controls"
+      }
+    },
+    {
+      "width": 1470,
+      "height": 870,
+      "theme": "light",
+      "tab": "Cameras",
+      "actual": {
+        "docHeight": 870,
+        "scrollY": 0,
+        "selected": "Cameras"
+      }
+    },
+    {
+      "width": 1470,
+      "height": 870,
+      "theme": "light",
+      "tab": "Privacy",
+      "actual": {
+        "docHeight": 870,
+        "scrollY": 0,
+        "selected": "Privacy"
+      }
+    },
+    {
+      "width": 1470,
+      "height": 870,
+      "theme": "light",
+      "tab": "Household",
+      "actual": {
+        "docHeight": 870,
+        "scrollY": 0,
+        "selected": "Household"
+      }
+    },
+    {
+      "width": 1470,
+      "height": 870,
+      "theme": "light",
+      "tab": "Owner controls",
+      "actual": {
+        "docHeight": 870,
+        "scrollY": 0,
+        "selected": "Owner controls"
+      }
+    },
+    {
+      "width": 1512,
+      "height": 895,
+      "theme": "dark",
+      "tab": "Cameras",
+      "actual": {
+        "docHeight": 895,
+        "scrollY": 0,
+        "selected": "Cameras"
+      }
+    },
+    {
+      "width": 1512,
+      "height": 895,
+      "theme": "dark",
+      "tab": "Privacy",
+      "actual": {
+        "docHeight": 895,
+        "scrollY": 0,
+        "selected": "Privacy"
+      }
+    },
+    {
+      "width": 1512,
+      "height": 895,
+      "theme": "dark",
+      "tab": "Household",
+      "actual": {
+        "docHeight": 895,
+        "scrollY": 0,
+        "selected": "Household"
+      }
+    },
+    {
+      "width": 1512,
+      "height": 895,
+      "theme": "dark",
+      "tab": "Owner controls",
+      "actual": {
+        "docHeight": 895,
+        "scrollY": 0,
+        "selected": "Owner controls"
+      }
+    },
+    {
+      "width": 1512,
+      "height": 895,
+      "theme": "light",
+      "tab": "Cameras",
+      "actual": {
+        "docHeight": 895,
+        "scrollY": 0,
+        "selected": "Cameras"
+      }
+    },
+    {
+      "width": 1512,
+      "height": 895,
+      "theme": "light",
+      "tab": "Privacy",
+      "actual": {
+        "docHeight": 895,
+        "scrollY": 0,
+        "selected": "Privacy"
+      }
+    },
+    {
+      "width": 1512,
+      "height": 895,
+      "theme": "light",
+      "tab": "Household",
+      "actual": {
+        "docHeight": 895,
+        "scrollY": 0,
+        "selected": "Household"
+      }
+    },
+    {
+      "width": 1512,
+      "height": 895,
+      "theme": "light",
+      "tab": "Owner controls",
+      "actual": {
+        "docHeight": 895,
+        "scrollY": 0,
+        "selected": "Owner controls"
+      }
+    },
+    {
+      "width": 1728,
+      "height": 1030,
+      "theme": "dark",
+      "tab": "Cameras",
+      "actual": {
+        "docHeight": 1030,
+        "scrollY": 0,
+        "selected": "Cameras"
+      }
+    },
+    {
+      "width": 1728,
+      "height": 1030,
+      "theme": "dark",
+      "tab": "Privacy",
+      "actual": {
+        "docHeight": 1030,
+        "scrollY": 0,
+        "selected": "Privacy"
+      }
+    },
+    {
+      "width": 1728,
+      "height": 1030,
+      "theme": "dark",
+      "tab": "Household",
+      "actual": {
+        "docHeight": 1030,
+        "scrollY": 0,
+        "selected": "Household"
+      }
+    },
+    {
+      "width": 1728,
+      "height": 1030,
+      "theme": "dark",
+      "tab": "Owner controls",
+      "actual": {
+        "docHeight": 1030,
+        "scrollY": 0,
+        "selected": "Owner controls"
+      }
+    },
+    {
+      "width": 1728,
+      "height": 1030,
+      "theme": "light",
+      "tab": "Cameras",
+      "actual": {
+        "docHeight": 1030,
+        "scrollY": 0,
+        "selected": "Cameras"
+      }
+    },
+    {
+      "width": 1728,
+      "height": 1030,
+      "theme": "light",
+      "tab": "Privacy",
+      "actual": {
+        "docHeight": 1030,
+        "scrollY": 0,
+        "selected": "Privacy"
+      }
+    },
+    {
+      "width": 1728,
+      "height": 1030,
+      "theme": "light",
+      "tab": "Household",
+      "actual": {
+        "docHeight": 1030,
+        "scrollY": 0,
+        "selected": "Household"
+      }
+    },
+    {
+      "width": 1728,
+      "height": 1030,
+      "theme": "light",
+      "tab": "Owner controls",
+      "actual": {
+        "docHeight": 1030,
+        "scrollY": 0,
+        "selected": "Owner controls"
+      }
+    },
+    {
+      "width": 1920,
+      "height": 960,
+      "theme": "dark",
+      "tab": "Cameras",
+      "actual": {
+        "docHeight": 960,
+        "scrollY": 0,
+        "selected": "Cameras"
+      }
+    },
+    {
+      "width": 1920,
+      "height": 960,
+      "theme": "dark",
+      "tab": "Privacy",
+      "actual": {
+        "docHeight": 960,
+        "scrollY": 0,
+        "selected": "Privacy"
+      }
+    },
+    {
+      "width": 1920,
+      "height": 960,
+      "theme": "dark",
+      "tab": "Household",
+      "actual": {
+        "docHeight": 960,
+        "scrollY": 0,
+        "selected": "Household"
+      }
+    },
+    {
+      "width": 1920,
+      "height": 960,
+      "theme": "dark",
+      "tab": "Owner controls",
+      "actual": {
+        "docHeight": 960,
+        "scrollY": 0,
+        "selected": "Owner controls"
+      }
+    },
+    {
+      "width": 1920,
+      "height": 960,
+      "theme": "light",
+      "tab": "Cameras",
+      "actual": {
+        "docHeight": 960,
+        "scrollY": 0,
+        "selected": "Cameras"
+      }
+    },
+    {
+      "width": 1920,
+      "height": 960,
+      "theme": "light",
+      "tab": "Privacy",
+      "actual": {
+        "docHeight": 960,
+        "scrollY": 0,
+        "selected": "Privacy"
+      }
+    },
+    {
+      "width": 1920,
+      "height": 960,
+      "theme": "light",
+      "tab": "Household",
+      "actual": {
+        "docHeight": 960,
+        "scrollY": 0,
+        "selected": "Household"
+      }
+    },
+    {
+      "width": 1920,
+      "height": 960,
+      "theme": "light",
+      "tab": "Owner controls",
+      "actual": {
+        "docHeight": 960,
+        "scrollY": 0,
+        "selected": "Owner controls"
+      }
+    },
+    {
+      "width": 1536,
+      "height": 730,
+      "theme": "dark",
+      "tab": "Cameras",
+      "actual": {
+        "docHeight": 730,
+        "scrollY": 0,
+        "selected": "Cameras"
+      }
+    },
+    {
+      "width": 1536,
+      "height": 730,
+      "theme": "dark",
+      "tab": "Privacy",
+      "actual": {
+        "docHeight": 730,
+        "scrollY": 0,
+        "selected": "Privacy"
+      }
+    },
+    {
+      "width": 1536,
+      "height": 730,
+      "theme": "dark",
+      "tab": "Household",
+      "actual": {
+        "docHeight": 730,
+        "scrollY": 0,
+        "selected": "Household"
+      }
+    },
+    {
+      "width": 1536,
+      "height": 730,
+      "theme": "dark",
+      "tab": "Owner controls",
+      "actual": {
+        "docHeight": 730,
+        "scrollY": 0,
+        "selected": "Owner controls"
+      }
+    },
+    {
+      "width": 1536,
+      "height": 730,
+      "theme": "light",
+      "tab": "Cameras",
+      "actual": {
+        "docHeight": 730,
+        "scrollY": 0,
+        "selected": "Cameras"
+      }
+    },
+    {
+      "width": 1536,
+      "height": 730,
+      "theme": "light",
+      "tab": "Privacy",
+      "actual": {
+        "docHeight": 730,
+        "scrollY": 0,
+        "selected": "Privacy"
+      }
+    },
+    {
+      "width": 1536,
+      "height": 730,
+      "theme": "light",
+      "tab": "Household",
+      "actual": {
+        "docHeight": 730,
+        "scrollY": 0,
+        "selected": "Household"
+      }
+    },
+    {
+      "width": 1536,
+      "height": 730,
+      "theme": "light",
+      "tab": "Owner controls",
+      "actual": {
+        "docHeight": 730,
+        "scrollY": 0,
+        "selected": "Owner controls"
+      }
+    },
+    {
+      "width": 1280,
+      "height": 600,
+      "theme": "dark",
+      "tab": "Cameras",
+      "actual": {
+        "docHeight": 600,
+        "scrollY": 0,
+        "selected": "Cameras"
+      }
+    },
+    {
+      "width": 1280,
+      "height": 600,
+      "theme": "dark",
+      "tab": "Privacy",
+      "actual": {
+        "docHeight": 600,
+        "scrollY": 0,
+        "selected": "Privacy"
+      }
+    },
+    {
+      "width": 1280,
+      "height": 600,
+      "theme": "dark",
+      "tab": "Household",
+      "actual": {
+        "docHeight": 600,
+        "scrollY": 0,
+        "selected": "Household"
+      }
+    },
+    {
+      "width": 1280,
+      "height": 600,
+      "theme": "dark",
+      "tab": "Owner controls",
+      "actual": {
+        "docHeight": 600,
+        "scrollY": 0,
+        "selected": "Owner controls"
+      }
+    },
+    {
+      "width": 1280,
+      "height": 600,
+      "theme": "light",
+      "tab": "Cameras",
+      "actual": {
+        "docHeight": 600,
+        "scrollY": 0,
+        "selected": "Cameras"
+      }
+    },
+    {
+      "width": 1280,
+      "height": 600,
+      "theme": "light",
+      "tab": "Privacy",
+      "actual": {
+        "docHeight": 600,
+        "scrollY": 0,
+        "selected": "Privacy"
+      }
+    },
+    {
+      "width": 1280,
+      "height": 600,
+      "theme": "light",
+      "tab": "Household",
+      "actual": {
+        "docHeight": 600,
+        "scrollY": 0,
+        "selected": "Household"
+      }
+    },
+    {
+      "width": 1280,
+      "height": 600,
+      "theme": "light",
+      "tab": "Owner controls",
+      "actual": {
+        "docHeight": 600,
+        "scrollY": 0,
+        "selected": "Owner controls"
+      }
+    },
+    {
+      "width": 1366,
+      "height": 650,
+      "theme": "dark",
+      "tab": "Cameras",
+      "actual": {
+        "docHeight": 650,
+        "scrollY": 0,
+        "selected": "Cameras"
+      }
+    },
+    {
+      "width": 1366,
+      "height": 650,
+      "theme": "dark",
+      "tab": "Privacy",
+      "actual": {
+        "docHeight": 650,
+        "scrollY": 0,
+        "selected": "Privacy"
+      }
+    },
+    {
+      "width": 1366,
+      "height": 650,
+      "theme": "dark",
+      "tab": "Household",
+      "actual": {
+        "docHeight": 650,
+        "scrollY": 0,
+        "selected": "Household"
+      }
+    },
+    {
+      "width": 1366,
+      "height": 650,
+      "theme": "dark",
+      "tab": "Owner controls",
+      "actual": {
+        "docHeight": 650,
+        "scrollY": 0,
+        "selected": "Owner controls"
+      }
+    },
+    {
+      "width": 1366,
+      "height": 650,
+      "theme": "light",
+      "tab": "Cameras",
+      "actual": {
+        "docHeight": 650,
+        "scrollY": 0,
+        "selected": "Cameras"
+      }
+    },
+    {
+      "width": 1366,
+      "height": 650,
+      "theme": "light",
+      "tab": "Privacy",
+      "actual": {
+        "docHeight": 650,
+        "scrollY": 0,
+        "selected": "Privacy"
+      }
+    },
+    {
+      "width": 1366,
+      "height": 650,
+      "theme": "light",
+      "tab": "Household",
+      "actual": {
+        "docHeight": 650,
+        "scrollY": 0,
+        "selected": "Household"
+      }
+    },
+    {
+      "width": 1366,
+      "height": 650,
+      "theme": "light",
+      "tab": "Owner controls",
+      "actual": {
+        "docHeight": 650,
+        "scrollY": 0,
+        "selected": "Owner controls"
+      }
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "theme": "dark",
+      "tab": "Cameras",
+      "actual": {
+        "docHeight": 768,
+        "scrollY": 0,
+        "selected": "Cameras"
+      }
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "theme": "dark",
+      "tab": "Privacy",
+      "actual": {
+        "docHeight": 768,
+        "scrollY": 0,
+        "selected": "Privacy"
+      }
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "theme": "dark",
+      "tab": "Household",
+      "actual": {
+        "docHeight": 768,
+        "scrollY": 0,
+        "selected": "Household"
+      }
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "theme": "dark",
+      "tab": "Owner controls",
+      "actual": {
+        "docHeight": 768,
+        "scrollY": 0,
+        "selected": "Owner controls"
+      }
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "theme": "light",
+      "tab": "Cameras",
+      "actual": {
+        "docHeight": 768,
+        "scrollY": 0,
+        "selected": "Cameras"
+      }
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "theme": "light",
+      "tab": "Privacy",
+      "actual": {
+        "docHeight": 768,
+        "scrollY": 0,
+        "selected": "Privacy"
+      }
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "theme": "light",
+      "tab": "Household",
+      "actual": {
+        "docHeight": 768,
+        "scrollY": 0,
+        "selected": "Household"
+      }
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "theme": "light",
+      "tab": "Owner controls",
+      "actual": {
+        "docHeight": 768,
+        "scrollY": 0,
+        "selected": "Owner controls"
+      }
+    },
+    {
+      "width": 1180,
+      "height": 820,
+      "theme": "dark",
+      "tab": "Cameras",
+      "actual": {
+        "docHeight": 820,
+        "scrollY": 0,
+        "selected": "Cameras"
+      }
+    },
+    {
+      "width": 1180,
+      "height": 820,
+      "theme": "dark",
+      "tab": "Privacy",
+      "actual": {
+        "docHeight": 820,
+        "scrollY": 0,
+        "selected": "Privacy"
+      }
+    },
+    {
+      "width": 1180,
+      "height": 820,
+      "theme": "dark",
+      "tab": "Household",
+      "actual": {
+        "docHeight": 820,
+        "scrollY": 0,
+        "selected": "Household"
+      }
+    },
+    {
+      "width": 1180,
+      "height": 820,
+      "theme": "dark",
+      "tab": "Owner controls",
+      "actual": {
+        "docHeight": 820,
+        "scrollY": 0,
+        "selected": "Owner controls"
+      }
+    },
+    {
+      "width": 1180,
+      "height": 820,
+      "theme": "light",
+      "tab": "Cameras",
+      "actual": {
+        "docHeight": 820,
+        "scrollY": 0,
+        "selected": "Cameras"
+      }
+    },
+    {
+      "width": 1180,
+      "height": 820,
+      "theme": "light",
+      "tab": "Privacy",
+      "actual": {
+        "docHeight": 820,
+        "scrollY": 0,
+        "selected": "Privacy"
+      }
+    },
+    {
+      "width": 1180,
+      "height": 820,
+      "theme": "light",
+      "tab": "Household",
+      "actual": {
+        "docHeight": 820,
+        "scrollY": 0,
+        "selected": "Household"
+      }
+    },
+    {
+      "width": 1180,
+      "height": 820,
+      "theme": "light",
+      "tab": "Owner controls",
+      "actual": {
+        "docHeight": 820,
+        "scrollY": 0,
+        "selected": "Owner controls"
+      }
+    },
+    {
+      "width": 2560,
+      "height": 1000,
+      "theme": "dark",
+      "tab": "Cameras",
+      "actual": {
+        "docHeight": 1000,
+        "scrollY": 0,
+        "selected": "Cameras"
+      }
+    },
+    {
+      "width": 2560,
+      "height": 1000,
+      "theme": "dark",
+      "tab": "Privacy",
+      "actual": {
+        "docHeight": 1000,
+        "scrollY": 0,
+        "selected": "Privacy"
+      }
+    },
+    {
+      "width": 2560,
+      "height": 1000,
+      "theme": "dark",
+      "tab": "Household",
+      "actual": {
+        "docHeight": 1000,
+        "scrollY": 0,
+        "selected": "Household"
+      }
+    },
+    {
+      "width": 2560,
+      "height": 1000,
+      "theme": "dark",
+      "tab": "Owner controls",
+      "actual": {
+        "docHeight": 1000,
+        "scrollY": 0,
+        "selected": "Owner controls"
+      }
+    },
+    {
+      "width": 2560,
+      "height": 1000,
+      "theme": "light",
+      "tab": "Cameras",
+      "actual": {
+        "docHeight": 1000,
+        "scrollY": 0,
+        "selected": "Cameras"
+      }
+    },
+    {
+      "width": 2560,
+      "height": 1000,
+      "theme": "light",
+      "tab": "Privacy",
+      "actual": {
+        "docHeight": 1000,
+        "scrollY": 0,
+        "selected": "Privacy"
+      }
+    },
+    {
+      "width": 2560,
+      "height": 1000,
+      "theme": "light",
+      "tab": "Household",
+      "actual": {
+        "docHeight": 1000,
+        "scrollY": 0,
+        "selected": "Household"
+      }
+    },
+    {
+      "width": 2560,
+      "height": 1000,
+      "theme": "light",
+      "tab": "Owner controls",
+      "actual": {
+        "docHeight": 1000,
+        "scrollY": 0,
+        "selected": "Owner controls"
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "dark",
+      "tab": "Cameras",
+      "actual": {
+        "docHeight": 2296,
+        "scrollY": 1452,
+        "selected": "Cameras"
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "dark",
+      "tab": "Privacy",
+      "actual": {
+        "docHeight": 1512,
+        "scrollY": 668,
+        "selected": "Privacy"
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "dark",
+      "tab": "Household",
+      "actual": {
+        "docHeight": 844,
+        "scrollY": 0,
+        "selected": "Household"
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "dark",
+      "tab": "Owner controls",
+      "actual": {
+        "docHeight": 1307,
+        "scrollY": 463,
+        "selected": "Owner controls"
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "light",
+      "tab": "Cameras",
+      "actual": {
+        "docHeight": 2296,
+        "scrollY": 1452,
+        "selected": "Cameras"
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "light",
+      "tab": "Privacy",
+      "actual": {
+        "docHeight": 1512,
+        "scrollY": 668,
+        "selected": "Privacy"
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "light",
+      "tab": "Household",
+      "actual": {
+        "docHeight": 844,
+        "scrollY": 0,
+        "selected": "Household"
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "light",
+      "tab": "Owner controls",
+      "actual": {
+        "docHeight": 1307,
+        "scrollY": 463,
+        "selected": "Owner controls"
+      }
+    }
+  ],
+  "errors": [],
+  "finished": "2026-11-03T13:04:50.842Z"
+}

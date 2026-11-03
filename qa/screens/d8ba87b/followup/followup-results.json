@@ -1,0 +1,5310 @@
+{
+  "sha": "d8ba87b",
+  "started": "2026-11-03T13:02:06.687Z",
+  "cases": [
+    {
+      "width": 1470,
+      "height": 870,
+      "theme": "dark",
+      "contrasts": [
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        },
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        },
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        },
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        }
+      ],
+      "tabs": [
+        {
+          "tag": "INPUT",
+          "type": null,
+          "label": "_r_o_-label",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "SELECT",
+          "type": null,
+          "label": "_r_o_-camera",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        }
+      ]
+    },
+    {
+      "width": 1470,
+      "height": 870,
+      "theme": "light",
+      "contrasts": [
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        },
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        },
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        },
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        }
+      ],
+      "tabs": [
+        {
+          "tag": "INPUT",
+          "type": null,
+          "label": "_r_o_-label",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "SELECT",
+          "type": null,
+          "label": "_r_o_-camera",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        }
+      ]
+    },
+    {
+      "width": 1512,
+      "height": 895,
+      "theme": "dark",
+      "contrasts": [
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        },
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        },
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        },
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        }
+      ],
+      "tabs": [
+        {
+          "tag": "INPUT",
+          "type": null,
+          "label": "_r_o_-label",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "SELECT",
+          "type": null,
+          "label": "_r_o_-camera",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        }
+      ]
+    },
+    {
+      "width": 1512,
+      "height": 895,
+      "theme": "light",
+      "contrasts": [
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        },
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        },
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        },
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        }
+      ],
+      "tabs": [
+        {
+          "tag": "INPUT",
+          "type": null,
+          "label": "_r_o_-label",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "SELECT",
+          "type": null,
+          "label": "_r_o_-camera",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        }
+      ]
+    },
+    {
+      "width": 1728,
+      "height": 1030,
+      "theme": "dark",
+      "contrasts": [
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        },
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        },
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        },
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        }
+      ],
+      "tabs": [
+        {
+          "tag": "INPUT",
+          "type": null,
+          "label": "_r_o_-label",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "SELECT",
+          "type": null,
+          "label": "_r_o_-camera",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        }
+      ]
+    },
+    {
+      "width": 1728,
+      "height": 1030,
+      "theme": "light",
+      "contrasts": [
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        },
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        },
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        },
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        }
+      ],
+      "tabs": [
+        {
+          "tag": "INPUT",
+          "type": null,
+          "label": "_r_o_-label",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "SELECT",
+          "type": null,
+          "label": "_r_o_-camera",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        }
+      ]
+    },
+    {
+      "width": 1920,
+      "height": 960,
+      "theme": "dark",
+      "contrasts": [
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        },
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        },
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        },
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        }
+      ],
+      "tabs": [
+        {
+          "tag": "INPUT",
+          "type": null,
+          "label": "_r_o_-label",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "SELECT",
+          "type": null,
+          "label": "_r_o_-camera",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        }
+      ]
+    },
+    {
+      "width": 1920,
+      "height": 960,
+      "theme": "light",
+      "contrasts": [
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        },
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        },
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        },
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        }
+      ],
+      "tabs": [
+        {
+          "tag": "INPUT",
+          "type": null,
+          "label": "_r_o_-label",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "SELECT",
+          "type": null,
+          "label": "_r_o_-camera",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        }
+      ]
+    },
+    {
+      "width": 1536,
+      "height": 730,
+      "theme": "dark",
+      "contrasts": [
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        },
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        },
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        },
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        }
+      ],
+      "tabs": [
+        {
+          "tag": "INPUT",
+          "type": null,
+          "label": "_r_o_-label",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "SELECT",
+          "type": null,
+          "label": "_r_o_-camera",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        }
+      ]
+    },
+    {
+      "width": 1536,
+      "height": 730,
+      "theme": "light",
+      "contrasts": [
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        },
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        },
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        },
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        }
+      ],
+      "tabs": [
+        {
+          "tag": "INPUT",
+          "type": null,
+          "label": "_r_o_-label",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "SELECT",
+          "type": null,
+          "label": "_r_o_-camera",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        }
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 600,
+      "theme": "dark",
+      "contrasts": [
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        },
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        },
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        },
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        }
+      ],
+      "tabs": [
+        {
+          "tag": "INPUT",
+          "type": null,
+          "label": "_r_o_-label",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "SELECT",
+          "type": null,
+          "label": "_r_o_-camera",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        }
+      ]
+    },
+    {
+      "width": 1280,
+      "height": 600,
+      "theme": "light",
+      "contrasts": [
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        },
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        },
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        },
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        }
+      ],
+      "tabs": [
+        {
+          "tag": "INPUT",
+          "type": null,
+          "label": "_r_o_-label",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "SELECT",
+          "type": null,
+          "label": "_r_o_-camera",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        }
+      ]
+    },
+    {
+      "width": 1366,
+      "height": 650,
+      "theme": "dark",
+      "contrasts": [
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        },
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        },
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        },
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        }
+      ],
+      "tabs": [
+        {
+          "tag": "INPUT",
+          "type": null,
+          "label": "_r_o_-label",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "SELECT",
+          "type": null,
+          "label": "_r_o_-camera",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        }
+      ]
+    },
+    {
+      "width": 1366,
+      "height": 650,
+      "theme": "light",
+      "contrasts": [
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        },
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        },
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        },
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        }
+      ],
+      "tabs": [
+        {
+          "tag": "INPUT",
+          "type": null,
+          "label": "_r_o_-label",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "SELECT",
+          "type": null,
+          "label": "_r_o_-camera",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        }
+      ]
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "theme": "dark",
+      "contrasts": [
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        },
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        },
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        },
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        }
+      ],
+      "tabs": [
+        {
+          "tag": "INPUT",
+          "type": null,
+          "label": "_r_o_-label",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "SELECT",
+          "type": null,
+          "label": "_r_o_-camera",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        }
+      ]
+    },
+    {
+      "width": 1024,
+      "height": 768,
+      "theme": "light",
+      "contrasts": [
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        },
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        },
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        },
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        }
+      ],
+      "tabs": [
+        {
+          "tag": "INPUT",
+          "type": null,
+          "label": "_r_o_-label",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "SELECT",
+          "type": null,
+          "label": "_r_o_-camera",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        }
+      ]
+    },
+    {
+      "width": 1180,
+      "height": 820,
+      "theme": "dark",
+      "contrasts": [
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        },
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        },
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        },
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        }
+      ],
+      "tabs": [
+        {
+          "tag": "INPUT",
+          "type": null,
+          "label": "_r_o_-label",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "SELECT",
+          "type": null,
+          "label": "_r_o_-camera",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        }
+      ]
+    },
+    {
+      "width": 1180,
+      "height": 820,
+      "theme": "light",
+      "contrasts": [
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        },
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        },
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        },
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        }
+      ],
+      "tabs": [
+        {
+          "tag": "INPUT",
+          "type": null,
+          "label": "_r_o_-label",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "SELECT",
+          "type": null,
+          "label": "_r_o_-camera",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        }
+      ]
+    },
+    {
+      "width": 2560,
+      "height": 1000,
+      "theme": "dark",
+      "contrasts": [
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        },
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        },
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        },
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        }
+      ],
+      "tabs": [
+        {
+          "tag": "INPUT",
+          "type": null,
+          "label": "_r_o_-label",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "SELECT",
+          "type": null,
+          "label": "_r_o_-camera",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        }
+      ]
+    },
+    {
+      "width": 2560,
+      "height": 1000,
+      "theme": "light",
+      "contrasts": [
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        },
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        },
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        },
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        }
+      ],
+      "tabs": [
+        {
+          "tag": "INPUT",
+          "type": null,
+          "label": "_r_o_-label",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "SELECT",
+          "type": null,
+          "label": "_r_o_-camera",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "dark",
+      "contrasts": [
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        },
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        },
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        },
+        {
+          "boundary": 9.441753667170538,
+          "text": 17.21866099646724
+        }
+      ],
+      "tabs": [
+        {
+          "tag": "INPUT",
+          "type": null,
+          "label": "_r_o_-label",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "SELECT",
+          "type": null,
+          "label": "_r_o_-camera",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        }
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "light",
+      "contrasts": [
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        },
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        },
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        },
+        {
+          "boundary": 6.160953691131604,
+          "text": 14.631728155847084
+        }
+      ],
+      "tabs": [
+        {
+          "tag": "INPUT",
+          "type": null,
+          "label": "_r_o_-label",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "SELECT",
+          "type": null,
+          "label": "_r_o_-camera",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-end",
+          "inside": true,
+          "outline": "solid",
+          "visible": true,
+          "within": true
+        },
+        {
+          "tag": "INPUT",
+          "type": "datetime-local",
+          "label": "_r_o_-start",
+          "inside": true,
+          "outline": "solid",
+          "visible": false,
+          "within": true
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "finished": "2026-11-03T13:02:22.371Z"
+}

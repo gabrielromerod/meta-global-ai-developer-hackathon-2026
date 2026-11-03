@@ -41,3 +41,9 @@ Initial baseline wall times are approximate; durations come from pytest. Later f
 | Clips/Media boundary-fix frontend suite/build (FIXTURE) | 2026-11-03T05:12:54.6827332-08:00 | 2026-11-03T05:13:01.1689054-08:00 | 56 tests and production build passed |
 
 | Offline HTTP backstop and point privacy full regression | 2026-11-03T05:39:59.266719-08:00 | 2026-11-03T05:43:10.709972-08:00 | exit 0; captured command output |
+
+| Wave 2 controls full Chromium matrix | 2026-11-03T12:49:27.844Z | 2026-11-03T12:57:34.519Z | FIXTURE: source f6e05af; 198 layout/state cases, 506 focus observations, 2288 PNGs; 0 failures, 0 errors. Correct selected-panel scrolling supplemented below. |
+| Wave 2 controls natural keyboard and contrast | 2026-11-03T13:02:06.687Z | 2026-11-03T13:02:22.371Z | FIXTURE: source d8ba87b; 22 cases, 528 Tab/Shift+Tab steps, ordinary motion, modal focus trap/return and enabled-form contrast; 0 errors. |
+| Wave 2 controls selected-panel scrolling | 2026-11-03T13:04:35.632Z | 2026-11-03T13:04:50.842Z | FIXTURE: source d8ba87b; 88 cases, 176 PNGs, all 11 viewport pairs and both themes; 0 errors. |
+| Wave 2 controls full frontend verification before Chat timing fix | 2026-11-03T13:15:02.9354273Z | 2026-11-03T13:15:08.9058151Z | FIXTURE: 80 passed, 1 unchanged Chat immediate-visibility race failed; build passed. No assertion weakened. |
+| Wave 2 controls full frontend verification after approved dependency test fix | 2026-11-03T13:16:08.7757174Z | 2026-11-03T13:16:14.6357134Z | FIXTURE: exact approved 5f717af applied as 715e677; 81 passed including 19 controls tests; build passed. Root owns full Python/main merge validation. |

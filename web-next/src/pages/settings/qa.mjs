@@ -43,9 +43,9 @@ for(const [label,width,height] of selected){for(const theme of ['dark','light'])
   }
  };
  try{
-  await go();await layout('cameras');await shot('cameras');await hoverFocus('camera-tabs');await scroll('cameras');
+  await go();await layout('cameras');await shot('cameras');await hoverFocus('camera-tabs');await page.getByRole('tab',{name:'Cameras',exact:true}).click();await scroll('cameras');
   for(const tab of ['Privacy','Household','Owner controls']){
-   await page.getByRole('tab',{name:tab,exact:true}).click();await layout(tab);await shot(tab.replaceAll(' ','-'));await hoverFocus(tab.replaceAll(' ','-'));await scroll(tab.replaceAll(' ','-'));
+   await page.getByRole('tab',{name:tab,exact:true}).click();await layout(tab);await shot(tab.replaceAll(' ','-'));await hoverFocus(tab.replaceAll(' ','-'));await page.getByRole('tab',{name:tab,exact:true}).click();await scroll(tab.replaceAll(' ','-'));
   }
   await expect(page.getByRole('button',{name:"I'm outside"})).toBeDisabled();await expect(page.getByRole('button',{name:'New expected window'})).toBeDisabled();await expect(page.getByLabel('Owner token')).toBeDisabled();
   await go('rules');await layout('rules');await shot('rules');await hoverFocus('rules');await scroll('rules');

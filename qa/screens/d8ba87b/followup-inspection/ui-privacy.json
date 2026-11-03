@@ -1,0 +1,25 @@
+{
+  "kind": "generated_ui",
+  "source": "http://127.0.0.1:8106/next/src/pages/settings/preview.html",
+  "reviewer": "w2-controls",
+  "reviewed": true,
+  "contains_camera_pixels": false,
+  "authenticated": false,
+  "fixture_hash_mode": "lf-normalized",
+  "fixtures": [
+    {
+      "path": "../../../../web-next/src/fixtures/state.json",
+      "sha256": "373b9a56ed9f6fa265947a10f605a2be9333a562cb26b9efa91837bfbf3c2ef8"
+    },
+    {
+      "path": "../../../../web-next/src/fixtures/twin.json",
+      "sha256": "8e255862c06ac708fa55fb4d5b408684af359180ae259871ebaf731918c9480a"
+    }
+  ],
+  "files": {
+    "followup-dark-00.png": "bdc5c1dc2b55541e23fd1810513175a4a5f20156c9232354587c163e04743094",
+    "followup-dark-01.png": "988d5a05a111b37be7a3dacba0ee4f2488c596ad76b4f3dc9c829b6f9ae95930",
+    "followup-light-00.png": "129801d15f2f1b9000f0fd42585225ddc114da7b86c5f3a7c667306f6fe46188",
+    "followup-light-01.png": "78ace13be1bd23126b6f771db93e64a0ee7d4735e4e1a762bc437c0aaaa489af"
+  }
+}

@@ -50,3 +50,10 @@ Initial full frontend run observed an existing Chat animation-timing failure at
 `chat/index.test.tsx:80` (immediate visibility while Framer still had opacity zero).
 It was reported to the lead without editing the Chat source or assertion. A later
 unchanged full suite passed 79 tests; the lead retains the timing issue for integration.
+
+Final verification reproduced that unchanged race (80 passed, 1 failed) before the
+lead-authorized, independently reviewed Chat test fix `5f717af` was applied exactly
+as dependency commit `715e677`. The final full suite passed all 81 tests, including
+19 controls tests; build and both Ruff checks passed. Chat production code and the
+visibility assertion are unchanged. The complete builder evidence is documented in
+`qa/reviews/controls-builder.md`; independent review is still required.

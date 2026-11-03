@@ -13,3 +13,7 @@ All times include timezone. Full suites are required before each merge to main.
 Initial baseline wall times are approximate; durations come from pytest. Later full pre-main suites record exact start/end automatically.
 
 | Backend full regression | 2026-11-03T03:24:12.435244-08:00 | 2026-11-03T03:26:48.933844-08:00 | pytest exit 1; see captured command output |
+
+| Backend full regression after export checks | 2026-11-03T03:44:43.709921-08:00 | 2026-11-03T03:48:20.937528-08:00 | exit 0; captured command output |
+
+| Legacy app E2E compatibility before UI switch | 2026-11-03T03:48:20.937528-08:00 | 2026-11-03T03:48:47.366813-08:00 | exit 0; captured command output |

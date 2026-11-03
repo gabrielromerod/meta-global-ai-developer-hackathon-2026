@@ -74,3 +74,12 @@ Initial baseline wall times are approximate; durations come from pytest. Later f
 | Pre-cutover full offline regression | 2026-11-03T07:50:32.378802-08:00 | 2026-11-03T07:53:20.956739-08:00 | exit 0; output data/react-precutover-full.log |
 
 | Complete tracked screenshot provenance audit (bounded unchanged checks) | 2026-11-03T08:04:13.068329-08:00 | 2026-11-03T08:08:28.227415-08:00 | exit 0; output data/final-ui-provenance-parallel.log |
+
+| Docker React pre-cutover build | 2026-11-03T08:17:36.162555-08:00 | 2026-11-03T08:18:43.190637-08:00 | exit 0; output data/docker-precutover.log |
+
+- FIXTURE: Docker pre-cutover image built successfully08:17:36.162555–08:18:43.190637 PT. Actual container Settings asserted sandbox/cache-only/closed-loopback/sentinel key, separate named ledger volume, then all44 React browser E2E passed in80.30s. The pre-cutover tracked-UI audit completed08:08:28 PT with0 failures over the current29,234 tracked PNGs; later final-review evidence still requires its merge audit.
+- REAL: local Docker Gitleaks scanned167 commits/36.60MB in32.9s with no leaks. An auxiliary Windows CP1252 summary print failed after the successful scan; the ASCII-safe rerun covers later commits without changing scanner rules.
+
+| Linux full offline suite (isolated image, network disabled) | 2026-11-03T08:26:42.382630-08:00 | 2026-11-03T08:30:00.813933-08:00 | exit 1; output data/linux-suite.log |
+
+- FIXTURE Linux verification first attempt:1538 passed/4 metadata-shell failures,44 E2E excluded. Diagnosis: the verification context copied a trailing CR from the Windows working file although Git already stores LF. The Bash argument included that CR. No assertions were weakened; all25 host privacy tests pass after owned-file LF normalization, including a new first-failing LF invariant. Rebuild uses committed blobs and offline UV cache.

@@ -294,6 +294,10 @@ def test_privacy_scan_privacy_json_applies(tmp_path: Path, scan_cfg: Path) -> No
 # ---------------------------------------------------------------------------
 
 
+def test_metadata_shell_wrapper_uses_posix_line_endings():
+    assert b"\r" not in (REPO_ROOT / "scripts/metadata_scan.sh").read_bytes()
+
+
 def _git_bash() -> str | None:
     """A POSIX bash that understands this OS's paths (never WSL's System32 bash)."""
     for cand in (shutil.which("bash"), r"C:\Program Files\Git\usr\bin\bash.exe",

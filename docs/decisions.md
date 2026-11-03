@@ -49,3 +49,5 @@
 - 2026-11-03: Preserve the ISO offset declared in session_start for player clocks, matching server citation formatting; show the recorded date and offset. Viewer timezone never silently relabels recorded evidence. Intl handles formatting without another date library.
 - 2026-11-03: External area selection is a preset request, not a permanent override of manual R3F controls. At constrained widths, the existing Radix camera menu also exposes view controls, retaining scene height and keyboard access.
 - 2026-11-03: Share one unit-aware time-token parser between Motion and R3F because production CSS minification normalizes milliseconds to seconds. Palette timing refreshes on the shared reduced-motion preference without resetting orbit state.
+
+- 2026-11-03: CI hands the exact frontend build artifact to backend/API tests; compiled files remain uncommitted. The model-ID guard scans TypeScript and fails on scanner errors. POSIX shell wrappers must have LF bytes in working copies as well as Git; the Linux verifier snapshots committed blobs to match CI checkout rather than copying Windows line endings.

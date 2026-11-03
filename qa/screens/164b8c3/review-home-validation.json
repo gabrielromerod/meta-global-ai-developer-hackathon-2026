@@ -1,0 +1,58 @@
+{
+  "reviewed_commit": "164b8c3df90eec8d2b2da052ca743c028228f198",
+  "reviewer": "r1_home",
+  "date": "2026-11-03",
+  "production_source": "read-only",
+  "npm_ci": {
+    "exit": 0,
+    "packages_added": 233,
+    "audit_vulnerabilities": 0
+  },
+  "npm_test": {
+    "exit": 0,
+    "files_passed": 5,
+    "tests_passed": 45
+  },
+  "npm_build": {
+    "exit": 0
+  },
+  "ruff_check": {
+    "exit": 0
+  },
+  "ruff_format_check": {
+    "exit": 0,
+    "files_formatted": 213
+  },
+  "pytest": {
+    "exit": 0,
+    "passed": 1474,
+    "deselected": 24,
+    "warnings": 1,
+    "seconds": 163.32
+  },
+  "browser_matrix": {
+    "states": 22,
+    "errors": 0,
+    "failed_checks": 0,
+    "motion": "reduce"
+  },
+  "default_motion_keyboard_zoom": {
+    "states": 6,
+    "pass": true,
+    "keyboard_steps_per_state": 70,
+    "orbit_min": 8,
+    "orbit_max": 55
+  },
+  "independent_behavior_probes": {
+    "passed": 6,
+    "failed": 0
+  },
+  "ui_evidence_gate": {
+    "pngs": 2054,
+    "failures": 0,
+    "utility": "C:/Users/lords/.codex/worktrees/ad9e/meta-global-ai-developer-hackathon-2026/scripts/ui_evidence.py"
+  },
+  "gitleaks": "not installed; not claimed passed",
+  "metadata": "ExifTool present; screenshot gate passed",
+  "scope": "Synthetic UI preview, headless Chromium CSS viewports; no native device certification, real footage, camera/Meta calls or spend."
+}

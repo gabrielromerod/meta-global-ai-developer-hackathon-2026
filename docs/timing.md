@@ -17,3 +17,6 @@ Initial baseline wall times are approximate; durations come from pytest. Later f
 | Backend full regression after export checks | 2026-11-03T03:44:43.709921-08:00 | 2026-11-03T03:48:20.937528-08:00 | exit 0; captured command output |
 
 | Legacy app E2E compatibility before UI switch | 2026-11-03T03:48:20.937528-08:00 | 2026-11-03T03:48:47.366813-08:00 | exit 0; captured command output |
+
+| Home/Attention full offline suite (FIXTURE) | 2026-11-03T03:21:16.8259134-08:00 | 2026-11-03T03:24:10.9967055-08:00 | exit 0; see home task evidence |
+| Home/Attention browser matrix (FIXTURE) | 2026-11-03T03:27:10.4355185-08:00 | 2026-11-03T03:30:51.8486090-08:00 | 22 viewport/theme cases; 0 failures |

@@ -41,3 +41,22 @@ REAL: data selection, callbacks, supplied-role/verdict display and responsive
 layout logic on real-shaped inputs. FIXTURE: all screenshots and the current
 demo stories. MISSING for this task: API/state/player integration, owned by lead;
 hardware/model acceptance requires the owner's separate approved field run.
+
+The final image gate is the lead's `scripts/ui_evidence.py`: its `ui-privacy.json`
+binds every PNG and fixture hash, checks fixture media/avatar URLs are null,
+decodes PNGs, checks audio absence and scans metadata in batches. Fixture paths
+are portable and fixture hashes use explicit LF normalization. The default
+camera-frame scan was run and failed because app screenshots do not map to a
+camera. No camera mask check was loosened. An additional documented unmapped
+audio scan and metadata scan passed. `evidence-inputs.json` binds the lead fixture
+revision; the twin is generic massing with no GLB and no footage appears. Local
+gitleaks is unavailable; CI owns that check.
+
+Visual dependency finding for the Twin owner: the selected-camera 1024×768 frame
+can still clip lower labels with full Twin controls in a narrow 440px parent,
+despite passing Home's 180px scene guard. Evidence is
+`qa/screens/58a6098/four-three-1024x768/home-dark-view-8-hover.png`.
+The owning Twin task fixed this in `d37c10f`, with targeted narrow-panel evidence;
+the lead must include that dependency correction in the independent/integrated
+review. The Home screenshots retain the pre-dependency-fix state honestly.
+This builder handoff is not independent approval.

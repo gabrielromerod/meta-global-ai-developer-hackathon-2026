@@ -13,7 +13,11 @@ will include the implementation commit SHA after verification.
 
 ## Fixed
 
-<!-- QA-ID â€” fix description â€” commit SHA -->
+<!-- QA-ID — fix description — commit SHA -->
+
+- QA-HOME-001 — FIXTURE: short Windows/4:3 windows squeezed the hero. Responsive context placement, stretched slots, compact chrome and the short-height gutter preserve a minimum 180px scene through every configured view. Fixes: b613fc1, 4fc0631, 7be158f, 58a6098. Before-fix evidence: qa/home-regressions/7be158f-selected-camera-before.png.
+- QA-HOME-002 — REAL logic / FIXTURE inputs: full Attention incorrectly inherited Home's five-card preview cap. The full page now preserves all ranked visits; seven-visit regression passes. Fix: 5674ab3.
+- QA-HOME-003 — REAL logic / FIXTURE inputs: selected-camera fallback emitted a camera ID to the clip action. It now opens the matching clip ID; failing-then-passing UI regression covers it. Fix: 58a6098.
 
 ## Owner decisions
 

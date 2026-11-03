@@ -1,0 +1,8 @@
+{
+  "kind": "fixture",
+  "source_commit": "b6e2199",
+  "path": "web-next/src/fixtures/state.json",
+  "sha256": "373b9a56ed9f6fa265947a10f605a2be9333a562cb26b9efa91837bfbf3c2ef8",
+  "task_source_commit": "58a6098",
+  "note": "Authored synthetic evidence; exact lead-owned fixture bytes; no camera or Meta calls."
+}

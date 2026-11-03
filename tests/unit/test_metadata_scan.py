@@ -73,6 +73,23 @@ def test_metadata_scan_rejects_all_exif_not_just_gps(tmp_path):
     assert "DateTimeOriginal" in result.stdout
 
 
+def test_metadata_named_paths_include_last_file_across_batches(tmp_path):
+    from vigil.ingest.metadata import scan as scan_files
+
+    paths = []
+    for index in range(65):
+        path = tmp_path / f"generated-{index:03d}.jpg"
+        assert cv2.imwrite(str(path), np.full((8, 8, 3), 120, dtype=np.uint8))
+        paths.append(path)
+    subprocess.run(
+        ["exiftool", "-overwrite_original", "-GPSLatitude=1", str(paths[-1])],
+        capture_output=True,
+        check=True,
+    )
+    failures = scan_files(tmp_path, files=paths)
+    assert any(paths[-1].name in failure and "GPS" in failure for failure in failures)
+
+
 def test_metadata_scan_glb_checks_json_metadata(tmp_path):
     source = ROOT / "demo/synthetic/media/ground.glb"
     target = tmp_path / "massing.glb"

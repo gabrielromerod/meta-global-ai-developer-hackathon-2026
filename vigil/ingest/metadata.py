@@ -90,7 +90,7 @@ def _glb_metadata(path: Path) -> list[str]:
         return [f"{path.name}: invalid GLB"]
 
 
-def scan(root: Path, exiftool: str | None = None) -> list[str]:
+def scan(root: Path, exiftool: str | None = None, *, files: list[Path] | None = None) -> list[str]:
     """Return violations; missing tool, unreadable media and malformed output are violations."""
     if not root.exists():
         return ["scan root does not exist"]
@@ -105,26 +105,37 @@ def scan(root: Path, exiftool: str | None = None) -> list[str]:
         ]
         if root.is_file():
             media = [root] if root.suffix.lower().lstrip(".") in EXTENSIONS else []
+        if files is not None:
+            if any(not p.is_file() for p in files):
+                return ["named metadata scan file is missing"]
+            media = list(files)
         glbs = [p for p in media if p.suffix.lower() == ".glb"]
         violations = [issue for p in glbs for issue in _glb_metadata(p)]
         media = [p for p in media if p not in glbs]
         if not media:
             return violations
-        result = subprocess.run(
-            [*args, *(str(p) for p in media)],
-            capture_output=True,
-            text=True,
-            timeout=300,
-            check=False,
-        )
+        rows = []
+        # Stay below Windows' command-line limit while checking every named asset.
+        for offset in range(0, len(media), 64):
+            batch = media[offset : offset + 64]
+            result = subprocess.run(
+                [*args, *(str(p) for p in batch)],
+                capture_output=True,
+                text=True,
+                timeout=300,
+                check=False,
+            )
+            if result.returncode:
+                return ["exiftool could not read every media file"]
+            decoded = json.loads(result.stdout)
+            if not isinstance(decoded, list) or len(decoded) < len(batch):
+                return ["exiftool returned incomplete metadata"]
+            rows.extend(decoded)
     except (OSError, subprocess.SubprocessError):
         return ["exiftool unavailable or scan failed"]
-    if result.returncode:
-        return ["exiftool could not read every media file"]
+    except (ValueError, TypeError):
+        return ["exiftool returned invalid metadata"]
     try:
-        rows = json.loads(result.stdout)
-        if not isinstance(rows, list) or len(rows) < len(media):
-            return ["exiftool returned incomplete metadata"]
         for row in rows:
             mime = row.get("File:MIMEType", "")
             if not mime.startswith(("image/", "video/", "audio/", "model/")):

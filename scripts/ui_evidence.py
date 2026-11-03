@@ -22,6 +22,10 @@ def sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def fixture_sha(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
+
+
 def validate_manifest(root: Path, manifest: Path) -> tuple[int, list[str]]:
     try:
         record = json.loads(manifest.read_text(encoding="utf-8"))
@@ -36,8 +40,13 @@ def validate_manifest(root: Path, manifest: Path) -> tuple[int, list[str]]:
             if source.hostname not in {"localhost", "127.0.0.1"} or not record.get("fixtures"):
                 raise ValueError("generated UI needs local static preview and fixture provenance")
             for fixture in record["fixtures"]:
-                path = (manifest.parent / fixture["path"]).resolve()
-                if sha(path) != fixture["sha256"]:
+                path = (manifest.parent / fixture["path"].replace("\\", "/")).resolve()
+                digest = (
+                    fixture_sha(path)
+                    if record.get("fixture_hash_mode") == "lf-normalized"
+                    else sha(path)
+                )
+                if digest != fixture["sha256"]:
                     raise ValueError("fixture changed after screenshot review")
                 data = json.loads(path.read_text(encoding="utf-8"))
                 if data.get("evidence", {}).get("kind") != "fixture":
@@ -71,6 +80,7 @@ def validate_manifest(root: Path, manifest: Path) -> tuple[int, list[str]]:
         if not files:
             raise ValueError("empty screenshot manifest")
         failures = []
+        verified_paths = []
         root = root.resolve()
         for relative, digest in files.items():
             path = (root / relative).resolve()
@@ -84,7 +94,8 @@ def validate_manifest(root: Path, manifest: Path) -> tuple[int, list[str]]:
             report = scan_media(path, [])
             if not report.ok or report.frames != 1:
                 failures.append(f"{relative}: screenshot failed decode/audio check")
-            failures.extend(metadata_scan(path))
+            verified_paths.append(path)
+        failures.extend(metadata_scan(root, files=verified_paths))
         return len(files), failures
     except (OSError, ValueError, KeyError, TypeError) as error:
         return 0, [str(error)]
@@ -110,8 +121,12 @@ def main() -> int:
         "reviewed": args.reviewed,
         "contains_camera_pixels": False,
         "authenticated": False,
+        "fixture_hash_mode": "lf-normalized",
         "fixtures": [
-            {"path": os.path.relpath(p.resolve(), manifest.parent.resolve()), "sha256": sha(p)}
+            {
+                "path": Path(os.path.relpath(p.resolve(), manifest.parent.resolve())).as_posix(),
+                "sha256": fixture_sha(p),
+            }
             for p in args.fixture
         ],
         "files": {p.relative_to(args.root).as_posix(): sha(p) for p in files},

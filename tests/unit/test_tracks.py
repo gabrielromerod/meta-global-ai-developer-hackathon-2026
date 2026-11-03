@@ -86,6 +86,12 @@ def test_stitch_empty() -> None:
     assert stitch([]) == []
 
 
+def test_stitch_leaves_origin_for_the_event_builder(fixture_objs) -> None:
+    # FR-008: origin_zone needs zone kinds and the other tracks, so stitching never sets it;
+    # perception.events.build_events / assign_origins does.
+    assert all(t.origin_zone is None for t in stitch(fixture_objs))
+
+
 def test_stitch_low_iou_stays_separate() -> None:
     a = _static("wa", 0.0, 0, B, range(0, 100))
     b = _static("wb", 8.0, 0, B_FAR, range(0, 100))

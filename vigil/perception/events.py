@@ -14,6 +14,27 @@ All geometry is in the processed window's pixel frame (spec 9.4 config):
 * **removed** — a watched object's track ends, before the camera's footage ends and
   without reappearing at the same place, while a person overlaps its last box.
 
+When several people overlap the protected object (or the removed object's last box), one
+``touch`` (or ``removed``) event is emitted **per overlapping person track**; each later
+carries its own subject's ``actor_role`` (filled in by visit assembly, FR-044).
+
+**Origin tagging** (FR-008, spec 9.4 zone kinds). :func:`build_events` also sets each
+track's ``origin_zone`` in place (see :func:`assign_origins`):
+
+1. Each of the track's first frames (the first ``first_s`` = 1 s, at most 10 frames) is
+   labelled with the zone containing its foot point; where zones overlap the most specific
+   wins: ``egress`` before ``perimeter`` before ``interior_yard``, then the smaller polygon,
+   then the name. The origin is the label held by a **strict majority** of those frames;
+   no zone, or a tie, gives ``None``.
+2. The origin is ``None`` unless the camera was observed without interruption for the
+   2 s before the track's first frame (:class:`Observation`: no outage, no skipped
+   (``idle``) or unprocessed (``failed``) window, which also covers the first frame of a
+   window whose predecessor was skipped). Without an :class:`Observation` every camera
+   counts as observed.
+3. An ``egress`` origin is voided (``None``) when any person track on that camera whose own
+   origin is not that egress zone overlapped the zone's polygon, scaled by 1.5 about its
+   centroid (dilated by 50%), at any frame in the 10 min up to the track's first frame.
+
 Every state change is debounced: a new state must hold for ``min_frames`` consecutive
 frames, and its time is the first of those frames. Event ids are content hashes, so they are
 stable across runs and across incremental batches (NFR-011). Clip ranges pad the event by
@@ -24,11 +45,15 @@ from __future__ import annotations
 
 import hashlib
 import itertools
-from collections.abc import Sequence
+from collections import Counter
+from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
+from typing import Protocol
 
 import numpy as np
+from shapely import affinity
 from shapely.geometry import LineString, Point, Polygon
+from shapely.geometry import box as shapely_box
 
 from vigil.models import (
     Box,
@@ -40,6 +65,8 @@ from vigil.models import (
     Track,
     TrackFrame,
     Watch,
+    Window,
+    ZoneKind,
 )
 from vigil.perception.rle import decode_rle
 from vigil.perception.tracks import phrase_class
@@ -53,6 +80,24 @@ REMOVE_BEFORE_S = 2.0
 REMOVE_AFTER_S = 1.0
 REMOVE_REAPPEAR_IOU = 0.3
 END_TOLERANCE_S = 0.5
+
+ORIGIN_FIRST_S = 1.0
+"""Origin vote window: the track's first second ..."""
+ORIGIN_FRAMES = 10
+"""... capped at its first 10 frames (10 fps processing rate)."""
+ORIGIN_LOOKBACK_S = 2.0
+"""The camera must have been observed without interruption this long before a track's
+first frame for the track to get an origin."""
+EGRESS_VOID_S = 600.0
+"""A non-egress person near an egress zone voids egress origins there for 10 min."""
+EGRESS_DILATE = 1.5
+"""Egress polygon scale factor (about its centroid) for the voiding check: dilated by 50%."""
+OBSERVE_JOIN_S = 0.25
+"""Observed windows closer than this are one continuous observed span (frame seams)."""
+UNOBSERVED_STATUSES: tuple[str, ...] = ("idle", "failed")
+"""Window statuses that interrupt observation: skipped by the motion gate, or not processed."""
+_EPS = 1e-6
+_KIND_RANK: dict[str, int] = {"egress": 0, "perimeter": 1, "interior_yard": 2}
 
 MOVING_CLASSES = ("person", "car")
 TOUCH_CLASSES = ("person",)
@@ -261,7 +306,7 @@ def _removed_events(
             )
             if reappears:
                 continue
-            best: tuple[int, str, float, float] | None = None
+            # One removed event per person track overlapping the object as it disappears.
             for person in people:
                 hits = [
                     f.t
@@ -269,17 +314,215 @@ def _removed_events(
                     if end - before_s <= f.t <= end + after_s
                     and _overlap(f, last_box, cam.height, cam.width) >= thresh
                 ]
-                if not hits:
-                    continue
-                cand = (-len(hits), person.id, min(hits), max(hits))
-                if best is None or cand < best:
-                    best = cand
-            if best is not None:
-                _, pid, h0, h1 = best
-                out.append(
-                    _Raw(watch.camera_id, pid, "removed", min(h0, end), max(h1, end), watch.id)
-                )
+                if hits:
+                    t0, t1 = min(min(hits), end), max(max(hits), end)
+                    out.append(_Raw(watch.camera_id, person.id, "removed", t0, t1, watch.id))
     return out
+
+
+# ---------------------------------------------------------------------------
+# Origin tagging (FR-008)
+# ---------------------------------------------------------------------------
+
+
+class _Span(Protocol):
+    """Anything with a camera and a session-clock interval, e.g. ``visits.Outage``."""
+
+    camera_id: str
+    t0: float
+    t1: float
+
+
+@dataclass(frozen=True)
+class Observation:
+    """When each camera was actually watched, on the session clock (FR-008 origin rule).
+
+    ``spans[camera_id]`` holds sorted, disjoint ``(t0, t1)`` intervals in which the camera
+    was observed without interruption. A track keeps its origin only when
+    ``[t_first - 2 s, t_first]`` lies inside one span. A camera missing from ``spans`` was
+    never observed, so its tracks get no origin (fails closed: ``None`` becomes the
+    ``unknown`` role, FR-044). Build it with :meth:`from_windows`; pass
+    ``observation=None`` (the default everywhere) when no window bookkeeping exists, which
+    treats every camera as observed.
+    """
+
+    spans: Mapping[str, tuple[tuple[float, float], ...]]
+
+    @classmethod
+    def from_windows(
+        cls,
+        windows: Iterable[Window],
+        outages: Iterable[_Span] = (),
+        *,
+        unobserved: Sequence[str] = UNOBSERVED_STATUSES,
+        join_s: float = OBSERVE_JOIN_S,
+    ) -> Observation:
+        """Observed spans from the session's windows, minus camera outages.
+
+        A window counts as observed unless its status is in ``unobserved`` (default:
+        ``idle``, skipped by the motion gate, and ``failed``, not processed); mark any other
+        unprocessed window ``failed`` before calling. Observed windows closer than
+        ``join_s`` merge into one span; skipped, unprocessed or missing windows leave a hole,
+        so the first frames of a window whose predecessor was skipped are not covered.
+        Outages (objects with ``camera_id``, ``t0``, ``t1``) are cut out of the spans.
+        """
+        per_cam: dict[str, list[tuple[float, float]]] = {}
+        for w in windows:
+            if w.status in unobserved or w.t1 <= w.t0:
+                continue
+            per_cam.setdefault(w.camera_id, []).append((float(w.t0), float(w.t1)))
+        cuts: dict[str, list[tuple[float, float]]] = {}
+        for o in outages:
+            cuts.setdefault(o.camera_id, []).append((float(o.t0), float(o.t1)))
+        spans: dict[str, tuple[tuple[float, float], ...]] = {}
+        for cam_id, ivs in per_cam.items():
+            merged: list[tuple[float, float]] = []
+            for a, b in sorted(ivs):
+                if merged and a <= merged[-1][1] + join_s:
+                    merged[-1] = (merged[-1][0], max(merged[-1][1], b))
+                else:
+                    merged.append((a, b))
+            for o0, o1 in sorted(cuts.get(cam_id, [])):
+                cut: list[tuple[float, float]] = []
+                for a, b in merged:
+                    if o1 <= a or o0 >= b:
+                        cut.append((a, b))
+                        continue
+                    if a < o0:
+                        cut.append((a, o0))
+                    if o1 < b:
+                        cut.append((o1, b))
+                merged = cut
+            spans[cam_id] = tuple(merged)
+        return cls(spans=spans)
+
+    def covers(self, camera_id: str, t0: float, t1: float) -> bool:
+        """True when ``[t0, t1]`` lies inside one observed span of ``camera_id``."""
+        return any(a <= t0 + _EPS and t1 <= b + _EPS for a, b in self.spans.get(camera_id, ()))
+
+
+@dataclass(frozen=True)
+class _Zone:
+    id: str
+    kind: ZoneKind
+    poly: Polygon
+
+
+def _zone_table(cam: CameraCfg) -> list[_Zone]:
+    """Camera zones, most specific first: egress, perimeter, interior_yard; smaller first."""
+    zones = [
+        _Zone(zid, cam.zone_kind(zid), Polygon(pts))
+        for zid, pts in cam.zones.items()
+        if len(pts) >= 3
+    ]
+    zones.sort(key=lambda z: (_KIND_RANK.get(z.kind, 9), z.poly.area, z.id))
+    return zones
+
+
+def _frame_zone(frame: TrackFrame, table: list[_Zone]) -> str | None:
+    p = Point(foot_point(frame.box))
+    return next((z.id for z in table if z.poly.covers(p)), None)
+
+
+def _raw_origin(track: Track, table: list[_Zone], first_s: float) -> str | None:
+    """Strict-majority zone of the track's first ``first_s`` (at most 10 frames)."""
+    if not track.frames:
+        return None
+    t_first = track.frames[0].t
+    head = [f for f in track.frames if f.t < t_first + first_s - _EPS][:ORIGIN_FRAMES]
+    head = head or track.frames[:1]
+    votes = Counter(_frame_zone(f, table) for f in head)
+    zone, n = max(votes.items(), key=lambda kv: (kv[1], kv[0] or ""))
+    return zone if 2 * n > len(head) else None
+
+
+def _near_egress(other: Track, dilated: Polygon, t0: float, t1: float) -> bool:
+    """True when ``other``'s box overlaps ``dilated`` (more than an edge) in ``[t0, t1]``."""
+    for f in other.frames:
+        if not t0 - _EPS <= f.t <= t1 + _EPS:
+            continue
+        b = shapely_box(f.box.x1, f.box.y1, f.box.x2, f.box.y2)
+        if dilated.intersects(b) and not dilated.touches(b):
+            return True
+    return False
+
+
+def _tag_origins(
+    tracks: Iterable[Track],
+    cfg: Config,
+    observation: Observation | None,
+    first_s: float,
+) -> dict[str, str | None]:
+    """Final origins of tracks on configured cameras (pure; see the module docstring)."""
+    cams = {c.id: c for c in cfg.cameras}
+    known = {t.id: t for t in tracks if t.camera_id in cams}
+    order = sorted(known.values(), key=lambda t: (t.frames[0].t if t.frames else t.t_first, t.id))
+    tables = {cid: _zone_table(cam) for cid, cam in cams.items()}
+    raw = {t.id: _raw_origin(t, tables[t.camera_id], first_s) for t in order}
+    final: dict[str, str | None] = {}
+    for tr in order:
+        zone = raw[tr.id]
+        if zone is not None and observation is not None:
+            t_first = tr.frames[0].t
+            if not observation.covers(tr.camera_id, t_first - ORIGIN_LOOKBACK_S, t_first):
+                zone = None
+        if zone is not None and cams[tr.camera_id].zone_kind(zone) == "egress":
+            poly = next(z.poly for z in tables[tr.camera_id] if z.id == zone)
+            dilated = affinity.scale(poly, EGRESS_DILATE, EGRESS_DILATE, origin="centroid")
+            t_first = tr.frames[0].t
+            for other in order:
+                if other.id == tr.id or other.camera_id != tr.camera_id:
+                    continue
+                if other.cls not in TOUCH_CLASSES:
+                    continue
+                # Tracks already tagged use their final origin (a voided one counts as not
+                # born in the door); tracks born in the same instant use their raw origin.
+                theirs = final[other.id] if other.id in final else raw[other.id]
+                if theirs == zone:
+                    continue
+                if _near_egress(other, dilated, t_first - EGRESS_VOID_S, t_first):
+                    zone = None
+                    break
+        final[tr.id] = zone
+    return final
+
+
+def assign_origins(
+    tracks: Sequence[Track],
+    cfg: Config,
+    *,
+    observation: Observation | None = None,
+    first_s: float = ORIGIN_FIRST_S,
+) -> dict[str, str | None]:
+    """Set ``origin_zone`` on every track of a configured camera, in place (FR-008).
+
+    Returns ``{track_id: origin_zone}``. Tracks on unknown cameras are left untouched and
+    omitted. The result does not depend on input order. ``observation`` gives the
+    observed spans per camera (:meth:`Observation.from_windows`); ``None`` treats every
+    camera as observed.
+    """
+    tags = _tag_origins(tracks, cfg, observation, first_s)
+    for tr in tracks:
+        if tr.id in tags:
+            tr.origin_zone = tags[tr.id]
+    return tags
+
+
+def origin_zone(
+    track: Track,
+    cfg: Config,
+    first_s: float = ORIGIN_FIRST_S,
+    *,
+    others: Iterable[Track] = (),
+    observation: Observation | None = None,
+) -> str | None:
+    """The FR-008 origin of one track (spec 9.5 interface), without mutating anything.
+
+    ``others`` are the session's other tracks (needed for egress voiding; tracks on other
+    cameras are ignored). ``observation`` as in :func:`assign_origins`.
+    """
+    pool = [track, *(o for o in others if o.id != track.id)]
+    return _tag_origins(pool, cfg, observation, first_s).get(track.id)
 
 
 # ---------------------------------------------------------------------------
@@ -304,12 +547,17 @@ def build_events(
     touch_overlap: float = TOUCH_OVERLAP,
     touch_merge_gap_s: float = TOUCH_MERGE_GAP_S,
     exits_as_zones: bool = False,
+    observation: Observation | None = None,
 ) -> list[Event]:
     """Build the events of FR-008 from stitched tracks (spec 9.5 interface).
 
     Tracks on cameras missing from ``cfg`` are ignored. Events are returned sorted by
-    (t0, camera, type, track, target) with ``visit_id`` unset (assigned by reasoning).
+    (t0, camera, type, track, target) with ``visit_id``, ``subject_id`` and ``actor_role``
+    unset (assigned by reasoning, FR-044). As a side effect every track on a configured
+    camera gets its ``origin_zone`` (:func:`assign_origins`, using ``observation``; ``None``
+    treats every camera as observed).
     """
+    assign_origins(tracks, cfg, observation=observation)
     cams = {c.id: c for c in cfg.cameras}
     known = [t for t in tracks if t.camera_id in cams and t.frames]
     known.sort(key=lambda t: (t.camera_id, t.id))

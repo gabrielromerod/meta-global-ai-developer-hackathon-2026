@@ -1,4 +1,7 @@
-"""FR-001: cameras.yaml loader rejects bad references with named errors (spec 9.4, UC-01)."""
+"""FR-001: cameras.yaml loader rejects bad references with named errors (spec 9.4, UC-01).
+
+Also the Nov 2 zone kinds (FR-008: egress, perimeter, interior_yard) and hfov_deg (FR-036).
+"""
 
 from __future__ import annotations
 
@@ -18,6 +21,7 @@ from vigil.ingest.config import (
     UnknownCameraError,
     UnknownExitError,
     UnknownZoneError,
+    ZoneKindError,
     find_geometry,
     load_config,
     privacy_polygons,
@@ -271,3 +275,108 @@ def test_privacy_json_bad_polygon(tmp_path: Path, sample_config: Config) -> None
 def test_repo_cameras_yaml_is_valid_yaml() -> None:
     raw = yaml.safe_load((REPO_ROOT / "config" / "cameras.yaml").read_text(encoding="utf-8"))
     assert isinstance(raw, dict)
+
+
+# ---------------------------------------------------------------------------
+# Zone kinds (spec 9.4, FR-008) and nominal field of view (FR-036)
+# ---------------------------------------------------------------------------
+
+PORCH = "porch: [[420, 380], [860, 380], [860, 720], [420, 720]]"
+KINDED = (
+    "front_door_egress: {kind: egress, polygon: [[560, 300], [700, 300], [700, 560], [560, 560]]}"
+    "\n      porch: {kind: interior_yard,"
+    " polygon: [[420, 380], [860, 380], [860, 720], [420, 720]]}"
+)
+
+
+def test_sample_config_zone_kinds_and_fov(sample_config: Config) -> None:
+    kinds = {cam.id: {z: cam.zone_kind(z) for z in cam.zones} for cam in sample_config.cameras}
+    assert kinds == {
+        "front": {
+            "front_door_egress": "egress",
+            "porch": "interior_yard",
+            "driveway": "interior_yard",
+            "driveway_entry": "perimeter",
+        },
+        "side_left": {"side_alley": "perimeter", "side_yard": "interior_yard"},
+        "side_right": {"side_path": "interior_yard"},
+        "backyard": {"back_door_egress": "egress", "backyard": "interior_yard"},
+    }
+    assert sample_config.camera("front").zones["front_door_egress"] == [
+        (560, 300),
+        (700, 300),
+        (700, 560),
+        (560, 560),
+    ]
+    assert all(cam.hfov_deg is not None and 0 < cam.hfov_deg < 180 for cam in sample_config.cameras)
+
+
+def test_zone_dict_form_loads_and_plain_list_is_interior_yard(tmp_path: Path) -> None:
+    cfg = load_config(write(tmp_path, BASE.replace(PORCH, KINDED)))
+    front = cfg.camera("front")
+    assert front.zone_kind("front_door_egress") == "egress"
+    assert front.zone_kind("porch") == "interior_yard"
+    plain = load_config(write(tmp_path, BASE, "plain.yaml")).camera("front")
+    assert plain.zone_kinds.get("porch", "interior_yard") == "interior_yard"
+    assert plain.zone_kind("porch") == "interior_yard"
+
+
+@pytest.mark.parametrize("kind", ["door", "garage", "EGRESS", "household"])
+def test_unknown_zone_kind_is_a_named_error_with_line(tmp_path: Path, kind: str) -> None:
+    text = BASE.replace(PORCH, KINDED.replace("kind: egress", f"kind: {kind}"))
+    with pytest.raises(ZoneKindError) as ei:
+        load_config(write(tmp_path, text))
+    err = ei.value
+    assert isinstance(err, ConfigSchemaError)
+    assert err.ref == "front_door_egress"
+    assert err.line == 6
+    assert kind in str(err)
+    assert "egress, perimeter, interior_yard" in str(err)
+
+
+def test_zone_dict_needs_polygon_and_no_extra_keys(tmp_path: Path) -> None:
+    missing = BASE.replace(PORCH, "porch: {kind: interior_yard}")
+    with pytest.raises(ConfigSchemaError, match="polygon"):
+        load_config(write(tmp_path, missing))
+    extra = BASE.replace(PORCH, KINDED.replace("{kind: egress,", "{kind: egress, colour: red,"))
+    with pytest.raises(ConfigSchemaError, match="colour"):
+        load_config(write(tmp_path, extra, "extra.yaml"))
+
+
+def test_zone_dict_geometry_still_checked(tmp_path: Path) -> None:
+    text = BASE.replace(PORCH, KINDED.replace("[700, 560], [560, 560]", "[700, 960], [560, 560]"))
+    with pytest.raises(GeometryError, match="outside") as ei:
+        load_config(write(tmp_path, text))
+    assert ei.value.line == 6
+
+
+def test_zone_kind_on_unknown_zone_rejected(tmp_path: Path) -> None:
+    text = BASE.replace("    zones:\n", "    zone_kinds: {front_door: egress}\n    zones:\n", 1)
+    with pytest.raises(UnknownZoneError, match="front_door") as ei:
+        load_config(write(tmp_path, text))
+    assert ei.value.ref == "front_door"
+    assert ei.value.line == 5
+    bad = BASE.replace("    zones:\n", "    zone_kinds: {porch: door}\n    zones:\n", 1)
+    with pytest.raises(ZoneKindError, match="door"):
+        load_config(write(tmp_path, bad, "bad.yaml"))
+
+
+def test_validate_config_rejects_zone_kind_for_unknown_zone(sample_config: Config) -> None:
+    raw = sample_config.model_dump(by_alias=True)
+    raw["cameras"][0]["zone_kinds"]["kitchen_door"] = "egress"
+    with pytest.raises(UnknownZoneError, match="kitchen_door"):
+        validate_config(Config.model_validate(raw))
+
+
+def test_kinded_zone_names_unique_across_cameras(tmp_path: Path) -> None:
+    text = BASE.replace(PORCH, KINDED).replace("side_gate: [[812", "front_door_egress: [[812")
+    with pytest.raises(DuplicateIdError, match="front_door_egress"):
+        load_config(write(tmp_path, text))
+
+
+@pytest.mark.parametrize("hfov", ["0", "-10", "180", "400"])
+def test_hfov_out_of_range_rejected(tmp_path: Path, hfov: str) -> None:
+    text = BASE.replace("    name: Left side\n", f"    name: Left side\n    hfov_deg: {hfov}\n")
+    with pytest.raises(ConfigSchemaError, match="hfov_deg") as ei:
+        load_config(write(tmp_path, text))
+    assert ei.value.line == 13

@@ -10,6 +10,10 @@ Checks on top of the pydantic contract (``vigil.models.Config``):
 - zone and line names unique across all cameras (rule targets name them without a camera);
 - polygons (zones, exits, privacy, blind regions) have at least 3 points and non-zero area;
   lines have exactly 2 points; pixel coordinates lie inside the camera frame;
+- zones are a polygon list (``interior_yard``) or ``{kind, polygon}`` (spec 9.4) with ``kind``
+  one of ``egress``, ``perimeter``, ``interior_yard`` (:class:`ZoneKindError`); a
+  ``zone_kinds`` entry must name a zone of its camera (:class:`UnknownZoneError`);
+- ``hfov_deg`` (nominal horizontal field of view, FR-036), when set, is in (0, 180) degrees;
 - topology edges name known cameras or blind regions (:class:`UnknownCameraError`), any
   ``exit`` exists on the ``from`` camera (:class:`UnknownExitError`), no self loops,
   ``0 <= min_s <= max_s``, an edge touching a blind region has ``blind: true``, no duplicates.
@@ -27,12 +31,12 @@ import json
 import zoneinfo
 from collections.abc import Sequence
 from pathlib import Path
-from typing import Any, Literal
+from typing import Any, Literal, get_args
 
 import yaml
 from pydantic import ValidationError
 
-from vigil.models import CameraCfg, Config, Point, Polygon
+from vigil.models import CameraCfg, Config, Point, Polygon, ZoneKind
 
 __all__ = [
     "ConfigError",
@@ -44,6 +48,7 @@ __all__ = [
     "UnknownCameraError",
     "UnknownExitError",
     "UnknownZoneError",
+    "ZoneKindError",
     "find_geometry",
     "load_config",
     "privacy_polygons",
@@ -51,6 +56,10 @@ __all__ = [
 ]
 
 Loc = tuple[str | int, ...]
+
+ZONE_KINDS: tuple[str, ...] = tuple(get_args(ZoneKind))
+"""Allowed zone kinds (spec 9.4): egress, perimeter, interior_yard."""
+_ZONE_KEYS = frozenset({"kind", "polygon"})
 
 
 # ---------------------------------------------------------------------------
@@ -102,6 +111,11 @@ class ConfigFileError(ConfigError):
 
 class ConfigSchemaError(ConfigError):
     """The YAML does not match the ``vigil.models.Config`` contract (types, unknown keys)."""
+
+
+class ZoneKindError(ConfigSchemaError):
+    """A zone ``kind`` is not one of ``egress``, ``perimeter``, ``interior_yard``, or a
+    ``{kind, polygon}`` zone is malformed (missing polygon, unknown key)."""
 
 
 class DuplicateIdError(ConfigError):
@@ -163,6 +177,11 @@ def load_config(path: Path | str) -> Config:
     lines: dict[Loc, int] = {}
     if node is not None:
         _index_lines(node, (), lines, path)
+
+    try:
+        _check_raw_zones(raw)
+    except ConfigError as err:
+        raise err.locate(lines, path) from None
 
     try:
         cfg = Config.model_validate(raw)
@@ -317,6 +336,21 @@ def _check(cfg: Config) -> None:
         base: Loc = ("cameras", i)
         for name, poly in cam.zones.items():
             _check_polygon(poly, (*base, "zones", name), f"zone {name!r}", cam)
+        for name, kind in cam.zone_kinds.items():
+            if name not in cam.zones:
+                raise UnknownZoneError(
+                    f"zone kind {kind!r} given for unknown zone {name!r} on camera {cam.id!r}",
+                    ref=name,
+                    loc=(*base, "zone_kinds", name),
+                )
+            if kind not in ZONE_KINDS:
+                raise _bad_kind(kind, name, (*base, "zone_kinds", name))
+        if cam.hfov_deg is not None and not 0.0 < cam.hfov_deg < 180.0:
+            raise ConfigSchemaError(
+                f"hfov_deg for {cam.id!r} must be in (0, 180) degrees, got {cam.hfov_deg}",
+                ref=cam.id,
+                loc=(*base, "hfov_deg"),
+            )
         for name, line in cam.lines.items():
             _check_line(line, (*base, "lines", name), f"line {name!r}", cam)
         for name, poly in cam.exits.items():
@@ -396,6 +430,56 @@ def _check(cfg: Config) -> None:
                 loc=base,
             )
         seen_edges[key] = i
+
+
+def _bad_kind(kind: object, zone: str, loc: Loc) -> ZoneKindError:
+    return ZoneKindError(
+        f"zone {zone!r} has kind {kind!r}; allowed kinds: {', '.join(ZONE_KINDS)}",
+        ref=zone,
+        loc=loc,
+    )
+
+
+def _check_raw_zones(raw: dict[str, Any]) -> None:
+    """Check spec 9.4 ``{kind, polygon}`` zones before pydantic flattens them.
+
+    ``CameraCfg`` accepts the dict form and moves ``kind`` into ``zone_kinds``, dropping any
+    other key; this check names the zone (and its YAML line) for a bad kind, a missing
+    polygon or an unknown key, instead of a generic schema error.
+    """
+    cams = raw.get("cameras")
+    if not isinstance(cams, list):
+        return
+    for i, cam in enumerate(cams):
+        if not isinstance(cam, dict):
+            continue
+        base: Loc = ("cameras", i)
+        explicit = cam.get("zone_kinds")
+        if isinstance(explicit, dict):
+            for name, kind in explicit.items():
+                if kind not in ZONE_KINDS:
+                    raise _bad_kind(kind, str(name), (*base, "zone_kinds", name))
+        zones = cam.get("zones")
+        if not isinstance(zones, dict):
+            continue
+        for name, value in zones.items():
+            if not isinstance(value, dict):
+                continue
+            loc: Loc = (*base, "zones", name)
+            extra = sorted(str(k) for k in value if k not in _ZONE_KEYS)
+            if extra:
+                raise ZoneKindError(
+                    f"zone {name!r} has unknown key(s) {', '.join(extra)}; "
+                    "a zone is a polygon or {kind, polygon}",
+                    ref=str(name),
+                    loc=loc,
+                )
+            if "polygon" not in value:
+                raise ZoneKindError(
+                    f"zone {name!r} needs a 'polygon' next to its kind", ref=str(name), loc=loc
+                )
+            if "kind" in value and value["kind"] not in ZONE_KINDS:
+                raise _bad_kind(value["kind"], str(name), (*loc, "kind"))
 
 
 def _check_timezone(tz: str) -> None:

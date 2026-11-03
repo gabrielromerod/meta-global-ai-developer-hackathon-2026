@@ -45,7 +45,7 @@ def test_judge_path_scenario_c(page: Page, server_url: str) -> None:
     expect(card).to_contain_text(GAP)
     expect(card).to_contain_text("Rule r7 fired")
     expect(page.locator(".twin-label.gap-label")).to_have_text(GAP)
-    expect(page.get_by_test_id("twin")).to_have_attribute("data-mode", re.compile("webgl|2d"))
+    expect(page.get_by_test_id("twin")).to_have_attribute("data-mode", "webgl")
 
     sentences = card.locator("[data-testid=story] .sentence")
     badges = card.locator("[data-testid=story] [data-testid=source-badge]")

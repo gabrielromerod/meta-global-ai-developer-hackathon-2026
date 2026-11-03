@@ -8,6 +8,8 @@ __pycache__/
 .mypy_cache/
 *.egg-info/
 build/
+!web/twin/vendor/three/build/
+!web/twin/vendor/three/build/*.js
 dist/
 
 # Secrets and local env

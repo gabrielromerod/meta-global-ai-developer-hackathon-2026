@@ -1,0 +1,1326 @@
+{
+  "source": "cb80f501",
+  "rows": [
+    {
+      "route": "home",
+      "theme": "dark",
+      "screenshot": "1470x870/integration-dark-home.png",
+      "width": 1470,
+      "height": 870,
+      "scrollWidth": 1470,
+      "scrollHeight": 870,
+      "canvasHeight": 279.6093444824219
+    },
+    {
+      "route": "visit/v_c",
+      "theme": "dark",
+      "screenshot": "1470x870/integration-dark-visit-v_c.png",
+      "width": 1470,
+      "height": 870,
+      "scrollWidth": 1470,
+      "scrollHeight": 870,
+      "canvasHeight": 193.26559448242188
+    },
+    {
+      "route": "rules",
+      "theme": "dark",
+      "screenshot": "1470x870/integration-dark-rules.png",
+      "width": 1470,
+      "height": 870,
+      "scrollWidth": 1470,
+      "scrollHeight": 870,
+      "canvasHeight": null
+    },
+    {
+      "route": "settings",
+      "theme": "dark",
+      "screenshot": "1470x870/integration-dark-settings.png",
+      "width": 1470,
+      "height": 870,
+      "scrollWidth": 1470,
+      "scrollHeight": 870,
+      "canvasHeight": null
+    },
+    {
+      "route": "media",
+      "theme": "dark",
+      "screenshot": "1470x870/integration-dark-media.png",
+      "width": 1470,
+      "height": 870,
+      "scrollWidth": 1470,
+      "scrollHeight": 870,
+      "canvasHeight": null
+    },
+    {
+      "route": "messages",
+      "theme": "dark",
+      "screenshot": "1470x870/integration-dark-messages.png",
+      "width": 1470,
+      "height": 870,
+      "scrollWidth": 1470,
+      "scrollHeight": 870,
+      "canvasHeight": null
+    },
+    {
+      "route": "home",
+      "theme": "light",
+      "screenshot": "1470x870/integration-light-home.png",
+      "width": 1470,
+      "height": 870,
+      "scrollWidth": 1470,
+      "scrollHeight": 870,
+      "canvasHeight": 279.59375
+    },
+    {
+      "route": "visit/v_c",
+      "theme": "light",
+      "screenshot": "1470x870/integration-light-visit-v_c.png",
+      "width": 1470,
+      "height": 870,
+      "scrollWidth": 1470,
+      "scrollHeight": 870,
+      "canvasHeight": 193.265625
+    },
+    {
+      "route": "rules",
+      "theme": "light",
+      "screenshot": "1470x870/integration-light-rules.png",
+      "width": 1470,
+      "height": 870,
+      "scrollWidth": 1470,
+      "scrollHeight": 870,
+      "canvasHeight": null
+    },
+    {
+      "route": "settings",
+      "theme": "light",
+      "screenshot": "1470x870/integration-light-settings.png",
+      "width": 1470,
+      "height": 870,
+      "scrollWidth": 1470,
+      "scrollHeight": 870,
+      "canvasHeight": null
+    },
+    {
+      "route": "media",
+      "theme": "light",
+      "screenshot": "1470x870/integration-light-media.png",
+      "width": 1470,
+      "height": 870,
+      "scrollWidth": 1470,
+      "scrollHeight": 870,
+      "canvasHeight": null
+    },
+    {
+      "route": "messages",
+      "theme": "light",
+      "screenshot": "1470x870/integration-light-messages.png",
+      "width": 1470,
+      "height": 870,
+      "scrollWidth": 1470,
+      "scrollHeight": 870,
+      "canvasHeight": null
+    },
+    {
+      "route": "home",
+      "theme": "dark",
+      "screenshot": "1512x895/integration-dark-home.png",
+      "width": 1512,
+      "height": 895,
+      "scrollWidth": 1512,
+      "scrollHeight": 895,
+      "canvasHeight": 304.609375
+    },
+    {
+      "route": "visit/v_c",
+      "theme": "dark",
+      "screenshot": "1512x895/integration-dark-visit-v_c.png",
+      "width": 1512,
+      "height": 895,
+      "scrollWidth": 1512,
+      "scrollHeight": 895,
+      "canvasHeight": 208.265625
+    },
+    {
+      "route": "rules",
+      "theme": "dark",
+      "screenshot": "1512x895/integration-dark-rules.png",
+      "width": 1512,
+      "height": 895,
+      "scrollWidth": 1512,
+      "scrollHeight": 895,
+      "canvasHeight": null
+    },
+    {
+      "route": "settings",
+      "theme": "dark",
+      "screenshot": "1512x895/integration-dark-settings.png",
+      "width": 1512,
+      "height": 895,
+      "scrollWidth": 1512,
+      "scrollHeight": 895,
+      "canvasHeight": null
+    },
+    {
+      "route": "media",
+      "theme": "dark",
+      "screenshot": "1512x895/integration-dark-media.png",
+      "width": 1512,
+      "height": 895,
+      "scrollWidth": 1512,
+      "scrollHeight": 895,
+      "canvasHeight": null
+    },
+    {
+      "route": "messages",
+      "theme": "dark",
+      "screenshot": "1512x895/integration-dark-messages.png",
+      "width": 1512,
+      "height": 895,
+      "scrollWidth": 1512,
+      "scrollHeight": 895,
+      "canvasHeight": null
+    },
+    {
+      "route": "home",
+      "theme": "light",
+      "screenshot": "1512x895/integration-light-home.png",
+      "width": 1512,
+      "height": 895,
+      "scrollWidth": 1512,
+      "scrollHeight": 895,
+      "canvasHeight": 304.6093444824219
+    },
+    {
+      "route": "visit/v_c",
+      "theme": "light",
+      "screenshot": "1512x895/integration-light-visit-v_c.png",
+      "width": 1512,
+      "height": 895,
+      "scrollWidth": 1512,
+      "scrollHeight": 895,
+      "canvasHeight": 208.265625
+    },
+    {
+      "route": "rules",
+      "theme": "light",
+      "screenshot": "1512x895/integration-light-rules.png",
+      "width": 1512,
+      "height": 895,
+      "scrollWidth": 1512,
+      "scrollHeight": 895,
+      "canvasHeight": null
+    },
+    {
+      "route": "settings",
+      "theme": "light",
+      "screenshot": "1512x895/integration-light-settings.png",
+      "width": 1512,
+      "height": 895,
+      "scrollWidth": 1512,
+      "scrollHeight": 895,
+      "canvasHeight": null
+    },
+    {
+      "route": "media",
+      "theme": "light",
+      "screenshot": "1512x895/integration-light-media.png",
+      "width": 1512,
+      "height": 895,
+      "scrollWidth": 1512,
+      "scrollHeight": 895,
+      "canvasHeight": null
+    },
+    {
+      "route": "messages",
+      "theme": "light",
+      "screenshot": "1512x895/integration-light-messages.png",
+      "width": 1512,
+      "height": 895,
+      "scrollWidth": 1512,
+      "scrollHeight": 895,
+      "canvasHeight": null
+    },
+    {
+      "route": "home",
+      "theme": "dark",
+      "screenshot": "1728x1030/integration-dark-home.png",
+      "width": 1728,
+      "height": 1030,
+      "scrollWidth": 1728,
+      "scrollHeight": 1030,
+      "canvasHeight": 324.6094055175781
+    },
+    {
+      "route": "visit/v_c",
+      "theme": "dark",
+      "screenshot": "1728x1030/integration-dark-visit-v_c.png",
+      "width": 1728,
+      "height": 1030,
+      "scrollWidth": 1728,
+      "scrollHeight": 1030,
+      "canvasHeight": 289.265625
+    },
+    {
+      "route": "rules",
+      "theme": "dark",
+      "screenshot": "1728x1030/integration-dark-rules.png",
+      "width": 1728,
+      "height": 1030,
+      "scrollWidth": 1728,
+      "scrollHeight": 1030,
+      "canvasHeight": null
+    },
+    {
+      "route": "settings",
+      "theme": "dark",
+      "screenshot": "1728x1030/integration-dark-settings.png",
+      "width": 1728,
+      "height": 1030,
+      "scrollWidth": 1728,
+      "scrollHeight": 1030,
+      "canvasHeight": null
+    },
+    {
+      "route": "media",
+      "theme": "dark",
+      "screenshot": "1728x1030/integration-dark-media.png",
+      "width": 1728,
+      "height": 1030,
+      "scrollWidth": 1728,
+      "scrollHeight": 1030,
+      "canvasHeight": null
+    },
+    {
+      "route": "messages",
+      "theme": "dark",
+      "screenshot": "1728x1030/integration-dark-messages.png",
+      "width": 1728,
+      "height": 1030,
+      "scrollWidth": 1728,
+      "scrollHeight": 1030,
+      "canvasHeight": null
+    },
+    {
+      "route": "home",
+      "theme": "light",
+      "screenshot": "1728x1030/integration-light-home.png",
+      "width": 1728,
+      "height": 1030,
+      "scrollWidth": 1728,
+      "scrollHeight": 1030,
+      "canvasHeight": 324.6093444824219
+    },
+    {
+      "route": "visit/v_c",
+      "theme": "light",
+      "screenshot": "1728x1030/integration-light-visit-v_c.png",
+      "width": 1728,
+      "height": 1030,
+      "scrollWidth": 1728,
+      "scrollHeight": 1030,
+      "canvasHeight": 289.265625
+    },
+    {
+      "route": "rules",
+      "theme": "light",
+      "screenshot": "1728x1030/integration-light-rules.png",
+      "width": 1728,
+      "height": 1030,
+      "scrollWidth": 1728,
+      "scrollHeight": 1030,
+      "canvasHeight": null
+    },
+    {
+      "route": "settings",
+      "theme": "light",
+      "screenshot": "1728x1030/integration-light-settings.png",
+      "width": 1728,
+      "height": 1030,
+      "scrollWidth": 1728,
+      "scrollHeight": 1030,
+      "canvasHeight": null
+    },
+    {
+      "route": "media",
+      "theme": "light",
+      "screenshot": "1728x1030/integration-light-media.png",
+      "width": 1728,
+      "height": 1030,
+      "scrollWidth": 1728,
+      "scrollHeight": 1030,
+      "canvasHeight": null
+    },
+    {
+      "route": "messages",
+      "theme": "light",
+      "screenshot": "1728x1030/integration-light-messages.png",
+      "width": 1728,
+      "height": 1030,
+      "scrollWidth": 1728,
+      "scrollHeight": 1030,
+      "canvasHeight": null
+    },
+    {
+      "route": "home",
+      "theme": "dark",
+      "screenshot": "1920x960/integration-dark-home.png",
+      "width": 1920,
+      "height": 960,
+      "scrollWidth": 1920,
+      "scrollHeight": 960,
+      "canvasHeight": 254.59378051757812
+    },
+    {
+      "route": "visit/v_c",
+      "theme": "dark",
+      "screenshot": "1920x960/integration-dark-visit-v_c.png",
+      "width": 1920,
+      "height": 960,
+      "scrollWidth": 1920,
+      "scrollHeight": 960,
+      "canvasHeight": 247.26568603515625
+    },
+    {
+      "route": "rules",
+      "theme": "dark",
+      "screenshot": "1920x960/integration-dark-rules.png",
+      "width": 1920,
+      "height": 960,
+      "scrollWidth": 1920,
+      "scrollHeight": 960,
+      "canvasHeight": null
+    },
+    {
+      "route": "settings",
+      "theme": "dark",
+      "screenshot": "1920x960/integration-dark-settings.png",
+      "width": 1920,
+      "height": 960,
+      "scrollWidth": 1920,
+      "scrollHeight": 960,
+      "canvasHeight": null
+    },
+    {
+      "route": "media",
+      "theme": "dark",
+      "screenshot": "1920x960/integration-dark-media.png",
+      "width": 1920,
+      "height": 960,
+      "scrollWidth": 1920,
+      "scrollHeight": 960,
+      "canvasHeight": null
+    },
+    {
+      "route": "messages",
+      "theme": "dark",
+      "screenshot": "1920x960/integration-dark-messages.png",
+      "width": 1920,
+      "height": 960,
+      "scrollWidth": 1920,
+      "scrollHeight": 960,
+      "canvasHeight": null
+    },
+    {
+      "route": "home",
+      "theme": "light",
+      "screenshot": "1920x960/integration-light-home.png",
+      "width": 1920,
+      "height": 960,
+      "scrollWidth": 1920,
+      "scrollHeight": 960,
+      "canvasHeight": 254.609375
+    },
+    {
+      "route": "visit/v_c",
+      "theme": "light",
+      "screenshot": "1920x960/integration-light-visit-v_c.png",
+      "width": 1920,
+      "height": 960,
+      "scrollWidth": 1920,
+      "scrollHeight": 960,
+      "canvasHeight": 247.265625
+    },
+    {
+      "route": "rules",
+      "theme": "light",
+      "screenshot": "1920x960/integration-light-rules.png",
+      "width": 1920,
+      "height": 960,
+      "scrollWidth": 1920,
+      "scrollHeight": 960,
+      "canvasHeight": null
+    },
+    {
+      "route": "settings",
+      "theme": "light",
+      "screenshot": "1920x960/integration-light-settings.png",
+      "width": 1920,
+      "height": 960,
+      "scrollWidth": 1920,
+      "scrollHeight": 960,
+      "canvasHeight": null
+    },
+    {
+      "route": "media",
+      "theme": "light",
+      "screenshot": "1920x960/integration-light-media.png",
+      "width": 1920,
+      "height": 960,
+      "scrollWidth": 1920,
+      "scrollHeight": 960,
+      "canvasHeight": null
+    },
+    {
+      "route": "messages",
+      "theme": "light",
+      "screenshot": "1920x960/integration-light-messages.png",
+      "width": 1920,
+      "height": 960,
+      "scrollWidth": 1920,
+      "scrollHeight": 960,
+      "canvasHeight": null
+    },
+    {
+      "route": "home",
+      "theme": "dark",
+      "screenshot": "1536x730/integration-dark-home.png",
+      "width": 1536,
+      "height": 730,
+      "scrollWidth": 1536,
+      "scrollHeight": 730,
+      "canvasHeight": 301.9999694824219
+    },
+    {
+      "route": "visit/v_c",
+      "theme": "dark",
+      "screenshot": "1536x730/integration-dark-visit-v_c.png",
+      "width": 1536,
+      "height": 730,
+      "scrollWidth": 1536,
+      "scrollHeight": 730,
+      "canvasHeight": 190.015625
+    },
+    {
+      "route": "rules",
+      "theme": "dark",
+      "screenshot": "1536x730/integration-dark-rules.png",
+      "width": 1536,
+      "height": 730,
+      "scrollWidth": 1536,
+      "scrollHeight": 730,
+      "canvasHeight": null
+    },
+    {
+      "route": "settings",
+      "theme": "dark",
+      "screenshot": "1536x730/integration-dark-settings.png",
+      "width": 1536,
+      "height": 730,
+      "scrollWidth": 1536,
+      "scrollHeight": 730,
+      "canvasHeight": null
+    },
+    {
+      "route": "media",
+      "theme": "dark",
+      "screenshot": "1536x730/integration-dark-media.png",
+      "width": 1536,
+      "height": 730,
+      "scrollWidth": 1536,
+      "scrollHeight": 730,
+      "canvasHeight": null
+    },
+    {
+      "route": "messages",
+      "theme": "dark",
+      "screenshot": "1536x730/integration-dark-messages.png",
+      "width": 1536,
+      "height": 730,
+      "scrollWidth": 1536,
+      "scrollHeight": 730,
+      "canvasHeight": null
+    },
+    {
+      "route": "home",
+      "theme": "light",
+      "screenshot": "1536x730/integration-light-home.png",
+      "width": 1536,
+      "height": 730,
+      "scrollWidth": 1536,
+      "scrollHeight": 730,
+      "canvasHeight": 302.0000305175781
+    },
+    {
+      "route": "visit/v_c",
+      "theme": "light",
+      "screenshot": "1536x730/integration-light-visit-v_c.png",
+      "width": 1536,
+      "height": 730,
+      "scrollWidth": 1536,
+      "scrollHeight": 730,
+      "canvasHeight": 190.015625
+    },
+    {
+      "route": "rules",
+      "theme": "light",
+      "screenshot": "1536x730/integration-light-rules.png",
+      "width": 1536,
+      "height": 730,
+      "scrollWidth": 1536,
+      "scrollHeight": 730,
+      "canvasHeight": null
+    },
+    {
+      "route": "settings",
+      "theme": "light",
+      "screenshot": "1536x730/integration-light-settings.png",
+      "width": 1536,
+      "height": 730,
+      "scrollWidth": 1536,
+      "scrollHeight": 730,
+      "canvasHeight": null
+    },
+    {
+      "route": "media",
+      "theme": "light",
+      "screenshot": "1536x730/integration-light-media.png",
+      "width": 1536,
+      "height": 730,
+      "scrollWidth": 1536,
+      "scrollHeight": 730,
+      "canvasHeight": null
+    },
+    {
+      "route": "messages",
+      "theme": "light",
+      "screenshot": "1536x730/integration-light-messages.png",
+      "width": 1536,
+      "height": 730,
+      "scrollWidth": 1536,
+      "scrollHeight": 730,
+      "canvasHeight": null
+    },
+    {
+      "route": "home",
+      "theme": "dark",
+      "screenshot": "1280x600/integration-dark-home.png",
+      "width": 1280,
+      "height": 600,
+      "scrollWidth": 1280,
+      "scrollHeight": 600,
+      "canvasHeight": 286.9844055175781
+    },
+    {
+      "route": "visit/v_c",
+      "theme": "dark",
+      "screenshot": "1280x600/integration-dark-visit-v_c.png",
+      "width": 1280,
+      "height": 600,
+      "scrollWidth": 1280,
+      "scrollHeight": 600,
+      "canvasHeight": 190.015625
+    },
+    {
+      "route": "rules",
+      "theme": "dark",
+      "screenshot": "1280x600/integration-dark-rules.png",
+      "width": 1280,
+      "height": 600,
+      "scrollWidth": 1280,
+      "scrollHeight": 600,
+      "canvasHeight": null
+    },
+    {
+      "route": "settings",
+      "theme": "dark",
+      "screenshot": "1280x600/integration-dark-settings.png",
+      "width": 1280,
+      "height": 600,
+      "scrollWidth": 1280,
+      "scrollHeight": 600,
+      "canvasHeight": null
+    },
+    {
+      "route": "media",
+      "theme": "dark",
+      "screenshot": "1280x600/integration-dark-media.png",
+      "width": 1280,
+      "height": 600,
+      "scrollWidth": 1280,
+      "scrollHeight": 600,
+      "canvasHeight": null
+    },
+    {
+      "route": "messages",
+      "theme": "dark",
+      "screenshot": "1280x600/integration-dark-messages.png",
+      "width": 1280,
+      "height": 600,
+      "scrollWidth": 1280,
+      "scrollHeight": 600,
+      "canvasHeight": null
+    },
+    {
+      "route": "home",
+      "theme": "light",
+      "screenshot": "1280x600/integration-light-home.png",
+      "width": 1280,
+      "height": 600,
+      "scrollWidth": 1280,
+      "scrollHeight": 600,
+      "canvasHeight": 287
+    },
+    {
+      "route": "visit/v_c",
+      "theme": "light",
+      "screenshot": "1280x600/integration-light-visit-v_c.png",
+      "width": 1280,
+      "height": 600,
+      "scrollWidth": 1280,
+      "scrollHeight": 600,
+      "canvasHeight": 190.015625
+    },
+    {
+      "route": "rules",
+      "theme": "light",
+      "screenshot": "1280x600/integration-light-rules.png",
+      "width": 1280,
+      "height": 600,
+      "scrollWidth": 1280,
+      "scrollHeight": 600,
+      "canvasHeight": null
+    },
+    {
+      "route": "settings",
+      "theme": "light",
+      "screenshot": "1280x600/integration-light-settings.png",
+      "width": 1280,
+      "height": 600,
+      "scrollWidth": 1280,
+      "scrollHeight": 600,
+      "canvasHeight": null
+    },
+    {
+      "route": "media",
+      "theme": "light",
+      "screenshot": "1280x600/integration-light-media.png",
+      "width": 1280,
+      "height": 600,
+      "scrollWidth": 1280,
+      "scrollHeight": 600,
+      "canvasHeight": null
+    },
+    {
+      "route": "messages",
+      "theme": "light",
+      "screenshot": "1280x600/integration-light-messages.png",
+      "width": 1280,
+      "height": 600,
+      "scrollWidth": 1280,
+      "scrollHeight": 600,
+      "canvasHeight": null
+    },
+    {
+      "route": "home",
+      "theme": "dark",
+      "screenshot": "1366x650/integration-dark-home.png",
+      "width": 1366,
+      "height": 650,
+      "scrollWidth": 1366,
+      "scrollHeight": 650,
+      "canvasHeight": 337
+    },
+    {
+      "route": "visit/v_c",
+      "theme": "dark",
+      "screenshot": "1366x650/integration-dark-visit-v_c.png",
+      "width": 1366,
+      "height": 650,
+      "scrollWidth": 1366,
+      "scrollHeight": 650,
+      "canvasHeight": 189.99996948242188
+    },
+    {
+      "route": "rules",
+      "theme": "dark",
+      "screenshot": "1366x650/integration-dark-rules.png",
+      "width": 1366,
+      "height": 650,
+      "scrollWidth": 1366,
+      "scrollHeight": 650,
+      "canvasHeight": null
+    },
+    {
+      "route": "settings",
+      "theme": "dark",
+      "screenshot": "1366x650/integration-dark-settings.png",
+      "width": 1366,
+      "height": 650,
+      "scrollWidth": 1366,
+      "scrollHeight": 650,
+      "canvasHeight": null
+    },
+    {
+      "route": "media",
+      "theme": "dark",
+      "screenshot": "1366x650/integration-dark-media.png",
+      "width": 1366,
+      "height": 650,
+      "scrollWidth": 1366,
+      "scrollHeight": 650,
+      "canvasHeight": null
+    },
+    {
+      "route": "messages",
+      "theme": "dark",
+      "screenshot": "1366x650/integration-dark-messages.png",
+      "width": 1366,
+      "height": 650,
+      "scrollWidth": 1366,
+      "scrollHeight": 650,
+      "canvasHeight": null
+    },
+    {
+      "route": "home",
+      "theme": "light",
+      "screenshot": "1366x650/integration-light-home.png",
+      "width": 1366,
+      "height": 650,
+      "scrollWidth": 1366,
+      "scrollHeight": 650,
+      "canvasHeight": 337.0000305175781
+    },
+    {
+      "route": "visit/v_c",
+      "theme": "light",
+      "screenshot": "1366x650/integration-light-visit-v_c.png",
+      "width": 1366,
+      "height": 650,
+      "scrollWidth": 1366,
+      "scrollHeight": 650,
+      "canvasHeight": 190.015625
+    },
+    {
+      "route": "rules",
+      "theme": "light",
+      "screenshot": "1366x650/integration-light-rules.png",
+      "width": 1366,
+      "height": 650,
+      "scrollWidth": 1366,
+      "scrollHeight": 650,
+      "canvasHeight": null
+    },
+    {
+      "route": "settings",
+      "theme": "light",
+      "screenshot": "1366x650/integration-light-settings.png",
+      "width": 1366,
+      "height": 650,
+      "scrollWidth": 1366,
+      "scrollHeight": 650,
+      "canvasHeight": null
+    },
+    {
+      "route": "media",
+      "theme": "light",
+      "screenshot": "1366x650/integration-light-media.png",
+      "width": 1366,
+      "height": 650,
+      "scrollWidth": 1366,
+      "scrollHeight": 650,
+      "canvasHeight": null
+    },
+    {
+      "route": "messages",
+      "theme": "light",
+      "screenshot": "1366x650/integration-light-messages.png",
+      "width": 1366,
+      "height": 650,
+      "scrollWidth": 1366,
+      "scrollHeight": 650,
+      "canvasHeight": null
+    },
+    {
+      "route": "home",
+      "theme": "dark",
+      "screenshot": "1024x768/integration-dark-home.png",
+      "width": 1024,
+      "height": 768,
+      "scrollWidth": 1024,
+      "scrollHeight": 768,
+      "canvasHeight": 454.984375
+    },
+    {
+      "route": "visit/v_c",
+      "theme": "dark",
+      "screenshot": "1024x768/integration-dark-visit-v_c.png",
+      "width": 1024,
+      "height": 768,
+      "scrollWidth": 1024,
+      "scrollHeight": 768,
+      "canvasHeight": 190.01565551757812
+    },
+    {
+      "route": "rules",
+      "theme": "dark",
+      "screenshot": "1024x768/integration-dark-rules.png",
+      "width": 1024,
+      "height": 768,
+      "scrollWidth": 1024,
+      "scrollHeight": 768,
+      "canvasHeight": null
+    },
+    {
+      "route": "settings",
+      "theme": "dark",
+      "screenshot": "1024x768/integration-dark-settings.png",
+      "width": 1024,
+      "height": 768,
+      "scrollWidth": 1024,
+      "scrollHeight": 768,
+      "canvasHeight": null
+    },
+    {
+      "route": "media",
+      "theme": "dark",
+      "screenshot": "1024x768/integration-dark-media.png",
+      "width": 1024,
+      "height": 768,
+      "scrollWidth": 1024,
+      "scrollHeight": 768,
+      "canvasHeight": null
+    },
+    {
+      "route": "messages",
+      "theme": "dark",
+      "screenshot": "1024x768/integration-dark-messages.png",
+      "width": 1024,
+      "height": 768,
+      "scrollWidth": 1024,
+      "scrollHeight": 768,
+      "canvasHeight": null
+    },
+    {
+      "route": "home",
+      "theme": "light",
+      "screenshot": "1024x768/integration-light-home.png",
+      "width": 1024,
+      "height": 768,
+      "scrollWidth": 1024,
+      "scrollHeight": 768,
+      "canvasHeight": 455
+    },
+    {
+      "route": "visit/v_c",
+      "theme": "light",
+      "screenshot": "1024x768/integration-light-visit-v_c.png",
+      "width": 1024,
+      "height": 768,
+      "scrollWidth": 1024,
+      "scrollHeight": 768,
+      "canvasHeight": 190.015625
+    },
+    {
+      "route": "rules",
+      "theme": "light",
+      "screenshot": "1024x768/integration-light-rules.png",
+      "width": 1024,
+      "height": 768,
+      "scrollWidth": 1024,
+      "scrollHeight": 768,
+      "canvasHeight": null
+    },
+    {
+      "route": "settings",
+      "theme": "light",
+      "screenshot": "1024x768/integration-light-settings.png",
+      "width": 1024,
+      "height": 768,
+      "scrollWidth": 1024,
+      "scrollHeight": 768,
+      "canvasHeight": null
+    },
+    {
+      "route": "media",
+      "theme": "light",
+      "screenshot": "1024x768/integration-light-media.png",
+      "width": 1024,
+      "height": 768,
+      "scrollWidth": 1024,
+      "scrollHeight": 768,
+      "canvasHeight": null
+    },
+    {
+      "route": "messages",
+      "theme": "light",
+      "screenshot": "1024x768/integration-light-messages.png",
+      "width": 1024,
+      "height": 768,
+      "scrollWidth": 1024,
+      "scrollHeight": 768,
+      "canvasHeight": null
+    },
+    {
+      "route": "home",
+      "theme": "dark",
+      "screenshot": "1180x820/integration-dark-home.png",
+      "width": 1180,
+      "height": 820,
+      "scrollWidth": 1180,
+      "scrollHeight": 820,
+      "canvasHeight": 358
+    },
+    {
+      "route": "visit/v_c",
+      "theme": "dark",
+      "screenshot": "1180x820/integration-dark-visit-v_c.png",
+      "width": 1180,
+      "height": 820,
+      "scrollWidth": 1180,
+      "scrollHeight": 820,
+      "canvasHeight": 190.01559448242188
+    },
+    {
+      "route": "rules",
+      "theme": "dark",
+      "screenshot": "1180x820/integration-dark-rules.png",
+      "width": 1180,
+      "height": 820,
+      "scrollWidth": 1180,
+      "scrollHeight": 820,
+      "canvasHeight": null
+    },
+    {
+      "route": "settings",
+      "theme": "dark",
+      "screenshot": "1180x820/integration-dark-settings.png",
+      "width": 1180,
+      "height": 820,
+      "scrollWidth": 1180,
+      "scrollHeight": 820,
+      "canvasHeight": null
+    },
+    {
+      "route": "media",
+      "theme": "dark",
+      "screenshot": "1180x820/integration-dark-media.png",
+      "width": 1180,
+      "height": 820,
+      "scrollWidth": 1180,
+      "scrollHeight": 820,
+      "canvasHeight": null
+    },
+    {
+      "route": "messages",
+      "theme": "dark",
+      "screenshot": "1180x820/integration-dark-messages.png",
+      "width": 1180,
+      "height": 820,
+      "scrollWidth": 1180,
+      "scrollHeight": 820,
+      "canvasHeight": null
+    },
+    {
+      "route": "home",
+      "theme": "light",
+      "screenshot": "1180x820/integration-light-home.png",
+      "width": 1180,
+      "height": 820,
+      "scrollWidth": 1180,
+      "scrollHeight": 820,
+      "canvasHeight": 358
+    },
+    {
+      "route": "visit/v_c",
+      "theme": "light",
+      "screenshot": "1180x820/integration-light-visit-v_c.png",
+      "width": 1180,
+      "height": 820,
+      "scrollWidth": 1180,
+      "scrollHeight": 820,
+      "canvasHeight": 190.00003051757812
+    },
+    {
+      "route": "rules",
+      "theme": "light",
+      "screenshot": "1180x820/integration-light-rules.png",
+      "width": 1180,
+      "height": 820,
+      "scrollWidth": 1180,
+      "scrollHeight": 820,
+      "canvasHeight": null
+    },
+    {
+      "route": "settings",
+      "theme": "light",
+      "screenshot": "1180x820/integration-light-settings.png",
+      "width": 1180,
+      "height": 820,
+      "scrollWidth": 1180,
+      "scrollHeight": 820,
+      "canvasHeight": null
+    },
+    {
+      "route": "media",
+      "theme": "light",
+      "screenshot": "1180x820/integration-light-media.png",
+      "width": 1180,
+      "height": 820,
+      "scrollWidth": 1180,
+      "scrollHeight": 820,
+      "canvasHeight": null
+    },
+    {
+      "route": "messages",
+      "theme": "light",
+      "screenshot": "1180x820/integration-light-messages.png",
+      "width": 1180,
+      "height": 820,
+      "scrollWidth": 1180,
+      "scrollHeight": 820,
+      "canvasHeight": null
+    },
+    {
+      "route": "home",
+      "theme": "dark",
+      "screenshot": "2560x1000/integration-dark-home.png",
+      "width": 2560,
+      "height": 1000,
+      "scrollWidth": 2560,
+      "scrollHeight": 1000,
+      "canvasHeight": 294.6094055175781
+    },
+    {
+      "route": "visit/v_c",
+      "theme": "dark",
+      "screenshot": "2560x1000/integration-dark-visit-v_c.png",
+      "width": 2560,
+      "height": 1000,
+      "scrollWidth": 2560,
+      "scrollHeight": 1000,
+      "canvasHeight": 271.265625
+    },
+    {
+      "route": "rules",
+      "theme": "dark",
+      "screenshot": "2560x1000/integration-dark-rules.png",
+      "width": 2560,
+      "height": 1000,
+      "scrollWidth": 2560,
+      "scrollHeight": 1000,
+      "canvasHeight": null
+    },
+    {
+      "route": "settings",
+      "theme": "dark",
+      "screenshot": "2560x1000/integration-dark-settings.png",
+      "width": 2560,
+      "height": 1000,
+      "scrollWidth": 2560,
+      "scrollHeight": 1000,
+      "canvasHeight": null
+    },
+    {
+      "route": "media",
+      "theme": "dark",
+      "screenshot": "2560x1000/integration-dark-media.png",
+      "width": 2560,
+      "height": 1000,
+      "scrollWidth": 2560,
+      "scrollHeight": 1000,
+      "canvasHeight": null
+    },
+    {
+      "route": "messages",
+      "theme": "dark",
+      "screenshot": "2560x1000/integration-dark-messages.png",
+      "width": 2560,
+      "height": 1000,
+      "scrollWidth": 2560,
+      "scrollHeight": 1000,
+      "canvasHeight": null
+    },
+    {
+      "route": "home",
+      "theme": "light",
+      "screenshot": "2560x1000/integration-light-home.png",
+      "width": 2560,
+      "height": 1000,
+      "scrollWidth": 2560,
+      "scrollHeight": 1000,
+      "canvasHeight": 294.6094055175781
+    },
+    {
+      "route": "visit/v_c",
+      "theme": "light",
+      "screenshot": "2560x1000/integration-light-visit-v_c.png",
+      "width": 2560,
+      "height": 1000,
+      "scrollWidth": 2560,
+      "scrollHeight": 1000,
+      "canvasHeight": 271.265625
+    },
+    {
+      "route": "rules",
+      "theme": "light",
+      "screenshot": "2560x1000/integration-light-rules.png",
+      "width": 2560,
+      "height": 1000,
+      "scrollWidth": 2560,
+      "scrollHeight": 1000,
+      "canvasHeight": null
+    },
+    {
+      "route": "settings",
+      "theme": "light",
+      "screenshot": "2560x1000/integration-light-settings.png",
+      "width": 2560,
+      "height": 1000,
+      "scrollWidth": 2560,
+      "scrollHeight": 1000,
+      "canvasHeight": null
+    },
+    {
+      "route": "media",
+      "theme": "light",
+      "screenshot": "2560x1000/integration-light-media.png",
+      "width": 2560,
+      "height": 1000,
+      "scrollWidth": 2560,
+      "scrollHeight": 1000,
+      "canvasHeight": null
+    },
+    {
+      "route": "messages",
+      "theme": "light",
+      "screenshot": "2560x1000/integration-light-messages.png",
+      "width": 2560,
+      "height": 1000,
+      "scrollWidth": 2560,
+      "scrollHeight": 1000,
+      "canvasHeight": null
+    },
+    {
+      "route": "home",
+      "theme": "dark",
+      "screenshot": "390x844/integration-dark-home.png",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 1533,
+      "canvasHeight": 196.609375
+    },
+    {
+      "route": "visit/v_c",
+      "theme": "dark",
+      "screenshot": "390x844/integration-dark-visit-v_c.png",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 3295,
+      "canvasHeight": 255.625
+    },
+    {
+      "route": "rules",
+      "theme": "dark",
+      "screenshot": "390x844/integration-dark-rules.png",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 1977,
+      "canvasHeight": null
+    },
+    {
+      "route": "settings",
+      "theme": "dark",
+      "screenshot": "390x844/integration-dark-settings.png",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 2296,
+      "canvasHeight": null
+    },
+    {
+      "route": "media",
+      "theme": "dark",
+      "screenshot": "390x844/integration-dark-media.png",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 2573,
+      "canvasHeight": null
+    },
+    {
+      "route": "messages",
+      "theme": "dark",
+      "screenshot": "390x844/integration-dark-messages.png",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "canvasHeight": null
+    },
+    {
+      "route": "home",
+      "theme": "light",
+      "screenshot": "390x844/integration-light-home.png",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 1533,
+      "canvasHeight": 196.609375
+    },
+    {
+      "route": "visit/v_c",
+      "theme": "light",
+      "screenshot": "390x844/integration-light-visit-v_c.png",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 3295,
+      "canvasHeight": 255.625
+    },
+    {
+      "route": "rules",
+      "theme": "light",
+      "screenshot": "390x844/integration-light-rules.png",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 1977,
+      "canvasHeight": null
+    },
+    {
+      "route": "settings",
+      "theme": "light",
+      "screenshot": "390x844/integration-light-settings.png",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 2296,
+      "canvasHeight": null
+    },
+    {
+      "route": "media",
+      "theme": "light",
+      "screenshot": "390x844/integration-light-media.png",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 2573,
+      "canvasHeight": null
+    },
+    {
+      "route": "messages",
+      "theme": "light",
+      "screenshot": "390x844/integration-light-messages.png",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 844,
+      "canvasHeight": null
+    }
+  ],
+  "failures": []
+}

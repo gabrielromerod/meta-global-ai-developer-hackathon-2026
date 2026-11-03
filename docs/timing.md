@@ -62,3 +62,5 @@ Initial baseline wall times are approximate; durations come from pytest. Later f
 - REAL logic / FIXTURE: React integration frontend tests 2026-11-03 06:12:53–06:12:58 PT: 122 passed; consumer API nine tests 06:12:59–06:13:01 PT passed; production build 06:13:01–06:13:03 PT passed. Generated video decode/seek/overlay/snapshot focused E2E passed in 8.56 s at approximately 06:11–06:12 PT. These are not main-merge gates; complete suites remain required.
 
 - FIXTURE: initial four integrated React E2E flows passed in 11.42 s (completion observed 06:14 PT); owner inventory regression failed first, then owner authorization 28 tests passed in 2.45 s and React owner CRUD passed in 3.34 s, 06:15–06:16 PT. Full pre-main suites remain pending.
+
+- FIXTURE integrated layout source cb80f501: full 132-state rerun finished 2026-11-03 06:22 PT with zero failures; original 180 px scene and document-bound thresholds unchanged. 143-PNG provenance passed at 06:22 PT. Frontend 124 tests passed 06:22:46–06:22:51 PT; whole-repo Ruff check and format check passed (272 files).

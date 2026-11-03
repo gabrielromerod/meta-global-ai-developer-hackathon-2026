@@ -1,6 +1,7 @@
 .app-start{min-height:var(--v-screen-small);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--v-space-2);padding:var(--v-space-4);color:var(--v-text)}
 .app-start h1,.app-start p{margin:var(--v-zero)}
 .app-messages-pill{position:fixed;bottom:var(--v-space-2);right:var(--v-space-3);z-index:var(--v-z-chat);border-radius:var(--v-radius-pill);box-shadow:var(--v-shadow);min-height:var(--v-target)}
+.app-messages-pill[hidden]{display:none}
 .app-share-list{display:flex;flex-direction:column;gap:var(--v-space-1)}.app-share-list>.v-button{justify-content:flex-start;white-space:normal;text-align:left;flex-wrap:wrap}
 .app-notice{padding:var(--v-space-2);border:var(--v-line) solid var(--v-border);border-radius:var(--v-radius-md);background:var(--v-raised);font-size:var(--v-text-sm)}
 .home-attention-list,.attention-list,.evidence-results,.controls-scroll,.visit-story-scroll,.v-chat-history{scroll-padding-bottom:var(--v-space-10)}

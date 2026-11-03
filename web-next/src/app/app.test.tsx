@@ -36,4 +36,13 @@ describe('production API integration',()=>{
     await userEvent.click(screen.getByRole('tab',{name:'Night'}));
     expect(screen.getByText('Night schematic preview. Recorded clips keep their original lighting.')).toBeInTheDocument();
   });
+  it('returns keyboard focus to the same floating Messages trigger after Escape',async()=>{
+    vi.stubGlobal('fetch',vi.fn(async(url:string)=>({ok:true,json:async()=>url.endsWith('/state')?fixture:url.endsWith('/chat')?chat:{cameras:[]}})));
+    mount();await screen.findByText('House model loaded');
+    const trigger=screen.getAllByRole('button',{name:'Messages'}).at(-1)!;
+    await userEvent.click(trigger);
+    await screen.findByRole('dialog',{name:'Messages'});
+    await userEvent.keyboard('{Escape}');
+    await waitFor(()=>expect(trigger).toHaveFocus());
+  });
 });

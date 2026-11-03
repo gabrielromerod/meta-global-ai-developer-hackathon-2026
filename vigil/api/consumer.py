@@ -335,6 +335,66 @@ def consumer_router() -> APIRouter:
         result["events"] = [e for e in event_rows(bundle) if e["visit_id"] == visit_id]
         return result
 
+    @r.get("/ui/visits/{visit_id}")
+    def visit_detail(visit_id: str, request: Request):
+        from vigil.perception.overlays import player_overlays
+
+        bundle = request.app.state.bundle
+        visit = bundle.visit(visit_id)
+        if visit is None:
+            raise HTTPException(404, "Unknown visit")
+        result = views.visit_view(bundle, visit)
+        scenario = bundle.scenario(visit.scenario or "") or {}
+        state = ui_state(request)
+        inventory = {c["id"]: c for c in state["cameras"]}
+
+        def normalize(value):
+            if isinstance(value, list):
+                return [normalize(v) for v in value]
+            if not isinstance(value, dict):
+                return value
+            return {
+                key: camera_id(bundle, child)
+                if key in {"camera_id", "from_camera", "to_camera"} and isinstance(child, str)
+                else [camera_id(bundle, c) for c in child]
+                if key == "cameras" and isinstance(child, list)
+                else normalize(child)
+                for key, child in value.items()
+            }
+
+        result = normalize(result)
+        playback = []
+        for camera in scenario.get("cameras", []):
+            cid = camera_id(bundle, camera["id"])
+            if cid not in inventory:
+                continue
+            pose = views.twin_camera(bundle, camera["id"]) or {}
+            playback.append(
+                {
+                    "id": cid,
+                    "name": inventory[cid]["name"],
+                    "clip_t0": camera.get("clip_t0", scenario.get("t0", visit.t0)),
+                    "clip_url": media_url(bundle, camera.get("clip_url")),
+                    "width": pose.get("width", 1280),
+                    "height": pose.get("height", 720),
+                    "source_label": state["evidence"]["label"],
+                }
+            )
+        track_visits = {tid: v.id for v in bundle.visits for tid in v.track_ids}
+        overlays = {}
+        for cid, tracks in player_overlays(bundle.overlays, track_visits).items():
+            keep = {tid: row for tid, row in tracks.items() if row.get("visit_id") == visit_id}
+            if keep:
+                overlays[camera_id(bundle, cid)] = keep
+        return {
+            **result,
+            "evidence": state["evidence"],
+            "playback_cameras": playback,
+            "overlays": overlays,
+            "playback_t0": scenario.get("t0", visit.t0),
+            "playback_t1": scenario.get("t1", visit.t1),
+        }
+
     @r.get("/ui/search")
     def search(
         request: Request,

@@ -112,6 +112,31 @@ def test_public_twin_and_positions_share_canonical_camera_ids():
         assert all(e["camera_id"] in ids for e in positions["events"])
 
 
+def test_ui_visit_detail_keeps_citations_and_player_metadata_in_one_camera_namespace():
+    with client() as api:
+        response = api.get("/api/ui/visits/v_c")
+        assert response.status_code == 200
+        result = response.json()
+        ids = {c["id"] for c in api.get("/api/ui/state").json()["cameras"]}
+        assert result["evidence"]["kind"] == "fixture"
+        assert result["verdict"] == "needs_attention"
+        original = api.get("/api/visits/v_c").json()["sentences"]
+        assert [s["text"] for s in result["sentences"]] == [s["text"] for s in original]
+        assert [[c["event_id"] for c in s["citations"]] for s in result["sentences"]] == [
+            [c["event_id"] for c in s["citations"]] for s in original
+        ]
+        assert len(result["sentences"]) == 5
+        assert result["trace"]["drafts"][0]["passed"] is False
+        for sentence in result["sentences"]:
+            assert all(c["camera_id"] in ids for c in sentence["citations"])
+        assert set(result["overlays"]) <= ids
+        assert result["playback_cameras"]
+        assert all(c["id"] in ids for c in result["playback_cameras"])
+        assert all(c["clip_url"] is None for c in result["playback_cameras"])
+        assert all(c["width"] > 0 and c["height"] > 0 for c in result["playback_cameras"])
+        assert api.get("/api/ui/visits/missing-visit").status_code == 404
+
+
 def test_doorbell_press_and_measured_street_count_stay_separate_from_visits():
     with client() as api:
         bundle = api.app.state.bundle

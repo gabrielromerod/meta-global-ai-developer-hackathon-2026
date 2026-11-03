@@ -52,3 +52,5 @@ Initial baseline wall times are approximate; durations come from pytest. Later f
 | Wave 2 controls round 2 full frontend verification | 2026-11-03T13:42:37.7403842Z | 2026-11-03T13:42:45.8629707Z | FIXTURE: 85 tests passed including 23 controls tests; build passed; no tests weakened. Unchanged Python suite not rerun, per assignment. |
 
 - REAL: 2026-11-03 05:55 PT local Docker Gitleaks v8.30.1: 133 commits, 8.92 MB, 8.73 seconds, no leaks after narrowly scoped PNG-digest correction; separate scope probe retained both expected secret findings.
+
+- FIXTURE: tracked QA provenance scan started 2026-11-03 05:55 PT and finished 06:01 PT: zero failures, all tracked QA manifests and media checked (before Motion merge).

@@ -14,6 +14,7 @@ Isolated previews load fixtures; production integration uses same-origin queries
 | GET /api/health | mode, synthetic, budget/config readiness; never a live connectivity probe | REAL |
 | GET /api/ui/state | UIState below, optional session query; normalized from cached ledger/config | REAL logic / FIXTURE acceptance |
 | GET /api/scenarios | legacy scenario summaries, synthetic label, session_start | REAL logic / FIXTURE sandbox |
+| GET /api/ui/visits/{id} | canonical camera IDs in full detail, playback_cameras (id/name/clip_t0/clip_url/width/height/source_label), overlays keyed by canonical camera, playback_t0/t1, evidence | REAL logic / FIXTURE acceptance |
 | GET /api/visits/{id} | full visit detail as web/fixtures/visits.json visits[id] | REAL logic / FIXTURE sandbox |
 | GET /api/visits/{id}/positions | positions, paths, unresolved gaps; no interpolation across gaps | REAL logic / FIXTURE sandbox |
 | GET /api/twin | existing twin.json shape: cameras, generic site_plan, blind_regions, coverage, glb_url? | REAL logic / FIXTURE sandbox |

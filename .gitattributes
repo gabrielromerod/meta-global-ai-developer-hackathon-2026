@@ -1,6 +1,7 @@
 * text=auto
 *.sh text eol=lf
 *.py text eol=lf
+web/vendor/** text eol=lf
 demo/** -text
 *.glb binary
 *.png binary

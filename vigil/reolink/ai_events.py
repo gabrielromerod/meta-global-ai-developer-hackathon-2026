@@ -54,8 +54,14 @@ __all__ = [
 log = logging.getLogger(__name__)
 
 # reolink_aio AI type -> CameraAiEvent.kind
-AI_KIND = {"people": "person", "person": "person", "vehicle": "vehicle", "dog_cat": "pet"}
-DEFAULT_KINDS: tuple[str, ...] = ("person", "vehicle")
+AI_KIND = {
+    "people": "person",
+    "person": "person",
+    "vehicle": "vehicle",
+    "dog_cat": "pet",
+    "visitor": "doorbell_press",
+}
+DEFAULT_KINDS: tuple[str, ...] = ("person", "vehicle", "doorbell_press")
 
 
 @dataclass(frozen=True)
@@ -88,6 +94,8 @@ def parse_alarm_xml(xml: str, host_key: str, t: float) -> list[PushState]:
         ai_list = [a.strip() for a in ai_text.split(",") if a.strip()]
         motion = "MD" in status or "other" in ai_list
         ai = {name: name in ai_list for name in ("people", "vehicle", "dog_cat")}
+        if "visitor" in status:
+            ai["visitor"] = True
         states.append(PushState(host_key, int(ch_text), t, motion, ai))
     return states
 
@@ -142,7 +150,8 @@ class AiEventTracker:
             cur = self._state.get(key)
             if kind in active:
                 if cur is None or (
-                    cur.closed_at is not None and s.t - cur.closed_at > self.debounce_s
+                    cur.closed_at is not None
+                    and s.t - cur.closed_at > (0 if kind == "doorbell_press" else self.debounce_s)
                 ):
                     ev = CameraAiEvent(
                         id=_event_id(cam_id, kind, s.t), camera_id=cam_id, kind=kind, t0=s.t
@@ -232,6 +241,8 @@ class ReolinkAioPushAdapter:
                     for ch in sorted(channels[key]):
                         types = host.ai_supported_types(ch)  # type: ignore[attr-defined]
                         ai = {a: bool(host.ai_detected(ch, a)) for a in types}  # type: ignore[attr-defined]
+                        if hasattr(host, "visitor_detected") and host.visitor_detected(ch):
+                            ai["visitor"] = True
                         motion = bool(host.motion_detected(ch))  # type: ignore[attr-defined]
                         queue.put_nowait(PushState(key, ch, t, motion, ai))
 

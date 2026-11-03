@@ -44,6 +44,8 @@ def run_cloud(
     calibrations=None,
     ground=None,
     replay_bindings=None,
+    camera_ai_events=None,
+    camera_ai_events_measured: bool = False,
 ) -> dict:
     from vigil.ingest.windows import cut_window
     from vigil.meta import sam, spark, wonder
@@ -131,7 +133,12 @@ def run_cloud(
                 sam_cache[current.id, phrase] = source(current, phrase)
         processed.append(current)
         result = run_scenario(
-            {"scenario": session, "windows": processed},
+            {
+                "scenario": session,
+                "windows": processed,
+                "camera_ai_events": camera_ai_events or [],
+                "camera_ai_events_measured": camera_ai_events_measured,
+            },
             cfg=cfg,
             rules=rules,
             protected=protected,

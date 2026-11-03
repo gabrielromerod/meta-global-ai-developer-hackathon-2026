@@ -36,15 +36,48 @@ from vigil.models import (
     APPLIES_TO_ROLES,
     SEVERITY_ORDER,
     ActiveWindow,
+    Config,
     Event,
     Rule,
     RuleHit,
     RuleResult,
+    RuleTarget,
     Severity,
     Visit,
     Watch,
 )
 from vigil.reasoning.clock import to_local
+
+
+def rules_for_config(rules: Sequence[Rule], cfg: Config) -> list[Rule]:
+    """Expand the default physical backyard policy into uniquely named camera zones."""
+    if cfg.evidence_kind == "fixture":
+        return list(rules)
+    backyard_zones = sorted(
+        z
+        for c in cfg.cameras
+        if c.id.startswith("backyard_")
+        for z in c.zones
+        if c.zone_rings.get(z) == "middle"
+    )
+    out = []
+    for rule in rules:
+        if (
+            rule.id == "r_backyard_night"
+            and rule.target.kind == "zone"
+            and rule.target.id == "backyard"
+            and backyard_zones
+        ):
+            out.extend(
+                rule.model_copy(
+                    update={"id": rule.id + "__" + zone, "target": RuleTarget(kind="zone", id=zone)}
+                )
+                for zone in backyard_zones
+            )
+        else:
+            out.append(rule)
+    return out
+
 
 DEFAULT_RULES_PATH = Path(__file__).resolve().parents[2] / "config" / "rules.default.json"
 PROTECTED_PREFIX = "po_"

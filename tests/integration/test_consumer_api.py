@@ -104,3 +104,32 @@ def test_public_twin_and_positions_share_canonical_camera_ids():
         assert all(set(p["cameras"]) <= ids for p in positions["positions"])
         assert positions["events"]
         assert all(e["camera_id"] in ids for e in positions["events"])
+
+
+def test_doorbell_press_and_measured_street_count_stay_separate_from_visits():
+    with client() as api:
+        bundle = api.app.state.bundle
+        bundle.tables["camera_ai_events"] = [
+            {
+                "id": "press",
+                "camera_id": "doorbell",
+                "kind": "doorbell_press",
+                "t0": 10,
+                "t1": 10.1,
+            },
+            {"id": "street", "camera_id": "front_left_duo", "kind": "person", "t0": 20, "t1": 21},
+        ]
+        bundle.manifest["prefilter_counts"] = {
+            "camera_events": 2,
+            "on_property": 1,
+            "street_events": 1,
+            "street_event_ids": ["street"],
+            "property_event_ids": ["press"],
+            "unclassified_event_ids": [],
+        }
+        response = api.get("/api/ui/events", params={"date": "2026-11-02"}).json()
+        assert response["street_events"] == 1
+        assert response["camera_events"][0]["kind"] == "doorbell_press"
+        assert response["camera_events"][0]["layer"] == "camera_ai"
+        assert "actor_role" not in response["camera_events"][0]
+        assert api.get("/api/ui/state").json()["summary"]["camera_events"] == 2

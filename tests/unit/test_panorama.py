@@ -69,3 +69,14 @@ def test_window_illumination_is_persisted_not_dropped(tmp_path):
         assert db.rows(conn, "windows")[0]["illumination"] == "mixed"
     finally:
         conn.close()
+
+
+def test_duo_nominal_half_fov_rectifies_curved_section_before_homography():
+    from vigil.spatial.panorama import rectify_section
+
+    x90, y90 = rectify_section(240, 500, 960, 90)
+    x120, y120 = rectify_section(240, 500, 960, 120)
+    assert 240 < x90 < 480
+    assert x120 > x90
+    assert y90 == 500
+    assert y120 == 500

@@ -95,6 +95,7 @@ class ScenarioInputs(BaseModel):
     sam_objects: list[SamObject] = Field(default_factory=list)
     """SAM objects that were already parsed (added to whatever ``sam_outputs`` yield)."""
     camera_ai_events: list[CameraAiEvent] = Field(default_factory=list)
+    camera_ai_events_measured: bool = False
     outages: list[Outage] = Field(default_factory=list)
 
 
@@ -419,8 +420,11 @@ def run_scenario(
         observation=observation,
         session_start=session_start,
     )
-    from vigil.perception.noise import property_evidence
+    from vigil.perception.noise import prefilter_counts, property_evidence
 
+    counts = prefilter_counts(
+        inp.camera_ai_events, tracks, cfg, observation, measured=inp.camera_ai_events_measured
+    )
     tracks, events, noise_counts = property_evidence(tracks, events, cfg)
     appearance = _notes(notes, tracks)
     for track in tracks:
@@ -593,6 +597,7 @@ def run_scenario(
         ],
         "sam_missing": sam_missing,
         "noise_counts": noise_counts,
+        "prefilter_counts": counts,
         "tracks": [_track_row(t) for t in sorted(tracks, key=lambda t: t.id)],
         "events": [e.model_dump(mode="json") for e in asm.events],
         "gaps": [g.model_dump(mode="json") for g in asm.gaps],
@@ -884,7 +889,7 @@ def process_session(
     stored at ``results/<session>/result.sqlite``, preserving the owner's persistent DB.
     """
     from vigil.ingest.config import load_config
-    from vigil.reasoning.rules import load_rules
+    from vigil.reasoning.rules import load_rules, rules_for_config
     from vigil.settings import get_settings
 
     settings = settings or get_settings()
@@ -941,7 +946,10 @@ def process_session(
             ]
         }
     )
-    rules = [*load_rules(), *(Rule.model_validate(r) for r in meta.get("rules", []))]
+    rules = [
+        *rules_for_config(load_rules(), cfg),
+        *(Rule.model_validate(r) for r in meta.get("rules", [])),
+    ]
     from vigil.ingest.review import require_privacy_review
 
     for camera in cfg.cameras:
@@ -997,6 +1005,10 @@ def process_session(
                 calibrations=calibrations,
                 ground=ground,
                 replay_bindings=replay_bindings,
+                camera_ai_events=[
+                    CameraAiEvent.model_validate(e) for e in meta.get("camera_ai_events", [])
+                ],
+                camera_ai_events_measured=bool(meta.get("camera_ai_events_measured", False)),
             )
         finally:
             if own_client:
@@ -1007,7 +1019,13 @@ def process_session(
         _save_owner_bindings(settings, result, replay_bindings)
         return result
     result = run_scenario(
-        {"scenario": session, "windows": windows, "sam_outputs": recorded},
+        {
+            "scenario": session,
+            "windows": windows,
+            "sam_outputs": recorded,
+            "camera_ai_events": meta.get("camera_ai_events", []),
+            "camera_ai_events_measured": bool(meta.get("camera_ai_events_measured", False)),
+        },
         cfg=cfg,
         rules=rules,
         protected=protected,

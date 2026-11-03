@@ -18,3 +18,8 @@
 - 2026-11-03: Event capture retains separate observed media parts across missing intervals; a partial Wi-Fi clip remains evidence and missing time is explicitly unresolved.
 
 - 2026-11-03: Owner selected Inter after reviewing the Inter, Manrope and DM Sans Home screenshots. Inter remains the final default.
+
+- 2026-11-03: The installed Motion hook captures the initial media preference without a subscription; a thin useSyncExternalStore/matchMedia bridge is justified for dynamic OS preference changes, with MotionConfig and Motion primitives retained.
+- 2026-11-03: The default backyard policy expands into the two unique configured lawn-zone IDs; rules still solely determine attention and legacy synthetic fixtures retain their original geometry contract.
+- 2026-11-03: The Duo nominal half-FOV is 90 degrees, half the manufacturer's published180-degree panorama; section homography and measured uncertainty remain required, and this nominal projection is not field verification. Source: https://business.reolink.com/us/product/reolink-duo-floodlight-wifi/ .
+- 2026-11-03: A doorbell visitor push is retained as its own camera_ai event; it never invents a person track, role or position. Measured event counts retain classified sensor IDs and stay null when observation gaps prevent complete classification.

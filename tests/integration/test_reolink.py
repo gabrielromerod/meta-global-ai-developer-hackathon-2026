@@ -51,6 +51,20 @@ def _alarm_xml(channel: int, status: str, ai: str) -> str:
     )
 
 
+def test_doorbell_press_is_a_separate_camera_event():
+    camera = CameraCfg(id="doorbell", name="Doorbell", source=CameraSource(host_env="DOORBELL"))
+    tracker = AiEventTracker([camera])
+    states = parse_alarm_xml(_alarm_xml(0, "visitor", "none"), "DOORBELL", 10)
+    events = tracker.update(states[0])
+    assert len(events) == 1
+    assert events[0].kind == "doorbell_press"
+    assert events[0].camera_id == "doorbell"
+    assert events[0].t1 is None
+    closed = tracker.update(parse_alarm_xml(_alarm_xml(0, "none", "none"), "DOORBELL", 10.1)[0])
+    assert closed[0].id == events[0].id
+    assert closed[0].t1 == 10.1
+
+
 @pytest.fixture
 def cams() -> list[CameraCfg]:
     return [

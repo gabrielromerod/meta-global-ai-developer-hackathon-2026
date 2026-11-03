@@ -298,7 +298,7 @@ class CameraAiEvent(_Model):
 
     id: str
     camera_id: str
-    kind: Literal["person", "vehicle", "pet", "motion"]
+    kind: Literal["person", "vehicle", "pet", "motion", "doorbell_press"]
     t0: float
     t1: float | None = None
 

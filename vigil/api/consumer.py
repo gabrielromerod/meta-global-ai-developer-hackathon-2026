@@ -146,6 +146,19 @@ def event_rows(bundle) -> list[dict]:
     ]
 
 
+def camera_event_rows(bundle) -> list[dict]:
+    rows = {event["id"]: event for event in bundle.tables.get("camera_ai_events", [])}
+    return [
+        {
+            **row,
+            "camera_id": camera_id(bundle, row["camera_id"]),
+            "layer": "camera_ai",
+            "clock": views.clock(bundle, row["t0"]),
+        }
+        for row in sorted(rows.values(), key=lambda r: (r["t0"], r["id"]))
+    ]
+
+
 def ui_state(request: Request) -> dict:
     bundle = request.app.state.bundle
     cfg = request.app.state.config
@@ -245,6 +258,7 @@ def ui_state(request: Request) -> dict:
         "notifications": notifications,
         "clips": clips,
         "events": event_rows(bundle),
+        "camera_events": camera_event_rows(bundle),
         "rules": _rules(runtime),
         "protected_objects": bundle.protected_objects,
         "benchmark": {
@@ -379,11 +393,22 @@ def consumer_router() -> APIRouter:
             for e in event_rows(bundle)
             if start and (start + timedelta(seconds=e["t"])).astimezone(tz).date() == day
         ]
+        sensor_events = [
+            e
+            for e in camera_event_rows(bundle)
+            if start and (start + timedelta(seconds=e["t0"])).astimezone(tz).date() == day
+        ]
+        counts = bundle.manifest.get("prefilter_counts")
+        ids = {e["id"] for e in sensor_events}
+        street = None
+        if counts is not None and not ids.intersection(counts.get("unclassified_event_ids", [])):
+            street = len(ids.intersection(counts.get("street_event_ids", [])))
         return {
             "date": day.isoformat(),
             "evidence": evidence(bundle),
             "events": events,
-            "street_events": None,
+            "street_events": street,
+            "camera_events": sensor_events,
         }
 
     @r.get("/ui/notifications")

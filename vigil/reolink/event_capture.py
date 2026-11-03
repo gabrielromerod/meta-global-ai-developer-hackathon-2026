@@ -218,7 +218,11 @@ async def run_event_capture(
                 raise RuntimeError("sub-stream ring stopped")
             if maintenance.done():
                 await maintenance
-            if event.camera_id not in recorders or event.kind not in {"person", "vehicle"}:
+            if event.camera_id not in recorders or event.kind not in {
+                "person",
+                "vehicle",
+                "doorbell_press",
+            }:
                 continue
             recorder = recorders[event.camera_id]
             recorder.pin(event, now=time.time())

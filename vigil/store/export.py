@@ -267,6 +267,7 @@ def export_session(session: str, out: Path, *, settings=None, synthetic: bool = 
             "clip_range": [t0, t1],
             "session_start": result["session_start"],
             "timezone": result["timezone"],
+            "prefilter_counts": result.get("prefilter_counts"),
         },
     )
 
@@ -372,6 +373,8 @@ def export_bundle(
         "notes": meta.get("notes", []),
         "files": files,
     }
+    if meta.get("prefilter_counts") is not None:
+        manifest["prefilter_counts"] = meta["prefilter_counts"]
     _write_json(out / MANIFEST, manifest)
     return out
 

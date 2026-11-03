@@ -13,19 +13,21 @@ Only the four Standard-mode model IDs are allowed; any `-contributor` ID is refu
 (NFR-004, spec 11.6 safeguard 5). Request shapes follow
 https://dev.meta.ai/docs/sam/segmenting (POST /v1/responses, `input` message with
 `input_text` / `input_image`, `metadata.include_confidence` as the string "true").
-The Voice Transcribe request shape is unverified (spec 5.14 open question 2).
+Voice uses the documented multipart /asr/transcribe request. Live acceptance remains
+unverified until the owner runs T-03; the offline tests use authored HTTP fixtures.
 """
 
 from __future__ import annotations
 
 import argparse
-import base64
 import hashlib
 import io
 import json
 import os
 import struct
+import subprocess
 import sys
+import tempfile
 import time
 import wave
 import zlib
@@ -37,9 +39,9 @@ RECORD_DIR = REPO / "tests" / "fixtures" / "meta" / "recorded"
 ALLOWED = ("sam-3.1", "muse-spark-1.3", "muse-wonder-1.0", "muse-voice-transcribe-1.0")
 
 PLAN = {
-    "sam-3.1": ("point prompt on a 64x36 synthetic image (FR-019)", 0.0025),
-    "muse-spark-1.3": ("strict-JSON text reply (FR-021, open question 3 needs video)", 0.001),
-    "muse-wonder-1.0": ("strict JSON schema story stub (open question 1)", 0.005),
+    "sam-3.1": ("upload + track person on a 5 s generated MP4 (FR-006)", 0.01),
+    "muse-spark-1.3": ("uploaded video + text.format strict JSON Schema", 0.041),
+    "muse-wonder-1.0": ("text.format strict JSON Schema, no pixels", 0.005),
     "muse-voice-transcribe-1.0": ("1 s of silence, batch transcribe (open question 2)", 0.0001),
 }
 
@@ -81,9 +83,10 @@ def _silence_wav(seconds: float = 1.0, rate: int = 16000) -> bytes:
     return buf.getvalue()
 
 
-def request_body(model: str) -> dict:
+def request_body(model: str, file_id: str | None = None) -> dict:
     if model == "sam-3.1":
-        img = "data:image/png;base64," + base64.b64encode(_png()).decode()
+        if not file_id:
+            raise ValueError("SAM smoke requires an uploaded generated video")
         return {
             "model": model,
             "input": [
@@ -91,8 +94,8 @@ def request_body(model: str) -> dict:
                     "type": "message",
                     "role": "user",
                     "content": [
-                        {"type": "input_text", "text": "<0f>1<|point;x=32;y=18;w=64;h=36|>"},
-                        {"type": "input_image", "image_url": img},
+                        {"type": "input_text", "text": "person"},
+                        {"type": "input_video", "file_id": file_id},
                     ],
                 }
             ],
@@ -100,7 +103,7 @@ def request_body(model: str) -> dict:
             "stream": True,
         }
     if model in ("muse-spark-1.3", "muse-wonder-1.0"):
-        return {
+        body = {
             "model": model,
             "input": [
                 {
@@ -114,14 +117,121 @@ def request_body(model: str) -> dict:
                     ],
                 }
             ],
+            "text": {
+                "format": {
+                    "type": "json_schema",
+                    "name": "smoke_ok",
+                    "strict": True,
+                    "schema": {
+                        "type": "object",
+                        "additionalProperties": False,
+                        "properties": {"ok": {"type": "boolean"}},
+                        "required": ["ok"],
+                    },
+                }
+            },
+            "max_output_tokens": 200,
         }
+        if model == "muse-spark-1.3" and file_id:
+            body["input"][0]["content"].append({"type": "input_video", "file_id": file_id})
+        return body
     if model == "muse-voice-transcribe-1.0":
-        return {
-            "model": model,
-            "audio_b64": base64.b64encode(_silence_wav()).decode(),
-            "format": "wav",
-        }
+        from vigil.meta.asr import REQUEST
+
+        return dict(REQUEST)
     raise ValueError(model)
+
+
+def generated_video(path: Path) -> Path:
+    from vigil.ingest.privacy import assert_uploadable
+    from vigil.settings import ffmpeg_bin
+
+    subprocess.run(
+        [
+            ffmpeg_bin(),
+            "-v",
+            "error",
+            "-y",
+            "-f",
+            "lavfi",
+            "-i",
+            "testsrc2=size=160x90:rate=10:duration=5",
+            "-an",
+            "-map_metadata",
+            "-1",
+            "-c:v",
+            "libx264",
+            "-pix_fmt",
+            "yuv420p",
+            "-movflags",
+            "+faststart",
+            str(path),
+        ],
+        check=True,
+        capture_output=True,
+    )
+    assert_uploadable(path, [])  # generated-only source, no private pixels
+    return path
+
+
+def run_probe(client, model: str, video: Path | None) -> dict:
+    """One production adapter probe; called live only by the owner's explicit --live run."""
+    from vigil.ingest.privacy import assert_uploadable
+    from vigil.meta import asr
+    from vigil.meta.client import extract_text, load_json_text
+
+    if model == "muse-voice-transcribe-1.0":
+        audio = _silence_wav()
+        info = asr.validate_wav(audio)
+        request, files = asr.build_transcribe_request(audio)
+        raw = client.post_multipart(
+            asr.TRANSCRIBE_PATH,
+            model,
+            "smoke",
+            request_json=request,
+            files=files,
+            content_hash=hashlib.sha256(audio).hexdigest(),
+            units={"audio_s": info.duration_s},
+            feature="smoke",
+            cache_filter=lambda data: {"transcript": asr.parse_transcript(data)},
+        )
+        asr.parse_transcript(raw)
+        return raw
+    file_id = None
+    if model in ("sam-3.1", "muse-spark-1.3"):
+        if video is None:
+            raise ValueError("video smoke requires generated MP4")
+        assert_uploadable(video, [])
+        file_id = client.upload(video)
+    body = request_body(model, file_id)
+    raw = client.responses(
+        model,
+        {k: v for k, v in body.items() if k != "model"},
+        purpose="smoke",
+        stream=bool(body.get("stream")),
+    )
+    if model == "sam-3.1":
+        from vigil.ingest.media import probe
+        from vigil.meta.sam import parse_video_output
+        from vigil.models import Window
+
+        info = probe(video)
+        parse_video_output(
+            extract_text(raw),
+            Window(
+                id="smoke",
+                camera_id="synthetic",
+                t0=0,
+                t1=info.duration,
+                width=info.width,
+                height=info.height,
+                fps=info.fps,
+            ),
+            "person",
+        )
+    elif load_json_text(extract_text(raw)) != {"ok": True}:
+        raise ValueError("strict schema smoke did not return the expected JSON")
+    return raw
 
 
 def check_model_id(model: str) -> str | None:
@@ -142,7 +252,7 @@ def record_path(
 
 _SCRUB_KEYS = (
     "authorization", "api_key", "apikey", "cookie", "org", "organization", "project",
-    "account", "request_id", "x-request-id", "user",
+    "account", "request_id", "x-request-id", "user", "sessionid", "session_id",
 )  # fmt: skip
 
 
@@ -216,8 +326,14 @@ def main(argv: list[str] | None = None) -> int:
         return 3
     try:
         from vigil.meta.client import MetaClient
+        from vigil.settings import get_settings
 
-        client = MetaClient()
+        settings = get_settings()
+        client = MetaClient(
+            settings,
+            use_cache=False,
+            cache_only=settings.meta_cache_only or settings.mode == "sandbox",
+        )
     except Exception as err:
         print(
             f"blocked: vigil.meta.client.MetaClient is not available ({type(err).__name__}: "
@@ -227,34 +343,31 @@ def main(argv: list[str] | None = None) -> int:
         return 3
 
     failures = 0
-    for m in models:
-        body = request_body(m)
-        started = time.perf_counter()
-        try:
-            if m == "muse-voice-transcribe-1.0":
-                transcribe = getattr(client, "transcribe", None)
-                if transcribe is None:
-                    raise NotImplementedError("MetaClient has no transcribe() yet")
-                raw = transcribe(_silence_wav(), purpose="smoke")
-            else:
-                payload = {k: v for k, v in body.items() if k != "model"}
-                raw = client.responses(m, payload, purpose="smoke", stream=bool(body.get("stream")))
-        except NotImplementedError as err:
-            print(f"  {m}: blocked: {err}", file=sys.stderr)
-            failures += 1
-            continue
-        except Exception as err:
-            print(f"  {m}: FAILED {type(err).__name__}: {err}", file=sys.stderr)
-            failures += 1
-            continue
-        ms = int(1000 * (time.perf_counter() - started))
-        print(f"  {m}: ok in {ms} ms")
-        text = json.dumps(scrub(_jsonable(raw)), indent=2, sort_keys=True) + "\n"
-        path = record_path(m, args.record, digest=hashlib.sha256(text.encode()).hexdigest())
-        if path is not None:
-            path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text(text, encoding="utf-8")
-            print(f"    recorded -> {path.relative_to(REPO)}")
+    with client, tempfile.TemporaryDirectory(prefix="vigil-smoke-") as scratch:
+        video = (
+            generated_video(Path(scratch) / "generated.mp4")
+            if any(m in models for m in ("sam-3.1", "muse-spark-1.3"))
+            else None
+        )
+        for m in models:
+            started = time.perf_counter()
+            try:
+                raw = run_probe(client, m, video)
+            except Exception as err:
+                print(
+                    f"  {m}: FAILED {type(err).__name__}: {client._scrub(str(err))}",
+                    file=sys.stderr,
+                )
+                failures += 1
+                continue
+            ms = int(1000 * (time.perf_counter() - started))
+            print(f"  {m}: response accepted in {ms} ms (not field acceptance)")
+            text = json.dumps(scrub(_jsonable(raw)), indent=2, sort_keys=True) + "\n"
+            path = record_path(m, args.record, digest=hashlib.sha256(text.encode()).hexdigest())
+            if path is not None:
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(text, encoding="utf-8")
+                print(f"    recorded -> {path.relative_to(REPO)}")
     return 1 if failures else 0
 
 

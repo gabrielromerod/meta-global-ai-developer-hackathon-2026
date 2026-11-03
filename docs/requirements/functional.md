@@ -33,6 +33,13 @@ sandbox controls with B′'s recorded example. `tests/integration/test_owner_ses
 covers persisted owner windows, cancellation precedence and single-use check-in binding
 in the session processor. The misleading page-only watch Undo control was removed.
 
+FR-006/009/022 handover smoke (FIXTURE): `tests/integration/test_smoke_meta.py` tests
+generated video upload, SAM stream parsing, Spark video with `text.format` strict schema,
+Wonder strict schema without pixels, and the multipart Voice adapter. The live script is
+not run. Its owner-invoked live path disables response caching to exercise the endpoints;
+cache-only/sandbox settings still block it. Voice request shape follows
+[Meta's transcribe reference](https://dev.meta.ai/docs/api-reference/voice/transcribe).
+
 Source: [spec section 1](../spec/vigil-spec.md#1-functional-requirements), including [Added for the real-world environment](../spec/vigil-spec.md#added-for-the-real-world-environment-nov-2) and [Added for compute and budget](../spec/vigil-spec.md#added-for-compute-and-budget-nov-2), as revised by the [Nov 2 change set](../spec/changes/2026-11-02-business-corrections.md). The full requirement text and acceptance criteria are in the spec; this page is the tracking checklist.
 
 **Status as of Mon Nov 2, 2026 (docs sync after the Nov 2 spec revision).** Evidence, run on the working tree:

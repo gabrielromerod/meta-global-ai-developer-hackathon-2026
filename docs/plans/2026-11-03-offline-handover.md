@@ -19,7 +19,7 @@ are the durable progress record. Existing recorded-input contracts remain suppor
 | 4 | export clips/overlay/twin and actual video playback E2E | Complete: a55aed9; 1430 default and 19 browser tests passed |
 | 5 | time-ordered session watch feedback; next-window phrase regression | Complete: 377363c; 1431 default tests passed |
 | 6 | main owner UI, session token, checkin countdown, Expected Windows CRUD, sandbox example; undo | Complete: 645ea2b; 1434 default and 21 browser tests passed; fake Undo removed |
-| 7 | MetaClient timeout billing classification and 20 s read deadline | Pending |
+| 7 | MetaClient timeout billing classification and 20 s read deadline | Complete: 59b48b1; 1442 default tests passed |
 | 8 | smoke script upload/schema/voice contract tests; never run live | Pending |
 | 9 | Wi-Fi source profile, stream/filter, probe telemetry and battery refusal; pinned reolink-aio and fake tests | Pending |
 | 10 | removal absence/containment/cross-window state; three regressions | Pending |

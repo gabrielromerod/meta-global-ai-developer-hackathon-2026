@@ -8,9 +8,10 @@ export const COLOURS = {
   building: 0xc9c4b8, fence: 0xa08a6a, protected: 0xf2b233, object: 0x6fa0d8, ground: 0x4d6147,
 };
 
-function flatShape(THREE, pts) {
+function flatShape(THREE, pts, holes = []) {
   // Shape lies in XY; after rotateX(-90deg) a shape point (x, -z) lands on world (x, 0, z).
   const shape = new THREE.Shape(pts.map(([x, z]) => new THREE.Vector2(x, -z)));
+  shape.holes = holes.map(ring => new THREE.Path(ring.map(([x, z]) => new THREE.Vector2(x, -z))));
   const geo = new THREE.ShapeGeometry(shape);
   geo.rotateX(-Math.PI / 2);
   return geo;
@@ -60,7 +61,7 @@ export function buildCoverage(THREE, twin) {
   group.name = "coverage";
   for (const c of twin.coverage || []) {
     const mesh = new THREE.Mesh(
-      flatShape(THREE, c.polygon_m),
+      flatShape(THREE, c.polygon_m, c.holes || []),
       new THREE.MeshBasicMaterial({ color: COLOURS.coverage, transparent: true, opacity: 0.22, depthWrite: false }),
     );
     mesh.position.y = Y.coverage;

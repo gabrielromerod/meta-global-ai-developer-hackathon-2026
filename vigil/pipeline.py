@@ -138,12 +138,9 @@ def write_visits_json(result: Mapping[str, Any], path: Path | str) -> Path:
 
 
 def _watch_live(w: Watch, at: datetime) -> bool:
-    if w.origin == "wonder" and w.expires_at is not None:
-        from vigil.reasoning.loop import WATCH_TTL
+    from vigil.reasoning.loop import is_active
 
-        if at < w.expires_at - WATCH_TTL:
-            return False  # a generated watch cannot change an earlier window
-    return w.status == "watching" and (w.expires_at is None or w.expires_at > at)
+    return is_active(w, at)
 
 
 def phrases_for(window: Window, watches: Iterable[Watch], session_start: datetime) -> list[str]:
@@ -366,6 +363,7 @@ def run_scenario(
     allowlist: Iterable[str] | None = None,
     expected_windows: Sequence[ExpectedWindow] = (),
     checkins: Sequence[CheckIn] = (),
+    replay_bindings: Mapping[str, tuple[str, float, str]] | None = None,
 ) -> dict[str, Any]:
     """Run the offline pipeline over one session's windows and return a JSON-able result.
 
@@ -404,7 +402,13 @@ def run_scenario(
     tracks = stitch(objs, frame_height={c.id: c.height for c in cfg.cameras})
     observation = _observation(windows, sam_missing, inp.outages)
     events = build_events(
-        tracks, cfg, list(protected), list(watches), exits_as_zones=True, observation=observation
+        tracks,
+        cfg,
+        list(protected),
+        list(watches),
+        exits_as_zones=True,
+        observation=observation,
+        session_start=session_start,
     )
     appearance = _notes(notes, tracks)
     positions = _positions(tracks, calibrations, ground)
@@ -420,6 +424,7 @@ def run_scenario(
         windows=expected_windows,
         checkins=checkins,
         session_start=session_start,
+        replay_bindings=replay_bindings,
     )
     subjects_by_id = {s.id: s for s in asm.subjects}
     by_track = {t.id: t for t in tracks}
@@ -761,11 +766,11 @@ def _recorded_sam(sam_dir: Path, windows: list[Window]) -> dict[str, dict[str, A
     return out
 
 
-def _owner_records(settings, expected, checkins):
+def _owner_records(settings, expected, checkins, *, session, session_start):
     """Merge persistent owner state; a cancellation or consumed check-in wins over a file."""
     path = getattr(settings, "db_path", None)
     if settings.mode != "edge" or path is None or not Path(path).exists():
-        return expected, checkins
+        return expected, checkins, {}
     from vigil.store import db
 
     conn = db.connect(path)
@@ -774,12 +779,40 @@ def _owner_records(settings, expected, checkins):
         windows.update({w.id: w for w in db.expected_windows(conn)})
         taps = {c.id: c for c in checkins}
         taps.update({c.id: c for c in db.checkins(conn)})
-        return list(windows.values()), list(taps.values())
+        replay = {}
+        prior_path = settings.data_dir / "results" / session / "visits.json"
+        try:
+            prior = json.loads(prior_path.read_text(encoding="utf-8"))
+            same_session = (
+                prior.get("scenario") == session
+                and datetime.fromisoformat(prior["session_start"]) == session_start
+            )
+            track_rows = {t["id"]: t for t in prior.get("tracks", [])}
+            prior_taps = {c["id"]: c for c in prior.get("checkins", [])}
+            if same_session:
+                for subject in prior.get("subjects", []):
+                    basis = subject.get("role_basis", "")
+                    cid = basis.removeprefix("checkin:")
+                    tap = taps.get(cid)
+                    ids = subject.get("track_ids", [])
+                    if (
+                        basis.startswith("checkin:")
+                        and tap
+                        and not tap.revoked
+                        and ids
+                        and tap.bound_subject == subject["id"]
+                        and prior_taps.get(cid, {}).get("bound_subject") == subject["id"]
+                        and ids[0] in track_rows
+                    ):
+                        replay[cid] = (ids[0], track_rows[ids[0]]["t_first"], subject["id"])
+        except (OSError, ValueError, KeyError, TypeError):
+            pass  # no trustworthy same-session replay: consumed taps stay consumed
+        return list(windows.values()), list(taps.values()), replay
     finally:
         conn.close()
 
 
-def _save_owner_bindings(settings, result):
+def _save_owner_bindings(settings, result, replay_bindings):
     path = getattr(settings, "db_path", None)
     if settings.mode != "edge" or path is None or not Path(path).exists():
         return
@@ -791,8 +824,13 @@ def _save_owner_bindings(settings, result):
             for tap in result.get("checkins", []):
                 if tap.get("bound_subject"):
                     conn.execute(
-                        "UPDATE checkins SET bound_subject=? WHERE id=? AND bound_subject IS NULL",
-                        (tap["bound_subject"], tap["id"]),
+                        "UPDATE checkins SET bound_subject=? WHERE id=? "
+                        "AND (bound_subject IS NULL OR bound_subject=?)",
+                        (
+                            tap["bound_subject"],
+                            tap["id"],
+                            replay_bindings.get(tap["id"], (None, None, None))[2],
+                        ),
                     )
     finally:
         conn.close()
@@ -888,7 +926,9 @@ def process_session(
     watches = [Watch.model_validate(w) for w in meta.get("watches", [])]
     expected = [ExpectedWindow.model_validate(w) for w in meta.get("expected_windows", [])]
     checkins = [CheckIn.model_validate(c) for c in meta.get("checkins", [])]
-    expected, checkins = _owner_records(settings, expected, checkins)
+    expected, checkins, replay_bindings = _owner_records(
+        settings, expected, checkins, session=session, session_start=session_start
+    )
     result_dir = data / "results" / session
     calibrations, ground = None, None
     spatial_model = data / "spatial" / "model.glb"
@@ -931,6 +971,7 @@ def process_session(
                 report=report,
                 calibrations=calibrations,
                 ground=ground,
+                replay_bindings=replay_bindings,
             )
         finally:
             if own_client:
@@ -938,7 +979,7 @@ def process_session(
         result["db_path"] = str(result_dir / "result.sqlite")
         store_result(result["db_path"], result, cfg=cfg, rules=rules, protected=protected)
         write_visits_json(result, result_dir / "visits.json")
-        _save_owner_bindings(settings, result)
+        _save_owner_bindings(settings, result, replay_bindings)
         return result
     result = run_scenario(
         {"scenario": session, "windows": windows, "sam_outputs": recorded},
@@ -951,7 +992,8 @@ def process_session(
         checkins=checkins,
         calibrations=calibrations,
         ground=ground,
+        replay_bindings=replay_bindings,
     )
     write_visits_json(result, data / "results" / session / "visits.json")
-    _save_owner_bindings(settings, result)
+    _save_owner_bindings(settings, result, replay_bindings)
     return result

@@ -83,6 +83,72 @@ def default_twin(config: Config | None) -> dict[str, Any]:
     }
 
 
+def _coverage_polygons(grid: dict) -> list[dict]:
+    from shapely.geometry import box
+    from shapely.ops import unary_union
+
+    x0, z0, cell = grid["x0"], grid["z0"], grid["cell_m"]
+    out = []
+    for cid, rows in grid.get("visible", {}).items():
+        cells = [
+            box(x0 + j * cell, z0 + i * cell, x0 + (j + 1) * cell, z0 + (i + 1) * cell)
+            for i, row in enumerate(rows)
+            for j, value in enumerate(row)
+            if str(value) == "1"
+        ]
+        union = unary_union(cells)
+        polygons = [union] if union.geom_type == "Polygon" else list(union.geoms)
+        for polygon in polygons:
+            if polygon.is_empty:
+                continue
+            out.append(
+                {
+                    "camera_id": cid,
+                    "polygon_m": list(polygon.exterior.coords)[:-1],
+                    "holes": [list(ring.coords)[:-1] for ring in polygon.interiors],
+                }
+            )
+    return out
+
+
+def _spatial_twin(twin: dict, cfg: Config, settings) -> dict:
+    import math
+
+    from vigil.spatial.calibrate import load_calibrations
+    from vigil.spatial.geometry import CameraGeom
+
+    result = {**default_twin(cfg), **twin}
+    cameras = {c.id: {"id": c.id, "name": c.name} for c in cfg.cameras}
+    for camera in result.get("cameras", []):
+        if camera["id"] in cameras:
+            cameras[camera["id"]].update(camera)
+    calibration_file = settings.config_path.parent / "calibration.json"
+    if calibration_file.exists():
+        for calibration in load_calibrations(calibration_file):
+            if calibration.camera_id not in cameras:
+                raise ValueError(f"calibration names unknown camera {calibration.camera_id}")
+            geom = CameraGeom.from_calibration(calibration)
+            cameras[calibration.camera_id].update(
+                {
+                    "position": geom.center.tolist(),
+                    "look_at": (geom.center + geom.r[2] * 8).tolist(),
+                    "hfov_deg": math.degrees(2 * math.atan(geom.width / (2 * geom.k[0, 0]))),
+                    "vfov_deg": math.degrees(2 * math.atan(geom.height / (2 * geom.k[1, 1]))),
+                }
+            )
+    result["cameras"] = list(cameras.values())
+    for path in (
+        settings.data_dir / "coverage.json",
+        settings.data_dir / "spatial" / "coverage.json",
+    ):
+        if path.exists():
+            grid = json.loads(path.read_text(encoding="utf-8"))
+            result["coverage"] = _coverage_polygons(grid)
+            result["blind_regions"] = grid.get("blind_regions", result["blind_regions"])
+            break
+    return result
+
+
 def _scenarios(
     tables: dict[str, list[dict[str, Any]]], meta: dict[str, Any], media: list[str]
 ) -> list[dict[str, Any]]:
@@ -179,6 +245,7 @@ def export_session(session: str, out: Path, *, settings=None, synthetic: bool = 
         load_glb_scene(imported_model)  # size, compression and embedded-resource checks
         media["model.glb"] = imported_model
         twin = {**default_twin(cfg), **twin, "glb_url": "/media/model.glb"}
+    twin = _spatial_twin(twin, cfg, settings)
     return export_bundle(
         out,
         Path(result["db_path"]),

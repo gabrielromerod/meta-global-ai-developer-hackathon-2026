@@ -43,6 +43,7 @@ def run_cloud(
     report=None,
     calibrations=None,
     ground=None,
+    replay_bindings=None,
 ) -> dict:
     from vigil.ingest.windows import cut_window
     from vigil.meta import sam, spark, wonder
@@ -143,6 +144,7 @@ def run_cloud(
             checkins=checkins,
             calibrations=calibrations,
             ground=ground,
+            replay_bindings=replay_bindings,
         )
         accepted.update({w["id"]: w for w in result["watches"]["accepted"]})
         rejected.update({w["id"]: w for w in result["watches"]["rejected"]})

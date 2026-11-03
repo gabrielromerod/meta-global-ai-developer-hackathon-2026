@@ -60,6 +60,18 @@ exports the model with `twin.glb_url`; `tests/e2e/test_glb_viewer.py` covers a g
 load and visible Draco/meshopt errors. Ground extraction is approximate and real-scan
 calibration/coverage/accuracy remain Not verified. See `docs/runbooks/glb-import.md`.
 
+Final review regressions (FIXTURE): fresh uploads reject omitted privacy context even for
+silent valid video; `test_watch_temporal_eligibility_covers_events` prevents future or
+expired watches from creating historical events. The owner-session test now replays the
+same lawful check-in binding while refusing reuse by a different session. Spatial export
+includes calibrated camera poses, calculated coverage and preserved coverage holes;
+the generated-media integration also asserts nonempty pipeline positions.
+
+Offline handover diagnostics: `tests/unit/test_doctor.py` covers named MISSING results,
+no network path, an all-READY fake configuration, secret redaction, expired credit/judging
+windows and explicit ffmpeg resolver settings. READY means configured, not authenticated
+or verified on real footage. See `docs/runbooks/offline-handover.md`.
+
 Source: [spec section 1](../spec/vigil-spec.md#1-functional-requirements), including [Added for the real-world environment](../spec/vigil-spec.md#added-for-the-real-world-environment-nov-2) and [Added for compute and budget](../spec/vigil-spec.md#added-for-compute-and-budget-nov-2), as revised by the [Nov 2 change set](../spec/changes/2026-11-02-business-corrections.md). The full requirement text and acceptance criteria are in the spec; this page is the tracking checklist.
 
 **Status as of Mon Nov 2, 2026 (docs sync after the Nov 2 spec revision).** Evidence, run on the working tree:

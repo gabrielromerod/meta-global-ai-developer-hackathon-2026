@@ -183,7 +183,7 @@ def test_appearance_notes_uploads_and_parses(tmp_path: Path):
 
     blob_clip(clip, 0.2, size=(160, 90))
     fake = FakeClient({"tracks": [_track()]})
-    notes = appearance_notes(fake, clip, ["T3"])
+    notes = appearance_notes(fake, clip, ["T3"], polygons=[])
     assert notes["T3"].lower_color == "grey"
     assert fake.uploads == [clip]
     [call] = fake.calls
@@ -198,7 +198,7 @@ def test_appearance_notes_rejects_unknown_tag_from_model(tmp_path: Path):
 
     blob_clip(clip, 0.2, size=(160, 90))
     with pytest.raises(AppearanceSchemaError):
-        appearance_notes(FakeClient({"tracks": [_track(tag="T7")]}), clip, ["T3"])
+        appearance_notes(FakeClient({"tracks": [_track(tag="T7")]}), clip, ["T3"], polygons=[])
 
 
 # --- rule compile (FR-021) ---------------------------------------------------------------

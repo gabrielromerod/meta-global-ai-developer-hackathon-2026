@@ -47,6 +47,8 @@ def normalise(phrase: str) -> str:
 
 
 def is_active(w: Watch, now: datetime) -> bool:
+    if w.origin == "wonder" and w.expires_at is not None and now < w.expires_at - WATCH_TTL:
+        return False
     return w.status == "watching" and (w.expires_at is None or w.expires_at > now)
 
 

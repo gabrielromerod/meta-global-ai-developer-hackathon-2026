@@ -181,7 +181,7 @@ def appearance_notes(
     tags: list[str],
     visit_id: str | None = None,
     *,
-    polygons: Sequence[Polygon] = (),
+    polygons: Sequence[Polygon] | None = None,
     ref_size: tuple[int, int] | None = None,
 ) -> dict[str, Appearance]:
     """Upload the tagged clip once, ask Spark for notes, and validate them (FR-009)."""

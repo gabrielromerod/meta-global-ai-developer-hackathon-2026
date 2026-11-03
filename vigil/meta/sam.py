@@ -569,7 +569,7 @@ def ensure_uploaded(
     c: SamClient,
     w: Window,
     *,
-    polygons: Sequence[Polygon] = (),
+    polygons: Sequence[Polygon] | None = None,
     ref_size: tuple[int, int] | None = None,
 ) -> str:
     """Upload the window once and remember its file id on the window (spec 5.4)."""
@@ -598,7 +598,7 @@ def track_concept(
     include_confidence: bool = True,
     decode_masks: bool = True,
     visit_id: str | None = None,
-    polygons: Sequence[Polygon] = (),
+    polygons: Sequence[Polygon] | None = None,
     ref_size: tuple[int, int] | None = None,
     _depth: int = 0,
 ) -> list[SamObject]:

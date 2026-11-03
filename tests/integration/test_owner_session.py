@@ -28,6 +28,9 @@ def test_process_reads_and_consumes_persisted_owner_checkin(tmp_path):
     subject = result["visits"][0]["subjects"][0]
     assert subject["actor_role"] == "household_insider"
     assert subject["role_basis"] == "checkin:owner-tap"
+    replay = process_session("owner", settings=settings)
+    assert replay["visits"][0]["subjects"][0]["actor_role"] == "household_insider"
+    assert replay["visits"][0]["subjects"][0]["role_basis"] == "checkin:owner-tap"
     conn = db.connect(settings.db_path)
     try:
         assert db.checkins(conn)[0].bound_subject == subject["id"]

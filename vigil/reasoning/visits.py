@@ -286,6 +286,7 @@ def assemble_visits(
     windows: Sequence[ExpectedWindow] = (),
     checkins: Sequence[CheckIn] = (),
     session_start: datetime | None = None,
+    replay_bindings: Mapping[str, tuple[str, float, str]] | None = None,
 ) -> VisitAssembly:
     """Link tracks into visits, record every out-of-view interval as a gap, assign roles.
 
@@ -519,6 +520,7 @@ def assemble_visits(
         session_start=session_start,
         subject_prefix=subject_prefix,
         start_index=start_index,
+        replay_bindings=replay_bindings,
     )
     of_track = {tid: s for s in subjects_out for tid in s.track_ids}
     roled: list[Event] = []
@@ -706,6 +708,7 @@ def assign_roles(
     session_start: datetime | None = None,
     subject_prefix: str = "s",
     start_index: int = 1,
+    replay_bindings: Mapping[str, tuple[str, float, str]] | None = None,
 ) -> list[Subject]:
     """Subject chains of an assembly with their spatial-origin roles (FR-044, module docs).
 
@@ -743,10 +746,21 @@ def assign_roles(
     if checkins:
         assert session_start is not None
         for c in sorted(checkins, key=lambda c: (c.start, c.id)):
-            if c.revoked or c.bound_subject is not None:
+            if c.revoked:
                 continue
             segs, _ = compute(bound)
             head = _checkin_target(c, segs, session_start)
+            if c.bound_subject is not None:
+                prior = (replay_bindings or {}).get(c.id)
+                if (
+                    prior
+                    and head is not None
+                    and c.bound_subject == prior[2]
+                    and head.id == prior[0]
+                    and abs(head.t_first - prior[1]) < 1e-6
+                ):
+                    bound[head.id] = c.id
+                continue
             if head is not None and head.id not in bound:
                 bound[head.id] = c.id
     segs, _ = compute(bound)

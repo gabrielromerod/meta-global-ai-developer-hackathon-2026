@@ -254,13 +254,15 @@ function create2D(container, twin, labels) {
     draw();
   }
 
-  function poly(pts) {
+  function poly(pts, holes = []) {
     ctx.beginPath();
-    pts.forEach(([x, z], i) => {
-      const [sx, sy] = toScreen(x, z);
-      if (i) ctx.lineTo(sx, sy); else ctx.moveTo(sx, sy);
-    });
-    ctx.closePath();
+    for (const ring of [pts, ...holes]) {
+      ring.forEach(([x, z], i) => {
+        const [sx, sy] = toScreen(x, z);
+        if (i) ctx.lineTo(sx, sy); else ctx.moveTo(sx, sy);
+      });
+      ctx.closePath();
+    }
   }
 
   const hatch = (() => {
@@ -291,8 +293,8 @@ function create2D(container, twin, labels) {
     ctx.fill();
     for (const c of twin.coverage || []) {
       ctx.fillStyle = "rgba(110,160,220,0.22)";
-      poly(c.polygon_m);
-      ctx.fill();
+      poly(c.polygon_m, c.holes || []);
+      ctx.fill("evenodd");
     }
     for (const r of twin.blind_regions || []) {
       ctx.fillStyle = hatch;

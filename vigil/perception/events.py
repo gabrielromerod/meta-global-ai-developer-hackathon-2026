@@ -60,6 +60,7 @@ import itertools
 from collections import Counter
 from collections.abc import Iterable, Mapping, Sequence
 from dataclasses import dataclass
+from datetime import datetime, timedelta
 from typing import Protocol
 
 import numpy as np
@@ -332,6 +333,7 @@ def _removed_events(
     after_s: float,
     observation: Observation | None = None,
     absence_s: float = REMOVE_ABSENCE_S,
+    session_start: datetime | None = None,
 ) -> list[_Raw]:
     out: list[_Raw] = []
     track_end: dict[str, float] = {}
@@ -348,6 +350,11 @@ def _removed_events(
             if not obj.frames:
                 continue
             end = obj.t_last
+            if session_start is not None:
+                from vigil.reasoning.loop import is_active
+
+                if not is_active(watch, session_start + timedelta(seconds=end)):
+                    continue
             last_box = _last_full_box(obj)
             if last_box is None:
                 continue
@@ -365,6 +372,10 @@ def _removed_events(
                     for f in person.frames
                     if end - before_s <= f.t <= end + after_s
                     and _overlap(f, last_box, cam.height, cam.width) >= thresh
+                    and (
+                        session_start is None
+                        or is_active(watch, session_start + timedelta(seconds=f.t))
+                    )
                 ]
                 if ts:
                     hits[person.id] = (person, ts)
@@ -620,6 +631,7 @@ def build_events(
     exits_as_zones: bool = False,
     observation: Observation | None = None,
     absence_s: float = REMOVE_ABSENCE_S,
+    session_start: datetime | None = None,
 ) -> list[Event]:
     """Build the events of FR-008 from stitched tracks (spec 9.5 interface).
 
@@ -656,7 +668,15 @@ def build_events(
             mine = sorted((p for p in protected if p.camera_id == tr.camera_id), key=lambda p: p.id)
             raws += _touch_events(tr, mine, cam, min_frames, touch_overlap, touch_merge_gap_s)
     raws += _removed_events(
-        known, watches, cams, touch_overlap, REMOVE_BEFORE_S, REMOVE_AFTER_S, observation, absence_s
+        known,
+        watches,
+        cams,
+        touch_overlap,
+        REMOVE_BEFORE_S,
+        REMOVE_AFTER_S,
+        observation,
+        absence_s,
+        session_start,
     )
 
     events = [

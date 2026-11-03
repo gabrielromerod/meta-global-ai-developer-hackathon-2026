@@ -29,7 +29,7 @@ from __future__ import annotations
 
 import json
 from collections.abc import Collection, Iterable, Sequence
-from datetime import datetime, time
+from datetime import datetime, time, timedelta
 from pathlib import Path
 
 from vigil.models import (
@@ -138,6 +138,12 @@ def in_force(
         return False
     if not _target_matches(rule, event, {w.id: w for w in watches}):
         return False
+    if rule.target.kind == "watch" and session_start is not None:
+        from vigil.reasoning.loop import is_active
+
+        watch = next((w for w in watches if w.id == event.target), None)
+        if watch is not None and not is_active(watch, session_start + timedelta(seconds=event.t0)):
+            return False
     if (
         rule.trigger == "dwell"
         and rule.min_dwell_s is not None

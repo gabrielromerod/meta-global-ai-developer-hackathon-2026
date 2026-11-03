@@ -2,6 +2,7 @@
 
 from datetime import UTC, datetime
 
+import pytest
 import respx
 from fastapi.testclient import TestClient
 
@@ -32,6 +33,16 @@ def test_export_session_generated_mp4(tmp_path):
         settings.data_dir / "spatial",
         frame=world_frame([15, 0, 20], [15, 0, 21], [15, 1, 20]),
     )
+    import json
+
+    from tests.unit.test_coverage import cam
+    from vigil.spatial.coverage import coverage
+    from vigil.spatial.glb import load_glb_scene
+
+    cal = cam("side_left", (2, 2, 1), (2, 0, -2), f=1600)
+    (settings.config_path.parent / "calibration.json").write_text(
+        json.dumps([cal.model_dump(mode="json")])
+    )
     with (
         respx.mock as router,
         MetaClient(
@@ -42,6 +53,9 @@ def test_export_session_generated_mp4(tmp_path):
     ):
         mock_models(router)
         result = process_session("generated", settings=settings, client=client, confirm=True)
+    assert result["positions"]
+    grid = coverage(load_glb_scene(settings.data_dir / "spatial" / "model.glb"), [cal])
+    (settings.data_dir / "coverage.json").write_text(json.dumps(grid.to_dict()))
     out = exporter("generated", tmp_path / "bundle", settings=settings, synthetic=True)
     with TestClient(create_app(settings, bundle_dir=out)) as browser:
         scenario = browser.get("/api/scenarios/generated").json()
@@ -54,5 +68,17 @@ def test_export_session_generated_mp4(tmp_path):
         assert b"ftyp" in response.content
         twin = browser.get("/api/twin").json()
         assert twin["glb_url"] == "/media/model.glb"
+        assert twin["cameras"][0]["position"] == pytest.approx([2, 2, 1])
+        assert twin["coverage"]
         assert browser.get(twin["glb_url"]).content.startswith(b"glTF")
     assert result["tracks"]
+
+
+def test_export_coverage_preserves_holes():
+    from shapely.geometry import Point, Polygon
+
+    grid = {"x0": 0, "z0": 0, "cell_m": 1, "visible": {"front": ["111", "101", "111"]}}
+    shapes = export._coverage_polygons(grid)
+    polygons = [Polygon(s["polygon_m"], s["holes"]) for s in shapes]
+    assert sum(p.area for p in polygons) == 8
+    assert not any(p.covers(Point(1.5, 1.5)) for p in polygons)

@@ -154,9 +154,19 @@ def verify_clean(
 
 
 def assert_uploadable(
-    path: Path | str, polygons: Sequence[Polygon], *, ref_size: Size | None = None
+    path: Path | str, polygons: Sequence[Polygon] | None, *, ref_size: Size | None = None
 ) -> PrivacyReport:
     """Pre-upload guard (spec 5.8): returns the report, or raises :class:`PrivacyViolation`."""
+    if polygons is None:
+        raise PrivacyViolation(
+            PrivacyReport(
+                path=str(path),
+                kind="video",
+                reasons=[
+                    "privacy context omitted; explicitly supply camera polygons or none_needed"
+                ],
+            )
+        )
     report = scan_media(path, polygons, ref_size=ref_size)
     if not report.ok:
         raise PrivacyViolation(report)

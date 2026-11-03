@@ -297,8 +297,8 @@ def test_track_concept_uploads_window_once(tmp_path: Path) -> None:
     blob_clip(clip, 0.2, size=(160, 90))
     w = _window("w0", 0.0, path=str(clip))
     client = FakeClient([{"output_text": _text("sam_person_w0.txt")}, {"output_text": ""}])
-    people = track_concept(client, w, "person")
-    cars = track_concept(client, w, "car")
+    people = track_concept(client, w, "person", polygons=[])
+    cars = track_concept(client, w, "car", polygons=[])
     assert len(client.uploads) == 1
     assert w.file_id == "file-1"
     assert [c["body"]["input"][0]["content"][1]["file_id"] for c in client.calls] == [
@@ -354,7 +354,7 @@ def test_sam_window_split(tmp_path: Path) -> None:
             {"output_text": ""},
         ]
     )
-    objs = track_concept(client, w, "person", cut=cut)
+    objs = track_concept(client, w, "person", cut=cut, polygons=[])
     assert cuts == [(a.t0, a.t1), (b.t0, b.t1)]
     assert len(client.calls) == 3
     assert len(client.uploads) == 2

@@ -31,12 +31,12 @@ def test_assert_uploadable_at_every_upload_boundary(tmp_path: Path, boundary: st
 
         def upload():
             return ensure_uploaded(
-                client, Window(id="w", camera_id="front", t0=0, t1=1, path=str(clip))
+                client, Window(id="w", camera_id="front", t0=0, t1=1, path=str(clip)), polygons=[]
             )
     else:
 
         def upload():
-            return appearance_notes(client, clip, ["T1"])
+            return appearance_notes(client, clip, ["T1"], polygons=[])
 
     with pytest.raises(PrivacyViolation):
         upload()
@@ -92,6 +92,28 @@ def test_upload_boundaries_refuse_unmasked_pixels(tmp_path: Path, boundary: str)
 
         def upload():
             return appearance_notes(client, clip, ["T1"], polygons=polygons)
+
+    with pytest.raises(PrivacyViolation):
+        upload()
+    assert not client.uploads
+
+
+@pytest.mark.parametrize("boundary", ["sam", "spark"])
+def test_upload_refuses_omitted_privacy_context_on_silent_video(tmp_path, boundary):
+    from tests.fixtures.video.synth import texture_clip
+
+    clip = texture_clip(tmp_path / "raw.mp4", 0.3, size=(160, 90), audio=False)
+    client = NoUpload()
+    if boundary == "sam":
+
+        def upload():
+            return ensure_uploaded(
+                client, Window(id="w", camera_id="front", t0=0, t1=0.3, path=str(clip))
+            )
+    else:
+
+        def upload():
+            return appearance_notes(client, clip, ["T1"])
 
     with pytest.raises(PrivacyViolation):
         upload()

@@ -391,3 +391,31 @@ def test_react_built_motion_tokens_refresh_after_initial_reduced_preference(page
         )
         < 1e-10
     )
+
+
+def test_react_popup_is_opaque_in_ordinary_motion_and_preserves_live_preference_state(
+    page, server_url
+):
+    page.emulate_media(reduced_motion="no-preference")
+    page.goto(server_url + "/next/")
+    wait_ready(page)
+    page.get_by_role("button", name="Messages", exact=True).last.click()
+    popup = page.get_by_role("dialog", name="Messages")
+    expect(popup).to_be_visible()
+    page.wait_for_function(
+        "Number(getComputedStyle(document.querySelector('.v-chat-popup')).opacity)>.99",
+        timeout=2000,
+    )
+    field = popup.get_by_role("textbox", name="Message", exact=True)
+    field.fill("Keep this draft")
+    field.focus()
+    element = field.element_handle()
+    for preference in ("reduce", "no-preference"):
+        page.emulate_media(reduced_motion=preference)
+        page.wait_for_function(
+            "Number(getComputedStyle(document.querySelector('.v-chat-popup')).opacity)>.99",
+            timeout=2000,
+        )
+        expect(field).to_have_value("Keep this draft")
+        expect(field).to_be_focused()
+        assert field.evaluate("(e,old)=>e===old", element)

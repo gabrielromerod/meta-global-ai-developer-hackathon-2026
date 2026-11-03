@@ -1,4 +1,4 @@
-import {useEffect, useId, useRef, useState, useSyncExternalStore, type FormEvent, type KeyboardEvent} from 'react';
+import {forwardRef, useEffect, useId, useRef, useState, useSyncExternalStore, type ComponentPropsWithoutRef, type FormEvent, type KeyboardEvent} from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import * as Tabs from '@radix-ui/react-tabs';
@@ -136,16 +136,19 @@ export function MessagesPage(props:ChatSurfaceProps) {
   return <div className="v-chat-page"><ThreadWorkspace props={props}/></div>;
 }
 
+const PopupPanel=forwardRef<HTMLElement,ComponentPropsWithoutRef<typeof motion.section>&{chat:ChatSurfaceProps}>(({chat,...contentProps},ref)=>{
+  const entrance=useEntranceMotion();
+  return <motion.section {...contentProps} ref={ref} className="v-chat-popup" {...entrance}>
+    <header className="v-chat-popup-header"><div><Dialog.Title>Messages</Dialog.Title><Dialog.Description>Ask your home or leave a local household message.</Dialog.Description></div><Dialog.Close asChild><button type="button" className="v-chat-icon-button" aria-label="Close messages"><X aria-hidden="true"/></button></Dialog.Close></header>
+    <ThreadWorkspace props={chat} popup/>
+  </motion.section>;
+});
+PopupPanel.displayName='PopupPanel';
+
 export function ChatPopup(props:ChatSurfaceProps) {
   const focusBeforeOpen=useRef<HTMLElement|null>(null);
   const wasOpen=useRef(false);
-  const entrance=useEntranceMotion('panel',props.open?'open':'closed');
   if(props.open&&!wasOpen.current)focusBeforeOpen.current=document.activeElement instanceof HTMLElement?document.activeElement:null;
   wasOpen.current=Boolean(props.open);
-  return <Dialog.Root open={Boolean(props.open)} modal={false} onOpenChange={open=>{if(!open)props.onClose?.();}}><Dialog.Portal><Dialog.Content asChild onCloseAutoFocus={event=>{event.preventDefault();focusBeforeOpen.current?.focus();}} onInteractOutside={event=>event.preventDefault()}>
-    <motion.section className="v-chat-popup" {...entrance}>
-      <header className="v-chat-popup-header"><div><Dialog.Title>Messages</Dialog.Title><Dialog.Description>Ask your home or leave a local household message.</Dialog.Description></div><Dialog.Close asChild><button type="button" className="v-chat-icon-button" aria-label="Close messages"><X aria-hidden="true"/></button></Dialog.Close></header>
-      <ThreadWorkspace props={props} popup/>
-    </motion.section>
-  </Dialog.Content></Dialog.Portal></Dialog.Root>;
+  return <Dialog.Root open={Boolean(props.open)} modal={false} onOpenChange={open=>{if(!open)props.onClose?.();}}><Dialog.Portal><Dialog.Content asChild onCloseAutoFocus={event=>{event.preventDefault();focusBeforeOpen.current?.focus();}} onInteractOutside={event=>event.preventDefault()}><PopupPanel chat={props}/></Dialog.Content></Dialog.Portal></Dialog.Root>;
 }

@@ -3,6 +3,7 @@ import React from 'react';
 import {afterEach, describe, expect, it, vi} from 'vitest';
 import {cleanup, fireEvent, render, screen} from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
+import userEvent from '@testing-library/user-event';
 import {VerdictBadge, Tabs, Modal, VideoTile, ClipCard} from './index';
 
 afterEach(cleanup);
@@ -27,6 +28,13 @@ describe('shared security evidence components',()=>{
     expect(screen.getByRole('dialog',{name:'Visit evidence'})).toBeVisible();
     fireEvent.click(screen.getByRole('button',{name:'Close Visit evidence'}));
     expect(onClose).toHaveBeenCalledOnce();
+  });
+  it('returns keyboard focus to the external opener after Escape',async()=>{
+    function Harness(){const [open,setOpen]=React.useState(false);return <><button onClick={()=>setOpen(true)}>Open evidence</button><Modal title="Evidence" open={open} onClose={()=>setOpen(false)}>Cited event</Modal></>;}
+    const user=userEvent.setup();render(<Harness/>);
+    const opener=screen.getByRole('button',{name:'Open evidence'});
+    await user.click(opener);await user.keyboard('{Escape}');
+    expect(opener).toHaveFocus();
   });
   it('does not imply unavailable camera clips are playable',()=>{
     render(<VideoTile camera={{id:'porch',name:'Porch',model:null,power_profile:'plugin_wifi',stream:'sub',status:'not_connected',source_label:'Not connected',hub_present:null,wifi_signal_dbm:null,clock_offset_s:null,clip_url:null,thumbnail_url:null}}/>);

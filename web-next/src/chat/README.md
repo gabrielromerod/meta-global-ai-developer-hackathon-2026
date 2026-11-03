@@ -103,3 +103,7 @@ stays within its history when returning to the bottom. Draft preservation, local
 messaging and unavailable capability tests remain unchanged and pass. The fresh
 evidence has its own hash-bound generated-UI privacy manifest. Independent round 2
 review remains required; this builder does not approve its own work.
+
+Test timing correction: the popup Escape/focus test waits for the identical
+`toBeVisible()` assertion before continuing, because Motion applies its visible
+opacity on an asynchronous frame. Production animation and assertions are unchanged.

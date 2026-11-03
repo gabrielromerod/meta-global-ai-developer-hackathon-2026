@@ -2,7 +2,7 @@
 import '@testing-library/jest-dom/vitest';
 import {useState} from 'react';
 import {afterEach, describe, expect, it} from 'vitest';
-import {cleanup, render, screen} from '@testing-library/react';
+import {cleanup, render, screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {ChatPopup, MessagesPage} from './index';
 import type {ChatProps, Thread} from '../contracts';
@@ -77,7 +77,7 @@ describe('Messages',()=>{
     function PopupHarness(){const [open,setOpen]=useState(false);return <><button onClick={()=>setOpen(true)}>Open messages</button><ChatPopup {...base} open={open} onClose={()=>setOpen(false)}/></>;}
     render(<PopupHarness/>);
     await user.click(screen.getByRole('button',{name:'Open messages'}));
-    expect(screen.getByRole('dialog',{name:'Messages'})).toBeVisible();
+    await waitFor(()=>expect(screen.getByRole('dialog',{name:'Messages'})).toBeVisible());
     await user.keyboard('{Escape}');
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     expect(screen.getByRole('button',{name:'Open messages'})).toHaveFocus();

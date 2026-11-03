@@ -34,6 +34,6 @@ switch ($Task) {
     'demo'   { Invoke-Step uv @('run', 'vigil', 'serve', '--host', '127.0.0.1', '--port', '8000') }
     'eval'   { Invoke-Step uv @('run', 'vigil', 'eval') }
     'export' { Invoke-Step uv @('run', 'vigil', 'export') }
-    'scan'   { Invoke-Step uv @('run', 'python', 'scripts/privacy_scan.py', 'demo'); Invoke-Step bash @('scripts/metadata_scan.sh', 'demo') }
+    'scan'   { Invoke-Step uv @('run', 'python', 'scripts/privacy_scan.py', 'demo'); Invoke-Step uv @('run', 'python', 'scripts/metadata_scan.py', 'demo') }
     'help'   { Write-Output 'Targets: setup lint format test e2e demo eval export scan' }
 }

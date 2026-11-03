@@ -19,9 +19,9 @@ source of agent instructions; `AGENTS.md` only points here.
 | CLI | `uv run vigil --help` (`version`, `ingest`, `process`, `eval`, `export`, `serve`, `spatial`, `reolink`, `cost`, `demo`) |
 | Task runner | Windows: `pwsh scripts/tasks.ps1 <target>` (or `powershell -File scripts/tasks.ps1 <target>`); elsewhere: `make <target>` |
 
-Targets: `setup lint format test e2e demo eval export scan`. `make scan` runs the privacy scan
-and the exiftool metadata scan; the PowerShell `scan` runs only the privacy scan, so on Windows
-also run `bash scripts/metadata_scan.sh demo`.
+Targets: `setup lint format test e2e demo eval export scan`. `make scan` and the PowerShell
+`scan` run both privacy and ExifTool metadata checks. The PowerShell runner calls the shared
+Python scanner directly, so Windows does not require Bash or WSL.
 
 **ffmpeg/ffprobe:** always resolve them with `vigil.settings.ffmpeg_bin()` /
 `ffprobe_bin()` (override, then PATH, then the WinGet Links folder). Never call bare `"ffmpeg"`.

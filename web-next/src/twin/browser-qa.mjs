@@ -2,6 +2,7 @@ import { chromium } from "@playwright/test";
 import assert from "node:assert/strict";
 import { mkdir, writeFile } from "node:fs/promises";
 import { execFileSync } from "node:child_process";
+import { PerspectiveCamera, Vector3 } from "three";
 import path from "node:path";
 const sha =
   process.env.QA_SHA ??
@@ -9,6 +10,8 @@ const sha =
     encoding: "utf8",
   }).trim();
 const root = path.resolve("..", "qa", "screens", sha);
+const baseURL =
+  process.env.TWIN_QA_URL ?? "http://127.0.0.1:8102/next/src/twin/preview.html";
 const viewports = [
   ["air13", 1470, 870],
   ["pro14", 1512, 895],
@@ -39,7 +42,7 @@ try {
     page.on("response", (r) => {
       if (r.status() >= 400) failed.push(`${r.status()} ${r.url()}`);
     });
-    await page.goto("http://127.0.0.1:8102/next/src/twin/preview.html");
+    await page.goto(baseURL);
     await page.locator("[data-webgl=ready]").waitFor();
     await page.waitForTimeout(800);
     assert.deepEqual(errors, [], `${name}: console errors`);
@@ -77,6 +80,30 @@ try {
         fullPage: true,
       });
     };
+    const assertFramed = async () => {
+      const pose = await page
+        .locator("[data-testid=twin-canvas]")
+        .evaluate((element) => ({
+          position: element.dataset.cameraPosition.split(",").map(Number),
+          target: element.dataset.target.split(",").map(Number),
+          fov: Number(element.dataset.cameraFov),
+          aspect: element.clientWidth / element.clientHeight,
+        }));
+      const camera = new PerspectiveCamera(pose.fov, pose.aspect, 0.1, 300);
+      camera.position.fromArray(pose.position);
+      camera.lookAt(new Vector3(...pose.target));
+      camera.updateMatrixWorld();
+      for (const x of [-9, 9])
+        for (const y of [0, 3])
+          for (const z of [-10, 14]) {
+            const point = new Vector3(x, y, z).project(camera);
+            assert.ok(
+              Math.abs(point.x) < 1 && Math.abs(point.y) < 1,
+              `${name}: preset clips public property bounds ${JSON.stringify({ pose, point })}`,
+            );
+          }
+    };
+    await assertFramed();
     for (const theme of ["dark", "light"]) {
       if (theme === "light")
         await page
@@ -99,6 +126,7 @@ try {
           size.height <= size.viewportHeight,
           `${name}/${theme}: page scroll ${JSON.stringify(size)}`,
         );
+      await assertFramed();
     }
     if (
       await page
@@ -315,7 +343,7 @@ try {
     JSON.stringify(
       {
         sha,
-        url: "http://127.0.0.1:8102/next/src/twin/preview.html",
+        url: baseURL,
         viewports: results,
       },
       null,

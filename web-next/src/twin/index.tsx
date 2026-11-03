@@ -762,7 +762,7 @@ function BoundedControls({
   }, [preset, ground, height, palette.fov, size.width, size.height]);
   useEffect(() => {
     const c = controls.current;
-    if (!c) return;
+    if (!c || zoom.serial === 0) return;
     transition.current = null;
     camera.position.sub(c.target).multiplyScalar(zoom.factor).add(c.target);
     c.update();
@@ -1023,6 +1023,8 @@ export function HouseView({
                 onState={(position, target, fov) => {
                   if (container.current) {
                     container.current.dataset.cameraY = String(position[1]);
+                    container.current.dataset.cameraPosition =
+                      position.join(",");
                     container.current.dataset.cameraFov = String(fov);
                     container.current.dataset.orbitDistance = String(
                       Math.hypot(...position.map((n, i) => n - target[i])),

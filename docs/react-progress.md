@@ -76,3 +76,60 @@ fixture hashing normalizes only CRLF to LF. Ordinary footage stays on strict cam
 Untracked draft screenshots remain in workers; do not delete user data. Two workers'
 automatic approval review rejected draft cleanup as "blocked by policy" without details;
 safe outcome was to leave drafts untracked and commit only final evidence.
+
+
+## Checkpoint after wave 2 component review (Nov 3, about 05:50 PT)
+
+- W1 Shell/Home/Twin/Chat independently APPROVED (Home round1, others round2),
+  task-only code and builder evidence merged into lead. W1 source aliases:
+  Home35f5c6d; Twin4e524d1/3be77aa; Chat696aa77/ac2d828;
+  Shell30fcd35/11e995b. Chat test-only async visibility fix5f717af is approved
+  and merged as1a4f2a5. Rootnpm101 tests/build pass with Clips+Controls too.
+- W2 Clips APPROVED round1 at review7c2ea321, evidenceeeb25a3a. Builder task
+  commitsc820bb4,fdac312,31a673a,8f4ca05,a44fb69 merged; Rootlatest89161ad2.
+- W2 Controls APPROVED round2 (reviewfrontend5f6f8893, docsUTF8ed4fe857),
+  evidence835ca0cf. Builder1dbf554,c0dce4d,f6e05af,d8ba87b,8e74611a,
+  612c9ea0,cc4aaf7b merged; Rootlatest83057d10.
+- W2 Motion R1 CHANGES REQUESTED (own native hooklistener0→2→1).
+  Builderfix47dddac6 removes libraryfallback; focused browsernow0→1→0,
+  13motiontests. Await final builder QA-only HEAD then compose into rr-motion
+  for r2_motion round2. R1 evidence84d3c278. Do not merge before approval.
+- Current RootReactmain remains only foundation placeholder by design; old `/`
+  stays usable. No root integration code written before all waves pass.
+- Next is ROOT-ONLY INTEGRATION: API/Query/router/shared state; allpages;
+  cachedcitedchat/localhousehold shared state; proper snapshot/sharing capability;
+  native real video overlay/player clock synced with R3F and citations; typed
+  owner/rulecallbacks. Keep `/next/` preview until final2freshreviewers approve.
+- Motion leadintegration: replace Chat/Twin librarypreferencehooks with central
+  reactivebridge; Chatactivepopup must also stop+set in-flight animation via
+  useEntranceMotion/useAnimationControls (hookreplacementalone insufficient).
+  R3F conepulse needs --v-motion-pulse period (currently literal1s). Add adequate
+  internal scroll padding for floatingMessagespill, not a shorter scene.
+- Use native HTMLvideo controls and existing mask/overlay knowledge; no fake
+  canvas video when media unavailable. Newclip pages already render honest empty
+  states. Preserve consentedphone voice WAV behavior and owner security via newUI.
+- ExistingE2E24 still targetoldUI and must be ported to equivalentnewflows without
+  weakened assertions. PrivateGLB never public; owner-only localpreview can retain
+  import/compression validation, publicviewer mustrefuseprivategeometry.
+- Full backend tests after review/metadata/capture work:1529pass, then1538pass
+  after offline HTTP backstop. Exacttiming docs/timing. Rootlatestbackend3df3859c
+  includes fullframepointbounds, camera review beforepointclient, Sam inlinepixel
+  guard and actual pointmask boxadapter. No actualcamera connections.
+- IMPORTANT INCIDENT: one invalid-key Meta POST happened in negativepointtest,
+  returned401 (no successful inference, generated black JPEG, no owner key).
+  Never againclaim zeroMeta requests forwhole rebuild. Remediation+evidence is
+  in docs/readiness; all defaultPytests nowautouse strictrespx; live/hardware only
+  explicitmarkersescape. Testalso has rejectingclient/cacheonly/closedloopback.
+- UIprovenanceCI scan firstfailed5oldmanifestsbecausecapture-timefixture differs
+  fromcurrent. Fixedbypinning exact historicalfixture snapshots withUNCHANGEDevidence
+  hashes;12existingmanifestsnowvalidate. Currentui_evidence automaticallypins
+  proof-fixtures snapshots. Futuremergedoldmanifestsneed exacthashsnapshotmigration,
+  never re-certifywithdifferentdata. scripts/scan_ui_evidence.py gates everytracked
+  QA media asset; fullworkingRootscan0failures beforeW2merges.
+- Dockerlocalfullbuild passed, then Node24.15 supportedUIstage+78tests passed.
+  CI frontendjob+DockerNodebuildadded. HostNode24.14 left unchanged. Repo isPRIVATE
+  perghrepo view; GitHubplugin404metadata soCLI fallback used. RemoteCI coulduse
+  billableminutes; do not trigger paidwork withoutownerdecision oncefinalSHAreviewable.
+- User choseInter(c0f4942), noHub. No ML/go2rtc installed. Original10Python newline
+  edits remain untouched. Never broadgitaddvigil/. Allcommands useexplicitad9eworkdir
+  because managedworktree creation changes desktopactivecwd.

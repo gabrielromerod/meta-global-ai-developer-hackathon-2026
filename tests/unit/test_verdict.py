@@ -90,3 +90,37 @@ def test_model_cannot_propose_needs_attention() -> None:
     # Wonder's schema forbids it; even if it slipped through, only rules decide.
     for floor in ("normal", "noteworthy"):
         assert compose(floor, False, "needs_attention", True) == floor
+
+
+# --- roles act on the floor before compose() (spec 9.4, FR-044) ---------------------------
+
+
+@pytest.mark.parametrize(
+    ("role", "proposal", "verdict"),
+    [
+        ("household_insider", None, "normal"),  # A': scoped-out household touch stays normal
+        ("household_insider", "noteworthy", "noteworthy"),  # Wonder may still raise it
+        ("external_visitor", None, "needs_attention"),  # C: r7 fires
+        ("unknown", None, "needs_attention"),  # fails closed
+        ("expected_visitor", None, "needs_attention"),  # r7 is non_household
+    ],
+)
+def test_role_sets_the_floor_then_compose(rule_r7, role, proposal, verdict) -> None:
+    from datetime import datetime, timedelta, timezone
+
+    from vigil.models import Event, Visit
+    from vigil.reasoning.rules import evaluate_rules
+
+    t0 = 18 * 3600.0  # 18:00 local, inside r7's 17:30-06:00 window
+    e = Event(id="e1", visit_id="v1", camera_id="side_left", track_id="t1", type="touch",
+              t0=t0, t1=t0 + 1, target="po_side_gate", clip_t0=t0, clip_t1=t0 + 1,
+              actor_role=role)  # fmt: skip
+    start = datetime(2026, 11, 2, tzinfo=timezone(timedelta(hours=-8)))
+    rr = evaluate_rules(
+        Visit(id="v1", t0=t0, t1=t0 + 1, event_ids=["e1"]),
+        [e],
+        [rule_r7],
+        "America/Los_Angeles",
+        start,
+    )
+    assert compose(rr.floor, False, proposal, proposal is not None) == verdict

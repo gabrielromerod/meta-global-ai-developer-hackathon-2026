@@ -2,13 +2,17 @@
 
 Every sentence cites the event it describes, names only that event's camera, states that
 event's own clock time, and never describes identity: the subject is "a person" (then "they")
-or "a vehicle". The output passes the citation validator by construction (property-tested).
+or "a vehicle". When the ledger backs it (validator check 7), a subject is introduced by its
+role phrase instead, e.g. "Someone who arrived from outside the property"; a new subject
+(another chain, or the part after a role-breaking gap) is introduced again rather than called
+"they". The output passes the citation validator by construction (property-tested).
 """
 
 from __future__ import annotations
 
 from vigil.models import Event, StorySentence, VisitLedger
 from vigil.reasoning.clock import format_clock, to_local
+from vigil.reasoning.validator import ROLE_PHRASES, role_and_basis, subject_index
 
 MAX_SENTENCES = 6
 _PRIORITY = {"removed": 0, "touch": 1, "cross": 2, "dwell": 3, "enter": 4, "exit": 5}
@@ -51,6 +55,25 @@ def _clock(ledger: VisitLedger, t: float) -> str:
     return " at " + format_clock(to_local(ledger.session_start, t, ledger.timezone))
 
 
+def role_phrase(ledger: VisitLedger, event: Event) -> str | None:
+    """The check-7 role phrase the ledger backs for this event's subject, capitalised."""
+    by_id, by_track = subject_index(ledger)
+    role, basis = role_and_basis(event, by_id, by_track)
+    for rp in ROLE_PHRASES:
+        if rp.role != role:
+            continue
+        if rp.basis_prefixes and not (basis and basis.startswith(rp.basis_prefixes)):
+            continue
+        return rp.phrase[:1].upper() + rp.phrase[1:]
+    return None
+
+
+def _subject_key(ledger: VisitLedger, event: Event) -> str | None:
+    by_id, by_track = subject_index(ledger)
+    s = by_id.get(event.subject_id or "") or by_track.get(event.track_id)
+    return s.id if s is not None else event.subject_id
+
+
 def template_story(
     ledger: VisitLedger, *, max_sentences: int = MAX_SENTENCES
 ) -> list[StorySentence]:
@@ -63,6 +86,7 @@ def template_story(
         last_t[ev.track_id] = max(last_t.get(ev.track_id, ev.t1), ev.t1)
     out: list[StorySentence] = []
     seen_tracks: set[str] = set()
+    prev_subject: str | None = None
     for e in events:
         cam = ledger.camera_names.get(e.camera_id, e.camera_id)
         at = _clock(ledger, e.t0)
@@ -73,7 +97,12 @@ def template_story(
         if vehicle:
             subj = "A vehicle" if first else "The vehicle"
         else:
-            subj = "A person" if not out else "They"
+            key = _subject_key(ledger, e)
+            if not out or (key is not None and key != prev_subject):
+                subj = role_phrase(ledger, e) or "A person"
+            else:
+                subj = "They"
+            prev_subject = key
         target = labels.get(e.target or "") or _humanise(e.target or "")
         match e.type:
             case "enter":

@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 import itertools
+from datetime import datetime, timedelta, timezone
 
 import pytest
 
 from vigil.models import Event, Gap, RuleHit, RuleResult, Track, TriageDecision, Visit, VisitSummary
+from vigil.reasoning.rules import evaluate_rules
 from vigil.reasoning.triage import decide, forced_escalation, summarize
 
 
@@ -102,3 +104,66 @@ def test_summarize_from_visit() -> None:
     assert s.unresolved_gap
     assert s.new_object
     assert s.duration_s == 60
+
+
+# --- FR-013: only a 9.4 case-2 household touch is exempt from forced escalation ---------
+
+
+def _touch(eid: str, t0: float, role: str | None, target: str = "po_side_gate") -> Event:
+    return Event(
+        id=eid,
+        visit_id="v1",
+        camera_id="side_left",
+        track_id="t1",
+        type="touch",
+        t0=t0,
+        t1=t0 + 1,
+        target=target,
+        clip_t0=t0,
+        clip_t1=t0 + 1,
+        actor_role=role,
+    )
+
+
+R7_START = datetime(2026, 11, 2, 0, 0, tzinfo=timezone(timedelta(hours=-8)))
+EVENING = 18 * 3600.0  # 18:00, inside r7's 17:30-06:00 window
+NOON = 12 * 3600.0  # outside it: r7 is not in force
+
+
+@pytest.mark.parametrize(
+    ("role", "t0", "forced"),
+    [
+        ("household_insider", EVENING, False),  # case 2: scoped out by the owner's rule
+        ("household_insider", NOON, True),  # no rule in force: case 3 touch, forced
+        ("expected_visitor", EVENING, True),  # r7 fires on non-household
+        ("external_visitor", EVENING, True),
+        ("unknown", EVENING, True),
+        (None, EVENING, True),
+    ],
+)
+def test_case_2_household_touch_is_the_only_exemption(rule_r7, role, t0, forced) -> None:
+    e = _touch("e1", t0, role)
+    visit = Visit(id="v1", t0=t0, t1=t0 + 1, event_ids=["e1"])
+    rr = evaluate_rules(visit, [e], [rule_r7], "America/Los_Angeles", R7_START)
+    s = summarize(visit, [e], [], rr)
+    assert (forced_escalation(s) is not None) is forced
+    model = Model(ROUTINE)
+    d = decide(s, model)
+    assert d.forced is forced
+    assert model.calls == (0 if forced else 1)
+
+
+def test_other_touch_in_the_same_visit_still_forces(rule_r7) -> None:
+    hh = _touch("e1", EVENING, "household_insider")
+    bin_touch = _touch("e2", EVENING + 5, "household_insider", target="po_bin")  # no rule
+    visit = Visit(id="v1", t0=EVENING, t1=EVENING + 6, event_ids=["e1", "e2"])
+    rr = evaluate_rules(visit, [hh, bin_touch], [rule_r7], "America/Los_Angeles", R7_START)
+    assert summarize(visit, [hh, bin_touch], [], rr).protected_touched
+
+
+def test_exempt_ids_can_be_passed_explicitly() -> None:
+    e = _touch("e1", EVENING, "household_insider")
+    visit = Visit(id="v1", t0=EVENING, t1=EVENING + 1, event_ids=["e1"])
+    plain = RuleResult(floor="normal")
+    assert summarize(visit, [e], [], plain).protected_touched
+    assert not summarize(visit, [e], [], plain, exempt_event_ids={"e1"}).protected_touched

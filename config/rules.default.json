@@ -7,18 +7,18 @@
     "min_dwell_s": null,
     "active": null,
     "severity": "needs_attention",
-    "applies_to": "anyone",
+    "applies_to": "non_household",
     "state": "active"
   },
   {
     "id": "r_backyard_night",
-    "name": "Anyone in the backyard 11 PM to 5 AM",
+    "name": "Non-household person in the backyard 11 PM to 5 AM",
     "target": {"kind": "zone", "id": "backyard"},
     "trigger": "enter",
     "min_dwell_s": null,
     "active": {"start": "23:00", "end": "05:00"},
     "severity": "needs_attention",
-    "applies_to": "anyone",
+    "applies_to": "non_household",
     "state": "active"
   }
 ]

@@ -1,0 +1,26 @@
+{
+  "$comment": "Validator check 7 (spec 9.4): role, relationship and occupation words a story may not use once the allowed role phrases (config/role_phrases.json) are removed. Vigil does not identify anyone; roles are spatial origins only. Whole words, case-insensitive.",
+  "words": [
+    "household", "households", "householder",
+    "family", "families", "familiar",
+    "resident", "residents", "occupant", "occupants", "inhabitant", "inhabitants",
+    "owner", "owners", "homeowner", "homeowners", "landlord", "landlady", "tenant", "tenants",
+    "roommate", "roommates", "housemate", "housemates", "lodger",
+    "guest", "guests", "visitor", "visitors", "visiting", "caller", "callers",
+    "courier", "couriers", "delivery", "deliveries", "deliveryman", "deliverymen",
+    "mailman", "mailmen", "postman", "postmen", "postwoman", "mail carrier",
+    "stranger", "strangers", "outsider", "outsiders", "insider", "insiders",
+    "unknown person", "unfamiliar",
+    "neighbour", "neighbours", "neighbor", "neighbors",
+    "dad", "daddy", "father", "mum", "mummy", "mom", "mommy", "mother", "parent", "parents",
+    "son", "sons", "daughter", "daughters", "brother", "brothers", "sister", "sisters",
+    "sibling", "siblings", "grandma", "grandpa", "grandmother", "grandfather",
+    "grandparent", "grandparents", "grandson", "granddaughter", "uncle", "aunt", "auntie",
+    "cousin", "cousins", "nephew", "niece", "relative", "relatives",
+    "wife", "husband", "spouse", "partner", "boyfriend", "girlfriend", "fiance", "fiancee",
+    "friend", "friends",
+    "nanny", "babysitter", "housekeeper", "maid", "cleaner", "gardener", "landscaper",
+    "plumber", "electrician", "contractor", "handyman", "repairman", "technician",
+    "employee", "worker", "workers", "staff"
+  ]
+}

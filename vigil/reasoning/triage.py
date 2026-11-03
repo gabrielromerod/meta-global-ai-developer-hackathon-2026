@@ -1,7 +1,10 @@
 """Triage (FR-013, spec 5.5): code forces escalation; otherwise a model decides.
 
 Escalation is forced, without asking any model, when a rule fired, a protected object was
-touched, or a gap is unresolved. Otherwise the injected model triage (Glimmer on the local
+touched, or a gap is unresolved. The only exempt touch is a spec 9.4 case-2 touch: a
+``household_insider`` touching an object whose every in-force rule excludes the household
+(the owner scoped the rule), reported by ``evaluate_rules`` as ``RuleOutcome.scoped_out``.
+Otherwise the injected model triage (Glimmer on the local
 GPU, or Spark through ``vigil.meta``) decides. If it is unavailable or fails, a code
 heuristic decides (escalate only when a new object appeared) so a card is never blank.
 """
@@ -12,7 +15,7 @@ import logging
 from collections.abc import Callable, Collection, Sequence
 
 from vigil.models import Event, Gap, RuleResult, Track, TriageDecision, Visit, VisitSummary
-from vigil.reasoning.rules import PROTECTED_PREFIX
+from vigil.reasoning.rules import PROTECTED_PREFIX, RuleOutcome
 
 log = logging.getLogger(__name__)
 
@@ -65,8 +68,16 @@ def summarize(
     *,
     protected_ids: Collection[str] | None = None,
     tracks: Sequence[Track] = (),
+    exempt_event_ids: Collection[str] = (),
 ) -> VisitSummary:
-    """Compact triage input for one visit."""
+    """Compact triage input for one visit.
+
+    A touch listed in ``rule_result.scoped_out`` (a :class:`RuleOutcome`) or in
+    `exempt_event_ids` is a 9.4 case-2 household touch and does not count as touched.
+    """
+    exempt = set(exempt_event_ids)
+    if isinstance(rule_result, RuleOutcome):
+        exempt |= set(rule_result.scoped_out)
     ids = set(visit.event_ids)
     mine = sorted(
         (e for e in events if e.id in ids or e.visit_id == visit.id), key=lambda e: (e.t0, e.id)
@@ -86,7 +97,9 @@ def summarize(
         cameras=sorted({e.camera_id for e in mine}),
         event_types=[e.type for e in mine],
         rule_fired=bool(rule_result.hits),
-        protected_touched=any(e.type == "touch" and protected(e.target) for e in mine),
+        protected_touched=any(
+            e.type == "touch" and protected(e.target) and e.id not in exempt for e in mine
+        ),
         unresolved_gap=any(not g.resolved for g in vgaps),
         new_object=any(e.type == "enter" and cls.get(e.track_id) in OBJECT_CLASSES for e in mine),
         duration_s=visit.t1 - visit.t0,

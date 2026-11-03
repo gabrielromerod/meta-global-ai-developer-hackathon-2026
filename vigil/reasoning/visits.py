@@ -17,18 +17,55 @@ views along a non-blind edge, or a same-camera re-acquisition within a few secon
 gap. Tracks overlapping in time on the same camera (a person getting into a car) share a
 visit. A visit closes 60 s after its last observation, or once the maximum transit through
 the blind region it entered is exceeded (spec 5.9 ``InGap -> Closed``).
+
+Spatial origin roles (FR-044, :func:`assign_roles`). Every *subject chain* (tracks joined by
+links) gets an ``actor_role`` and a ``role_basis`` from evidence only, never from identity:
+
+1. first track born in an ``egress`` zone -> ``household_insider`` (``egress:<zone>``);
+2. an explicit owner check-in binds it -> ``household_insider`` (``checkin:<id>``). Single
+   use, never retroactive: when the 120 s after the tap close, it binds the one person chain
+   whose first track started in that interval with origin ``null``, ``interior_yard`` or
+   ``perimeter``, if exactly one started and every other person in view on any camera at that
+   chain's first frame is ``household_insider``; otherwise nothing;
+3. first track born in a ``perimeter`` zone in the scope of an Expected Window active at that
+   frame -> ``expected_visitor`` (``window:<id>``);
+4. born in a ``perimeter`` zone -> ``external_visitor`` (``perimeter:<zone>``);
+5. otherwise ``unknown``: ``ambiguous_link:<track>`` when the first track followed an
+   ambiguous link, else ``origin_null:<track>``. The FR-010 group rule (``group:<role>``) is
+   the only exception: on a non-blind edge, when 2+ chains of one non-unknown role entered the
+   edge together and the same number of tracks emerged, each emerging chain takes that role.
+
+Roles carry along unambiguous links. Across a blind-spot link ``external_visitor`` (and
+``unknown``) always carries; ``household_insider`` and ``expected_visitor`` carry only when the
+two tracks' notes agree exactly on a known upper colour, lower colour or carried item.
+Otherwise the chain is split at the gap: what was seen before keeps its backed role, and the
+re-linked part becomes ``unknown`` (``gap_unresolved:<gap_id>``), so a role is never
+retroactively erased and never carried on transit time alone.
 """
 
 from __future__ import annotations
 
 from collections import defaultdict
 from collections.abc import Iterable, Mapping, Sequence
+from dataclasses import dataclass, field
+from datetime import datetime
 from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field
 from shapely.geometry import Point, Polygon
 
-from vigil.models import Appearance, Config, Event, Gap, Position, Track, Visit
+from vigil.models import (
+    Appearance,
+    CheckIn,
+    Config,
+    Event,
+    ExpectedWindow,
+    Gap,
+    Position,
+    Subject,
+    Track,
+    Visit,
+)
 from vigil.reasoning.topology import (
     DEFAULT_TRANSIT_MAX_S,
     Route,
@@ -88,6 +125,19 @@ class Link(BaseModel):
     route_kind: str
     blind: bool
     region_id: str | None = None
+    gap_id: str | None = None
+    """The resolved gap this link closes (blind spot or outage), if any."""
+
+
+class Candidate(BaseModel):
+    """An unlinked candidate pairing behind an ``ambiguous_link`` gap (module-local)."""
+
+    model_config = ConfigDict(extra="forbid")
+
+    from_track: str
+    to_track: str
+    blind: bool
+    """The pairing would pass through a blind region."""
 
 
 class VisitAssembly(BaseModel):
@@ -99,7 +149,13 @@ class VisitAssembly(BaseModel):
     gaps: list[Gap] = Field(default_factory=list)
     links: list[Link] = Field(default_factory=list)
     events: list[Event] = Field(default_factory=list)
-    """Input events with ``visit_id`` set, sorted by time."""
+    """Input events with ``visit_id``, ``subject_id`` and ``actor_role`` set, sorted by time."""
+    subjects: list[Subject] = Field(default_factory=list)
+    """Subject chains with their spatial-origin roles (FR-044)."""
+    candidates: list[Candidate] = Field(default_factory=list)
+    """Ambiguous (unlinked) candidate pairings, for the role rules and the trace."""
+    checkins: list[CheckIn] = Field(default_factory=list)
+    """The check-ins passed in, with ``bound_subject`` set where one bound a chain."""
 
 
 # ---------------------------------------------------------------------------
@@ -224,13 +280,19 @@ def assemble_visits(
     now: float | None = None,
     visit_prefix: str = "v",
     gap_prefix: str = "g",
+    subject_prefix: str = "s",
     start_index: int = 1,
+    windows: Sequence[ExpectedWindow] = (),
+    checkins: Sequence[CheckIn] = (),
+    session_start: datetime | None = None,
 ) -> VisitAssembly:
-    """Link tracks into visits and record every out-of-view interval as a gap.
+    """Link tracks into visits, record every out-of-view interval as a gap, assign roles.
 
     `notes` maps track id (or burned-in tag) to :class:`Appearance` or its dict form.
     `now` (session seconds) leaves visits ``open``/``in_gap`` when they could still continue;
-    without it every visit is ``closed`` (offline processing).
+    without it every visit is ``closed`` (offline processing). `windows` and `checkins`
+    (FR-029) are wall-clock inputs to the role rules and need the tz-aware `session_start`;
+    without them FR-044 steps 2 and 3 never match.
     """
     events = sorted(events, key=lambda e: (e.t0, e.id))
     known = {t.id: t for t in tracks}
@@ -285,6 +347,7 @@ def assemble_visits(
     links: list[Link] = []
     raw_gaps: list[tuple[str, Gap]] = []  # (origin track id, gap without id/visit)
     linked_to: dict[str, Track] = {}
+    unlinked: list[Candidate] = []
     for t in subjects:
         cs = cands[t.id]
         region = headed[t.id]
@@ -315,6 +378,10 @@ def assemble_visits(
                     )  # fmt: skip
                 continue
         if cs:
+            unlinked += [
+                Candidate(from_track=t.id, to_track=sid, blind=r.blind or region is not None)
+                for sid, r in sorted(cs.items())
+            ]
             succ = [known[sid] for sid in cs]
             cams = {s.camera_id for s in succ}
             to_cam = next(iter(cams)) if len(cams) == 1 else None
@@ -360,9 +427,12 @@ def assemble_visits(
             if a.camera_id == b.camera_id:
                 uf.union(a.id, b.id)
 
+    subject_track: dict[str, str] = {}  # event id -> the subject track it is about
+
     def owner(e: Event) -> str:
         tr = known[e.track_id]
         if tr.cls in SUBJECT_CLASSES:
+            subject_track[e.id] = tr.id
             return uf.find(tr.id)
         near = [
             s
@@ -372,6 +442,7 @@ def assemble_visits(
         ]
         if near:
             best = min(near, key=lambda s: (max(0.0, s.t_first - e.t0, e.t0 - s.t_last), s.id))
+            subject_track[e.id] = best.id
             return uf.find(best.id)
         return uf.find(tr.id)  # object event with nobody around: its own visit
 
@@ -395,13 +466,18 @@ def assemble_visits(
     roots = sorted(members, key=lambda r: (span(r)[0], r))
     visit_id = {r: f"{visit_prefix}{start_index + i}" for i, r in enumerate(roots)}
 
-    gaps = sorted(
-        (g.model_copy(update={"visit_id": visit_id[uf.find(tid)]}) for tid, g in raw_gaps),
-        key=lambda g: (g.t0, g.t1, g.from_camera or "", g.kind, g.visit_id),
+    keyed = sorted(
+        ((tid, g.model_copy(update={"visit_id": visit_id[uf.find(tid)]})) for tid, g in raw_gaps),
+        key=lambda x: (x[1].t0, x[1].t1, x[1].from_camera or "", x[1].kind, x[1].visit_id),
     )
-    gaps = [
-        g.model_copy(update={"id": f"{gap_prefix}{start_index + i}"}) for i, g in enumerate(gaps)
-    ]
+    gaps = []
+    resolved_gap_of: dict[str, str] = {}  # from-track id -> id of the gap its link closes
+    for i, (tid, g) in enumerate(keyed):
+        g = g.model_copy(update={"id": f"{gap_prefix}{start_index + i}"})
+        gaps.append(g)
+        if g.resolved:
+            resolved_gap_of.setdefault(tid, g.id)
+    links = [lk.model_copy(update={"gap_id": resolved_gap_of.get(lk.from_track)}) for lk in links]
     gaps_by_visit: dict[str, list[Gap]] = defaultdict(list)
     for g in gaps:
         gaps_by_visit[g.visit_id].append(g)
@@ -426,7 +502,292 @@ def assemble_visits(
     vid_of_event = {e.id: visit_id[r] for r, es in ev_by_root.items() for e in es}
     out_events = [e.model_copy(update={"visit_id": vid_of_event[e.id]}) for e in events]
     links.sort(key=lambda lk: (lk.t0, lk.from_track))
-    return VisitAssembly(visits=visits, gaps=gaps, links=links, events=out_events)
+    unlinked.sort(key=lambda c: (c.from_track, c.to_track))
+    asm = VisitAssembly(
+        visits=visits, gaps=gaps, links=links, events=out_events, candidates=unlinked
+    )
+
+    # --- 4. roles (FR-044) ----------------------------------------------------
+    subjects_out = assign_roles(
+        asm,
+        all_tracks,
+        cfg,
+        notes=app,
+        windows=windows,
+        checkins=checkins,
+        session_start=session_start,
+        subject_prefix=subject_prefix,
+        start_index=start_index,
+    )
+    of_track = {tid: s for s in subjects_out for tid in s.track_ids}
+    roled: list[Event] = []
+    for e in out_events:
+        s = of_track.get(subject_track.get(e.id, ""))
+        roled.append(
+            e.model_copy(update={"subject_id": s.id, "actor_role": s.actor_role}) if s else e
+        )
+    bound = {
+        s.role_basis.removeprefix("checkin:"): s.id
+        for s in subjects_out
+        if s.role_basis.startswith("checkin:")
+    }
+    used = [
+        c.model_copy(update={"bound_subject": bound[c.id]}) if c.id in bound else c
+        for c in checkins
+    ]
+    return asm.model_copy(update={"events": roled, "subjects": subjects_out, "checkins": used})
+
+
+# ---------------------------------------------------------------------------
+# Spatial origin roles (FR-044)
+# ---------------------------------------------------------------------------
+
+CHECKIN_BIND_S = 120.0
+"""A check-in binds a chain whose first track starts within this many seconds of the tap."""
+CARRY_GUARDED = frozenset({"household_insider", "expected_visitor"})
+"""Roles that need a matching known appearance attribute to carry across a blind spot."""
+
+
+@dataclass
+class _Segment:
+    """One role-holding part of a subject chain (a chain splits where its role breaks)."""
+
+    tracks: list[Track]
+    role: str
+    basis: str
+    chain_head: bool
+    """True when this segment starts a chain (FR-044 'first track'), not a split at a gap."""
+    origin_kind: str | None = None
+    checkin_ids: list[str] = field(default_factory=list)
+
+
+def attribute_match(a: Appearance | None, b: Appearance | None) -> bool:
+    """Both notes agree exactly on at least one known attribute (FR-044 blind-spot carry)."""
+    if a is None or b is None:
+        return False
+    if _known(a.upper_color) and a.upper_color == b.upper_color:
+        return True
+    if _known(a.lower_color) and a.lower_color == b.lower_color:
+        return True
+    items = {c for c in a.carrying if c and c != "unknown"}
+    return bool(items & set(b.carrying))
+
+
+def _session_s(dt: datetime, session_start: datetime) -> float:
+    return (dt - session_start).total_seconds()
+
+
+def _origin_kind(track: Track, cfg: Config) -> str | None:
+    if track.origin_zone is None:
+        return None
+    try:
+        cam = cfg.camera(track.camera_id)
+    except KeyError:
+        return "interior_yard"
+    return cam.zone_kind(track.origin_zone)
+
+
+def _window_for(
+    track: Track,
+    windows: Sequence[ExpectedWindow],
+    session_start: datetime | None,
+) -> ExpectedWindow | None:
+    if session_start is None:
+        return None
+    for w in sorted(windows, key=lambda w: (w.start, w.id)):
+        if w.state == "cancelled":
+            continue
+        if (
+            not _session_s(w.start, session_start)
+            <= track.t_first
+            < _session_s(w.end, session_start)
+        ):
+            continue
+        if (w.cameras or w.zones) and not (
+            track.camera_id in w.cameras or track.origin_zone in w.zones
+        ):
+            continue
+        return w
+    return None
+
+
+def _group_roles(
+    preds: Mapping[str, set[str]],
+    succs: Mapping[str, set[str]],
+    blind_pairs: set[tuple[str, str]],
+    known: Mapping[str, Track],
+    role_of: Mapping[str, str],
+    sid: str,
+) -> str | None:
+    """FR-010 group rule for successor `sid`, or None when it does not apply."""
+    p_set = preds.get(sid, set())
+    if len(p_set) < 2:
+        return None
+    s_set = succs[next(iter(p_set))]
+    if len(s_set) != len(p_set):
+        return None
+    if any(succs.get(p) != s_set for p in p_set) or any(preds.get(s) != p_set for s in s_set):
+        return None
+    if any((p, s) in blind_pairs for p in p_set for s in s_set):
+        return None  # never across a blind-spot edge
+    if (
+        len({known[p].camera_id for p in p_set}) != 1
+        or len({known[s].camera_id for s in s_set}) != 1
+    ):
+        return None
+    roles = {role_of.get(p) for p in p_set}
+    if len(roles) != 1:
+        return None
+    (role,) = roles
+    return role if role not in (None, "unknown") else None
+
+
+def _segments(
+    order: Sequence[Track],
+    known: Mapping[str, Track],
+    pred_link: Mapping[str, Link],
+    preds: Mapping[str, set[str]],
+    succs: Mapping[str, set[str]],
+    blind_pairs: set[tuple[str, str]],
+    cfg: Config,
+    notes: Mapping[str, Appearance],
+    windows: Sequence[ExpectedWindow],
+    session_start: datetime | None,
+    bound: Mapping[str, str],
+) -> tuple[list[_Segment], dict[str, int]]:
+    segs: list[_Segment] = []
+    seg_of: dict[str, int] = {}
+    for t in order:
+        lk = pred_link.get(t.id)
+        if lk is not None and lk.from_track in seg_of:
+            prev = segs[seg_of[lk.from_track]]
+            breaks = (
+                lk.blind
+                and prev.role in CARRY_GUARDED
+                and not attribute_match(notes.get(lk.from_track), notes.get(t.id))
+            )
+            if not breaks:
+                prev.tracks.append(t)
+                seg_of[t.id] = seg_of[lk.from_track]
+                continue
+            segs.append(_Segment([t], "unknown", f"gap_unresolved:{lk.gap_id}", False))
+            seg_of[t.id] = len(segs) - 1
+            continue
+        kind = _origin_kind(t, cfg)
+        if kind == "egress":
+            role, basis = "household_insider", f"egress:{t.origin_zone}"
+        elif t.id in bound:
+            role, basis = "household_insider", f"checkin:{bound[t.id]}"
+        elif kind == "perimeter" and (w := _window_for(t, windows, session_start)) is not None:
+            role, basis = "expected_visitor", f"window:{w.id}"
+        elif kind == "perimeter":
+            role, basis = "external_visitor", f"perimeter:{t.origin_zone}"
+        else:
+            role_of = {tid: segs[i].role for tid, i in seg_of.items()}
+            group = _group_roles(preds, succs, blind_pairs, known, role_of, t.id)
+            if group is not None:
+                role, basis = group, f"group:{group}"
+            elif t.id in preds:
+                role, basis = "unknown", f"ambiguous_link:{t.id}"
+            else:
+                role, basis = "unknown", f"origin_null:{t.id}"
+        segs.append(_Segment([t], role, basis, True, kind))
+        seg_of[t.id] = len(segs) - 1
+    return segs, seg_of
+
+
+def assign_roles(
+    assembly: VisitAssembly,
+    tracks: Sequence[Track],
+    cfg: Config,
+    *,
+    notes: Mapping[str, Any] | None = None,
+    windows: Sequence[ExpectedWindow] = (),
+    checkins: Sequence[CheckIn] = (),
+    session_start: datetime | None = None,
+    subject_prefix: str = "s",
+    start_index: int = 1,
+) -> list[Subject]:
+    """Subject chains of an assembly with their spatial-origin roles (FR-044, module docs).
+
+    Deterministic and pure: check-ins are processed in tap order, each against the roles that
+    hold before it binds. A check-in that binds shows as a subject with basis
+    ``checkin:<id>``. `windows` and `checkins` are wall-clock and need `session_start`.
+    """
+    if (windows or checkins) and (session_start is None or session_start.utcoffset() is None):
+        raise ValueError("expected windows and check-ins need a timezone-aware session_start")
+    known = {t.id: t for t in tracks}
+    known.update(_synthesise_tracks(assembly.events, known))
+    in_visit = {tid for v in assembly.visits for tid in v.track_ids}
+    order = sorted(
+        (t for t in known.values() if t.cls in SUBJECT_CLASSES and t.id in in_visit),
+        key=lambda t: (t.t_first, t.id),
+    )
+    app = _normalise_notes(notes, known.values())
+    pred_link = {lk.to_track: lk for lk in assembly.links}
+    preds: dict[str, set[str]] = defaultdict(set)
+    succs: dict[str, set[str]] = defaultdict(set)
+    blind_pairs: set[tuple[str, str]] = set()
+    for c in assembly.candidates:
+        preds[c.to_track].add(c.from_track)
+        succs[c.from_track].add(c.to_track)
+        if c.blind:
+            blind_pairs.add((c.from_track, c.to_track))
+
+    def compute(bound: Mapping[str, str]) -> tuple[list[_Segment], dict[str, int]]:
+        return _segments(
+            order, known, pred_link, preds, succs, blind_pairs, cfg, app, windows,
+            session_start, bound,
+        )  # fmt: skip
+
+    bound: dict[str, str] = {}
+    if checkins:
+        assert session_start is not None
+        for c in sorted(checkins, key=lambda c: (c.start, c.id)):
+            if c.revoked or c.bound_subject is not None:
+                continue
+            segs, _ = compute(bound)
+            head = _checkin_target(c, segs, session_start)
+            if head is not None and head.id not in bound:
+                bound[head.id] = c.id
+    segs, _ = compute(bound)
+
+    visit_of = {tid: v.id for v in assembly.visits for tid in v.track_ids}
+    segs.sort(key=lambda s: (s.tracks[0].t_first, s.tracks[0].id))
+    return [
+        Subject(
+            id=f"{subject_prefix}{start_index + i}",
+            visit_id=visit_of.get(s.tracks[0].id),
+            track_ids=[t.id for t in s.tracks],
+            actor_role=s.role,
+            role_basis=s.basis,
+        )
+        for i, s in enumerate(segs)
+    ]
+
+
+def _checkin_target(c: CheckIn, segs: Sequence[_Segment], session_start: datetime) -> Track | None:
+    """The one chain head a check-in binds when its 120 s interval closes, else None."""
+    t0 = _session_s(c.start, session_start)
+    t1 = min(t0 + CHECKIN_BIND_S, _session_s(c.expires, session_start))
+    heads = [
+        s
+        for s in segs
+        if s.chain_head
+        and s.tracks[0].cls == "person"
+        and s.origin_kind != "egress"
+        and t0 <= s.tracks[0].t_first <= t1
+    ]
+    if len(heads) != 1:
+        return None
+    (seg,) = heads
+    first = seg.tracks[0].t_first
+    for other in segs:
+        if other is seg or other.role == "household_insider":
+            continue
+        if any(t.cls == "person" and t.t_first <= first <= t.t_last for t in other.tracks):
+            return None  # someone not household is in view: the tap cannot pick them out
+    return seg.tracks[0]
 
 
 def _gap(

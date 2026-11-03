@@ -1,0 +1,18 @@
+{
+  "$comment": "Validator check 7 (spec 9.4): the only phrases a story may use to state a subject's role. Each maps to one actor_role; basis_prefixes, when present, limit the phrase to subjects whose role_basis starts with one of them. unknown has no phrase. Matching is case-insensitive on whole words.",
+  "phrases": [
+    {
+      "phrase": "someone who came out of the house",
+      "role": "household_insider",
+      "basis_prefixes": ["egress:"]
+    },
+    {
+      "phrase": "an expected visitor",
+      "role": "expected_visitor"
+    },
+    {
+      "phrase": "someone who arrived from outside the property",
+      "role": "external_visitor"
+    }
+  ]
+}

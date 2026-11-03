@@ -10,10 +10,21 @@
    while "at 10:14:50 PM" inside a gap is not.
 4. Every camera name (or id) in a sentence belongs to a cited event's camera.
 5. No banned words: gender, age, ethnicity, appearance-of-body terms, judgements, and
-   gendered pronouns. The subject is always "a person" or "they".
+   gendered pronouns. The subject is always "a person", "they", or a role phrase (check 7).
 6. Every ``gap_id`` exists in this visit.
+7. Role claims are backed by the ledger. ``config/role_phrases.json`` maps each allowed phrase
+   to one role ("someone who came out of the house" only for a ``household_insider`` whose
+   basis is ``egress:<zone>``; ``unknown`` has none). A sentence with a role phrase must cite
+   at least one event, and every cited event must belong to a subject holding the mapped
+   role (subject by ``subject_id``, else by track; with no subject the event's own
+   ``actor_role``, missing = ``unknown``). With the phrases removed, no word of
+   ``config/role_banned_words.json`` may remain. No names: a capitalised token that is not
+   sentence-initial must be a camera, zone, region or object name in the ledger, a weekday,
+   a month, or AM/PM (clock times are taken out first).
 
 All failures are collected (not just the first) so the single retry gets the full list.
+Check 7 failures use ``ROLE_CHECK`` (``banned_word`` until the shared ``ValidationFailure``
+contract gains ``role_claim``).
 """
 
 from __future__ import annotations
@@ -22,18 +33,28 @@ import json
 import re
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import Any
+from pathlib import Path
+from typing import Any, get_args
 
 from pydantic import ValidationError
 
 from vigil.models import (
     Event,
     StoryDraft,
+    Subject,
     ValidationFailure,
     ValidationResult,
     VisitLedger,
 )
 from vigil.reasoning.clock import resolve_tz
+
+CONFIG_DIR = Path(__file__).resolve().parents[2] / "config"
+ROLE_PHRASES_PATH = CONFIG_DIR / "role_phrases.json"
+ROLE_BANNED_WORDS_PATH = CONFIG_DIR / "role_banned_words.json"
+
+_CHECKS = get_args(ValidationFailure.model_fields["check"].annotation)
+ROLE_CHECK = "role_claim" if "role_claim" in _CHECKS else "banned_word"
+"""Check name for check-7 failures (``role_claim`` is requested for vigil.models)."""
 
 MAX_SENTENCES = 6
 TIME_TOLERANCE_S = 60.0
@@ -64,6 +85,96 @@ BANNED_WORDS: tuple[str, ...] = (
 _BANNED_RE = re.compile(
     r"\b(" + "|".join(sorted(BANNED_WORDS, key=len, reverse=True)) + r")\b", re.I
 )
+
+
+@dataclass(frozen=True)
+class RolePhrase:
+    """One allowed role phrase (config/role_phrases.json)."""
+
+    phrase: str
+    role: str
+    basis_prefixes: tuple[str, ...] = ()
+
+    @property
+    def pattern(self) -> re.Pattern[str]:
+        words = [re.escape(w) for w in self.phrase.split()]
+        return re.compile(r"\b" + r"\s+".join(words) + r"\b", re.I)
+
+
+def load_role_phrases(path: Path | str = ROLE_PHRASES_PATH) -> tuple[RolePhrase, ...]:
+    raw = json.loads(Path(path).read_text(encoding="utf-8"))
+    return tuple(
+        RolePhrase(p["phrase"].lower(), p["role"], tuple(p.get("basis_prefixes", ())))
+        for p in raw["phrases"]
+    )
+
+
+def load_role_banned_words(path: Path | str = ROLE_BANNED_WORDS_PATH) -> tuple[str, ...]:
+    raw = json.loads(Path(path).read_text(encoding="utf-8"))
+    items = raw["words"] if isinstance(raw, dict) else raw
+    return tuple(w.lower() for w in items)
+
+
+ROLE_PHRASES: tuple[RolePhrase, ...] = load_role_phrases()
+ROLE_BANNED_WORDS: tuple[str, ...] = load_role_banned_words()
+_ROLE_WORD_RE = re.compile(
+    r"\b("
+    + "|".join(
+        r"\s+".join(map(re.escape, w.split()))
+        for w in sorted(ROLE_BANNED_WORDS, key=len, reverse=True)
+    )
+    + r")\b",
+    re.I,
+)
+
+WEEKDAYS = [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+    "sunday",
+    "mon",
+    "tue",
+    "tues",
+    "wed",
+    "thu",
+    "thur",
+    "thurs",
+    "fri",
+    "sat",
+    "sun",
+]
+MONTHS = [
+    "january",
+    "february",
+    "march",
+    "april",
+    "may",
+    "june",
+    "july",
+    "august",
+    "september",
+    "october",
+    "november",
+    "december",
+    "jan",
+    "feb",
+    "mar",
+    "apr",
+    "jun",
+    "jul",
+    "aug",
+    "sep",
+    "sept",
+    "oct",
+    "nov",
+    "dec",
+]
+_ALWAYS_ALLOWED = frozenset([*WEEKDAYS, *MONTHS, "am", "pm"])
+_TOKEN_RE = re.compile(r"[A-Za-z][A-Za-z0-9'’]*")
+_OPENERS = " \t\n\"'“‘([{-–—"
 
 _TIME_RE = re.compile(
     r"(?<![\d:])(\d{1,2})(?::(\d{2}))?(?::(\d{2}))?\s*(a\.?m\.?|p\.?m\.?)?(?![\w:])",
@@ -218,6 +329,100 @@ def _check_times(
                 break
 
 
+def _name_tokens(text: str) -> set[str]:
+    return {t.lower() for t in _TOKEN_RE.findall(text.replace("_", " ").replace("-", " "))}
+
+
+def allowed_capitalised(ledger: VisitLedger) -> frozenset[str]:
+    """Lower-cased tokens a story may capitalise mid-sentence (camera, zone, object names)."""
+    names: list[str] = [*ledger.camera_names, *ledger.camera_names.values()]
+    names += [*ledger.region_names, *ledger.region_names.values()]
+    for p in ledger.protected_objects:
+        names += [p.id, p.label]
+    for e in ledger.events:
+        names += [e.camera_id, e.target or ""]
+    for g in ledger.gaps:
+        names += [g.region_id or "", g.from_camera or "", g.to_camera or ""]
+    out: set[str] = set(_ALWAYS_ALLOWED)
+    for n in names:
+        out |= _name_tokens(n)
+    return frozenset(out)
+
+
+def subject_index(ledger: VisitLedger) -> tuple[dict[str, Subject], dict[str, Subject]]:
+    by_id = {s.id: s for s in ledger.subjects}
+    by_track = {tid: s for s in ledger.subjects for tid in s.track_ids}
+    return by_id, by_track
+
+
+def role_and_basis(
+    e: Event, by_id: dict[str, Subject], by_track: dict[str, Subject]
+) -> tuple[str, str | None]:
+    s = by_id.get(e.subject_id or "") or by_track.get(e.track_id)
+    if s is not None:
+        return s.actor_role, s.role_basis
+    return (e.actor_role or "unknown"), None
+
+
+def _check_roles(
+    idx: int,
+    text: str,
+    cited: list[Event],
+    ledger: VisitLedger,
+    allowed: frozenset[str],
+    failures: list[ValidationFailure],
+) -> None:
+    """Check 7: role phrases backed by cited subjects, no role words, no names."""
+
+    def fail(detail: str) -> None:
+        failures.append(ValidationFailure(check=ROLE_CHECK, sentence_index=idx, detail=detail))
+
+    by_id, by_track = subject_index(ledger)
+    rest = text
+    for rp in ROLE_PHRASES:
+        if not rp.pattern.search(rest):
+            continue
+        rest = rp.pattern.sub(" ", rest)
+        if not cited:
+            fail(f"role claim '{rp.phrase}' cites no event of this visit")
+            continue
+        for e in cited:
+            role, basis = role_and_basis(e, by_id, by_track)
+            if role != rp.role:
+                fail(f"role claim '{rp.phrase}' but the subject of {e.id} is {role}")
+            elif rp.basis_prefixes and not (basis and basis.startswith(rp.basis_prefixes)):
+                fail(
+                    f"role claim '{rp.phrase}' needs a role basis {'/'.join(rp.basis_prefixes)}*"
+                    f"; the subject of {e.id} has {basis or 'none'}"
+                )
+    words = sorted({" ".join(m.group(0).lower().split()) for m in _ROLE_WORD_RE.finditer(rest)})
+    if words:
+        fail(
+            f"uses {', '.join(words)}; Vigil does not identify anyone: say 'a person', 'they' "
+            "or a role phrase the ledger backs"
+        )
+    # names: capitalised tokens that are not sentence-initial and not known names
+    masked = text
+    for m in _TIME_RE.finditer(text):
+        if find_clock_times(m.group(0)):
+            end = m.end() - 1 if m.group(0).endswith(".") else m.end()  # keep a full stop
+            masked = masked[: m.start()] + " " * (end - m.start()) + masked[end:]
+    names: list[str] = []
+    for m in _TOKEN_RE.finditer(masked):
+        tok = m.group(0)
+        if not tok[0].isupper() or tok.lower() in allowed or _BANNED_RE.fullmatch(tok):
+            continue
+        before = masked[: m.start()].rstrip(_OPENERS)
+        if not before or before[-1] in ".!?":
+            continue  # sentence-initial
+        names.append(tok)
+    if names:
+        fail(
+            f"capitalised word(s) {', '.join(dict.fromkeys(names))} look like names; the ledger "
+            "has no names"
+        )
+
+
 def validate(draft: Any, ledger: VisitLedger, attempt: int = 1) -> ValidationResult:
     """Run all six checks. `draft` may be a StoryDraft, a dict or raw JSON text."""
     parsed, err = _parse(draft)
@@ -239,6 +444,7 @@ def validate(draft: Any, ledger: VisitLedger, attempt: int = 1) -> ValidationRes
 
     events = _visit_event_map(ledger)
     cams = _camera_terms(ledger)
+    allowed = allowed_capitalised(ledger)
 
     for i, s in enumerate(parsed.sentences):
         if not s.text.strip():
@@ -296,6 +502,8 @@ def validate(draft: Any, ledger: VisitLedger, attempt: int = 1) -> ValidationRes
                     detail=f"uses {', '.join(found)}; say 'a person' or 'they', no judgements",
                 )
             )
+        # 7. role claims, role words and names
+        _check_roles(i, s.text, cited, ledger, allowed, failures)
 
     # 6. gap ids and placements
     visit_gaps = {g.id for g in ledger.gaps if g.visit_id == ledger.visit.id}

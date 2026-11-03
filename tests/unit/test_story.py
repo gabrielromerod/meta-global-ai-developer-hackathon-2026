@@ -10,7 +10,7 @@ from hypothesis import given, settings
 from hypothesis import strategies as st
 
 from tests.unit.test_validator import CAMERA_NAMES, START, good_draft, scenario_c_ledger
-from vigil.models import Event, Gap, StoryDraft, Visit, VisitLedger
+from vigil.models import Event, Gap, StoryDraft, Subject, Visit, VisitLedger
 from vigil.reasoning.story import gap_sentence, run_story
 from vigil.reasoning.templates import template_story
 from vigil.reasoning.validator import BANNED_WORDS, validate
@@ -216,3 +216,93 @@ def test_prop_template_always_valid_and_identity_free(ledger: VisitLedger) -> No
     assert res.passed, res.failures
     words = {w.lower() for s in sentences for w in re.findall(r"[A-Za-z]+", s.text)}
     assert not words & set(BANNED_WORDS)
+
+
+# --- templates with spatial-origin roles (FR-044, validator check 7) ----------------------
+
+
+def roled(ledger: VisitLedger, subjects: list[Subject]) -> VisitLedger:
+    of_track = {tid: s for s in subjects for tid in s.track_ids}
+    events = [
+        e.model_copy(update={"subject_id": of_track[e.track_id].id,
+                             "actor_role": of_track[e.track_id].actor_role})
+        if e.track_id in of_track
+        else e
+        for e in ledger.events
+    ]  # fmt: skip
+    return ledger.model_copy(update={"events": events, "subjects": subjects})
+
+
+def _two_track_c() -> VisitLedger:
+    ledger = scenario_c_ledger()
+    events = [
+        e.model_copy(update={"track_id": "t2"}) if e.id in ("e19", "e20") else e
+        for e in ledger.events
+    ]
+    return ledger.model_copy(update={"events": events})
+
+
+@pytest.mark.parametrize(
+    ("role", "basis", "opening"),
+    [
+        (
+            "external_visitor",
+            "perimeter:side_alley",
+            "Someone who arrived from outside the property",
+        ),
+        ("household_insider", "egress:front_door_egress", "Someone who came out of the house"),
+        ("expected_visitor", "window:w3", "An expected visitor"),
+        ("household_insider", "checkin:c1", "A person"),  # check-in: no role phrase
+        ("household_insider", "group:household_insider", "A person"),
+        ("unknown", "origin_null:t1", "A person"),
+    ],
+)
+def test_template_uses_role_phrase_only_where_allowed(role, basis, opening) -> None:
+    s = Subject(id="s1", visit_id="v3", track_ids=["t1", "t2"], actor_role=role, role_basis=basis)
+    ledger = roled(_two_track_c(), [s])
+    sentences = template_story(ledger)
+    assert sentences[0].text.startswith(opening + " ")
+    assert all(x.text.startswith("They ") for x in sentences[1:])
+    res = validate(StoryDraft(sentences=sentences), ledger)
+    assert res.passed, res.failures
+
+
+def test_template_names_a_new_subject_after_a_broken_chain() -> None:
+    subjects = [
+        Subject(id="s1", visit_id="v3", track_ids=["t1"], actor_role="household_insider",
+                role_basis="egress:front_door_egress"),
+        Subject(id="s2", visit_id="v3", track_ids=["t2"], actor_role="unknown",
+                role_basis="gap_unresolved:g4"),
+    ]  # fmt: skip
+    ledger = roled(_two_track_c(), subjects)
+    sentences = template_story(ledger)
+    by_event = {x.event_ids[0]: x.text for x in sentences}
+    assert by_event["e16"].startswith("Someone who came out of the house ")
+    assert by_event["e17"].startswith("They ")
+    assert by_event["e19"].startswith("A person ")  # not "they": the role did not carry
+    assert by_event["e20"].startswith("They ")
+    assert validate(StoryDraft(sentences=sentences), ledger).passed
+
+
+ROLES = ["household_insider", "expected_visitor", "external_visitor", "unknown"]
+BASES = ["egress:front_door_egress", "checkin:c1", "window:w1", "perimeter:side_alley",
+         "group:x", "gap_unresolved:g1", "ambiguous_link:t1", "origin_null:t1"]  # fmt: skip
+
+
+@settings(max_examples=60, deadline=None)
+@given(
+    ledger=ledgers(),
+    role=st.sampled_from(ROLES),
+    basis=st.sampled_from(BASES),
+    with_subject=st.booleans(),
+)
+def test_prop_template_with_roles_always_valid(ledger, role, basis, with_subject) -> None:
+    if with_subject:
+        s = Subject(id="s1", visit_id="v1", track_ids=["t1"], actor_role=role, role_basis=basis)
+        ledger = roled(ledger, [s])
+    else:  # events carry a role but the ledger has no subjects (pipeline without them)
+        events = [e.model_copy(update={"actor_role": role}) for e in ledger.events]
+        ledger = ledger.model_copy(update={"events": events})
+    sentences = template_story(ledger)
+    res = validate(StoryDraft(sentences=sentences), ledger)
+    assert res.passed, res.failures

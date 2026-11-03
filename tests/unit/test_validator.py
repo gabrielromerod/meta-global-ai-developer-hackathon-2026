@@ -7,8 +7,15 @@ from datetime import datetime, timedelta, timezone
 
 import pytest
 
-from vigil.models import Event, Gap, StoryDraft, Visit, VisitLedger
-from vigil.reasoning.validator import BANNED_WORDS, find_clock_times, validate
+from vigil.models import Box, Event, Gap, ProtectedObject, StoryDraft, Subject, Visit, VisitLedger
+from vigil.reasoning.validator import (
+    BANNED_WORDS,
+    ROLE_BANNED_WORDS,
+    ROLE_CHECK,
+    ROLE_PHRASES,
+    find_clock_times,
+    validate,
+)
 
 PST = timezone(timedelta(hours=-8))
 START = datetime(2026, 11, 3, 0, 0, tzinfo=PST)
@@ -313,3 +320,202 @@ def test_every_failure_is_reported_not_just_the_first() -> None:
         "uncited",
         "unknown_gap",
     }
+
+
+# --- check 7: role claims, role words and names -------------------------------
+
+
+def role_ledger(role: str = "external_visitor", basis: str = "perimeter:side_alley") -> VisitLedger:
+    """Scenario C with one subject chain holding `role` (FR-044) on every visit event."""
+    ledger = scenario_c_ledger()
+    events = [
+        e.model_copy(update={"subject_id": "s1", "actor_role": role}) if e.visit_id == "v3" else e
+        for e in ledger.events
+    ]
+    subject = Subject(id="s1", visit_id="v3", track_ids=["t1"], actor_role=role, role_basis=basis)
+    return ledger.model_copy(update={"events": events, "subjects": [subject]})
+
+
+EXT_PHRASE = "Someone who arrived from outside the property touched the side gate at 10:14 PM."
+HH_PHRASE = "Someone who came out of the house touched the side gate at 10:14 PM."
+EXP_PHRASE = "An expected visitor touched the side gate at 10:14 PM."
+
+
+def first(text: str, ids: list[str] | None = None) -> dict:
+    d = good_draft()
+    d["sentences"][0] = {"text": text, "event_ids": ids if ids is not None else ["e17"]}
+    return d
+
+
+@pytest.mark.parametrize(
+    ("text", "role", "basis"),
+    [
+        (EXT_PHRASE, "external_visitor", "perimeter:side_alley"),
+        (EXT_PHRASE.lower().capitalize(), "external_visitor", "group:external_visitor"),
+        (HH_PHRASE, "household_insider", "egress:front_door_egress"),
+        (EXP_PHRASE, "expected_visitor", "window:w3"),
+        ("A person touched the side gate at 10:14 PM.", "unknown", "origin_null:t1"),
+    ],
+)
+def test_backed_role_phrases_pass(text: str, role: str, basis: str) -> None:
+    res = validate(first(text), role_ledger(role, basis))
+    assert res.passed, res.failures
+
+
+@pytest.mark.parametrize(
+    ("text", "role", "basis"),
+    [
+        (EXT_PHRASE, "household_insider", "egress:front_door_egress"),
+        (EXT_PHRASE, "unknown", "origin_null:t1"),
+        (EXP_PHRASE, "external_visitor", "perimeter:side_alley"),
+        (EXP_PHRASE, "unknown", "gap_unresolved:g4"),
+        (HH_PHRASE, "external_visitor", "perimeter:side_alley"),
+        (HH_PHRASE, "unknown", "ambiguous_link:t1"),
+        # household by check-in or group gets no role phrase (spec 9.4 check 7)
+        (HH_PHRASE, "household_insider", "checkin:c1"),
+        (HH_PHRASE, "household_insider", "group:household_insider"),
+    ],
+)
+def test_role_phrase_not_backed_by_the_ledger_is_caught(text: str, role: str, basis: str) -> None:
+    res = validate(first(text), role_ledger(role, basis))
+    assert checks(res) == {ROLE_CHECK}
+    assert res.failures[0].sentence_index == 0
+
+
+def test_role_phrase_must_cite_an_event() -> None:
+    res = validate(first(EXT_PHRASE, []), role_ledger())
+    assert {"uncited", ROLE_CHECK} <= checks(res)
+
+
+def test_role_phrase_without_roles_in_the_ledger_fails_closed() -> None:
+    res = validate(first(EXT_PHRASE), scenario_c_ledger())  # no subjects, no actor_role
+    assert checks(res) == {ROLE_CHECK}
+
+
+def test_role_phrase_over_subjects_with_different_roles_fails() -> None:
+    ledger = role_ledger()
+    events = [
+        e.model_copy(update={"subject_id": "s2", "actor_role": "unknown"}) if e.id == "e19" else e
+        for e in ledger.events
+    ]
+    s2 = Subject(
+        id="s2",
+        visit_id="v3",
+        track_ids=["t2"],
+        actor_role="unknown",
+        role_basis="gap_unresolved:g4",
+    )
+    ledger = ledger.model_copy(update={"events": events, "subjects": [*ledger.subjects, s2]})
+    text = "Someone who arrived from outside the property touched the gate and came back."
+    assert checks(validate(first(text, ["e17", "e19"]), ledger)) == {ROLE_CHECK}
+    assert validate(first(text, ["e17", "e18"]), ledger).passed
+
+
+def test_subject_found_by_track_when_event_has_no_subject_id() -> None:
+    ledger = role_ledger()
+    events = [e.model_copy(update={"subject_id": None, "actor_role": None}) for e in ledger.events]
+    ledger = ledger.model_copy(update={"events": events})
+    assert validate(first(EXT_PHRASE), ledger).passed
+
+
+def test_two_role_phrases_in_one_sentence_fail() -> None:
+    text = (
+        "Someone who arrived from outside the property and someone who came out of the house "
+        "were at the side gate at 10:14 PM."
+    )
+    assert checks(validate(first(text), role_ledger())) == {ROLE_CHECK}
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "A family member walked toward the shed.",
+        "The courier walked toward the shed.",
+        "A delivery driver walked toward the shed.",
+        "A neighbour walked toward the shed.",
+        "A neighbor walked toward the shed.",
+        "The homeowner walked toward the shed.",
+        "The owner walked toward the shed.",
+        "A guest walked toward the shed.",
+        "A stranger walked toward the shed.",
+        "A visitor walked toward the shed.",
+        "An unexpected visitor walked toward the shed.",
+        "A household member walked toward the shed.",
+        "A resident walked toward the shed.",
+        "Their dad walked toward the shed.",
+        "Their son walked toward the shed.",
+        "The wife walked toward the shed.",
+        "The plumber walked toward the shed.",
+    ],
+)
+def test_role_words_caught(text: str) -> None:
+    res = validate(with_sentence(text, ["e18"]), role_ledger())
+    assert checks(res) == {ROLE_CHECK}
+
+
+def test_role_word_lists_cover_spec_terms() -> None:
+    words = set(ROLE_BANNED_WORDS)
+    for w in ("household", "family", "resident", "owner", "guest", "visitor", "courier",
+              "delivery", "stranger", "neighbour", "neighbor", "dad", "mum", "mom", "son",
+              "daughter", "wife", "husband"):  # fmt: skip
+        assert w in words
+    assert {p.role for p in ROLE_PHRASES} == {
+        "household_insider",
+        "expected_visitor",
+        "external_visitor",
+    }  # unknown has no phrase
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "They waved at Sam near the shed.",
+        "A person, Maria, walked toward the shed.",
+        "They walked toward the shed with Jordan.",
+        "They walked toward the Garcia house.",
+        "A person in a Nike jacket walked toward the shed.",
+    ],
+)
+def test_names_caught(text: str) -> None:
+    res = validate(with_sentence(text, ["e18"]), role_ledger())
+    assert checks(res) == {ROLE_CHECK}
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "On Monday they walked toward the shed.",
+        "In November they walked toward the shed.",
+        "They walked toward the shed in Nov.",
+        "They walked out of the Left side camera's view toward the shed.",
+        "They walked toward the Side Gate.",  # protected object label in the ledger
+        "They walked toward the area Behind The Shed.",  # region name in the ledger
+        "They stopped. Then they walked toward the shed.",  # sentence-initial after a stop
+        '"They" walked toward the shed.',
+        "They walked out of view at 10:14 P.M. toward the shed.",
+    ],
+)
+def test_allowed_capitalised_tokens_pass(text: str) -> None:
+    ledger = role_ledger()
+    ledger = ledger.model_copy(
+        update={
+            "protected_objects": [
+                ProtectedObject(
+                    id="po_side_gate",
+                    camera_id="side_left",
+                    label="side gate",
+                    bbox=Box(x1=0, y1=0, x2=1, y2=1),
+                )
+            ],
+            "region_names": {"shed_back": "behind the shed"},
+        }
+    )
+    res = validate(with_sentence(text, ["e18"]), ledger)
+    assert res.passed, res.failures
+
+
+def test_identity_banned_word_is_reported_once() -> None:
+    res = validate(
+        with_sentence("A Hispanic person walked toward the shed.", ["e18"]), role_ledger()
+    )
+    assert [f.check for f in res.failures] == ["banned_word"]

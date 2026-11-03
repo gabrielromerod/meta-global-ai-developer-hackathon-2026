@@ -1,90 +1,81 @@
-"""Judge path against the cached sandbox (spec 4, 12.1; P0 blocking suite 5): FR-017, FR-018,
-FR-022 (step 6 through each sample-audio button, browser WAV encoding), FR-027 (5 scenarios),
-FR-040, FR-044 (A′ vs C: same gate, opposite outcomes by spatial origin), NFR-009
-(MODEL_API_KEY=invalid), NFR-018 (every citation chip), NFR-022 (badges)."""
+"""FIXTURE: consumer judge path on React, with real API evidence and no live models.
 
-from __future__ import annotations
+Missing media is asserted unavailable, never a playable synthetic canvas. The original
+0.2-second multicamera bound is exercised on genuine generated MP4s in test_real_video.
+"""
 
-import re
+import struct
+from datetime import UTC, datetime
 
 import pytest
 from playwright.sync_api import Page, expect
 
-from tests.e2e.conftest import wait_ready
+from tests.e2e.conftest import UnreachableBackend, wait_ready
+from tests.e2e.support import running_app
+from vigil.api.app import create_app
+from vigil.settings import Settings
 
 pytestmark = pytest.mark.e2e
-
 GAP = "Not observed · 41 s"
+NO_TEMPLATES = "does not identify anyone and creates no face, voice or body templates"
 
 
-def _times(page: Page) -> list[float]:
-    return page.eval_on_selector_all(".player-media", "els => els.map(e => e.currentTime)")
-
-
-def test_judge_path_scenario_c(page: Page, server_url: str) -> None:
-    errors: list[str] = []
-    page.on("pageerror", lambda e: errors.append(str(e)))
-    page.goto(server_url + "/")
+def _visit(page, server_url, visit_id):
+    page.goto(f"{server_url}/next/#/visit/{visit_id}")
     wait_ready(page)
-
-    summary = page.get_by_test_id("summary")
-    expect(summary).to_contain_text("motion triggers")
-    expect(page.get_by_test_id("summary-visits")).to_have_text("5")
-    expect(page.get_by_test_id("summary-alerts")).to_have_text("1")
-    expect(page.get_by_test_id("synthetic-banner")).to_contain_text("SYNTHETIC")
-    legend = page.get_by_test_id("legend")
-    expect(legend).to_be_visible()
-    texts = ("Camera view cone", "Blind region", "Estimated position", "Estimated from 2 cameras")
-    for text in (*texts, "Low confidence", "Observed path", "Not observed"):
-        expect(legend).to_contain_text(text)
-
-    page.locator(".visit-item[data-visit=v_c]").click()
     card = page.get_by_test_id("visit-card")
-    expect(card.get_by_test_id("verdict").first).to_contain_text("Needs your attention")
-    expect(card.locator(".verdict svg").first).to_be_visible()
+    expect(card).to_have_attribute("data-visit", visit_id)
+    return card
+
+
+def test_judge_path_scenario_c(page: Page, server_url: str):
+    errors = []
+    page.on("pageerror", lambda error: errors.append(str(error)))
+    page.goto(server_url + "/next/")
+    wait_ready(page)
+    expect(page.locator(".home-summary")).to_contain_text("5 visits → 1 needs attention")
+    expect(page.locator(".home-summary")).to_contain_text("unmeasured")
+    expect(page.get_by_text("Demo data", exact=True)).to_be_visible()
+    state = page.request.get(server_url + "/api/ui/state").json()
+    row = next(v for v in state["visits"] if v["id"] == "v_c")
+    page.get_by_role("button", name="Open visit " + row["title"], exact=True).click()
+    card = page.get_by_test_id("visit-card")
+    expect(card.locator(".visit-heading .v-verdict")).to_contain_text("Needs your attention")
+    expect(card.locator(".visit-heading .v-verdict svg")).to_be_visible()
     expect(card).to_contain_text(GAP)
     expect(card).to_contain_text("Rule r7 fired")
-    expect(page.locator(".twin-label.gap-label")).to_have_text(GAP)
-    expect(page.get_by_test_id("twin")).to_have_attribute("data-mode", "webgl")
-
-    sentences = card.locator("[data-testid=story] .sentence")
-    badges = card.locator("[data-testid=story] [data-testid=source-badge]")
-    assert badges.count() == sentences.count() >= 4
-    for i in range(badges.count()):
-        b = badges.nth(i)
-        if b.get_attribute("data-kind") == "model":
-            assert b.get_attribute("data-model") == "muse-wonder-1.0"
-            assert (b.get_attribute("data-call") or "").startswith("call_")
-
-    players = page.locator(".player-media")
-    assert players.count() >= 3
-    chips = card.locator("[data-testid=story] [data-testid=citation-chip]")
-    assert chips.count() >= 6
-    for i in range(chips.count()):
-        chip = chips.nth(i)
-        chip.click()
-        t = float(chip.get_attribute("data-t") or "nan")
-        times = _times(page)
-        assert max(times) - min(times) < 0.2, (i, times)
-        assert abs(page.evaluate("window.vigil.player.absTime") - t) < 0.2
-        camera = chip.get_attribute("data-camera")
-        if camera:
-            expect(page.locator(f".tile[data-camera={camera}]")).to_have_class(
-                re.compile("highlight")
-            )
-
-    # Players stay in step while playing.
-    page.click("#play-toggle")
-    page.wait_for_timeout(1200)
-    times = _times(page)
-    assert max(times) - min(times) < 0.2, times
-    page.click("#play-toggle")
-
-    card.get_by_text("How this was decided").click()
-    expect(card.get_by_test_id("draft").first).to_contain_text("rejected by the validator")
-    expect(card.get_by_test_id("trace")).to_contain_text("forced by code")
-    expect(card.get_by_test_id("role-basis")).to_contain_text("perimeter:side_alley")
-    expect(card.get_by_test_id("telemetry")).to_contain_text("model calls")
+    expect(page.locator(".house-view canvas")).to_be_visible()
+    expect(page.locator(".twin-gap-summary")).to_contain_text(GAP)
+    detail = page.request.get(server_url + "/api/ui/visits/v_c").json()
+    sentences = card.locator(".visit-sentence")
+    badges = card.locator(".visit-source")
+    assert badges.count() == sentences.count() == len(detail["sentences"])
+    assert badges.count() >= 4
+    for index, sentence in enumerate(detail["sentences"]):
+        expect(sentences.nth(index).locator("p").first).to_have_text(sentence["text"])
+        expect(badges.nth(index)).to_contain_text(sentence["badge"]["label"])
+        if sentence["badge"]["kind"] == "model":
+            assert sentence["badge"]["model"] == "muse-wonder-1.0"
+            assert sentence["badge"]["call_id"].startswith("call_")
+    assert page.locator("video.player-media").count() == 0
+    assert page.locator(".visit-media-empty").count() >= 3
+    citations = [c for s in detail["sentences"] for c in s["citations"]]
+    assert len(citations) >= 6
+    chips = card.locator(".visit-citation")
+    assert chips.count() == len(citations)
+    for index, citation in enumerate(citations):
+        chips.nth(index).click()
+        page.wait_for_function(
+            "t=>Math.abs(Number(document.querySelector('#evidence-clock').value)-t)<.2",
+            arg=citation["t"],
+        )
+        expected = next(c["name"] for c in state["cameras"] if c["id"] == citation["camera_id"])
+        expect(card.locator(".visit-camera.is-active")).to_contain_text(expected)
+    card.get_by_text("How this was decided", exact=True).click()
+    expect(card.locator(".visit-trace")).to_contain_text("rejected by the validator")
+    expect(card.locator(".visit-trace")).to_contain_text("forced by code")
+    expect(card).to_contain_text("perimeter:side_alley")
+    expect(card.locator(".visit-trace")).to_contain_text("model calls")
     assert not errors, errors
 
 
@@ -98,218 +89,207 @@ def test_judge_path_scenario_c(page: Page, server_url: str) -> None:
         ("v_c", "Needs your attention"),
     ],
 )
-def test_every_demo_card_has_every_element(
-    page: Page, server_url: str, visit_id: str, verdict: str
-) -> None:
-    page.goto(f"{server_url}/#/visit/{visit_id}")
-    wait_ready(page)
-    card = page.get_by_test_id("visit-card")
-    expect(card).to_have_attribute("data-visit", visit_id)
-    expect(card.get_by_test_id("verdict").first).to_contain_text(verdict)
-    assert card.locator("[data-testid=story] .sentence").count() >= 2
-    assert card.locator("[data-testid=citation-chip]").count() >= 2
-    assert card.locator("[data-testid=story] [data-testid=source-badge]").count() >= 2
-    expect(card.locator(".timeline li").first).to_be_visible()
-    expect(card.get_by_test_id("trace")).to_be_attached()
-    expect(card.get_by_test_id("telemetry")).to_be_attached()
-    expect(page.get_by_test_id("legend")).to_be_visible()
-    expect(card.get_by_test_id("roles")).to_contain_text(":")  # every subject shows its basis
+def test_every_demo_card_has_every_element(page: Page, server_url, visit_id, verdict):
+    card = _visit(page, server_url, visit_id)
+    expect(card.locator(".visit-heading .v-verdict")).to_contain_text(verdict)
+    assert card.locator(".visit-sentence").count() >= 2
+    assert card.locator(".visit-citation").count() >= 2
+    assert card.locator(".visit-source").count() >= 2
+    card.locator(".visit-event-list li").first.scroll_into_view_if_needed()
+    expect(card.locator(".visit-event-list li").first).to_be_visible()
+    expect(card.locator(".visit-trace")).to_be_attached()
+    expect(card.locator(".visit-context")).to_contain_text(":")
     if visit_id == "v_b":
-        expect(card.get_by_test_id("watch-notice")).to_contain_text(
-            "Now watching: package on porch"
-        )
+        expect(card).to_contain_text("Now watching: package on porch")
     if visit_id == "v_bp":
-        expect(card.get_by_test_id("window-chip")).to_contain_text('w3 "deliveries"')
+        expect(card).to_contain_text("w3 “deliveries”")
 
 
-def test_scenario_switcher(page: Page, server_url: str) -> None:
-    page.goto(server_url + "/")
+def test_scenario_switcher(page: Page, server_url):
+    page.goto(server_url + "/next/")
     wait_ready(page)
-    tabs = (("A", "v_a"), ("A-prime", "v_ap"), ("B", "v_b"), ("B-prime", "v_bp"), ("C", "v_c"))
-    expect(page.locator(".tab[data-tab=A-prime]")).to_contain_text("A′")
-    expect(page.locator(".tab[data-tab=B-prime]")).to_contain_text("B′")
-    for sid, visit in tabs:
-        page.locator(f".tab[data-tab={sid}]").click()
-        expect(page.get_by_test_id("visit-card")).to_have_attribute("data-visit", visit)
+    visits = page.request.get(server_url + "/api/ui/state").json()["visits"]
+    assert {v["scenario"] for v in visits} == {"A", "A-prime", "B", "B-prime", "C"}
+    for visit in visits:
+        page.get_by_role("button", name="Attention", exact=True).click()
+        page.get_by_role("tab", name="All visits", exact=True).click()
+        page.get_by_role("button", name="Open visit " + visit["title"], exact=True).click()
+        expect(page.get_by_test_id("visit-card")).to_have_attribute("data-visit", visit["id"])
 
 
-def test_live_buttons_fall_back_with_notice_when_api_is_down(page: Page, server_url: str) -> None:
-    """NFR-009 / FR-026: MODEL_API_KEY=invalid and an unreachable API never blank a screen."""
-    page.goto(f"{server_url}/#/visit/v_c")
-    wait_ready(page)
-    page.get_by_test_id("rerun-live").click()
-    out = page.get_by_test_id("rerun-out")
-    expect(out.get_by_test_id("fallback-notice")).to_contain_text("Live call failed")
-    expect(out).to_contain_text("Needs your attention")
-
-    page.locator("[data-preset]").first.click()
-    page.locator("#protect-result [data-run=true]").click()
-    expect(page.locator("#protect-result [data-testid=fallback-notice]")).to_contain_text(
-        "Live call failed"
+def test_cached_controls_keep_evidence_visible_when_action_api_is_down(page: Page, server_url):
+    card = _visit(page, server_url, "v_c")
+    page.route(
+        "**/api/visits/v_c/rerun",
+        lambda route: route.fulfill(
+            status=503,
+            json={"detail": "Story service unavailable; recorded evidence remains available."},
+        ),
     )
-    expect(page.locator("#protect-result")).to_contain_text("Protected")
-
-    page.click("#rule-live")
-    expect(page.locator("#rule-result [data-testid=fallback-notice]")).to_contain_text(
-        "Live call failed"
+    card.get_by_text("How this was decided", exact=True).click()
+    card.get_by_role("button", name="Rebuild story from cache").click()
+    expect(card.get_by_role("alert")).to_contain_text("Story service unavailable")
+    expect(card.locator(".visit-heading .v-verdict")).to_contain_text("Needs your attention")
+    assert card.locator(".visit-sentence").count() >= 4
+    page.get_by_role("button", name="Rules and protected objects", exact=True).click()
+    page.route(
+        "**/api/rules/compile",
+        lambda route: route.fulfill(
+            status=503, json={"detail": "Rule service unavailable; current rules remain active."}
+        ),
     )
-    expect(page.get_by_test_id("rule-draft")).to_contain_text("does not identify anyone")
-    page.locator("[data-confirm]").click()
-    expect(page.locator(".rule-state")).to_contain_text("active")
+    field = page.get_by_role("textbox", name="Rule text")
+    field.fill("Tell me if anyone except family touches the bin after 9 PM")
+    page.get_by_role("button", name="Review rule draft").click()
+    expect(page.get_by_role("alert")).to_contain_text("Rule service unavailable")
+    expect(field).to_have_value("Tell me if anyone except family touches the bin after 9 PM")
+    expect(page.get_by_role("region", name="Current rules")).to_contain_text("Side gate after dark")
 
 
-def test_2d_fallback_map_draws_the_same_data(page: Page, server_url: str) -> None:
-    page.goto(f"{server_url}/?twin=2d#/visit/v_c")
+def test_2d_fallback_map_draws_the_same_data(page: Page, server_url):
+    page.goto(server_url + "/next/?twin=2d#/visit/v_c")
     wait_ready(page)
-    expect(page.get_by_test_id("twin")).to_have_attribute("data-mode", "2d")
-    expect(page.locator(".twin-label.gap-label")).to_have_text(GAP)
-    expect(page.get_by_test_id("twin-mode")).to_contain_text("2D map")
+    view = page.get_by_test_id("property-map")
+    expect(view.get_by_role("img", name="Property evidence map")).to_be_visible()
+    expect(view).to_contain_text("2D map")
+    expect(view).to_contain_text(GAP)
+    expect(view.get_by_role("button", name="Select Left passage")).to_be_visible()
+    assert view.locator(".map-gap").count() >= 1
 
 
-def test_key_and_contributor_ids_never_reach_the_page(page: Page, server_url: str) -> None:
-    page.goto(f"{server_url}/#/visit/v_c")
-    wait_ready(page)
+def test_key_and_contributor_ids_never_reach_the_page(page: Page, server_url):
+    _visit(page, server_url, "v_c")
     html = page.content()
     assert "MODEL_API_KEY" not in html
     assert "-" + "contributor" not in html
 
 
-# --- step 6: voice rules through the sample-audio buttons, cached mode (FR-022) -------------
-
-APPLIES = {
-    "vf_family_bin": "Applies to: non-household",
-    "vf_strangers_gate": "Applies to: outsiders only",
-    "vf_named_gate": "Applies to: non-household",
-}
-NO_TEMPLATES = "does not identify anyone and creates no face, voice or body templates"
-
-
 def test_step6_each_sample_audio_button_gives_an_editable_transcript_and_a_draft(
-    page: Page, server_url: str
-) -> None:
-    errors: list[str] = []
-    page.on("pageerror", lambda e: errors.append(str(e)))
-    fixtures = page.request.get(f"{server_url}/api/voice/fixtures").json()["fixtures"]
-    assert [f["id"] for f in fixtures] == list(APPLIES)
-    page.goto(server_url + "/")
+    page: Page, server_url
+):
+    page.goto(server_url + "/next/#/rules")
     wait_ready(page)
-    samples = page.get_by_test_id("voice-sample")
-    expect(samples).to_have_count(3)
-    transcript = page.get_by_test_id("transcript")
-    meta = page.get_by_test_id("transcript-meta")
-    for i, fixture in enumerate(fixtures):
-        samples.nth(i).click()
-        expect(transcript).to_have_value(fixture["transcript"])
-        expect(meta).to_contain_text("Recorded result")  # labelled offline (spec 4 step 6)
-        expect(meta).to_contain_text("muse-voice-transcribe-1.0")
-        page.click("#rule-form button[type=submit]")
-        draft = page.get_by_test_id("rule-draft")
-        expect(draft.get_by_test_id("applies-badge")).to_have_text(APPLIES[fixture["id"]])
-        expect(draft.get_by_test_id("basis-note")).to_contain_text(NO_TEMPLATES)
-    named = page.get_by_test_id("rule-draft")
-    expect(named).to_contain_text("Vigil can't recognise individuals")
-    # Back to the judge's phrase; the basis note is the spec's draft-card wording.
-    samples.first.click()
-    expect(transcript).to_have_value(fixtures[0]["transcript"])
-    page.click("#rule-form button[type=submit]")
-    note = page.get_by_test_id("rule-draft").get_by_test_id("basis-note")
-    expect(note).to_contain_text("Applies to everyone except household members.")
-    expect(note).to_contain_text("Vigil treats someone as household only when it saw them")
-    page.locator("[data-confirm]").click()
-    expect(page.locator(".rule-state")).to_contain_text("active")
-    # The transcript stays editable, and a live compile with the API down falls back.
-    transcript.fill(fixtures[0]["transcript"])
-    page.click("#rule-live")
-    expect(page.locator("#rule-result [data-testid=fallback-notice]")).to_contain_text(
-        "Live call failed; recorded result from"
+    fixtures = page.request.get(server_url + "/api/voice/fixtures").json()["fixtures"]
+    assert [f["id"] for f in fixtures] == ["vf_family_bin", "vf_strangers_gate", "vf_named_gate"]
+    for fixture in fixtures:
+        page.get_by_role("button", name=fixture["label"]).click()
+        text = page.get_by_role("textbox", name="Rule text")
+        expect(text).to_have_value(fixture["transcript"])
+        expect(text).to_be_editable()
+        with page.expect_response("**/api/rules/compile") as response:
+            page.get_by_role("button", name="Review rule draft").click()
+        body = response.value.json()
+        assert body["live"] is False
+        draft = page.get_by_role("region", name="Rule draft", exact=True)
+        expect(draft).to_contain_text(body["result"]["applies_label"])
+        expect(draft).to_contain_text(body["result"]["basis_note"])
+        expect(draft).to_contain_text(NO_TEMPLATES)
+        expect(draft.get_by_role("button", name="Confirm rule")).to_be_disabled()
+    expect(draft).to_contain_text("Vigil can't recognise individuals")
+    page.get_by_role("button", name=fixtures[0]["label"]).click()
+    page.get_by_role("button", name="Review rule draft").click()
+    expect(draft).to_contain_text("Applies to everyone except household members.")
+    expect(draft).to_contain_text("Vigil treats someone as household only when it saw them")
+
+
+def test_browser_encodes_16khz_mono_16bit_wav_the_server_accepts(page: Page, tmp_path):
+    """Drive actual React recorder/encoder with fake PCM, never a real microphone."""
+    settings = Settings(
+        _env_file=None,
+        mode="sandbox",
+        MODEL_API_KEY="invalid",
+        meta_cache_only=True,
+        meta_base_url="http://127.0.0.1:9/v1",
+        data_dir=tmp_path,
+        db_path=tmp_path / "state.db",
+        ledger_path=tmp_path / "ledger.db",
+        cache_dir=tmp_path / "cache",
     )
-    expect(page.get_by_test_id("rule-draft").get_by_test_id("applies-badge")).to_have_text(
-        "Applies to: non-household"
+    app = create_app(
+        settings,
+        live_backend=UnreachableBackend(),
+        clock=lambda: datetime(2026, 11, 3, 20, tzinfo=UTC).timestamp(),
     )
-    assert not errors, errors
+    bodies = []
+
+    @app.middleware("http")
+    async def observe_fixture_wav(request, call_next):
+        if request.url.path == "/api/voice/transcribe" and request.headers.get(
+            "content-type", ""
+        ).startswith("audio/wav"):
+            bodies.append(await request.body())
+        return await call_next(request)
+
+    page.add_init_script("""(() => {
+      const probe={stopped:0,closed:0,node:null};window.vigilAudioFixture=probe;
+      Object.defineProperty(navigator,'mediaDevices',{configurable:true,value:{
+        getUserMedia:async()=>({getTracks:()=>[{stop:()=>probe.stopped++}]})
+      }});
+      window.AudioContext=class {
+        sampleRate=48000;state='running';destination={};
+        createMediaStreamSource(){return {connect(){},disconnect(){}};}
+        createScriptProcessor(){const node={connect(){},disconnect(){},onaudioprocess:null};
+          probe.node=node;return node;}
+        async close(){this.state='closed';probe.closed++;}
+      };
+      probe.feed=seconds=>{const samples=new Float32Array(48000*seconds);
+        for(let i=0;i<samples.length;i++)samples[i]=.5*Math.sin(2*Math.PI*440*i/48000);
+        probe.node.onaudioprocess({inputBuffer:{getChannelData:()=>samples}});};
+    })()""")
+    with running_app(app) as url:
+        page.goto(url + "/next/#/rules")
+        wait_ready(page)
+        page.get_by_role("button", name="Record a voice rule").click()
+        dialog = page.get_by_role("dialog", name="Voice rule", exact=True)
+        dialog.get_by_role("button", name="Start microphone").click()
+        expect(dialog.get_by_role("button", name="Stop and transcribe")).to_be_visible()
+        page.evaluate("window.vigilAudioFixture.feed(2)")
+        with page.expect_response("**/api/voice/transcribe") as result:
+            dialog.get_by_role("button", name="Stop and transcribe").click()
+        assert result.value.status == 200
+        assert result.value.json()["result"]["transcript"] == ""
+        page.get_by_role("button", name="Record a voice rule").click()
+        dialog.get_by_role("button", name="Start microphone").click()
+        expect(dialog.get_by_role("button", name="Stop and transcribe")).to_be_visible()
+        with page.expect_response("**/api/voice/transcribe") as limit:
+            page.evaluate("window.vigilAudioFixture.feed(31)")
+        assert limit.value.status == 200
+        assert len(bodies) == 2
+        first, long = bodies
+        assert first[:4] == b"RIFF"
+        assert first[8:12] == b"WAVE"
+        assert struct.unpack_from("<HHI", first, 20) == (1, 1, 16000)
+        assert struct.unpack_from("<H", first, 34)[0] == 16
+        assert struct.unpack_from("<I", first, 40)[0] == 2 * 16000 * 2
+        assert len(first) == 44 + 2 * 16000 * 2
+        assert len(long) == 44 + 30 * 16000 * 2 < 2 * 1024 * 1024
+        assert page.evaluate("window.vigilAudioFixture.stopped") == 2
+        assert page.evaluate("window.vigilAudioFixture.closed") == 2
+        fallback = page.request.post(
+            url + "/api/voice/transcribe?live=1", data=first, headers={"content-type": "audio/wav"}
+        )
+        assert fallback.status == 200
+        assert fallback.json()["notice"].startswith("Live call failed")
 
 
-def test_browser_encodes_16khz_mono_16bit_wav_the_server_accepts(
-    page: Page, server_url: str
-) -> None:
-    """FR-022: Web Audio samples at 48 kHz become a 16 kHz mono PCM16 WAV; 30 s < 2 MB."""
-    page.goto(server_url + "/")
-    wait_ready(page)
-    info = page.evaluate(
-        """async () => {
-          const v = await import('/voice.js');
-          const rate = 48000, n = rate * 2;
-          const chunk = new Float32Array(n);
-          for (let i = 0; i < n; i++) chunk[i] = 0.5 * Math.sin(2 * Math.PI * 440 * i / rate);
-          const halves = [chunk.subarray(0, n / 2), chunk.subarray(n / 2)];
-          const { blob, seconds } = v.toWav(halves, rate);
-          const dv = new DataView(await blob.arrayBuffer());
-          const tag = (o) => String.fromCharCode(...[0, 1, 2, 3].map((k) => dv.getUint8(o + k)));
-          const long = v.toWav([new Float32Array(rate * 31)], rate);
-          const post = async (body, live) => {
-            const r = await fetch('/api/voice/transcribe' + (live ? '?live=1' : ''),
-              { method: 'POST', headers: { 'content-type': 'audio/wav' }, body });
-            return { status: r.status, body: await r.json() };
-          };
-          return {
-            riff: tag(0), wave: tag(8), fmt: dv.getUint16(20, true),
-            channels: dv.getUint16(22, true), rate: dv.getUint32(24, true),
-            bits: dv.getUint16(34, true), data: dv.getUint32(40, true), size: blob.size,
-            seconds, type: blob.type, longSize: long.blob.size, longSeconds: long.seconds,
-            cached: await post(blob, false), live: await post(blob, true),
-          };
-        }"""
-    )
-    assert (info["riff"], info["wave"]) == ("RIFF", "WAVE")
-    assert (info["fmt"], info["channels"], info["rate"], info["bits"]) == (1, 1, 16000, 16)
-    assert info["data"] == 2 * 16000 * 2
-    assert info["size"] == 44 + info["data"]
-    assert info["seconds"] == 2
-    assert info["type"] == "audio/wav"
-    assert info["longSeconds"] == 30  # trimmed to the 30 s limit
-    assert info["longSize"] == 44 + 30 * 16000 * 2 < 2 * 1024 * 1024  # about 0.96 MB
-    assert info["cached"]["status"] == 200
-    assert info["cached"]["body"]["result"]["transcript"] == ""
-    assert info["live"]["status"] == 200  # API down: degrades, never blanks
-    assert info["live"]["body"]["notice"].startswith("Live call failed")
+def test_a_prime_and_c_contrast_cards(page: Page, server_url):
+    household = _visit(page, server_url, "v_ap")
+    expect(household.locator(".visit-heading .v-verdict")).to_contain_text("Normal")
+    expect(household.locator(".visit-event-list")).to_contain_text("6:02:28 PM")
+    expect(household.locator(".visit-context")).to_contain_text("egress:front_door_egress")
+    expect(household.locator(".visit-context")).to_contain_text("Household")
+    expect(household.locator(".visit-context")).to_contain_text("r7")
+    expect(household.locator(".visit-context")).to_contain_text("did not fire")
+    external = _visit(page, server_url, "v_c")
+    expect(external.locator(".visit-heading .v-verdict")).to_contain_text("Needs your attention")
+    expect(external.locator(".visit-event-list")).to_contain_text("6:14:05 PM")
+    expect(external.locator(".visit-context")).to_contain_text("perimeter:side_alley")
+    expect(external.locator(".visit-context")).to_contain_text("Arrived from outside")
+    expect(external).to_contain_text("Rule r7 fired")
 
 
-# --- A′ vs C: the same touch of the same gate after dark, opposite outcomes (spec 4) -------
-
-
-def test_a_prime_and_c_contrast_cards(page: Page, server_url: str) -> None:
-    page.goto(f"{server_url}/#/visit/v_ap")
-    wait_ready(page)
-    card = page.get_by_test_id("visit-card")
-    expect(card).to_have_attribute("data-visit", "v_ap")
-    expect(card.get_by_test_id("verdict").first).to_contain_text("Normal")
-    expect(card.locator(".timeline")).to_contain_text("6:02:28 PM")  # touch, after 17:30
-    expect(card.get_by_test_id("roles")).to_contain_text("egress:front_door_egress")
-    expect(card.get_by_test_id("role-chip").first).to_contain_text("Household")
-    expect(card.locator(".rules-fired")).to_have_count(0)
-    card.get_by_text("How this was decided").click()
-    expect(card.get_by_test_id("role-basis")).to_contain_text("egress:front_door_egress")
-    excluded = card.get_by_test_id("rule-excluded")
-    expect(excluded).to_contain_text("r7")
-    expect(excluded).to_contain_text("non-household")
-    expect(excluded).to_contain_text("did not fire")
-
-    page.evaluate("location.hash = '#/visit/v_c'")
-    expect(card).to_have_attribute("data-visit", "v_c")
-    expect(card.get_by_test_id("verdict").first).to_contain_text("Needs your attention")
-    expect(card.locator(".timeline")).to_contain_text("6:14:05 PM")
-    expect(card.get_by_test_id("roles")).to_contain_text("perimeter:side_alley")
-    expect(card.get_by_test_id("role-chip").first).to_contain_text("Arrived from outside")
-    expect(card).to_contain_text("Rule r7 fired")
-    card.get_by_text("How this was decided").click()
-    expect(card.get_by_test_id("role-basis")).to_contain_text("perimeter:side_alley")
-    expect(card.get_by_test_id("rule-excluded")).to_have_count(0)
-
-
-def test_this_was_expected_is_feedback_only(page: Page, server_url: str) -> None:
-    page.goto(f"{server_url}/#/visit/v_b")
-    wait_ready(page)
-    card = page.get_by_test_id("visit-card")
-    card.get_by_test_id("feedback-expected").click()
-    expect(card.get_by_test_id("feedback-note")).to_contain_text("never changes a verdict")
-    expect(card.get_by_test_id("verdict").first).to_contain_text("Noteworthy")
+def test_this_was_expected_is_feedback_only(page: Page, server_url):
+    card = _visit(page, server_url, "v_b")
+    card.get_by_role("button", name="This was expected").click()
+    expect(card.locator(".app-notice")).to_contain_text("never changes a verdict")
+    expect(card.locator(".visit-heading .v-verdict")).to_contain_text("Noteworthy")

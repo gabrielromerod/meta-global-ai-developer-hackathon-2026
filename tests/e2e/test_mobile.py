@@ -30,14 +30,16 @@ def phone(browser: Browser) -> Iterator[Page]:
 def test_verdict_and_first_sentence_visible_without_scrolling(
     phone: Page, server_url: str, visit_id: str, tmp_path: Path
 ) -> None:
-    phone.goto(f"{server_url}/#/visit/{visit_id}")
+    phone.goto(f"{server_url}/next/#/visit/{visit_id}")
     wait_ready(phone)
     assert phone.evaluate("window.scrollY") == 0
     card = phone.get_by_test_id("visit-card")
-    verdict = card.get_by_test_id("verdict").first
-    first = card.locator("[data-testid=story] .sentence .text").first
+    verdict = card.locator(".visit-heading .v-verdict").first
+    first = card.locator(".visit-first")
     expect(verdict).to_be_visible()
     expect(first).to_be_visible()
+    detail = phone.request.get(f"{server_url}/api/ui/visits/{visit_id}").json()
+    expect(first).to_have_text(detail["first_sentence"])
     vbox = verdict.bounding_box()
     sbox = first.bounding_box()
     assert vbox is not None
@@ -47,20 +49,20 @@ def test_verdict_and_first_sentence_visible_without_scrolling(
     assert sbox["y"] + sbox["height"] <= VIEWPORT["height"], sbox
     # Icon plus word, never colour alone.
     expect(verdict.locator("svg")).to_be_visible()
-    assert verdict.locator(".verdict-word").inner_text().strip()
+    assert verdict.locator("span").inner_text().strip()
     # No horizontal scroll at phone width.
     assert phone.evaluate("document.documentElement.scrollWidth") <= VIEWPORT["width"] + 1
     phone.screenshot(path=str(tmp_path / f"mobile_{visit_id}.png"))
 
 
 def test_legend_readable_on_phone(phone: Page, server_url: str) -> None:
-    phone.goto(f"{server_url}/#/visit/v_c")
+    phone.goto(f"{server_url}/next/#/visit/v_c")
     wait_ready(phone)
-    legend = phone.get_by_test_id("legend")
+    legend = phone.locator(".twin-gap-summary")
     legend.scroll_into_view_if_needed()
     expect(legend).to_be_visible()
     expect(legend).to_contain_text("Not observed")
     size = phone.evaluate(
-        "parseFloat(getComputedStyle(document.querySelector('.legend-item span')).fontSize)"
+        "parseFloat(getComputedStyle(document.querySelector('.twin-gap-summary')).fontSize)"
     )
     assert size >= 11

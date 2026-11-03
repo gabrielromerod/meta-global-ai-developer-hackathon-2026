@@ -453,6 +453,120 @@ def test_role_words_caught(text: str) -> None:
     assert checks(res) == {ROLE_CHECK}
 
 
+def evening_ledger(role: str = "external_visitor", basis: str = "perimeter:side_alley"):
+    """role_ledger shifted so that e17 (the side-gate touch) is at 6:14 PM."""
+    return role_ledger(role, basis).model_copy(update={"session_start": START - timedelta(hours=4)})
+
+
+def only(text: str, ids: tuple[str, ...] = ("e17",)) -> dict:
+    """A one-sentence draft (no gap placement), for the 6:14 PM evening ledger."""
+    return {"verdict_proposal": "noteworthy", "sentences": [{"text": text, "event_ids": [*ids]}]}
+
+
+def test_evening_ledger_baseline_passes() -> None:
+    assert validate(only("A person touched the side gate at 6:14 PM."), evening_ledger()).passed
+
+
+def test_role_paraphrase_is_caught() -> None:
+    # F8: the allowed phrase reworded slips past a phrase-only check
+    text = "A person who came out of the house touched the side gate at 6:14 PM."
+    res = validate(only(text), evening_ledger())
+    assert checks(res) == {ROLE_CHECK}
+    assert res.failures[0].sentence_index == 0
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "A person from inside touched the side gate.",
+        "A person from indoors touched the side gate.",
+        "A person who lives here touched the side gate.",
+        "A person from the home touched the side gate.",
+        "A person who came from the street touched the side gate.",
+        "A person who arrived from the street touched the side gate.",
+        "A person from outside touched the side gate.",
+        "A person they were expecting touched the side gate.",
+        "An expected person touched the side gate.",
+        "An unexpected person touched the side gate.",
+        "An invited person touched the side gate.",
+        "A delivery person touched the side gate.",
+        "Someone who came out touched the side gate.",
+        "A recognised person touched the side gate.",
+        "Someone who arrived from outside touched the side gate.",
+        # Second review round: paraphrases that slipped past the first cue list.
+        "A person who stepped out of the residence touched the side gate.",
+        "A person who emerged from the building touched the side gate.",
+        "A person who exited the dwelling touched the side gate.",
+        "A person who walked in off the sidewalk touched the side gate.",
+        "A person who approached from the curb touched the side gate.",
+        "A passer-by touched the side gate.",
+        "An unannounced person touched the side gate.",
+        "An anticipated person touched the side gate.",
+        "A scheduled arrival touched the side gate.",
+        "A person from within the property touched the side gate.",
+        "A person from beyond the property line touched the side gate.",
+        "A local touched the side gate.",
+        "An occupier touched the side gate.",
+    ],
+)
+def test_role_cues_caught(text: str) -> None:
+    for role, basis in [
+        ("external_visitor", "perimeter:side_alley"),
+        ("household_insider", "egress:front_door_egress"),
+        ("unknown", "origin_null:t1"),
+    ]:
+        res = validate(first(text), role_ledger(role, basis))
+        assert checks(res) == {ROLE_CHECK}, (text, role, res.failures)
+
+
+def test_ledger_names_with_cue_words_are_not_role_claims() -> None:
+    ledger = role_ledger("household_insider", "egress:front_door_egress")
+    events = [
+        e.model_copy(update={"target": "side_door_egress"}) if e.id == "e16" else e
+        for e in ledger.events
+    ]
+    ledger = ledger.model_copy(
+        update={
+            "events": events,
+            "region_names": {"shed_back": "behind the house"},
+            "protected_objects": [
+                ProtectedObject(
+                    id="po_side_gate",
+                    camera_id="side_left",
+                    label="side gate",
+                    bbox=Box(x1=0, y1=0, x2=1, y2=1),
+                )
+            ],
+        }
+    )
+    d = good_draft()
+    d["sentences"][0] = {
+        "text": "Someone who came out of the house entered the side door egress area on the "
+        "Left side camera.",
+        "event_ids": ["e16"],
+    }
+    d["sentences"][1] = {"text": "They walked behind the house.", "event_ids": ["e18"]}
+    res = validate(d, ledger)
+    assert res.passed, res.failures
+
+
+@pytest.mark.parametrize(
+    "text",
+    [
+        "At 6:14 p.m. Sam touched the side gate.",
+        "6:14 p.m. Sam touched the side gate.",
+        "At 6:14 PM Sam touched the side gate.",
+        "6:14 PM. Sam touched the side gate.",
+        "A person touched the side gate! Sam was there.",
+        "A person touched the side gate? Sam was there.",
+        "A person touched the side gate. Then they left.",
+    ],
+)
+def test_names_after_times_or_stops_caught(text: str) -> None:
+    res = validate(only(text), evening_ledger())
+    assert checks(res) == {ROLE_CHECK}, res.failures
+
+
 def test_role_word_lists_cover_spec_terms() -> None:
     words = set(ROLE_BANNED_WORDS)
     for w in ("household", "family", "resident", "owner", "guest", "visitor", "courier",
@@ -490,9 +604,11 @@ def test_names_caught(text: str) -> None:
         "They walked out of the Left side camera's view toward the shed.",
         "They walked toward the Side Gate.",  # protected object label in the ledger
         "They walked toward the area Behind The Shed.",  # region name in the ledger
-        "They stopped. Then they walked toward the shed.",  # sentence-initial after a stop
         '"They" walked toward the shed.',
+        "(They walked toward the shed.)",
         "They walked out of view at 10:14 P.M. toward the shed.",
+        "They walked toward the shed at 10:14 P.M.",
+        "They stopped. then they walked toward the shed.",  # lower case after a stop is fine
     ],
 )
 def test_allowed_capitalised_tokens_pass(text: str) -> None:

@@ -17,10 +17,14 @@
    basis is ``egress:<zone>``; ``unknown`` has none). A sentence with a role phrase must cite
    at least one event, and every cited event must belong to a subject holding the mapped
    role (subject by ``subject_id``, else by track; with no subject the event's own
-   ``actor_role``, missing = ``unknown``). With the phrases removed, no word of
-   ``config/role_banned_words.json`` may remain. No names: a capitalised token that is not
-   sentence-initial must be a camera, zone, region or object name in the ledger, a weekday,
-   a month, or AM/PM (clock times are taken out first).
+   ``actor_role``, missing = ``unknown``). With the phrases and the ledger's own camera, zone,
+   region and object names removed, no role word (``words``) and no origin or role cue
+   (``cues``: "house", "inside", "came out", "from the street", "expected"...) of
+   ``config/role_banned_words.json`` may remain, so a paraphrase of a role phrase fails. No
+   names: a capitalised token other than the sentence's first word must be a camera, zone,
+   region or object name in the ledger, a weekday, a month, or AM/PM. Clock times are masked
+   whole first ("p.m." with its dot), and a '.', '!' or '?' inside a story sentence does not
+   make the next word sentence-initial.
 
 All failures are collected (not just the first) so the single retry gets the full list.
 Check 7 failures use ``ROLE_CHECK`` (``banned_word`` until the shared ``ValidationFailure``
@@ -115,17 +119,37 @@ def load_role_banned_words(path: Path | str = ROLE_BANNED_WORDS_PATH) -> tuple[s
     return tuple(w.lower() for w in items)
 
 
+def load_role_cues(path: Path | str = ROLE_BANNED_WORDS_PATH) -> tuple[str, ...]:
+    """Origin and role cues (``cues`` in config/role_banned_words.json): paraphrases of a role."""
+    raw = json.loads(Path(path).read_text(encoding="utf-8"))
+    items = raw.get("cues", []) if isinstance(raw, dict) else []
+    return tuple(w.lower() for w in items)
+
+
+def _phrase_alternation(items: tuple[str, ...]) -> re.Pattern[str]:
+    """Whole words or phrases, longest first; a space matches any run of whitespace."""
+    alts = [r"\s+".join(map(re.escape, w.split())) for w in sorted(items, key=len, reverse=True)]
+    return re.compile(r"\b(" + "|".join(alts) + r")\b", re.I) if alts else re.compile(r"(?!)")
+
+
 ROLE_PHRASES: tuple[RolePhrase, ...] = load_role_phrases()
 ROLE_BANNED_WORDS: tuple[str, ...] = load_role_banned_words()
-_ROLE_WORD_RE = re.compile(
-    r"\b("
-    + "|".join(
-        r"\s+".join(map(re.escape, w.split()))
-        for w in sorted(ROLE_BANNED_WORDS, key=len, reverse=True)
-    )
-    + r")\b",
-    re.I,
-)
+ROLE_CUES: tuple[str, ...] = load_role_cues()
+_ROLE_WORD_RE = _phrase_alternation(ROLE_BANNED_WORDS)
+_ROLE_CUE_RE = _phrase_alternation(ROLE_CUES)
+
+_ID_PREFIXES = ("po_", "zone_", "line_", "to_", "from_")
+"""Prefixes of protected-object, zone, line and exit-polygon ids that are not part of a name."""
+
+
+def humanise_id(ident: str) -> str:
+    """'po_side_gate' -> 'side gate', 'to_shed_back' -> 'shed back' (one prefix stripped)."""
+    for prefix in _ID_PREFIXES:
+        if ident.startswith(prefix) and len(ident) > len(prefix):
+            ident = ident[len(prefix) :]
+            break
+    return " ".join(ident.replace("_", " ").replace("-", " ").split())
+
 
 WEEKDAYS = [
     "monday",
@@ -333,8 +357,8 @@ def _name_tokens(text: str) -> set[str]:
     return {t.lower() for t in _TOKEN_RE.findall(text.replace("_", " ").replace("-", " "))}
 
 
-def allowed_capitalised(ledger: VisitLedger) -> frozenset[str]:
-    """Lower-cased tokens a story may capitalise mid-sentence (camera, zone, object names)."""
+def ledger_names(ledger: VisitLedger) -> list[str]:
+    """Every camera, zone, region and object name or id the ledger holds (non-empty)."""
     names: list[str] = [*ledger.camera_names, *ledger.camera_names.values()]
     names += [*ledger.region_names, *ledger.region_names.values()]
     for p in ledger.protected_objects:
@@ -343,10 +367,29 @@ def allowed_capitalised(ledger: VisitLedger) -> frozenset[str]:
         names += [e.camera_id, e.target or ""]
     for g in ledger.gaps:
         names += [g.region_id or "", g.from_camera or "", g.to_camera or ""]
+    return [n for n in names if n.strip()]
+
+
+def allowed_capitalised(ledger: VisitLedger) -> frozenset[str]:
+    """Lower-cased tokens a story may capitalise mid-sentence (camera, zone, object names)."""
     out: set[str] = set(_ALWAYS_ALLOWED)
-    for n in names:
+    for n in ledger_names(ledger):
         out |= _name_tokens(n)
     return frozenset(out)
+
+
+def _ledger_name_re(ledger: VisitLedger) -> re.Pattern[str] | None:
+    """Ledger names as written ('side_door_egress') or spelled out ('side door egress')."""
+    forms: set[str] = set()
+    for n in ledger_names(ledger):
+        for form in (n, humanise_id(n)):
+            words = re.split(r"[\s_\-]+", form.strip().lower())
+            if any(words):
+                forms.add(r"[\s_\-]+".join(re.escape(w) for w in words if w))
+    if not forms:
+        return None
+    alts = sorted(forms, key=len, reverse=True)
+    return re.compile(r"(?<![\w])(" + "|".join(alts) + r")(?![\w])", re.I)
 
 
 def subject_index(ledger: VisitLedger) -> tuple[dict[str, Subject], dict[str, Subject]]:
@@ -371,8 +414,9 @@ def _check_roles(
     ledger: VisitLedger,
     allowed: frozenset[str],
     failures: list[ValidationFailure],
+    name_re: re.Pattern[str] | None = None,
 ) -> None:
-    """Check 7: role phrases backed by cited subjects, no role words, no names."""
+    """Check 7: role phrases backed by cited subjects, no role words or cues, no names."""
 
     def fail(detail: str) -> None:
         failures.append(ValidationFailure(check=ROLE_CHECK, sentence_index=idx, detail=detail))
@@ -395,31 +439,47 @@ def _check_roles(
                     f"role claim '{rp.phrase}' needs a role basis {'/'.join(rp.basis_prefixes)}*"
                     f"; the subject of {e.id} has {basis or 'none'}"
                 )
+    # ledger names ('front door egress', 'behind the house') are places, never role claims
+    if name_re is not None:
+        rest = name_re.sub(" ", rest)
     words = sorted({" ".join(m.group(0).lower().split()) for m in _ROLE_WORD_RE.finditer(rest)})
     if words:
         fail(
             f"uses {', '.join(words)}; Vigil does not identify anyone: say 'a person', 'they' "
             "or a role phrase the ledger backs"
         )
-    # names: capitalised tokens that are not sentence-initial and not known names
+    cues = sorted({" ".join(m.group(0).lower().split()) for m in _ROLE_CUE_RE.finditer(rest)})
+    if cues:
+        fail(
+            f"uses {', '.join(cues)}; where a person came from or whether they were expected "
+            "may only be said with a role phrase the ledger backs, word for word"
+        )
+    # names: capitalised tokens that are not the sentence's first word and not known names.
+    # Clock times are masked whole ("p.m." with its dot) by a non-blank, so the word after a
+    # leading time is not first; a '.', '!' or '?' inside a sentence starts nothing new.
     masked = text
     for m in _TIME_RE.finditer(text):
         if find_clock_times(m.group(0)):
-            end = m.end() - 1 if m.group(0).endswith(".") else m.end()  # keep a full stop
-            masked = masked[: m.start()] + " " * (end - m.start()) + masked[end:]
+            masked = masked[: m.start()] + "#" * (m.end() - m.start()) + masked[m.end() :]
     names: list[str] = []
+    restarts: list[str] = []
     for m in _TOKEN_RE.finditer(masked):
         tok = m.group(0)
         if not tok[0].isupper() or tok.lower() in allowed or _BANNED_RE.fullmatch(tok):
             continue
         before = masked[: m.start()].rstrip(_OPENERS)
-        if not before or before[-1] in ".!?":
-            continue  # sentence-initial
-        names.append(tok)
+        if not before:
+            continue  # the sentence's first word
+        (restarts if before[-1] in ".!?" else names).append(tok)
     if names:
         fail(
             f"capitalised word(s) {', '.join(dict.fromkeys(names))} look like names; the ledger "
             "has no names"
+        )
+    if restarts:
+        fail(
+            f"'{restarts[0]}' starts a second sentence inside one; write one sentence per entry "
+            "(a capitalised word after '.', '!' or '?' is checked as a name)"
         )
 
 
@@ -445,6 +505,7 @@ def validate(draft: Any, ledger: VisitLedger, attempt: int = 1) -> ValidationRes
     events = _visit_event_map(ledger)
     cams = _camera_terms(ledger)
     allowed = allowed_capitalised(ledger)
+    name_re = _ledger_name_re(ledger)
 
     for i, s in enumerate(parsed.sentences):
         if not s.text.strip():
@@ -503,7 +564,7 @@ def validate(draft: Any, ledger: VisitLedger, attempt: int = 1) -> ValidationRes
                 )
             )
         # 7. role claims, role words and names
-        _check_roles(i, s.text, cited, ledger, allowed, failures)
+        _check_roles(i, s.text, cited, ledger, allowed, failures, name_re)
 
     # 6. gap ids and placements
     visit_gaps = {g.id for g in ledger.gaps if g.visit_id == ledger.visit.id}

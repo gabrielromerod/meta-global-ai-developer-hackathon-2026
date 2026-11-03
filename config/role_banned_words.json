@@ -22,5 +22,26 @@
     "nanny", "babysitter", "housekeeper", "maid", "cleaner", "gardener", "landscaper",
     "plumber", "electrician", "contractor", "handyman", "repairman", "technician",
     "employee", "worker", "workers", "staff"
+  ],
+  "$cues_comment": "Origin and role cues: paraphrases of a role phrase ('a person who came out of the house') that state where a subject came from or whether they were expected. Checked after the allowed role phrases and every camera, zone, region and object name in the ledger are masked, so 'front door egress' or 'behind the house' as ledger names never fail. Whole words or phrases (spaces match any whitespace), case-insensitive. Identity and judgement words (intruder, suspicious) are check 5.",
+  "cues": [
+    "house", "houses", "home", "homes", "indoors", "indoor", "inside",
+    "lives", "lived", "live here", "living here", "lives here",
+    "came out", "come out", "comes out", "coming out",
+    "came from", "come from", "comes from", "coming from",
+    "arrived from", "arrives from", "arriving from",
+    "from the street", "from the road", "from the sidewalk", "from the pavement",
+    "off the street", "from outside", "from off",
+    "expected", "unexpected", "expecting", "expects",
+    "invited", "uninvited", "invite", "invitee",
+    "delivery person", "delivery driver",
+    "recognised", "recognized", "recognisable", "recognizable", "identified",
+    "belongs here", "lets themselves in", "let themselves in",
+    "residence", "residences", "dwelling", "dwellings", "the building",
+    "stepped out", "steps out", "stepping out", "emerged", "emerges", "emerging",
+    "exited the", "exits the", "walked in off", "came in off", "the curb", "the kerb",
+    "passer-by", "passers-by", "passerby", "passersby", "unannounced", "announced",
+    "anticipated", "scheduled", "within the property", "beyond the property", "property line",
+    "a local", "locals", "occupier", "occupiers"
   ]
 }

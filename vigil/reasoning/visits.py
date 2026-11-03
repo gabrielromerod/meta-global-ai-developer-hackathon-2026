@@ -25,10 +25,11 @@ links) gets an ``actor_role`` and a ``role_basis`` from evidence only, never fro
 2. an explicit owner check-in binds it -> ``household_insider`` (``checkin:<id>``). Single
    use, never retroactive: when the 120 s after the tap close, it binds the one person chain
    whose first track started in that interval with origin ``null``, ``interior_yard`` or
-   ``perimeter``, if exactly one started and every other person in view on any camera at that
-   chain's first frame is ``household_insider``; otherwise nothing;
+   ``perimeter``, if exactly one started and every other subject (person or car) in view on
+   any camera at that chain's first frame is ``household_insider``; otherwise nothing;
 3. first track born in a ``perimeter`` zone in the scope of an Expected Window active at that
-   frame -> ``expected_visitor`` (``window:<id>``);
+   frame -> ``expected_visitor`` (``window:<id>``). Never retroactive: the frame must be at
+   or after both the window's start and its ``created_at``;
 4. born in a ``perimeter`` zone -> ``external_visitor`` (``perimeter:<zone>``);
 5. otherwise ``unknown``: ``ambiguous_link:<track>`` when the first track followed an
    ambiguous link, else ``origin_null:<track>``. The FR-010 group rule (``group:<role>``) is
@@ -597,11 +598,9 @@ def _window_for(
     for w in sorted(windows, key=lambda w: (w.start, w.id)):
         if w.state == "cancelled":
             continue
-        if (
-            not _session_s(w.start, session_start)
-            <= track.t_first
-            < _session_s(w.end, session_start)
-        ):
+        # never retroactive (FR-029): a track seen before the owner set the window is not in it
+        opens = w.start if w.created_at is None else max(w.start, w.created_at)
+        if not _session_s(opens, session_start) <= track.t_first < _session_s(w.end, session_start):
             continue
         if (w.cameras or w.zones) and not (
             track.camera_id in w.cameras or track.origin_zone in w.zones
@@ -785,8 +784,10 @@ def _checkin_target(c: CheckIn, segs: Sequence[_Segment], session_start: datetim
     for other in segs:
         if other is seg or other.role == "household_insider":
             continue
-        if any(t.cls == "person" and t.t_first <= first <= t.t_last for t in other.tracks):
-            return None  # someone not household is in view: the tap cannot pick them out
+        if other.tracks[0].cls == "car" and other.basis.startswith("origin_null:"):
+            continue  # a car parked in view since observation began is scenery, not a tapper
+        if any(t.cls in SUBJECT_CLASSES and t.t_first <= first <= t.t_last for t in other.tracks):
+            return None  # a non-household subject (person or car) is in view: ambiguous tap
     return seg.tracks[0]
 
 

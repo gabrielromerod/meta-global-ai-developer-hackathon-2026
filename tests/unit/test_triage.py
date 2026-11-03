@@ -167,3 +167,13 @@ def test_exempt_ids_can_be_passed_explicitly() -> None:
     plain = RuleResult(floor="normal")
     assert summarize(visit, [e], [], plain).protected_touched
     assert not summarize(visit, [e], [], plain, exempt_event_ids={"e1"}).protected_touched
+
+
+def test_plain_rule_result_scoped_out_is_the_case_2_exemption() -> None:
+    """RuleResult (vigil.models) carries scoped_out itself, not only RuleOutcome."""
+    e = _touch("e1", EVENING, "household_insider")
+    visit = Visit(id="v1", t0=EVENING, t1=EVENING + 1, event_ids=["e1"])
+    plain = RuleResult(floor="normal", scoped_out=["e1"])
+    s = summarize(visit, [e], [], plain)
+    assert not s.protected_touched
+    assert forced_escalation(s) is None

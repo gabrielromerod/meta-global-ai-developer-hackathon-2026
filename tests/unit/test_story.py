@@ -179,7 +179,27 @@ def test_template_is_deterministic() -> None:
     assert template_story(scenario_c_ledger()) == template_story(scenario_c_ledger())
 
 
+def test_template_names_zones_in_plain_words() -> None:
+    # exit-polygon ids ('to_side_left', 'from_house_side') read as places, not ids
+    ledger = scenario_c_ledger()
+    targets = {"e16": "to_side_left", "e18": "from_house_side", "e19": "zone_back_yard"}
+    events = [
+        e.model_copy(update={"target": targets[e.id], "type": "enter"}) if e.id in targets else e
+        for e in ledger.events
+    ]
+    ledger = ledger.model_copy(update={"events": events, "visit": ledger.visit})
+    by_event = {s.event_ids[0]: s.text for s in template_story(ledger)}
+    assert "entered the side left area" in by_event["e16"]
+    assert "entered the house side area" in by_event["e18"]
+    assert "entered the back yard area" in by_event["e19"]
+    assert not any("_" in t or " to " in t.split(" camera")[0] for t in by_event.values())
+    res = validate(StoryDraft(sentences=template_story(ledger)), ledger)
+    assert res.passed, res.failures
+
+
 EVENT_TYPES = ["enter", "exit", "cross", "touch", "removed", "dwell"]
+TARGETS = [None, "po_side_gate", "porch", "side_gate", "w2", "to_side_left", "from_house_side",
+           "zone_back_yard"]  # fmt: skip
 
 
 @st.composite
@@ -198,7 +218,7 @@ def ledgers(draw: st.DrawFn) -> VisitLedger:
                 type=draw(st.sampled_from(EVENT_TYPES)),
                 t0=t,
                 t1=t + 1,
-                target=draw(st.sampled_from([None, "po_side_gate", "porch", "side_gate", "w2"])),
+                target=draw(st.sampled_from(TARGETS)),
                 clip_t0=t,
                 clip_t1=t + 1,
             )

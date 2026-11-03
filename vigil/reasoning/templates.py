@@ -12,7 +12,7 @@ from __future__ import annotations
 
 from vigil.models import Event, StorySentence, VisitLedger
 from vigil.reasoning.clock import format_clock, to_local
-from vigil.reasoning.validator import ROLE_PHRASES, role_and_basis, subject_index
+from vigil.reasoning.validator import ROLE_PHRASES, humanise_id, role_and_basis, subject_index
 
 MAX_SENTENCES = 6
 _PRIORITY = {"removed": 0, "touch": 1, "cross": 2, "dwell": 3, "enter": 4, "exit": 5}
@@ -40,13 +40,6 @@ def _select(events: list[Event], limit: int) -> list[Event]:
             break
         keep.add(e.id)
     return [e for e in events if e.id in keep]
-
-
-def _humanise(ident: str) -> str:
-    for prefix in ("po_", "zone_", "line_"):
-        if ident.startswith(prefix):
-            ident = ident[len(prefix) :]
-    return ident.replace("_", " ").replace("-", " ").strip()
 
 
 def _clock(ledger: VisitLedger, t: float) -> str:
@@ -103,7 +96,7 @@ def template_story(
             else:
                 subj = "They"
             prev_subject = key
-        target = labels.get(e.target or "") or _humanise(e.target or "")
+        target = labels.get(e.target or "") or humanise_id(e.target or "")
         match e.type:
             case "enter":
                 where = f"entered the {target} area" if target else "came into view"

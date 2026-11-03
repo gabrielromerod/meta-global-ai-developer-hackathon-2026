@@ -32,8 +32,6 @@ from collections.abc import Collection, Iterable, Sequence
 from datetime import datetime, time
 from pathlib import Path
 
-from pydantic import Field
-
 from vigil.models import (
     APPLIES_TO_ROLES,
     SEVERITY_ORDER,
@@ -53,11 +51,8 @@ PROTECTED_PREFIX = "po_"
 
 
 class RuleOutcome(RuleResult):
-    """:class:`RuleResult` plus the 9.4 case-2 events (module-local; requested for models)."""
-
-    scoped_out: list[str] = Field(default_factory=list)
-    """Protected-object events by a ``household_insider`` that every in-force rule excludes
-    (case 2): they keep the floor normal and do not force escalation (FR-013)."""
+    """Kept for callers that import it: :class:`RuleResult` now carries ``scoped_out`` (the
+    9.4 case-2 household events that keep the floor normal and do not force escalation)."""
 
 
 def load_rules(path: Path | str = DEFAULT_RULES_PATH) -> list[Rule]:

@@ -333,6 +333,40 @@ def test_window_scope_and_timing(cfg: Config) -> None:
     assert role_for(window(), origin=None) == (UNK, "origin_null:h")
 
 
+def test_window_is_never_retroactive(cfg: Config) -> None:
+    # The owner sets the window at 12:00:59 with a start of 12:00:00; a perimeter track at
+    # 12:00:30 was seen before the window existed, so it stays an external visitor.
+    noon = START.replace(hour=12)
+    w = ExpectedWindow(
+        id="w1",
+        start=noon,
+        end=noon + timedelta(hours=1),
+        created_at=noon + timedelta(seconds=59),
+        state="active",
+    )
+    start = noon - timedelta(hours=1)  # session t=0 at 11:00
+    t = (noon - start).total_seconds() + 30
+    out = assemble_visits(
+        [], [trk("h", "front", t, t + 20, "driveway_entry")], {}, [], cfg,
+        windows=[w], session_start=start,
+    )  # fmt: skip
+    assert roles(out)["h"] == (EXT, "perimeter:driveway_entry")
+    # a track after created_at is covered
+    t2 = (noon - start).total_seconds() + 60
+    out = assemble_visits(
+        [], [trk("h", "front", t2, t2 + 20, "driveway_entry")], {}, [], cfg,
+        windows=[w], session_start=start,
+    )  # fmt: skip
+    assert roles(out)["h"] == (EXP, "window:w1")
+    # created_at before start: start still rules
+    early = w.model_copy(update={"created_at": noon - timedelta(hours=2)})
+    out = assemble_visits(
+        [], [trk("h", "front", t, t + 20, "driveway_entry")], {}, [], cfg,
+        windows=[early], session_start=start,
+    )  # fmt: skip
+    assert roles(out)["h"] == (EXP, "window:w1")
+
+
 def test_windows_need_a_session_start(cfg: Config) -> None:
     with pytest.raises(ValueError, match="session_start"):
         assemble_visits([], [trk("h", "front", 1, 2)], {}, [], cfg, windows=[window()])
@@ -389,6 +423,41 @@ def test_unknown_in_view_blocks_the_checkin(cfg: Config) -> None:
     tracks = [trk("x", "backyard", 50, 400, None), trk("h", "side_left", 150, 200)]
     out = run(cfg, tracks, checkins=[checkin(t=100)])
     assert roles(out)["h"] == (UNK, "origin_null:h")
+
+
+def test_external_car_in_view_blocks_the_checkin(cfg: Config) -> None:
+    # Cars are subjects too: an external car on the drive when the person appears means the
+    # tap cannot tell who tapped. ("driveway" is not a configured zone: interior_yard.)
+    car = Track(
+        id="front-car-1",
+        camera_id="front",
+        cls="car",
+        t_first=10,
+        t_last=200,
+        origin_zone="driveway_entry",
+    )
+    person = trk("front-person-1", "front", 30, 90, "driveway")
+    out = run(cfg, [car, person], checkins=[checkin(t=0)])
+    got = roles(out)
+    assert got["front-car-1"] == (EXT, "perimeter:driveway_entry")
+    assert got["front-person-1"] == (UNK, "origin_null:front-person-1")
+    assert out.checkins[0].bound_subject is None
+
+
+def test_parked_car_in_view_since_session_start_does_not_block_the_checkin(cfg: Config) -> None:
+    # A car in view from the first frame (origin null: parked, never seen arriving) is scenery,
+    # not someone who could have tapped; it must not stop every check-in while it stays parked.
+    parked = Track(id="front-car-1", camera_id="front", cls="car", t_first=0, t_last=3000)
+    person = trk("front-person-1", "front", 30, 90, "driveway")
+    out = run(cfg, [parked, person], checkins=[checkin(t=0)])
+    assert roles(out)["front-person-1"] == (HH, "checkin:c1")
+
+
+def test_unknown_person_in_view_still_blocks_the_checkin(cfg: Config) -> None:
+    other = trk("front-person-9", "front", 0, 3000, None)
+    person = trk("front-person-1", "front", 30, 90, "driveway")
+    out = run(cfg, [other, person], checkins=[checkin(t=0)])
+    assert roles(out)["front-person-1"] == (UNK, "origin_null:front-person-1")
 
 
 def test_checkin_is_single_use(cfg: Config) -> None:

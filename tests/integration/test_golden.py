@@ -309,6 +309,10 @@ def test_golden_b_prime_inside_delivery_window_is_expected_visitor(golden) -> No
         ({"end": datetime.fromisoformat("2026-11-02T16:20:04-08:00")}, "ended 1 s before"),
         ({"cameras": ["side_left"]}, "camera outside its scope"),
         ({"state": "cancelled"}, "cancelled"),
+        (
+            {"created_at": datetime.fromisoformat("2026-11-02T16:30:00-08:00")},
+            "set after the courier arrived (never retroactive)",
+        ),
     ],
 )
 def test_golden_b_prime_outside_window_scope_is_external(

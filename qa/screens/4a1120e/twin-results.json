@@ -1,0 +1,94 @@
+{
+  "sha": "4a1120e",
+  "url": "http://127.0.0.1:8102/next/src/twin/preview.html",
+  "viewports": [
+    {
+      "name": "air13",
+      "width": 1470,
+      "height": 870,
+      "consoleErrors": [],
+      "failedRequests": [],
+      "status": "passed"
+    },
+    {
+      "name": "pro14",
+      "width": 1512,
+      "height": 895,
+      "consoleErrors": [],
+      "failedRequests": [],
+      "status": "passed"
+    },
+    {
+      "name": "pro16",
+      "width": 1728,
+      "height": 1030,
+      "consoleErrors": [],
+      "failedRequests": [],
+      "status": "passed"
+    },
+    {
+      "name": "windows100",
+      "width": 1920,
+      "height": 960,
+      "consoleErrors": [],
+      "failedRequests": [],
+      "status": "passed"
+    },
+    {
+      "name": "windows125",
+      "width": 1536,
+      "height": 730,
+      "consoleErrors": [],
+      "failedRequests": [],
+      "status": "passed"
+    },
+    {
+      "name": "windows150",
+      "width": 1280,
+      "height": 600,
+      "consoleErrors": [],
+      "failedRequests": [],
+      "status": "passed"
+    },
+    {
+      "name": "laptop",
+      "width": 1366,
+      "height": 650,
+      "consoleErrors": [],
+      "failedRequests": [],
+      "status": "passed"
+    },
+    {
+      "name": "four-three",
+      "width": 1024,
+      "height": 768,
+      "consoleErrors": [],
+      "failedRequests": [],
+      "status": "passed"
+    },
+    {
+      "name": "tablet",
+      "width": 1180,
+      "height": 820,
+      "consoleErrors": [],
+      "failedRequests": [],
+      "status": "passed"
+    },
+    {
+      "name": "ultrawide",
+      "width": 2560,
+      "height": 1000,
+      "consoleErrors": [],
+      "failedRequests": [],
+      "status": "passed"
+    },
+    {
+      "name": "phone",
+      "width": 390,
+      "height": 844,
+      "consoleErrors": [],
+      "failedRequests": [],
+      "status": "passed"
+    }
+  ]
+}

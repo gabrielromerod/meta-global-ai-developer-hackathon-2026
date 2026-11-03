@@ -20,3 +20,6 @@ Initial baseline wall times are approximate; durations come from pytest. Later f
 
 | Home/Attention full offline suite (FIXTURE) | 2026-11-03T03:21:16.8259134-08:00 | 2026-11-03T03:24:10.9967055-08:00 | exit 0; see home task evidence |
 | Home/Attention browser matrix (FIXTURE) | 2026-11-03T03:27:10.4355185-08:00 | 2026-11-03T03:30:51.8486090-08:00 | 22 viewport/theme cases; 0 failures |
+
+| Wave 1 twin: 20 UI tests, build and 11-viewport browser QA | 2026-11-03T03:29:31-08:00 | 2026-11-03T03:30:41-08:00 | PASS; source 4a1120e, 109 screenshots, dark/light, zero console/network/overflow/annotation-overlap errors |
+| Wave 1 twin: full offline Python branch regression | Invocation timestamp not captured; duration 202.31 s | 2026-11-03T03:17:13-08:00 (pytest cache write timestamp) | 1474 passed, 24 E2E deselected, 1 existing Starlette deprecation warning; this is not a main-merge timing record |

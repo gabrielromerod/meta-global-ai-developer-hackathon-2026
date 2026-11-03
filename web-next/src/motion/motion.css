@@ -1,0 +1,23 @@
+.v-motion-frame,
+.v-motion-view {
+  display: flex;
+  flex-direction: column;
+  flex: var(--v-one) var(--v-one) auto;
+  width: var(--v-full);
+  height: var(--v-full);
+  min-width: var(--v-zero);
+  min-height: var(--v-zero);
+}
+.v-motion-frame:focus-visible {
+  outline: var(--v-focus-width) solid var(--v-accent);
+  outline-offset: calc(var(--v-focus-offset) * -1);
+  border-radius: var(--v-radius-sm);
+}
+.v-motion-panel {
+  min-width: var(--v-zero);
+  min-height: var(--v-zero);
+}
+@media (max-width: 640px) {
+  .v-motion-frame,
+  .v-motion-view { height: auto; }
+}

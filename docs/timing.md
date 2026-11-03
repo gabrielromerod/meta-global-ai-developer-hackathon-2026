@@ -32,3 +32,7 @@ Initial baseline wall times are approximate; durations come from pytest. Later f
 | Wave 1 shell round 2 affected UI matrix | 2026-11-03T04:02:08.272000-08:00 | 2026-11-03T04:02:35.931000-08:00 | FIXTURE: 11 viewports, both themes for Clips/Media, keyboard and pointer notification focus, dropdown layering; 0 failures/errors/failed requests. npm test 40 passed; build passed. |
 
 | Complete seven-camera backend regression | 2026-11-03T05:19:21.688151-08:00 | 2026-11-03T05:22:04.148635-08:00 | exit 0; captured command output |
+
+| Clips/Media full offline baseline (FIXTURE) | 2026-11-03T04:12:32.508097-08:00 | 2026-11-03T04:14:57.640011-08:00 | stopped on parent request after partial pytest progress; no final result; source c820bb4; full pre-main suites remain lead-owned |
+| Clips/Media browser matrix (FIXTURE) | 2026-11-03T12:11:57.622Z | 2026-11-03T12:18:17.077Z | source c820bb4; 44 viewport/theme/page cases; 0 failures |
+| Clips/Media final frontend suite/build (FIXTURE) | 2026-11-03T12:24Z | 2026-11-03T12:25Z | minute-resolution command interval; 56 tests passed; TypeScript/Vite build passed; Ruff check/format passed |

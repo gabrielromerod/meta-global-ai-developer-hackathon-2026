@@ -88,6 +88,11 @@ docs/          spec/, requirements/, runbooks/, architecture/, plans/, conventio
 
 ## Testing rules
 
+- **Small QA artifacts (owner decision, Nov 3).** Version only two losslessly compressed
+  final screenshots: `qa/final/home.png` and `qa/final/visit.png`. All tracked repository
+  images together must stay below 10 MB. Other captures belong under ignored `data/qa/`;
+  do not commit per-control or per-viewport screenshot archives. Keep behavior tests and
+  the privacy/metadata checks for the final captures.
 - **TDD.** Write the failing test first, named as in spec 12.1 and the section 3 "Global
   error scenarios" table (e.g. `test_sam_parse_empty`, `test_client_retry`, `test_spend_cap`).
   Use the `vigil-fr-tdd` skill.

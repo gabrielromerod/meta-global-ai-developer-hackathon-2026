@@ -11,6 +11,23 @@ from scripts.ui_evidence import validate_manifest
 from vigil.ingest.media import IMAGE_EXTS, VIDEO_EXTS
 
 ROOT = Path(__file__).resolve().parents[1]
+MAX_IMAGE_BYTES = 10_000_000
+CURATED_QA_IMAGES = {"qa/final/home.png", "qa/final/visit.png"}
+IMAGE_SUFFIXES = IMAGE_EXTS | {".svg", ".gif", ".avif", ".ico"}
+
+
+def image_budget_errors(root: Path, tracked: list[str]) -> list[str]:
+    """Keep all repository images below 10 MB and QA to two final captures."""
+    images = [name for name in tracked if Path(name).suffix.lower() in IMAGE_SUFFIXES]
+    failures = [
+        f"{name}: only qa/final/home.png and qa/final/visit.png may be versioned as QA images"
+        for name in images
+        if name.startswith("qa/") and name not in CURATED_QA_IMAGES
+    ]
+    total = sum((root / name).stat().st_size for name in images)
+    if total >= MAX_IMAGE_BYTES:
+        failures.append(f"Repository images total {total} bytes; must stay below 10 MB")
+    return failures
 
 
 def audit_tree(root: Path, tracked: list[str]) -> list[str]:
@@ -40,10 +57,10 @@ def audit_tree(root: Path, tracked: list[str]) -> list[str]:
 
 
 def main() -> int:
-    tracked = (
-        subprocess.check_output(["git", "ls-files", "-z", "qa"], cwd=ROOT).decode().split("\0")
-    )
-    failures = audit_tree(ROOT, [name for name in tracked if name])
+    tracked = subprocess.check_output(["git", "ls-files", "-z"], cwd=ROOT).decode().split("\0")
+    tracked = [name for name in tracked if name]
+    failures = image_budget_errors(ROOT, tracked)
+    failures.extend(audit_tree(ROOT, [name for name in tracked if name.startswith("qa/")]))
     for failure in failures:
         print("FAIL " + failure)
     print(f"Tracked QA provenance: {len(failures)} failures")

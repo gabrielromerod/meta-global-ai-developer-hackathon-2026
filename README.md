@@ -52,7 +52,7 @@ uv run python scripts/scan_ui_evidence.py
 
 Post-cutover verification: **1,543 backend tests**, **134 frontend tests** and **45 browser tests** pass; the same45 browser cases also pass against the reviewed Docker sandbox. Earlier Linux full offline verification passed1,543 tests with networking disabled before the mechanical route switch. Frontend production build and Ruff pass. These are fixture results, not hardware accuracy, provider billing or physical-device certification. [Browser acceptance](tests/e2e/README.md) maps every original case to the new UI and records stronger privacy/media checks.
 
-Committed screenshots make the repository large. For a code-only checkout, Git's blob filtering and sparse checkout can omit `qa/`; the reviewed evidence stays available in Git. Docker already excludes QA, secrets, raw data and local caches from its build context.
+Only two compact final screenshots are versioned in `qa/final/`. CI caps all repository images below 10 MB and rejects additional QA images. Working captures stay under ignored `data/qa/`. Docker excludes QA, secrets, raw data and local caches.
 
 ## Boundaries and remaining acceptance
 

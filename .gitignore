@@ -45,6 +45,20 @@ node_modules/
 *.tsbuildinfo
 docs/architecture/rendered/
 
+# Only two curated final QA screenshots belong in Git. Working captures stay local.
+qa/**/*.png
+qa/**/*.jpg
+qa/**/*.jpeg
+qa/**/*.webp
+qa/**/*.gif
+qa/**/*.bmp
+qa/**/*.tif
+qa/**/*.tiff
+qa/**/*.avif
+qa/**/*.ico
+!qa/final/home.png
+!qa/final/visit.png
+
 # OS / editor
 .DS_Store
 Thumbs.db

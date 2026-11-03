@@ -88,3 +88,19 @@ def test_today_events_do_not_relabel_the_recorded_evening():
         assert today["date"] == "2026-11-03"
         recorded = api.get("/api/ui/events", params={"date": "2026-11-02"}).json()
         assert recorded["events"]
+
+
+def test_public_twin_and_positions_share_canonical_camera_ids():
+    with client() as api:
+        twin = api.get("/api/ui/twin")
+        assert twin.status_code == 200
+        assert twin.json()["generic_massing"]
+        assert twin.json()["glb_url"] is None
+        assert len(twin.json()["cameras"]) == 7
+        state = api.get("/api/ui/state").json()
+        ids = {c["id"] for c in state["cameras"]}
+        positions = api.get("/api/ui/visits/v_c/positions").json()
+        assert positions["positions"]
+        assert all(set(p["cameras"]) <= ids for p in positions["positions"])
+        assert positions["events"]
+        assert all(e["camera_id"] in ids for e in positions["events"])

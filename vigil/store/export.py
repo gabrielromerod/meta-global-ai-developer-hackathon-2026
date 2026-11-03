@@ -239,13 +239,18 @@ def export_session(session: str, out: Path, *, settings=None, synthetic: bool = 
     )
     twin["synthetic"] = synthetic
     imported_model = settings.data_dir / "spatial" / "model.glb"
-    if imported_model.exists():
+    if imported_model.exists() and cfg.evidence_kind == "fixture":
         from vigil.spatial.glb import load_glb_scene
 
         load_glb_scene(imported_model)  # size, compression and embedded-resource checks
         media["model.glb"] = imported_model
         twin = {**default_twin(cfg), **twin, "glb_url": "/media/model.glb"}
-    twin = _spatial_twin(twin, cfg, settings)
+    if cfg.evidence_kind == "real":
+        from vigil.spatial.public import public_twin
+
+        twin = public_twin(cfg)
+    else:
+        twin = _spatial_twin(twin, cfg, settings)
     return export_bundle(
         out,
         Path(result["db_path"]),

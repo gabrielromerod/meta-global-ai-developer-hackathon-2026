@@ -1,0 +1,150 @@
+{
+  "note": "Stylized diagram; nominal camera placement and dimensions are unmeasured. No compass, textures, neighbours, street layout or identifying features.",
+  "ground": {
+    "min": [
+      -9,
+      -10
+    ],
+    "max": [
+      9,
+      14
+    ]
+  },
+  "site_plan": {
+    "boxes": [
+      {
+        "id": "house",
+        "kind": "building",
+        "min": [
+          -3,
+          0
+        ],
+        "max": [
+          3,
+          7
+        ],
+        "h": 3
+      },
+      {
+        "id": "right_trees",
+        "kind": "tree_barrier",
+        "min": [
+          -6,
+          0
+        ],
+        "max": [
+          -5,
+          11
+        ],
+        "h": 3
+      }
+    ]
+  },
+  "camera_layout": {
+    "front_left_duo": {
+      "position": [
+        3.2,
+        2.6,
+        0
+      ],
+      "look_at": [
+        2,
+        0,
+        -7
+      ],
+      "hfov_deg": 90,
+      "vfov_deg": 55,
+      "range_m": 8
+    },
+    "front_right_duo": {
+      "position": [
+        -3.2,
+        2.6,
+        0
+      ],
+      "look_at": [
+        -2,
+        0,
+        -7
+      ],
+      "hfov_deg": 90,
+      "vfov_deg": 55,
+      "range_m": 8
+    },
+    "doorbell": {
+      "position": [
+        0,
+        1.5,
+        -0.1
+      ],
+      "look_at": [
+        0,
+        0,
+        -3
+      ],
+      "hfov_deg": 90,
+      "vfov_deg": 55,
+      "range_m": 8
+    },
+    "porch": {
+      "position": [
+        0,
+        2.6,
+        -0.1
+      ],
+      "look_at": [
+        0,
+        0,
+        -3
+      ],
+      "hfov_deg": 90,
+      "vfov_deg": 55,
+      "range_m": 8
+    },
+    "side_left": {
+      "position": [
+        3.3,
+        2.4,
+        1
+      ],
+      "look_at": [
+        4,
+        0,
+        7
+      ],
+      "hfov_deg": 90,
+      "vfov_deg": 55,
+      "range_m": 8
+    },
+    "backyard_1": {
+      "position": [
+        3,
+        2.4,
+        7.1
+      ],
+      "look_at": [
+        1,
+        0,
+        12
+      ],
+      "hfov_deg": 90,
+      "vfov_deg": 55,
+      "range_m": 8
+    },
+    "backyard_2": {
+      "position": [
+        -3,
+        2.4,
+        7.1
+      ],
+      "look_at": [
+        -1,
+        0,
+        12
+      ],
+      "hfov_deg": 90,
+      "vfov_deg": 55,
+      "range_m": 8
+    }
+  }
+}

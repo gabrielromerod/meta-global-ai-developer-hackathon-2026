@@ -287,6 +287,36 @@ def consumer_router() -> APIRouter:
     def state(request: Request):
         return ui_state(request)
 
+    @r.get("/ui/twin")
+    def twin(request: Request):
+        from vigil.spatial.public import public_twin
+
+        cfg = request.app.state.config
+        bundle = request.app.state.bundle
+        result = (
+            public_twin(cfg) if cfg else {"generic_massing": True, "glb_url": None, "cameras": []}
+        )
+        if bundle.manifest.get("synthetic"):
+            result["blind_regions"] = bundle.twin.get("blind_regions", [])
+        result["evidence"] = evidence(bundle)
+        return result
+
+    @r.get("/ui/visits/{visit_id}/positions")
+    def positions(visit_id: str, request: Request):
+        bundle = request.app.state.bundle
+        visit = bundle.visit(visit_id)
+        if visit is None:
+            raise HTTPException(404, "Unknown visit")
+        result = views.positions_view(bundle, visit)
+        for position in result["positions"]:
+            position["cameras"] = [camera_id(bundle, c) for c in position["cameras"]]
+        for gap in result["gaps"]:
+            for key in ("from_camera", "to_camera"):
+                if gap.get(key):
+                    gap[key] = camera_id(bundle, gap[key])
+        result["events"] = [e for e in event_rows(bundle) if e["visit_id"] == visit_id]
+        return result
+
     @r.get("/ui/search")
     def search(
         request: Request,

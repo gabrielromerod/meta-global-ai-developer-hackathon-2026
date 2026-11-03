@@ -1,0 +1,108 @@
+{
+  "sha": "f2ca626",
+  "started": "2026-11-03T11:21:38.585Z",
+  "viewports": [
+    {
+      "name": "air13",
+      "width": 1470,
+      "height": 870,
+      "scrollWidth": 1470,
+      "scrollHeight": 870,
+      "theme": "dark",
+      "states": "dark/light, navigation hover/click, configured tabs, notifications, dialogs, keyboard focus, panel scroll"
+    },
+    {
+      "name": "pro14",
+      "width": 1512,
+      "height": 895,
+      "scrollWidth": 1512,
+      "scrollHeight": 895,
+      "theme": "dark",
+      "states": "dark/light, navigation hover/click, configured tabs, notifications, dialogs, keyboard focus, panel scroll"
+    },
+    {
+      "name": "pro16",
+      "width": 1728,
+      "height": 1030,
+      "scrollWidth": 1728,
+      "scrollHeight": 1030,
+      "theme": "dark",
+      "states": "dark/light, navigation hover/click, configured tabs, notifications, dialogs, keyboard focus, panel scroll"
+    },
+    {
+      "name": "win100",
+      "width": 1920,
+      "height": 960,
+      "scrollWidth": 1920,
+      "scrollHeight": 960,
+      "theme": "dark",
+      "states": "dark/light, navigation hover/click, configured tabs, notifications, dialogs, keyboard focus, panel scroll"
+    },
+    {
+      "name": "win125",
+      "width": 1536,
+      "height": 730,
+      "scrollWidth": 1536,
+      "scrollHeight": 730,
+      "theme": "dark",
+      "states": "dark/light, navigation hover/click, configured tabs, notifications, dialogs, keyboard focus, panel scroll"
+    },
+    {
+      "name": "win150",
+      "width": 1280,
+      "height": 600,
+      "scrollWidth": 1280,
+      "scrollHeight": 600,
+      "theme": "dark",
+      "states": "dark/light, navigation hover/click, configured tabs, notifications, dialogs, keyboard focus, panel scroll"
+    },
+    {
+      "name": "laptop",
+      "width": 1366,
+      "height": 650,
+      "scrollWidth": 1366,
+      "scrollHeight": 650,
+      "theme": "dark",
+      "states": "dark/light, navigation hover/click, configured tabs, notifications, dialogs, keyboard focus, panel scroll"
+    },
+    {
+      "name": "four-three",
+      "width": 1024,
+      "height": 768,
+      "scrollWidth": 1024,
+      "scrollHeight": 768,
+      "theme": "dark",
+      "states": "dark/light, navigation hover/click, configured tabs, notifications, dialogs, keyboard focus, panel scroll"
+    },
+    {
+      "name": "tablet",
+      "width": 1180,
+      "height": 820,
+      "scrollWidth": 1180,
+      "scrollHeight": 820,
+      "theme": "dark",
+      "states": "dark/light, navigation hover/click, configured tabs, notifications, dialogs, keyboard focus, panel scroll"
+    },
+    {
+      "name": "ultrawide",
+      "width": 2560,
+      "height": 1000,
+      "scrollWidth": 2560,
+      "scrollHeight": 1000,
+      "theme": "dark",
+      "states": "dark/light, navigation hover/click, configured tabs, notifications, dialogs, keyboard focus, panel scroll"
+    },
+    {
+      "name": "phone",
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "scrollHeight": 1912,
+      "theme": "dark",
+      "states": "dark/light, navigation hover/click, configured tabs, notifications, dialogs, keyboard focus, panel scroll"
+    }
+  ],
+  "errors": [],
+  "failedRequests": [],
+  "finished": "2026-11-03T11:23:26.658Z"
+}

@@ -26,3 +26,6 @@ Initial baseline wall times are approximate; durations come from pytest. Later f
 
 | Wave 1 chat full offline suite | 2026-11-03T03:12:25-08:00 | 2026-11-03T03:15:54-08:00 | 1474 passed, 24 deselected, 208.79 s; one existing Starlette warning; ruff check/format passed |
 | Wave 1 chat final npm tests/build | 2026-11-03T03:17:27-08:00 | 2026-11-03T03:17:35-08:00 | 14 tests passed, TypeScript/Vite build passed |
+
+| Wave 1 shell Python verification | 2026-11-03T03:12:07-08:00 | 2026-11-03T03:16:51-08:00 (completion observed) | REAL logic / FIXTURE inputs: ruff check + format check passed; pytest 1474 passed, 24 deselected, 1 dependency deprecation warning; pytest runtime 212.80s |
+| Wave 1 shell Chromium final state capture | 2026-11-03T03:21:38-08:00 | 2026-11-03T03:23:26-08:00 | FIXTURE: 11 viewports, 448 state PNGs, no desktop document scroll, 0 console errors, 0 failed requests; source f2ca626 |

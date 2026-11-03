@@ -12,6 +12,7 @@ from __future__ import annotations
 import json
 import sqlite3
 from datetime import UTC, datetime
+from pathlib import Path
 from typing import Any
 from zoneinfo import ZoneInfo
 
@@ -62,6 +63,24 @@ def _db_count(tmp_path, table: str) -> int:
         return 0
     finally:
         conn.close()
+
+
+def test_owner_window_accepts_current_inventory_with_an_older_demo_bundle(tmp_path):
+    clock = FakeClock()
+    app, lan = _owner(
+        tmp_path,
+        clock=clock,
+        config_path=Path(__file__).resolve().parents[2] / "config/cameras.yaml",
+    )
+    ids = [camera.id for camera in app.state.config.cameras]
+    assert len(ids) == 7
+    response = lan.post("/api/windows", headers=AUTH, json={**_window(clock), "cameras": ids})
+    assert response.status_code == 200
+    assert response.json()["window"]["cameras"] == ids
+    refused = lan.post(
+        "/api/windows", headers=AUTH, json={**_window(clock), "cameras": ["unknown-camera"]}
+    )
+    assert refused.status_code == 422
 
 
 # --- the attack from the finding --------------------------------------------------------------

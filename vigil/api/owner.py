@@ -221,7 +221,12 @@ def owner_router() -> APIRouter:
         now = guards.now()
         if start < now - timedelta(seconds=START_SKEW_S):
             raise HTTPException(422, "Expected Windows are set before they start (FR-029).")
-        cameras = {c["id"] for c in bundle.cameras}
+        cfg = request.app.state.config
+        cameras = {c.id for c in cfg.cameras} if cfg else {c["id"] for c in bundle.cameras}
+        # Recorded examples retain their legacy identifiers; new owner windows use
+        # the configured home inventory even when the loaded demo bundle is older.
+        if bundle.manifest.get("synthetic"):
+            cameras.update(c["id"] for c in bundle.cameras)
         unknown = [c for c in req.cameras if c not in cameras]
         zones = _known_zones(request)
         if zones is not None:

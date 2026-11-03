@@ -25,3 +25,6 @@ will include the implementation commit SHA after verification.
 - CAMERA-001: No Reolink Home Hub. The three battery cameras use imported clips.
 
 
+
+- QA-INTEGRATION-001 — FIXTURE: snapshot stayed disabled after a metadata seek. Ready/can-play/seek events now update decoded-frame availability; actual MP4 decode/seek/overlay/snapshot E2E passes. Fix: 49782952.
+- QA-INTEGRATION-002 — REAL logic / FIXTURE: full Attention no longer loses normal-history filters or urgent items beyond five. Frontend and API tests failed first, then passed. Fix: 49782952.

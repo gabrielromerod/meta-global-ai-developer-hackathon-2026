@@ -1,0 +1,79 @@
+{
+  "sha": "motion-r2-red-762c93d",
+  "started": "2026-11-03T13:47:27.641Z",
+  "errors": [],
+  "failedRequests": [],
+  "baseline": {
+    "queries": [],
+    "total": 0
+  },
+  "mounted": {
+    "queries": [
+      {
+        "query": "(prefers-reduced-motion)",
+        "count": 1
+      },
+      {
+        "query": "(prefers-reduced-motion: reduce)",
+        "count": 1
+      }
+    ],
+    "total": 2
+  },
+  "preferences": [
+    {
+      "preference": "reduce",
+      "sameInput": true,
+      "focused": true,
+      "draft": "Draft survives device preference changes.",
+      "listeners": {
+        "queries": [
+          {
+            "query": "(prefers-reduced-motion)",
+            "count": 1
+          },
+          {
+            "query": "(prefers-reduced-motion: reduce)",
+            "count": 1
+          }
+        ],
+        "total": 2
+      }
+    },
+    {
+      "preference": "no-preference",
+      "sameInput": true,
+      "focused": true,
+      "draft": "Draft survives device preference changes.",
+      "listeners": {
+        "queries": [
+          {
+            "query": "(prefers-reduced-motion)",
+            "count": 1
+          },
+          {
+            "query": "(prefers-reduced-motion: reduce)",
+            "count": 1
+          }
+        ],
+        "total": 2
+      }
+    }
+  ],
+  "unmounted": {
+    "queries": [
+      {
+        "query": "(prefers-reduced-motion)",
+        "count": 1
+      },
+      {
+        "query": "(prefers-reduced-motion: reduce)",
+        "count": 0
+      }
+    ],
+    "total": 1
+  },
+  "passed": false,
+  "failure": "Error: expect(received).toEqual(expected) // deep equality\n\n- Expected  - 2\n+ Received  + 2\n\n  Object {\n    \"baseline\": 0,\n-   \"mounted\": 1,\n-   \"unmounted\": 0,\n+   \"mounted\": 2,\n+   \"unmounted\": 1,\n  }",
+  "finished": "2026-11-03T13:47:28.009Z"
+}

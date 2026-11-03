@@ -1,0 +1,62 @@
+{
+  "sha": "ebc421a9",
+  "started": "2026-11-03T13:51:37.528Z",
+  "errors": [],
+  "failedRequests": [],
+  "baseline": {
+    "queries": [],
+    "total": 0
+  },
+  "mounted": {
+    "queries": [
+      {
+        "query": "(prefers-reduced-motion: reduce)",
+        "count": 1
+      }
+    ],
+    "total": 1
+  },
+  "preferences": [
+    {
+      "preference": "reduce",
+      "sameInput": true,
+      "focused": true,
+      "draft": "Draft survives device preference changes.",
+      "listeners": {
+        "queries": [
+          {
+            "query": "(prefers-reduced-motion: reduce)",
+            "count": 1
+          }
+        ],
+        "total": 1
+      }
+    },
+    {
+      "preference": "no-preference",
+      "sameInput": true,
+      "focused": true,
+      "draft": "Draft survives device preference changes.",
+      "listeners": {
+        "queries": [
+          {
+            "query": "(prefers-reduced-motion: reduce)",
+            "count": 1
+          }
+        ],
+        "total": 1
+      }
+    }
+  ],
+  "unmounted": {
+    "queries": [
+      {
+        "query": "(prefers-reduced-motion: reduce)",
+        "count": 0
+      }
+    ],
+    "total": 0
+  },
+  "passed": true,
+  "finished": "2026-11-03T13:51:38.155Z"
+}

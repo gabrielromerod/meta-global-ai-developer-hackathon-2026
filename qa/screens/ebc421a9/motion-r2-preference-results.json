@@ -1,0 +1,1878 @@
+{
+  "sha": "ebc421a9",
+  "started": "2026-11-03T13:51:37.527Z",
+  "cases": [
+    {
+      "name": "1470x870-dark",
+      "states": [
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "matrix(1, 0, 0, 1, 0, 0.237828)",
+          "width": 1470,
+          "height": 870,
+          "scrollWidth": 1470,
+          "scrollHeight": 870
+        },
+        {
+          "preference": "reduce",
+          "policy": {
+            "reduced": true,
+            "duration": 0,
+            "fastDuration": 0,
+            "viewDuration": 0,
+            "offset": 0,
+            "panelOffset": 0,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 1470,
+          "height": 870,
+          "scrollWidth": 1470,
+          "scrollHeight": 870
+        },
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 1470,
+          "height": 870,
+          "scrollWidth": 1470,
+          "scrollHeight": 870
+        }
+      ],
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "1470x870-light",
+      "states": [
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "matrix(1, 0, 0, 1, 0, 0.589021)",
+          "width": 1470,
+          "height": 870,
+          "scrollWidth": 1470,
+          "scrollHeight": 870
+        },
+        {
+          "preference": "reduce",
+          "policy": {
+            "reduced": true,
+            "duration": 0,
+            "fastDuration": 0,
+            "viewDuration": 0,
+            "offset": 0,
+            "panelOffset": 0,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 1470,
+          "height": 870,
+          "scrollWidth": 1470,
+          "scrollHeight": 870
+        },
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 1470,
+          "height": 870,
+          "scrollWidth": 1470,
+          "scrollHeight": 870
+        }
+      ],
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "1512x895-dark",
+      "states": [
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "matrix(1, 0, 0, 1, 0, 0.756583)",
+          "width": 1512,
+          "height": 895,
+          "scrollWidth": 1512,
+          "scrollHeight": 895
+        },
+        {
+          "preference": "reduce",
+          "policy": {
+            "reduced": true,
+            "duration": 0,
+            "fastDuration": 0,
+            "viewDuration": 0,
+            "offset": 0,
+            "panelOffset": 0,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 1512,
+          "height": 895,
+          "scrollWidth": 1512,
+          "scrollHeight": 895
+        },
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 1512,
+          "height": 895,
+          "scrollWidth": 1512,
+          "scrollHeight": 895
+        }
+      ],
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "1512x895-light",
+      "states": [
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "matrix(1, 0, 0, 1, 0, 0.661347)",
+          "width": 1512,
+          "height": 895,
+          "scrollWidth": 1512,
+          "scrollHeight": 895
+        },
+        {
+          "preference": "reduce",
+          "policy": {
+            "reduced": true,
+            "duration": 0,
+            "fastDuration": 0,
+            "viewDuration": 0,
+            "offset": 0,
+            "panelOffset": 0,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 1512,
+          "height": 895,
+          "scrollWidth": 1512,
+          "scrollHeight": 895
+        },
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 1512,
+          "height": 895,
+          "scrollWidth": 1512,
+          "scrollHeight": 895
+        }
+      ],
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "1728x1030-dark",
+      "states": [
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "matrix(1, 0, 0, 1, 0, 2.67219)",
+          "width": 1728,
+          "height": 1030,
+          "scrollWidth": 1728,
+          "scrollHeight": 1030
+        },
+        {
+          "preference": "reduce",
+          "policy": {
+            "reduced": true,
+            "duration": 0,
+            "fastDuration": 0,
+            "viewDuration": 0,
+            "offset": 0,
+            "panelOffset": 0,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 1728,
+          "height": 1030,
+          "scrollWidth": 1728,
+          "scrollHeight": 1030
+        },
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 1728,
+          "height": 1030,
+          "scrollWidth": 1728,
+          "scrollHeight": 1030
+        }
+      ],
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "1728x1030-light",
+      "states": [
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "matrix(1, 0, 0, 1, 0, 0.747216)",
+          "width": 1728,
+          "height": 1030,
+          "scrollWidth": 1728,
+          "scrollHeight": 1030
+        },
+        {
+          "preference": "reduce",
+          "policy": {
+            "reduced": true,
+            "duration": 0,
+            "fastDuration": 0,
+            "viewDuration": 0,
+            "offset": 0,
+            "panelOffset": 0,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 1728,
+          "height": 1030,
+          "scrollWidth": 1728,
+          "scrollHeight": 1030
+        },
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 1728,
+          "height": 1030,
+          "scrollWidth": 1728,
+          "scrollHeight": 1030
+        }
+      ],
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "1920x960-dark",
+      "states": [
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "matrix(1, 0, 0, 1, 0, 1.25915)",
+          "width": 1920,
+          "height": 960,
+          "scrollWidth": 1920,
+          "scrollHeight": 960
+        },
+        {
+          "preference": "reduce",
+          "policy": {
+            "reduced": true,
+            "duration": 0,
+            "fastDuration": 0,
+            "viewDuration": 0,
+            "offset": 0,
+            "panelOffset": 0,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 1920,
+          "height": 960,
+          "scrollWidth": 1920,
+          "scrollHeight": 960
+        },
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 1920,
+          "height": 960,
+          "scrollWidth": 1920,
+          "scrollHeight": 960
+        }
+      ],
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "1920x960-light",
+      "states": [
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "matrix(1, 0, 0, 1, 0, 0.744679)",
+          "width": 1920,
+          "height": 960,
+          "scrollWidth": 1920,
+          "scrollHeight": 960
+        },
+        {
+          "preference": "reduce",
+          "policy": {
+            "reduced": true,
+            "duration": 0,
+            "fastDuration": 0,
+            "viewDuration": 0,
+            "offset": 0,
+            "panelOffset": 0,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 1920,
+          "height": 960,
+          "scrollWidth": 1920,
+          "scrollHeight": 960
+        },
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 1920,
+          "height": 960,
+          "scrollWidth": 1920,
+          "scrollHeight": 960
+        }
+      ],
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "1536x730-dark",
+      "states": [
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "matrix(1, 0, 0, 1, 0, 0.74215)",
+          "width": 1536,
+          "height": 730,
+          "scrollWidth": 1536,
+          "scrollHeight": 730
+        },
+        {
+          "preference": "reduce",
+          "policy": {
+            "reduced": true,
+            "duration": 0,
+            "fastDuration": 0,
+            "viewDuration": 0,
+            "offset": 0,
+            "panelOffset": 0,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 1536,
+          "height": 730,
+          "scrollWidth": 1536,
+          "scrollHeight": 730
+        },
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 1536,
+          "height": 730,
+          "scrollWidth": 1536,
+          "scrollHeight": 730
+        }
+      ],
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "1536x730-light",
+      "states": [
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "matrix(1, 0, 0, 1, 0, 0.885529)",
+          "width": 1536,
+          "height": 730,
+          "scrollWidth": 1536,
+          "scrollHeight": 730
+        },
+        {
+          "preference": "reduce",
+          "policy": {
+            "reduced": true,
+            "duration": 0,
+            "fastDuration": 0,
+            "viewDuration": 0,
+            "offset": 0,
+            "panelOffset": 0,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 1536,
+          "height": 730,
+          "scrollWidth": 1536,
+          "scrollHeight": 730
+        },
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 1536,
+          "height": 730,
+          "scrollWidth": 1536,
+          "scrollHeight": 730
+        }
+      ],
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "1280x600-dark",
+      "states": [
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "matrix(1, 0, 0, 1, 0, 2.6532)",
+          "width": 1280,
+          "height": 600,
+          "scrollWidth": 1280,
+          "scrollHeight": 600
+        },
+        {
+          "preference": "reduce",
+          "policy": {
+            "reduced": true,
+            "duration": 0,
+            "fastDuration": 0,
+            "viewDuration": 0,
+            "offset": 0,
+            "panelOffset": 0,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 1280,
+          "height": 600,
+          "scrollWidth": 1280,
+          "scrollHeight": 600
+        },
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 1280,
+          "height": 600,
+          "scrollWidth": 1280,
+          "scrollHeight": 600
+        }
+      ],
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "1280x600-light",
+      "states": [
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "matrix(1, 0, 0, 1, 0, 0.757439)",
+          "width": 1280,
+          "height": 600,
+          "scrollWidth": 1280,
+          "scrollHeight": 600
+        },
+        {
+          "preference": "reduce",
+          "policy": {
+            "reduced": true,
+            "duration": 0,
+            "fastDuration": 0,
+            "viewDuration": 0,
+            "offset": 0,
+            "panelOffset": 0,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 1280,
+          "height": 600,
+          "scrollWidth": 1280,
+          "scrollHeight": 600
+        },
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 1280,
+          "height": 600,
+          "scrollWidth": 1280,
+          "scrollHeight": 600
+        }
+      ],
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "1366x650-dark",
+      "states": [
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "matrix(1, 0, 0, 1, 0, 1.0314)",
+          "width": 1366,
+          "height": 650,
+          "scrollWidth": 1366,
+          "scrollHeight": 650
+        },
+        {
+          "preference": "reduce",
+          "policy": {
+            "reduced": true,
+            "duration": 0,
+            "fastDuration": 0,
+            "viewDuration": 0,
+            "offset": 0,
+            "panelOffset": 0,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 1366,
+          "height": 650,
+          "scrollWidth": 1366,
+          "scrollHeight": 650
+        },
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 1366,
+          "height": 650,
+          "scrollWidth": 1366,
+          "scrollHeight": 650
+        }
+      ],
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "1366x650-light",
+      "states": [
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "matrix(1, 0, 0, 1, 0, 0.703522)",
+          "width": 1366,
+          "height": 650,
+          "scrollWidth": 1366,
+          "scrollHeight": 650
+        },
+        {
+          "preference": "reduce",
+          "policy": {
+            "reduced": true,
+            "duration": 0,
+            "fastDuration": 0,
+            "viewDuration": 0,
+            "offset": 0,
+            "panelOffset": 0,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 1366,
+          "height": 650,
+          "scrollWidth": 1366,
+          "scrollHeight": 650
+        },
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 1366,
+          "height": 650,
+          "scrollWidth": 1366,
+          "scrollHeight": 650
+        }
+      ],
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "1024x768-dark",
+      "states": [
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "matrix(1, 0, 0, 1, 0, 0.863041)",
+          "width": 1024,
+          "height": 768,
+          "scrollWidth": 1024,
+          "scrollHeight": 768
+        },
+        {
+          "preference": "reduce",
+          "policy": {
+            "reduced": true,
+            "duration": 0,
+            "fastDuration": 0,
+            "viewDuration": 0,
+            "offset": 0,
+            "panelOffset": 0,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 1024,
+          "height": 768,
+          "scrollWidth": 1024,
+          "scrollHeight": 768
+        },
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 1024,
+          "height": 768,
+          "scrollWidth": 1024,
+          "scrollHeight": 768
+        }
+      ],
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "1024x768-light",
+      "states": [
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "matrix(1, 0, 0, 1, 0, 1.17944)",
+          "width": 1024,
+          "height": 768,
+          "scrollWidth": 1024,
+          "scrollHeight": 768
+        },
+        {
+          "preference": "reduce",
+          "policy": {
+            "reduced": true,
+            "duration": 0,
+            "fastDuration": 0,
+            "viewDuration": 0,
+            "offset": 0,
+            "panelOffset": 0,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 1024,
+          "height": 768,
+          "scrollWidth": 1024,
+          "scrollHeight": 768
+        },
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 1024,
+          "height": 768,
+          "scrollWidth": 1024,
+          "scrollHeight": 768
+        }
+      ],
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "1180x820-dark",
+      "states": [
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "matrix(1, 0, 0, 1, 0, 1.02911)",
+          "width": 1180,
+          "height": 820,
+          "scrollWidth": 1180,
+          "scrollHeight": 820
+        },
+        {
+          "preference": "reduce",
+          "policy": {
+            "reduced": true,
+            "duration": 0,
+            "fastDuration": 0,
+            "viewDuration": 0,
+            "offset": 0,
+            "panelOffset": 0,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 1180,
+          "height": 820,
+          "scrollWidth": 1180,
+          "scrollHeight": 820
+        },
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 1180,
+          "height": 820,
+          "scrollWidth": 1180,
+          "scrollHeight": 820
+        }
+      ],
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "1180x820-light",
+      "states": [
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "matrix(1, 0, 0, 1, 0, 1.21123)",
+          "width": 1180,
+          "height": 820,
+          "scrollWidth": 1180,
+          "scrollHeight": 820
+        },
+        {
+          "preference": "reduce",
+          "policy": {
+            "reduced": true,
+            "duration": 0,
+            "fastDuration": 0,
+            "viewDuration": 0,
+            "offset": 0,
+            "panelOffset": 0,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 1180,
+          "height": 820,
+          "scrollWidth": 1180,
+          "scrollHeight": 820
+        },
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 1180,
+          "height": 820,
+          "scrollWidth": 1180,
+          "scrollHeight": 820
+        }
+      ],
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "2560x1000-dark",
+      "states": [
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "matrix(1, 0, 0, 1, 0, 2.68493)",
+          "width": 2560,
+          "height": 1000,
+          "scrollWidth": 2560,
+          "scrollHeight": 1000
+        },
+        {
+          "preference": "reduce",
+          "policy": {
+            "reduced": true,
+            "duration": 0,
+            "fastDuration": 0,
+            "viewDuration": 0,
+            "offset": 0,
+            "panelOffset": 0,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 2560,
+          "height": 1000,
+          "scrollWidth": 2560,
+          "scrollHeight": 1000
+        },
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 2560,
+          "height": 1000,
+          "scrollWidth": 2560,
+          "scrollHeight": 1000
+        }
+      ],
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "2560x1000-light",
+      "states": [
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "matrix(1, 0, 0, 1, 0, 0.75146)",
+          "width": 2560,
+          "height": 1000,
+          "scrollWidth": 2560,
+          "scrollHeight": 1000
+        },
+        {
+          "preference": "reduce",
+          "policy": {
+            "reduced": true,
+            "duration": 0,
+            "fastDuration": 0,
+            "viewDuration": 0,
+            "offset": 0,
+            "panelOffset": 0,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 2560,
+          "height": 1000,
+          "scrollWidth": 2560,
+          "scrollHeight": 1000
+        },
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 2560,
+          "height": 1000,
+          "scrollWidth": 2560,
+          "scrollHeight": 1000
+        }
+      ],
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "390x844-dark",
+      "states": [
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "matrix(1, 0, 0, 1, 0, 2.8706)",
+          "width": 390,
+          "height": 844,
+          "scrollWidth": 390,
+          "scrollHeight": 1912
+        },
+        {
+          "preference": "reduce",
+          "policy": {
+            "reduced": true,
+            "duration": 0,
+            "fastDuration": 0,
+            "viewDuration": 0,
+            "offset": 0,
+            "panelOffset": 0,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 390,
+          "height": 844,
+          "scrollWidth": 390,
+          "scrollHeight": 1912
+        },
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 390,
+          "height": 844,
+          "scrollWidth": 390,
+          "scrollHeight": 1912
+        }
+      ],
+      "errors": [],
+      "failedRequests": []
+    },
+    {
+      "name": "390x844-light",
+      "states": [
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "matrix(1, 0, 0, 1, 0, 1.12956)",
+          "width": 390,
+          "height": 844,
+          "scrollWidth": 390,
+          "scrollHeight": 1912
+        },
+        {
+          "preference": "reduce",
+          "policy": {
+            "reduced": true,
+            "duration": 0,
+            "fastDuration": 0,
+            "viewDuration": 0,
+            "offset": 0,
+            "panelOffset": 0,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 390,
+          "height": 844,
+          "scrollWidth": 390,
+          "scrollHeight": 1912
+        },
+        {
+          "preference": "no-preference",
+          "policy": {
+            "reduced": false,
+            "duration": 0.22,
+            "fastDuration": 0.12,
+            "viewDuration": 0.48,
+            "offset": 8,
+            "panelOffset": 16,
+            "ease": [
+              0.2,
+              0.7,
+              0.2,
+              1
+            ],
+            "zero": 0,
+            "one": 1
+          },
+          "sameCanvas": true,
+          "views": 1,
+          "transform": "none",
+          "width": 390,
+          "height": 844,
+          "scrollWidth": 390,
+          "scrollHeight": 1912
+        }
+      ],
+      "errors": [],
+      "failedRequests": []
+    }
+  ],
+  "failures": [],
+  "finished": "2026-11-03T13:52:11.095Z"
+}

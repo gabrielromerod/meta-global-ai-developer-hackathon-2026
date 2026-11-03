@@ -30,3 +30,8 @@ Builders append requests below and keep edits within their assigned paths.
 - Request: Twin CameraCone phase uses a literal one-second period. Read existing `--v-motion-pulse` into the current palette and use it as a guarded period, keeping observed event gating, gaps and geometry unchanged. Builder did not edit Twin.
 - Request: reserve internal bottom scroll padding clear of the floating Messages pill; do not reduce Home's constrained scene height with a global footer. Builder did not edit page or shell source.
 - FIXTURE: isolated integrated preview runs on port 8107 with no data store/ledger. All 11 numeric viewports passed both themes/preferences, including scene presets, chat, dialogs, keyboard and scroll. Final screenshots/manifests are under `qa/screens/4fa2342/`; builder findings are in motion-review.md, pending independent review.
+
+### Motion round-two correction — 47dddac6 / ebc421a9
+
+- REAL: reviewer isolated the exported hook's initial-only library fallback registering an extra permanent bare-query listener. New unit and actual-browser tests first reproduced 0→2→1 across both query forms; fix 47dddac6 removes the library fallback hook and retains the native conservative snapshot, giving 0→1→0. Unsupported-native fallback is now explicitly tested.
+- FIXTURE: final focused evidence is `qa/screens/ebc421a9/`; f61680ed/ebc421a9 add only QA waits for the first WebGL draw and mounted annotations. All eleven sizes and both themes exercise live preference changes, with the existing adaptive state/focus/draft, 20-route churn and active-tween regression retained. Full frontend suite now passes 75 tests. No Chat/Twin source edited; their listener/tween integration remains root-owned.

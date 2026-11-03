@@ -21,7 +21,7 @@ are the durable progress record. Existing recorded-input contracts remain suppor
 | 6 | main owner UI, session token, checkin countdown, Expected Windows CRUD, sandbox example; undo | Complete: 645ea2b; 1434 default and 21 browser tests passed; fake Undo removed |
 | 7 | MetaClient timeout billing classification and 20 s read deadline | Complete: 59b48b1; 1442 default tests passed |
 | 8 | smoke script upload/schema/voice contract tests; never run live | Complete: 52942d0; 1445 default tests passed; no live smoke run |
-| 9 | Wi-Fi source profile, stream/filter, probe telemetry and battery refusal; pinned reolink-aio and fake tests | Pending |
+| 9 | Wi-Fi source profile, stream/filter, probe telemetry and battery refusal; pinned reolink-aio and fake tests | Complete: 3a87d55; 1452 default tests passed |
 | 10 | removal absence/containment/cross-window state; three regressions | Pending |
 | 11 | Only after 1–10: GLB locate/coverage, world_frame, export, errors/limit, generated GLB tests | Pending |
 | doctor | CLI offline READY/MISSING key/window/ledger/privacy/dependency/hosts/ffmpeg | Pending |

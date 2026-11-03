@@ -12,7 +12,8 @@ All geometry is in the processed window's pixel frame (spec 9.4 config):
   bbox with an overlap coefficient (intersection / smaller area) of at least
   ``touch_overlap``; one event per contiguous touching interval.
 * **removed** — a watched object's track ends without reappearing at the same place while
-  a person overlaps its last box, and either (a) the camera's footage had not ended, or
+  a person overlaps its last full box, and either (a) at least 2 s of continuously observed
+  absence follow, or
   (b) the object was **carried out of frame**: it moved from where it was first seen, its
   last box touches a frame edge (within 2% of the frame size), and an overlapping person
   track ends within 1 s of it. The footage end is the end of the :class:`Observation` span
@@ -21,6 +22,9 @@ All geometry is in the processed window's pixel frame (spec 9.4 config):
   carrying the package away ends together with it, and the latest track end then sits
   right after the package's (F3). An object still in view (not at an edge, or never moved)
   when its observed span ends is not removed: the footage ended, not the object.
+  Reappearance uses containment against the latest untruncated box with at least 90% of
+  the largest observed area; a shrunken partial box cannot create a false removal. The
+  session's accumulated stitched tracks retain that reference across window boundaries.
 
 When several people overlap the protected object (or the removed object's last box), one
 ``touch`` (or ``removed``) event is emitted **per overlapping person track**; each later
@@ -87,6 +91,8 @@ TOUCH_MERGE_GAP_S = 1.0
 REMOVE_BEFORE_S = 2.0
 REMOVE_AFTER_S = 1.0
 REMOVE_REAPPEAR_IOU = 0.3
+REMOVE_ABSENCE_S = 2.0
+REMOVE_CONTAINMENT = 0.8
 END_TOLERANCE_S = 0.5
 CARRY_END_S = 1.0
 """A person ending within this long of the object's last frame carried it out (rule b)."""
@@ -300,6 +306,23 @@ def _footage_end(
     return track_end[obj.camera_id]
 
 
+def _last_full_box(track: Track) -> Box | None:
+    """Latest untruncated box near the largest observed area, before an occlusion shrank it."""
+    full = [f for f in track.frames if not f.clipped and f.box.area > 0]
+    if not full:
+        return None
+    area = max(f.box.area for f in full)
+    return next(f.box for f in reversed(full) if f.box.area >= 0.9 * area)
+
+
+def _contained(a: Box, b: Box) -> bool:
+    intersection = max(0, min(a.x2, b.x2) - max(a.x1, b.x1)) * max(
+        0, min(a.y2, b.y2) - max(a.y1, b.y1)
+    )
+    smaller = min(a.area, b.area)
+    return smaller > 0 and intersection / smaller >= REMOVE_CONTAINMENT
+
+
 def _removed_events(
     tracks: list[Track],
     watches: list[Watch],
@@ -308,6 +331,7 @@ def _removed_events(
     before_s: float,
     after_s: float,
     observation: Observation | None = None,
+    absence_s: float = REMOVE_ABSENCE_S,
 ) -> list[_Raw]:
     out: list[_Raw] = []
     track_end: dict[str, float] = {}
@@ -324,12 +348,11 @@ def _removed_events(
             if not obj.frames:
                 continue
             end = obj.t_last
-            last_box = obj.frames[-1].box
+            last_box = _last_full_box(obj)
+            if last_box is None:
+                continue
             reappears = any(
-                o is not obj
-                and o.t_first >= end
-                and o.frames
-                and o.frames[0].box.iou(last_box) >= REMOVE_REAPPEAR_IOU
+                o is not obj and any(f.t >= end and _contained(f.box, last_box) for f in o.frames)
                 for o in watched
             )
             if reappears:
@@ -347,7 +370,8 @@ def _removed_events(
                     hits[person.id] = (person, ts)
             if not hits:
                 continue
-            footage_ended = end >= _footage_end(obj, observation, track_end) - END_TOLERANCE_S
+            observed_until = _footage_end(obj, observation, track_end)
+            footage_ended = end >= observed_until - END_TOLERANCE_S
             if footage_ended:
                 moved = obj.frames[0].box.iou(last_box) < REMOVE_REAPPEAR_IOU
                 carried = (
@@ -357,6 +381,8 @@ def _removed_events(
                 )
                 if not carried:
                     continue  # the footage ended, not the object
+            elif observed_until - end < absence_s:
+                continue  # not enough continuous observed absence to distinguish occlusion
             # One removed event per person track overlapping the object as it disappears.
             for person, ts in hits.values():
                 t0, t1 = min(min(ts), end), max(max(ts), end)
@@ -593,6 +619,7 @@ def build_events(
     touch_merge_gap_s: float = TOUCH_MERGE_GAP_S,
     exits_as_zones: bool = False,
     observation: Observation | None = None,
+    absence_s: float = REMOVE_ABSENCE_S,
 ) -> list[Event]:
     """Build the events of FR-008 from stitched tracks (spec 9.5 interface).
 
@@ -602,6 +629,8 @@ def build_events(
     camera gets its ``origin_zone`` (:func:`assign_origins`, using ``observation``; ``None``
     treats every camera as observed).
     """
+    if absence_s < 0:
+        raise ValueError("absence_s must be nonnegative")
     assign_origins(tracks, cfg, observation=observation)
     cams = {c.id: c for c in cfg.cameras}
     known = [t for t in tracks if t.camera_id in cams and t.frames]
@@ -627,7 +656,7 @@ def build_events(
             mine = sorted((p for p in protected if p.camera_id == tr.camera_id), key=lambda p: p.id)
             raws += _touch_events(tr, mine, cam, min_frames, touch_overlap, touch_merge_gap_s)
     raws += _removed_events(
-        known, watches, cams, touch_overlap, REMOVE_BEFORE_S, REMOVE_AFTER_S, observation
+        known, watches, cams, touch_overlap, REMOVE_BEFORE_S, REMOVE_AFTER_S, observation, absence_s
     )
 
     events = [

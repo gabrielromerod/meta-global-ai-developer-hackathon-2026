@@ -47,6 +47,12 @@ refusal. The approved existing pin `reolink-aio==0.22.0` is installed. The CLI d
 direct, session-only capture; see `docs/runbooks/wifi-session.md`. No camera acceptance,
 throughput measurement or endurance claim is made.
 
+FR-008 occlusion/removal (FIXTURE): `tests/unit/test_removal_occlusion.py` covers partial
+occlusion, reappearance across overlapping windows, and delayed reappearance. A stationary
+disappearance needs 2 s of continuous observed absence. Containment uses the last full
+box, and accumulated session tracks retain it across windows. The existing explicit
+carried-out-of-frame exception remains; a truncated-only track cannot establish removal.
+
 Source: [spec section 1](../spec/vigil-spec.md#1-functional-requirements), including [Added for the real-world environment](../spec/vigil-spec.md#added-for-the-real-world-environment-nov-2) and [Added for compute and budget](../spec/vigil-spec.md#added-for-compute-and-budget-nov-2), as revised by the [Nov 2 change set](../spec/changes/2026-11-02-business-corrections.md). The full requirement text and acceptance criteria are in the spec; this page is the tracking checklist.
 
 **Status as of Mon Nov 2, 2026 (docs sync after the Nov 2 spec revision).** Evidence, run on the working tree:

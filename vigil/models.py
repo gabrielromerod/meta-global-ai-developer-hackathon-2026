@@ -39,6 +39,20 @@ VisitState = Literal[
 PositionMethod = Literal["footpoint", "height_prior", "fused"]
 SentenceSource = Literal["wonder", "template", "code"]
 TrackClass = Literal["person", "car", "package", "object"]
+ZoneKind = Literal["egress", "perimeter", "interior_yard"]
+"""egress: a door of the house itself; perimeter: where outsiders enter; else interior_yard."""
+ActorRole = Literal["household_insider", "expected_visitor", "external_visitor", "unknown"]
+"""Spatial-origin role of a subject (FR-044). Never an identity; unknown fails closed."""
+AppliesTo = Literal["anyone", "external_visitor_only", "non_household"]
+Funding = Literal["credit", "paid"]
+IntrinsicsSource = Literal["fov_nominal", "lens_profile"]
+
+APPLIES_TO_ROLES: dict[str, frozenset[str]] = {
+    "anyone": frozenset({"household_insider", "expected_visitor", "external_visitor", "unknown"}),
+    "non_household": frozenset({"expected_visitor", "external_visitor", "unknown"}),
+    "external_visitor_only": frozenset({"external_visitor", "unknown"}),
+}
+"""Which actor roles each applies_to value fires on (spec 9.4 table); unknown always fires."""
 CameraModel = Literal["pinhole", "fisheye"]
 SamBackend = Literal["local", "api", "remote"]
 TriageBackend = Literal["glimmer", "spark"]
@@ -86,6 +100,30 @@ class CameraCfg(_Model):
 
     None uses the ingest default (0.002). The loader rejects values outside [0, 1].
     """
+    zone_kinds: dict[str, ZoneKind] = Field(default_factory=dict)
+    """Zone id -> kind (FR-008 origin tagging). Zones without an entry are interior_yard."""
+    hfov_deg: float | None = None
+    """Nominal horizontal field of view from the camera model's datasheet (FR-036)."""
+
+    @model_validator(mode="before")
+    @classmethod
+    def _zones_with_kinds(cls, data: object) -> object:
+        """Accept spec 9.4 zones `{kind, polygon}` as well as plain polygon lists."""
+        if not isinstance(data, dict) or not isinstance(data.get("zones"), dict):
+            return data
+        zones: dict[str, object] = {}
+        kinds: dict[str, object] = dict(data.get("zone_kinds") or {})
+        for zid, value in data["zones"].items():
+            if isinstance(value, dict):
+                zones[zid] = value.get("polygon")
+                if "kind" in value:
+                    kinds[zid] = value["kind"]
+            else:
+                zones[zid] = value
+        return {**data, "zones": zones, "zone_kinds": kinds}
+
+    def zone_kind(self, zone_id: str) -> ZoneKind:
+        return self.zone_kinds.get(zone_id, "interior_yard")
 
 
 class BlindRegion(_Model):
@@ -198,6 +236,9 @@ class Track(_Model):
     """Burned-in tag shown to Spark, e.g. "T3" (FR-009)."""
     phrase: str | None = None
     """SAM noun phrase that produced the track (distinguishes watches mapped to "object")."""
+    origin_zone: str | None = None
+    """Zone where the track was born (FR-008): majority foot point of its first 10 frames;
+    None when observation was interrupted in the 2 s before or an egress origin was voided."""
 
 
 class Event(_Model):
@@ -212,6 +253,9 @@ class Event(_Model):
     """Protected object, zone, line or watch id the event refers to, if any."""
     clip_t0: float
     clip_t1: float
+    subject_id: str | None = None
+    actor_role: ActorRole | None = None
+    """Filled in after visit assembly from the event's subject chain (FR-044)."""
 
 
 class CameraAiEvent(_Model):
@@ -311,9 +355,52 @@ class Rule(_Model):
     active: ActiveWindow | None = None
     """None means always active."""
     severity: Severity
-    applies_to: Literal["anyone"] = "anyone"
-    """Vigil never identifies people, so every rule applies to anyone (UC-03)."""
+    applies_to: AppliesTo = "anyone"
+    """Which spatial-origin roles the rule fires on (spec 9.4 table, FR-012). Never a person."""
     state: RuleState = "active"
+
+
+class Subject(_Model):
+    """One subject chain in a visit: linked tracks plus its spatial-origin role (FR-044)."""
+
+    id: str
+    visit_id: str | None = None
+    track_ids: list[str]
+    actor_role: ActorRole
+    role_basis: str
+    """egress:<zone> | checkin:<id> | window:<id> | perimeter:<zone> | group:<role> |
+    gap_unresolved:<gap_id> | ambiguous_link:<track_id> | origin_null:<track_id>"""
+
+
+class ExpectedWindow(_Model):
+    """Owner-set Expected Guest / Delivery Window (FR-029): set in advance, at most 12 h."""
+
+    id: str
+    label: str | None = None
+    start: datetime
+    end: datetime
+    cameras: list[str] = Field(default_factory=list)
+    zones: list[str] = Field(default_factory=list)
+    state: Literal["scheduled", "active", "expired", "cancelled"] = "scheduled"
+
+    @model_validator(mode="after")
+    def _max_12h(self) -> ExpectedWindow:
+        if self.end <= self.start:
+            raise ValueError("window end must be after its start")
+        if (self.end - self.start).total_seconds() > 12 * 3600:
+            raise ValueError("expected windows are capped at 12 h (FR-029)")
+        return self
+
+
+class CheckIn(_Model):
+    """Explicit "I'm outside" tap (FR-044 step 2): single-use, never retroactive."""
+
+    id: str
+    session_id: str | None = None
+    start: datetime
+    expires: datetime
+    bound_subject: str | None = None
+    revoked: bool = False
 
 
 class RuleHit(_Model):
@@ -431,6 +518,8 @@ class VisitLedger(_Model):
     camera_names: dict[str, str] = Field(default_factory=dict)
     """camera_id -> display name, used by validator check 4."""
     region_names: dict[str, str] = Field(default_factory=dict)
+    subjects: list[Subject] = Field(default_factory=list)
+    """Subject chains with roles; validator check 7 matches role phrases against them."""
     """blind region id -> display name (e.g. shed_back -> "behind the shed"), for gap sentences."""
     timezone: str = "America/Los_Angeles"
     session_start: datetime | None = None
@@ -464,6 +553,9 @@ class Intrinsics(_Model):
     height: int
     rms_px: float | None = None
     fov_fallback: bool = False
+    source: IntrinsicsSource = "lens_profile"
+    """fov_nominal: focal length from the datasheet HFOV, no distortion (primary, flagged);
+    lens_profile: checkerboard RMS < 1 px, recorded once per camera model (FR-036)."""
     """True when focal length came from the lens field of view (flagged low accuracy)."""
 
 
@@ -520,6 +612,8 @@ class ModelCall(_Model):
     backend: str = "api"
     feature: str | None = None
     """Budget feature this call is charged to (spec 11.4), so per-feature caps survive restarts."""
+    funding: Funding = "credit"
+    """credit: inside the credit window ($140 cap); paid: after it, judging cap (NFR-036/037)."""
     gpu_s: float | None = None
     created_at: datetime | None = None
 

@@ -37,6 +37,11 @@ class Settings(BaseSettings):
     daily_cap_usd: float = 10.0
     credit_window_end: datetime | None = None
     allow_paid: bool = False
+    judging_cap_usd: float = 25.0
+    """Post-window (card-paid) total during judging (11.6 item 6, NFR-037)."""
+    judging_daily_cap_usd: float = 5.0
+    judging_end: datetime | None = None
+    """VIGIL_JUDGING_END (Nov 10 23:59 PT): no paid call after it."""
 
     # Sandbox guards (NFR-015)
     live_rate_per_min: int = 10

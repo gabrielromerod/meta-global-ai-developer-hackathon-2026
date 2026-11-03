@@ -4,7 +4,11 @@
 (b) event target conventions used by rules and visits;
 (c) event ids are opaque (no ``e\\d+`` assumption) in validator, templates, loop and API;
 (d) the API's live backend reads MetaClient's CallLedger (len / since), not only lists;
-(e) the API serves a bundle exported from a pipeline result (scenario C);
+(e) the API serves a bundle exported from a pipeline result (scenario C), with the FR-044
+    subjects, ``role_basis`` and per-event ``actor_role`` (and A′'s excluded rule, B′'s window);
+(f) roles across modules: events leave perception without a role and every event leaves
+    visit assembly with its subject's ``actor_role``; ``session.json`` windows and check-ins
+    reach the role rules; the EVAL role miss rate counts misses and the alerts they caused;
 plus the pipeline's own edges: the pre-upload privacy check and the blocked CLI entry.
 """
 
@@ -21,7 +25,7 @@ import respx
 from fastapi.testclient import TestClient
 
 from tests.fixtures.scenarios.builders import (
-    PDT,
+    PST,
     SCENARIOS,
     Subject,
     _c_retry,
@@ -185,7 +189,7 @@ def test_contract_removed_event_targets_watch_id_and_rule_matches_phrase(
         events,
         load_rules(),
         "America/Los_Angeles",
-        datetime(2026, 10, 30, 18, 0, tzinfo=PDT),
+        datetime(2026, 11, 2, 18, 0, tzinfo=PST),
         watches=[watch],
     )
     assert [h.rule_id for h in rr.hits] == ["r_package_removed"]
@@ -230,7 +234,7 @@ def test_contract_event_ids_are_opaque(sample_config: Config, po_side_gate, rule
         [c.id for c in sample_config.cameras],
         load_allowlist(),
         [],
-        datetime(2026, 10, 30, 22, 20, tzinfo=PDT),
+        datetime(2026, 11, 2, 18, 20, tzinfo=PST),
         visit.id,
         validated=True,
         visit_event_ids=set(visit.event_ids),
@@ -298,45 +302,58 @@ def test_contract_api_backend_still_accepts_a_plain_list() -> None:
 # ---------------------------------------------------------------------------
 
 
-def test_contract_api_serves_pipeline_bundle_for_c(
-    tmp_path: Path, sample_config: Config, po_side_gate: ProtectedObject, rule_r7: Rule
-) -> None:
-    from vigil.api.app import create_app
+def _bundle(
+    tmp_path: Path, sid: str, sample_config: Config, po_side_gate: ProtectedObject, rules
+) -> tuple[Any, dict[str, Any], Path]:
+    """Run a golden scenario, store it (spec 9.3) and export the demo bundle from the DB."""
     from vigil.store.export import export_bundle
 
-    sc = SCENARIOS["C"]()
-    rules = _rules(rule_r7)
+    sc = SCENARIOS[sid]()
     result = run_golden(sc, sample_config, rules, [po_side_gate])
     db_path = store_result(
-        tmp_path / "vigil.db", result, cfg=sample_config, rules=rules, protected=[po_side_gate]
+        tmp_path / f"{sid}.db", result, cfg=sample_config, rules=rules, protected=[po_side_gate]
     )
     bundle_dir = export_bundle(
-        tmp_path / "bundle",
+        tmp_path / f"bundle-{sid}",
         db_path,
         config=sample_config,
         trace=bundle_trace(result),
         eval_results={"status": "not measured", "metrics": []},
         meta={
             "synthetic": True,
-            "label": "Golden scenario C (synthetic)",
+            "label": f"Golden scenario {sid} (synthetic)",
             "session_start": sc.session_start.isoformat(),
             "timezone": sample_config.timezone,
-            "scenario_titles": {"C": sc.title},
+            "scenario_titles": {sid: sc.title},
         },
     )
-    (v,) = result["visits"]
+    return sc, result, bundle_dir
+
+
+def _get_visit(bundle_dir: Path, visit_id: str, *paths: str) -> list[Any]:
+    from vigil.api.app import create_app
+
     settings = Settings(mode="sandbox", MODEL_API_KEY=SENTINEL_KEY)
+    out = []
     with (
         respx.mock(assert_all_called=False),
         TestClient(create_app(settings, bundle_dir=bundle_dir)) as client,
     ):
-        r = client.get(f"/api/visits/{v['id']}")
-        assert r.status_code == 200
-        body = r.json()
-        sc_r = client.get("/api/scenarios/C")
-        assert sc_r.status_code == 200
-        pos = client.get(f"/api/visits/{v['id']}/positions")
-        assert pos.status_code == 200
+        for path in (f"/api/visits/{visit_id}", *paths):
+            r = client.get(path)
+            assert r.status_code == 200, (path, r.text)
+            out.append(r.json())
+    return out
+
+
+def test_contract_api_serves_pipeline_bundle_for_c(
+    tmp_path: Path, sample_config: Config, po_side_gate: ProtectedObject, rule_r7: Rule
+) -> None:
+    _, result, bundle_dir = _bundle(tmp_path, "C", sample_config, po_side_gate, _rules(rule_r7))
+    (v,) = result["visits"]
+    body, _, positions = _get_visit(
+        bundle_dir, v["id"], "/api/scenarios/C", f"/api/visits/{v['id']}/positions"
+    )
     assert body["verdict"] == "needs_attention"
     assert body["escalated"] is True
     (gap,) = body["gaps"]
@@ -359,13 +376,158 @@ def test_contract_api_serves_pipeline_bundle_for_c(
             assert [c["event_id"] for c in item["citations"]] == s["event_ids"]
             assert item["citations"]
     touch = next(c for c in body["events"] if c["type"] == "touch")
-    assert touch["clock"].startswith("10:14:")
+    assert touch["clock"] == "6:14:05 PM"  # spec 4: about 18:00 PT, never altered
     drafts = body["trace"]["drafts"]
     assert [d["passed"] for d in drafts] == [False, True]
     assert "uncited" in {f["check"] for f in drafts[0]["failures"]}
     assert body["trace"]["triage"]["forced"] is True
-    positions = pos.json()
     assert json.dumps(positions)  # serialisable; positions endpoint answers for C
+
+    # FR-044 through the store and the bundle: subjects, role_basis, per-event actor_role
+    (subj,) = v["subjects"]
+    for view in (body["subjects"], body["trace"]["subjects"]):
+        (s,) = view
+        assert (s["id"], s["actor_role"], s["role_basis"]) == (
+            subj["id"],
+            "external_visitor",
+            "perimeter:side_alley",
+        )
+        assert s["track_ids"] == ["side_left-person-1", "side_left-person-2"]
+    assert body["roles"] == ["external_visitor"]
+    assert {(c["subject_id"], c["actor_role"]) for c in body["events"]} == {
+        (subj["id"], "external_visitor")
+    }
+    assert {h["applies_to"] for h in body["rule_hits"]} == {"non_household"}
+    assert body["trace"]["rules_excluded"] == []
+
+
+def test_contract_api_shows_r7_excluded_by_applies_to_for_a_prime(
+    tmp_path: Path, sample_config: Config, po_side_gate: ProtectedObject, rule_r7: Rule
+) -> None:
+    """A′ evidence (spec 4 step 4): r7 in force, not fired, and why, from the exported bundle."""
+    _, result, bundle_dir = _bundle(
+        tmp_path, "A-prime", sample_config, po_side_gate, _rules(rule_r7)
+    )
+    (v,) = result["visits"]
+    (body,) = _get_visit(bundle_dir, v["id"])
+    assert body["verdict"] == "normal"
+    assert body["escalated"] is False
+    assert body["rule_hits"] == []
+    (excl,) = body["trace"]["rules_excluded"]
+    assert (excl["rule_id"], excl["applies_to"], excl["actor_role"], excl["role_basis"]) == (
+        "r7",
+        "non_household",
+        "household_insider",
+        "egress:front_door_egress",
+    )
+    assert excl["event_id"] == v["rules_excluded"][0]["event_id"]
+    (s,) = body["trace"]["subjects"]
+    assert s["role_basis"] == "egress:front_door_egress"
+    assert len(s["track_ids"]) == 3
+
+
+def test_contract_api_names_the_expected_window_for_b_prime(
+    tmp_path: Path, sample_config: Config, po_side_gate: ProtectedObject, rule_r7: Rule
+) -> None:
+    _, result, bundle_dir = _bundle(
+        tmp_path, "B-prime", sample_config, po_side_gate, _rules(rule_r7)
+    )
+    (v,) = result["visits"]
+    (body,) = _get_visit(bundle_dir, v["id"])
+    (s,) = body["subjects"]
+    assert (s["actor_role"], s["role_basis"]) == ("expected_visitor", "window:w3")
+    assert [w["id"] for w in body["expected_windows"]] == ["w3"]
+    assert body["expected_windows"][0]["label"] == "deliveries"
+
+
+# ---------------------------------------------------------------------------
+# (f) roles across modules
+# ---------------------------------------------------------------------------
+
+
+def test_contract_events_get_actor_role_only_after_visit_assembly(
+    sample_config: Config, po_side_gate: ProtectedObject
+) -> None:
+    from vigil.reasoning.visits import assemble_visits
+
+    sc = SCENARIOS["C"]()
+    recorded = sc.sam_outputs()
+    objs = [
+        o
+        for w in sc.windows
+        for phrase, text in recorded[w.id].items()
+        for o in parse_video_output(text, w, phrase)
+    ]
+    tracks = stitch(objs)
+    events = build_events(tracks, sample_config, [po_side_gate], [], exits_as_zones=True)
+    assert events
+    assert all(e.actor_role is None and e.subject_id is None for e in events)
+    assert {t.origin_zone for t in tracks if t.t_first == 14.0} == {"side_alley"}
+    asm = assemble_visits(events, tracks, {}, [], sample_config)
+    subjects = {s.id: s for s in asm.subjects}
+    assert asm.events
+    for e in asm.events:
+        assert e.subject_id in subjects
+        assert e.actor_role == subjects[e.subject_id].actor_role == "external_visitor"
+
+
+def test_contract_store_round_trips_subjects_windows_and_origins(
+    tmp_path: Path, sample_config: Config, po_side_gate: ProtectedObject, rule_r7: Rule
+) -> None:
+    from vigil.store import db
+
+    sc = SCENARIOS["B-prime"]()
+    result = run_golden(sc, sample_config, _rules(rule_r7), [po_side_gate])
+    path = store_result(tmp_path / "v.db", result, cfg=sample_config, protected=[po_side_gate])
+    conn = db.connect(path)
+    try:
+        (v,) = result["visits"]
+        stored = [s.model_dump(mode="json") for s in db.subjects_for_visit(conn, v["id"])]
+        assert stored == v["subjects"]
+        assert [w.id for w in db.expected_windows(conn)] == ["w3"]
+        origins = {r["id"]: r["origin_zone"] for r in db.rows(conn, "tracks")}
+        assert origins == {"front-person-1": "driveway_entry"}
+        assert {r["actor_role"] for r in db.rows(conn, "events")} == {"expected_visitor"}
+    finally:
+        conn.close()
+
+
+def test_contract_metrics_role_miss_rate_counts_misses_and_alerts() -> None:
+    """A household subject assigned unknown (e.g. lost at night) is a miss; if its visit
+    alerted, the miss caused that alert (FR-044 EVAL)."""
+    from vigil.eval.metrics import compute_metrics
+
+    label = {
+        "scenario": "N",
+        "lighting": "night_ir",
+        "expected_verdict": "normal",
+        "subjects": [
+            {
+                "id": "S1",
+                "class": "person",
+                "role": "household_insider",
+                "appearances": [{"camera_id": "front", "t0": 0, "t1": 10}],
+            }
+        ],
+    }
+    track = {"id": "t1", "camera_id": "front", "cls": "person", "t_first": 1.0, "t_last": 9.0}
+    subject = {"id": "s1", "track_ids": ["t1"], "actor_role": "unknown", "role_basis": "x"}
+    result = {
+        "scenario": "N",
+        "tracks": [track],
+        "subjects": [subject],
+        "visits": [{"id": "v1", "verdict": "needs_attention", "track_ids": ["t1"]}],
+    }
+    t = compute_metrics([label], [result])["totals"]
+    assert (t["household_subjects"], t["household_missed"], t["role_miss_rate"]) == (1, 1, 1.0)
+    assert (t["role_miss_rate_night"], t["role_miss_rate_day"]) == (1.0, None)
+    assert t["role_miss_alerts"] == 1
+    ok = {**result, "subjects": [{**subject, "actor_role": "household_insider"}]}
+    t2 = compute_metrics([label], [ok])["totals"]
+    assert (t2["household_missed"], t2["role_miss_alerts"], t2["role_miss_rate"]) == (0, 0, 0.0)
+    # no result at all: the labelled role counts as missed (fails closed)
+    t3 = compute_metrics([label], [])["totals"]
+    assert (t3["household_missed"], t3["role_miss_rate"]) == (1, 1.0)
 
 
 # ---------------------------------------------------------------------------
@@ -466,6 +628,37 @@ def test_process_session_runs_offline_on_recorded_sam(
     assert any(s["source"] == "code" for s in v["story"])
     out = data / "results" / "evening-1" / "visits.json"
     assert json.loads(out.read_text(encoding="utf-8"))["visits"][0]["id"] == v["id"]
+
+
+def test_process_session_reads_expected_windows_and_checkins(
+    tmp_path: Path, po_side_gate: ProtectedObject, rule_r7: Rule
+) -> None:
+    """session.json carries the owner's windows (FR-029) and check-ins (FR-044 step 2)."""
+    from datetime import timedelta
+
+    sc = SCENARIOS["B-prime"]()
+    data = tmp_path / "data"
+    _write_session(data, "evening-1", sc, sam=True, extra=sc.session_json())
+    with respx.mock(assert_all_called=False):
+        result = process_session("evening-1", settings=Settings(data_dir=data))
+    (s,) = result["visits"][0]["subjects"]
+    assert (s["actor_role"], s["role_basis"]) == ("expected_visitor", "window:w3")
+    assert [w["id"] for w in result["expected_windows"]] == ["w3"]
+
+    # a check-in tapped 1 s into the session binds the one chain that starts within 120 s;
+    # step 2 comes before the window (step 3)
+    tap = sc.session_start + timedelta(seconds=1)
+    checkin = {"id": "c1", "start": tap.isoformat(), "expires": (tap + timedelta(minutes=30))}
+    checkin["expires"] = checkin["expires"].isoformat()
+    data2 = tmp_path / "data2"
+    _write_session(
+        data2, "evening-1", sc, sam=True, extra={**sc.session_json(), "checkins": [checkin]}
+    )
+    with respx.mock(assert_all_called=False):
+        result2 = process_session("evening-1", settings=Settings(data_dir=data2))
+    (s2,) = result2["visits"][0]["subjects"]
+    assert (s2["actor_role"], s2["role_basis"]) == ("household_insider", "checkin:c1")
+    assert result2["checkins"][0]["bound_subject"] == s2["id"]
 
 
 # ---------------------------------------------------------------------------

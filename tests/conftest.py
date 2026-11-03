@@ -47,12 +47,13 @@ def po_side_gate() -> ProtectedObject:
 
 @pytest.fixture
 def rule_r7() -> Rule:
-    """Owner rule r7 from spec 9.4: anyone touches the side gate 22:00 to 06:00."""
+    """Owner rule r7 from spec 9.4 (Nov 2): a non-household touch of the side gate after dark."""
     return Rule(
         id="r7",
-        name="Side gate after 10 PM",
+        name="Side gate after dark",
         target=RuleTarget(kind="protected_object", id="po_side_gate"),
         trigger="touch",
-        active=ActiveWindow(start="22:00", end="06:00"),
+        active=ActiveWindow(start="17:30", end="06:00"),
         severity="needs_attention",
+        applies_to="non_household",
     )

@@ -15,8 +15,12 @@ The installed `dist/es/utils/reduced-motion/use-reduced-motion.mjs` captures
 `useState(prefersReducedMotion.current)` without a state subscription. Its docstring
 says it responds dynamically, but its implementation does not. Lead approved a thin
 native `matchMedia` + React `useSyncExternalStore` bridge. One native listener is
-shared across consumers and removed when the last consumer unmounts. The Motion hook
-remains the library fallback; current native preference wins when supported.
+shared across consumers and removed when the last consumer unmounts. Unsupported
+native preference APIs conservatively reduce motion. The library hook is not called:
+round-one isolated review proved it initializes a second process-global bare-query
+listener without cleanup. The former fallback caused a 0→2→1 listener lifecycle;
+the corrected exported hook gives 0→1→0 across both query forms, without conditional
+React hooks. Motion still owns animations, presence, controls and configuration.
 
 No custom animation scheduler, easing library, timer, popup lifecycle, 3D pulse or path
 implementation was added. Policy values come from frozen CSS tokens. Unknown/missing
@@ -132,7 +136,19 @@ Additional commands from web-next:
 set MOTION_QA_SHA=4fa2342
 node src/motion/qa-adaptive.mjs
 node src/motion/qa-scene.mjs
+node src/motion/qa-lifecycle.mjs
+node src/motion/qa-preference.mjs
 ```
 
 `contact_sheets.py <evidence-root> --key-states` indexes key states without modifying
 the original PNGs. Gitleaks is not installed locally; no local gitleaks success is claimed.
+
+Round-two lifecycle tests count both `(prefers-reduced-motion)` and
+`(prefers-reduced-motion: reduce)`, including modern and legacy listener APIs. The
+browser lifecycle probe imports only the exported hook into the blank scaffold,
+without Chat/Twin, and preserves the same focused input/draft across both live
+preference directions. The affected-state matrix exercises all eleven viewports,
+both themes, and ordinary→reduced→ordinary without remounting the canvas. The
+existing adaptive regression separately retains actual camera pose, draft/focus,
+20-route churn and in-flight animation interruption. Cross-owned Chat/Twin source
+and its library listener/tween integration remain lead-owned.

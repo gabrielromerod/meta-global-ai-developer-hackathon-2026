@@ -1,5 +1,5 @@
 import {createContext, useContext, useLayoutEffect, useRef, useSyncExternalStore, type ReactNode} from 'react';
-import {AnimatePresence, MotionConfig, motion, useAnimationControls, useIsPresent, useReducedMotion, type Transition} from 'framer-motion';
+import {AnimatePresence, MotionConfig, motion, useAnimationControls, useIsPresent, type Transition} from 'framer-motion';
 import './motion.css';
 
 const preferenceQuery='(prefers-reduced-motion: reduce)';
@@ -30,10 +30,7 @@ function preferenceSnapshot() {
 
 /** The installed Motion 14.9 hook is initial-only; native subscription supplies changes. */
 export function useMotionPreference():boolean {
-  const libraryPreference=useReducedMotion();
-  const preference=useSyncExternalStore(subscribePreference,preferenceSnapshot,()=>true);
-  return typeof window!=='undefined'&&typeof window.matchMedia==='function'
-    ? preference : libraryPreference!==false;
+  return useSyncExternalStore(subscribePreference,preferenceSnapshot,()=>true);
 }
 
 export interface MotionPolicy {

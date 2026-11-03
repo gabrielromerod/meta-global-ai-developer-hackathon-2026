@@ -63,6 +63,7 @@ for(const [label,width,height] of selected){for(const theme of ['dark','light'])
   await page.getByRole('button',{name:'Record a voice rule'}).click();await expect(page.getByRole('dialog')).toContainText('Phone recording callback captured');await shot('voice-callback');await page.keyboard.press('Escape');
   await page.getByRole('button',{name:'Confirm rule'}).scrollIntoViewIfNeeded();await shot('draft-and-notice');await page.getByRole('button',{name:'Confirm rule'}).click();await expect(page.getByRole('dialog')).toContainText('Confirm draft callback captured');await shot('confirm-callback');await page.keyboard.press('Escape');
   for(const route of ['settings','rules']){await go(route,'&context=empty');await layout(`empty-${route}`);await shot(`empty-${route}`);}
+  await go('settings','&review=1');await page.getByRole('tab',{name:'Privacy',exact:true}).click();await expect(page.getByRole('listitem',{name:'Front left Duo privacy review'})).toContainText('Reviewed');await expect(page.getByRole('listitem',{name:'Doorbell privacy review'})).toContainText('Review required');await layout('privacy-review-flags');await shot('privacy-review-flags');
   await go();await page.getByRole('tab',{name:'Cameras',exact:true}).focus();await page.keyboard.press('ArrowRight');await expect(page.getByRole('tab',{name:'Privacy',exact:true})).toBeFocused();await page.keyboard.press('Tab');await shot('keyboard-panel');
   expect(errors).toEqual([]);
  }catch(error){report.failures.push({label,width,height,theme,error:String(error)});await shot('FAILURE');}

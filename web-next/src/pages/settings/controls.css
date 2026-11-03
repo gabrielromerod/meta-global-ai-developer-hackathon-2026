@@ -22,6 +22,7 @@
 .controls-field label{font-size:var(--v-text-sm);font-weight:var(--v-weight-medium)}
 .controls-input,.controls-textarea,.controls-select{border:var(--v-line) solid var(--v-border);border-radius:var(--v-radius-sm);background:var(--v-bg);color:var(--v-text);padding:var(--v-space-1) calc(var(--v-space-1)*1.5);min-height:var(--v-target);width:var(--v-full);min-width:var(--v-zero);font-size:var(--v-text-sm);line-height:var(--v-leading)}
 .controls-input:focus-visible,.controls-textarea:focus-visible,.controls-select:focus-visible,.controls-scroll:focus-visible{outline:var(--v-focus-width) solid var(--v-accent);outline-offset:var(--v-focus-offset)}
+.controls-input[type="datetime-local"]:focus-within{outline:var(--v-focus-width) solid var(--v-accent);outline-offset:var(--v-focus-offset)}
 .controls-textarea{resize:vertical;min-height:var(--v-space-12);max-height:calc(var(--v-space-12)*2)}
 .controls-input:disabled,.controls-textarea:disabled,.controls-select:disabled{opacity:var(--v-disabled-opacity);cursor:not-allowed}
 .controls-input:not(:disabled),.controls-textarea:not(:disabled),.controls-select:not(:disabled){border-color:var(--v-muted)}

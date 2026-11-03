@@ -128,6 +128,8 @@ describe('Rules and benchmark evidence (FR-012, FR-021, FR-022, FR-024)',()=>{
     render(<RulesPage {...base()}/>);
     expect(screen.getByRole('button',{name:'Review rule draft'})).toBeDisabled();
     expect(screen.getByRole('button',{name:'Record a voice rule'})).toBeDisabled();
+    expect(screen.getByText('Rule drafting is not available in this view.')).toBeVisible();
+    expect(screen.getByText('Voice recording is not available in this view.')).toBeVisible();
   });
   it('compiles trimmed text through the supplied callback and displays server notice',async()=>{
     const compile=vi.fn();render(<RulesPage {...base()} ruleActions={{compile,notice:'Recorded result shown'}}/>);

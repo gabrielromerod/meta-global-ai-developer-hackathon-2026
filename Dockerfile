@@ -1,6 +1,6 @@
 # Vigil hosted sandbox (spec 5.11): FastAPI + static web + three.js over the demo bundle.
 # Cached by default; live calls need MODEL_API_KEY passed as a runtime secret (never baked in).
-# ffmpeg is not needed: the sandbox serves an exported bundle and never processes video.
+# ffmpeg/ExifTool also enforce image/video privacy at guarded point/model boundaries.
 #
 #   docker build -t vigil-sandbox .
 #   docker run --rm -p 8000:8000 -e MODEL_API_KEY=invalid vigil-sandbox
@@ -26,7 +26,7 @@ RUN npm run build
 
 FROM python:3.12-slim
 
-RUN apt-get update && apt-get install -y --no-install-recommends libimage-exiftool-perl \
+RUN apt-get update && apt-get install -y --no-install-recommends ffmpeg libimage-exiftool-perl \
  && rm -rf /var/lib/apt/lists/*
 
 COPY --from=ghcr.io/astral-sh/uv:0.11.7 /uv /uvx /bin/

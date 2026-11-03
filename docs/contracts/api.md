@@ -4,23 +4,23 @@ Frozen for visual workers. Only the lead changes contracts, tokens or fixtures. 
 examples under web-next/src/fixtures are authoritative field examples, not live evidence.
 All requests are same-origin. Errors are non-2xx JSON `{detail: string}` and must be
 visible. No camera host, credentials or raw source URL is ever returned to a browser.
-The existing API remains compatible. **The normalized /api/ui and chat endpoints below
-are planned for lead-only Phase 2; visual previews load fixtures, not those routes.**
+The existing API remains compatible. **The normalized /api/ui and chat endpoints are implemented and tested offline.
+Isolated previews load fixtures; production integration uses same-origin queries.**
 
 ## Read API
 
 | Endpoint | Response / behaviour | Current status at freeze |
 | --- | --- | --- |
 | GET /api/health | mode, synthetic, budget/config readiness; never a live connectivity probe | REAL |
-| GET /api/ui/state | UIState below, optional session query; normalized from cached ledger/config | MISSING: Phase 2 |
+| GET /api/ui/state | UIState below, optional session query; normalized from cached ledger/config | REAL logic / FIXTURE acceptance |
 | GET /api/scenarios | legacy scenario summaries, synthetic label, session_start | REAL logic / FIXTURE sandbox |
 | GET /api/visits/{id} | full visit detail as web/fixtures/visits.json visits[id] | REAL logic / FIXTURE sandbox |
 | GET /api/visits/{id}/positions | positions, paths, unresolved gaps; no interpolation across gaps | REAL logic / FIXTURE sandbox |
 | GET /api/twin | existing twin.json shape: cameras, generic site_plan, blind_regions, coverage, glb_url? | REAL logic / FIXTURE sandbox |
 | GET /api/calls | cached model-call ledger | REAL logic / FIXTURE sandbox |
 | GET /api/eval | existing evaluation report; authored values remain labelled synthetic | REAL logic / FIXTURE sandbox |
-| GET /api/ui/search?q=&camera=&verdict=&start=&end=&kind= | `{contract_version,evidence,visits:[VisitRow],clips:[Clip]}`; intersect filters over cached ledger | MISSING: Phase 2 |
-| GET /api/ui/chat | web/fixtures/chat.json shape, assistant thread only server-owned | MISSING: Phase 2 |
+| GET /api/ui/search?q=&camera=&verdict=&start=&end=&kind= | `{contract_version,evidence,visits:[VisitRow],clips:[Clip]}`; intersect filters over cached ledger | REAL logic / FIXTURE acceptance |
+| GET /api/ui/chat | web/fixtures/chat.json shape, assistant thread only server-owned | REAL logic / FIXTURE acceptance |
 | GET /api/windows | `{windows:[ExpectedWindow],note:string}`; sandbox returns B-prime's recorded example | REAL logic / FIXTURE sandbox |
 | GET /api/voice/fixtures | consented phone voice-rule fixtures; unrelated to camera audio | REAL logic / FIXTURE sandbox |
 | GET /api/presets | current rule presets | REAL logic / FIXTURE sandbox |
@@ -73,7 +73,7 @@ telemetry is not a measured benchmark and must not be promoted into UI metrics.
 
 ## Actions and owner security
 
-All owner actions use existing `ownerFetch()` with X-Owner-Token from sessionStorage.
+All owner actions use existing `ownerFetch()` with X-Vigil-Owner from sessionStorage.
 Never put the token in localStorage, URL, fixture, logs or generated HTML. Sandbox
 controls are disabled with **Owner-only on the home box**. B-prime w3 remains visibly
 a recorded expired window. No watch Undo exists until a genuine API implements it.
@@ -87,7 +87,7 @@ a recorded expired window. No watch Undo exists until a genuine API implements i
 | POST /api/rules/compile | existing text / visit context contract | draft allowlisted RuleSpec |
 | POST /api/rules/{id}/confirm | existing confirmation | confirmed rule |
 | POST /api/visits/{id}/rerun | existing rerun context | recomputed validated visit |
-| POST /api/chat/ask | `{thread_id:"ask-home",text:string,session_id:string}` | `{message:ChatMessage}`; cached-ledger search with event citations, no model call; Phase 2 |
+| POST /api/chat/ask | `{thread_id:"ask-home",text:string,session_id:string}` | `{message:ChatMessage}`; cached-ledger search with event citations, no model call |
 
 ExpectedWindow: `{id,label,start,end,cameras:[],zones:[],state,created_at,recorded?:bool}`.
 Owner routes enforce existing origin/token/edge guards; no browser control bypass.

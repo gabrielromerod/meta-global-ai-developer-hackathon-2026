@@ -12,27 +12,23 @@ real-footage acceptance. Gitleaks is absent locally; CI still supplies that chec
 
 ## Execution incident during React rebuild (Nov 3)
 
-REAL � One unapproved HTTP POST to Meta /v1/responses occurred while a new negative test exercised the previously unguarded inline point-prompt path. It used the literal invalid key and generated all-black JPEG pixels, not camera footage. Meta returned HTTP401; no inference succeeded and no owner key was used. Exact wall-clock timestamp was not captured.
+REAL — One unapproved HTTP POST to Meta /v1/responses occurred while a new negative test exercised the previously unguarded inline point-prompt path. It used the literal invalid key and generated all-black JPEG pixels, not camera footage. Meta returned HTTP401; no inference succeeded and no owner key was used. Exact wall-clock timestamp was not captured.
 
-REAL remediation / FIXTURE evidence � Default tests now have a strict autouse respx boundary; unmocked Python HTTP fails before transport. The negative point test also uses a rejecting client factory, cache-only mode and a closed loopback base URL. Inline SAM point prompts require explicit privacy context; production point prompts require exact camera review before client construction. Evidence: test_unmocked_default_http_is_blocked_before_transport, test_point_prompt_requires_explicit_privacy_context, test_point_backend_rejects_unreviewed_real_camera_before_model. The prior statement that this rebuild made no Meta request is superseded by this incident. No camera connection occurred.
+REAL remediation / FIXTURE evidence — Default tests now have a strict autouse respx boundary; unmocked Python HTTP fails before transport. The negative point test also uses a rejecting client factory, cache-only mode and a closed loopback base URL. Inline SAM point prompts require explicit privacy context; production point prompts require exact camera review before client construction. Evidence: test_unmocked_default_http_is_blocked_before_transport, test_point_prompt_requires_explicit_privacy_context, test_point_backend_rejects_unreviewed_real_camera_before_model. The prior statement that this rebuild made no Meta request is superseded by this incident. No camera connection occurred.
 
-## Consumer round in progress (Nov 3)
+## React and seven-camera rebuild (Nov 3)
 
-These are MISSING until implemented and evidenced in the consumer-round plan:
+REAL logic / FIXTURE evidence: backend items 1–8 are implemented. The latest offline run passed 1,538 tests with 24 E2E tests deselected; exact times are in `docs/timing.md`. Configuration has all seven Wi-Fi cameras, no Home Hub and battery import mode. No real-camera acceptance is claimed.
 
-- Normalized UI state/search/chat API and shared hooks, new app entrypoint and sync:
-  lead-only Phase 2 after isolated visual workers land. Frozen fixtures are authored
-  synthetic data, not recordings of real Meta responses or real camera behaviour.
-- Seven-camera power/Hub inventory, battery import and on-demand Hub capture, AI event
-  clip closure/ring pinning/free-space retention: supersede the earlier four-camera
-  session-only profile. No IPs/Hub supplied; tests must use fakes/generated media.
-- Strict audio rejection at ingest, per-Duo privacy-region checklist/overlay removal,
-  outer-ring counting, battery-wake gaps, full-frame 1920 Duo perception and split-half
-  geometry uncertainty: requested now, pending backend items 2–4 and 10.
-- New shell/pages/chat/twin visual requirements and desktop no-scroll evidence:
-  pending visual workers and final browser integration.
-- Real field privacy polygons, real SDK telemetry/time-sync and Hub discovery, actual
-  Meta responses/credits/key and footage remain owner-dependent. No live calls allowed.
+- Seven-camera topology, outer-ring filtering and unmeasured transit fail-closed linking: `tests/unit/test_real_home.py` and `tests/unit/test_topology.py`.
+- Duo detection at 1920 pixels, per-half geometry, seam/edge uncertainty and colour/infrared inference use generated pipeline inputs. No plate OCR is run.
+- Exact privacy-review binding, sky/ridgeline/curb/watermark masks and metadata stripping: `test_privacy_review.py`, `test_privacy.py`, `test_metadata_scan.py`. Every real camera remains blocked pending approved stills and polygons.
+- Timestamped battery import, AC event capture, durable segment pins and free-space retention: `test_battery_import.py` and `test_event_capture.py`, generated MP4s and injected SDK/capture adapters.
+- Doctor power/Hub/privacy/clock/ExifTool checks and normalized state, clips, notifications, search and cited cached chat: `test_doctor.py` and `tests/integration/test_consumer_api.py`.
+- REAL: local Docker Gitleaks scans this branch. The earlier “absent locally” statement applies only to the prior handover.
+- FIXTURE: shell, Home/Attention, R3F, Messages, Clips/Media and owner controls have independent APPROVED reviews. Motion round two is in review. Integrated React entrypoint, shared state/player sync, final two-reviewer pass and switching `/next/` to `/` remain MISSING until completed.
+- MISSING owner inputs: approved real still/masks per camera, clock measurements, calibration/homographies and field transit walk. Battery clips must be exported into `data/import/<camera_id>/` with explicit timestamps. No camera connection is authorized.
+- MISSING acceptance: successful approved Meta responses and real footage. No requirement is upgraded to Verified. No ML packages, weights or go2rtc were installed.
 
 **Date: 2026-11-02** (Mon Nov 2, after the Nov 2 spec revision). Spec: [section 13](spec/vigil-spec.md#13-final-readiness). Vigil is ready to submit when every row of the [traceability matrix](requirements/functional.md#traceability-matrix-spec-131) has a green test and the demo evidence it names, on real data.
 
@@ -98,13 +94,13 @@ Since `judging_end` defaults to Nov 10, an offline test that uses the real clock
 
 Needs claimed credits, the $140 limit and the budget guard on ([credits runbook](runbooks/credits-billing.md), `budget-check` skill). Nothing here runs without explicit owner approval.
 
-- T-03 smoke tests (`scripts/smoke_meta.py --live`): one recorded response per model, and the 3 open API questions in [spec 5.14](spec/vigil-spec.md#514-verified-meta-api-facts-this-design-depends-on) (Wonder strict schema, Voice Transcribe batch endpoint with WAV input, Spark video with a strict schema). No live Meta call has ever run; all Meta fixtures are authored.
+- T-03 smoke tests (`scripts/smoke_meta.py --live`): one recorded response per model, and the 3 open API questions in [spec 5.14](spec/vigil-spec.md#514-verified-meta-api-facts-this-design-depends-on) (Wonder strict schema, Voice Transcribe batch endpoint with WAV input, Spark video with a strict schema). No successful Meta inference has run; all Meta fixtures are authored. The invalid-key HTTP401 incident above remains recorded.
 - Real-data acceptance of FR-004, FR-006, FR-007, FR-009, FR-013 (Spark path), FR-014, FR-019, FR-020, FR-021 (10 reference phrasings), FR-022 (5 spoken phrasings), FR-023, FR-025, FR-037 (SAM landmark proposals, unless local), FR-043 (estimate within 10% of the Billing page).
 - NFR-006, NFR-007, NFR-012, NFR-020, NFR-035 (API side), NFR-036.
 
 ## Blocked by field hardware
 
-Needs the 4 Reolink cameras, the iPhone Pro LiDAR, filming with consent, the RTX 3090 with open weights, or a phone ([runbooks](README.md#index), `field-runbook` skill).
+Needs the seven Reolink cameras, the iPhone Pro LiDAR, filming with consent, the RTX 3090 with open weights, or a phone ([runbooks](README.md#index), `field-runbook` skill).
 
 - **Reolink cameras (T-04, T-05, T-26):** FR-030 to FR-034; NFR-027 to NFR-029, NFR-031 (cellular port check), NFR-033.
 - **LiDAR scan, landmarks and audit markers (T-06, T-10, T-12, T-14, T-15, T-17):** FR-035 to FR-040; NFR-024 to NFR-026, NFR-030, NFR-032.
@@ -130,7 +126,7 @@ From [spec 13.4](spec/vigil-spec.md#134-blockers-to-clear-today), with the extra
 - [ ] **Read the Credit Terms**: exact expiry (sets `VIGIL_CREDIT_WINDOW_END` before Nov 4, 9 PM ET), per-model coverage, what happens at zero balance
 - [ ] **Set the $140 Billing limit**; check the Billing page for spend since Oct 26; separate dev and sandbox keys. At window end, the second stop ([credits runbook](runbooks/credits-billing.md#8-live-calls-during-judging-decided-on-nov-2))
 - [ ] **Consent** from everyone who will appear on camera or in a voice fixture ([HACKATHON.md](../HACKATHON.md))
-- [ ] **Reolink models** for the 4 cameras, firmware, NVR or Home Hub ([reolink runbook](runbooks/reolink.md))
+- [ ] **Reolink firmware and addresses** for the seven cameras (models and no-Home-Hub confirmed Nov 3) ([reolink runbook](runbooks/reolink.md))
 - [ ] An iPhone Pro with LiDAR before sunset (4:55 PM PT) ([lidar runbook](runbooks/lidar-scan.md))
 - [ ] **Track** (Indie or Startup) and **team members** ([HACKATHON.md](../HACKATHON.md))
 - [ ] **`MODEL_API_KEY` GitHub secret** for the sandbox key (CI never makes live calls; needed for T-28)

@@ -422,16 +422,22 @@ def test_stream_ai_events_without_reolink_aio_is_blocked(cams, monkeypatch) -> N
 # ---------------------------------------------------------------------------
 
 
-def test_go2rtc_config_has_every_camera_and_no_literal_credentials(sample_config) -> None:
+def test_go2rtc_config_has_only_ac_cameras_and_no_literal_credentials() -> None:
     import re
     from pathlib import Path
 
     import yaml
 
+    from vigil.ingest.config import load_config
+
     path = Path(__file__).resolve().parents[2] / "infra" / "go2rtc.yaml"
     text = path.read_text(encoding="utf-8")
     cfg = yaml.safe_load(text)
-    for cam in sample_config.cameras:
+    home = load_config(path.parents[1] / "config/cameras.yaml")
+    ac = [c for c in home.cameras if c.power_profile in {"plugin_wifi", "doorbell"}]
+    expected = {name for c in ac for name in (c.id, c.id + "_sub")}
+    assert set(cfg["streams"]) == expected
+    for cam in ac:
         for name in (cam.id, f"{cam.id}_sub"):
             (src,) = cfg["streams"][name]
             assert src.startswith("rtsp://${REOLINK_USER}:${REOLINK_PASSWORD}@${REOLINK_")

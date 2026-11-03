@@ -17,10 +17,12 @@ set VIGIL_DATA_DIR=data\qa-main
 set VIGIL_DB_PATH=data\qa-main\vigil.db
 set VIGIL_LEDGER_PATH=data\qa-main\ledger.db
 set VIGIL_CACHE_DIR=data\qa-main\cache
-uv run vigil serve --port 8000
+set VIGIL_BUNDLE_DIR=demo\synthetic
+uv run python -c "from vigil.settings import Settings;s=Settings();assert s.mode=='sandbox' and s.meta_cache_only and s.meta_base_url=='http://127.0.0.1:9/v1';print('Offline QA settings verified')"
+uv run uvicorn vigil.api.app:create_app --factory --host 127.0.0.1 --port 8000 --reload --reload-dir vigil
 ```
 
-Stop with Ctrl+C; repeat the last line to restart. Current `/` remains usable until
+Only the VIGIL-prefixed cache/base/cache-directory names configure Settings; unprefixed META_* names do not. Stop with Ctrl+C; repeat the last line to restart. Current `/` remains usable until
 the final reviewed switch. React development build is served at `/next/`.
 Build React with `cd web-next`, `npm ci`, `npm run build`, then restart FastAPI.
 

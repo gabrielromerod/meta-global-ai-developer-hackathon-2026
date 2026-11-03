@@ -7,6 +7,7 @@ import {Camera, ChevronDown, FileVideo, House, Link2, MessageCircle, Plus, Send,
 import {motion} from 'framer-motion';
 import {useEntranceMotion} from '../motion';
 import type {ChatMessage, ChatProps, Thread} from '../contracts';
+import {Button} from '../components/ui';
 import './styles.css';
 
 /** Lead-controlled drafts keep popup/fullscreen layouts in sync. No people messaging backend. */
@@ -39,13 +40,13 @@ function ThreadIcon({thread}: {thread:Thread}) {
   return thread.kind==='assistant' ? <House aria-hidden="true"/> : <MessageCircle aria-hidden="true"/>;
 }
 
-function Message({message,onOpenVisit,onOpenClip}: {message:ChatMessage;onOpenVisit?:ChatProps['onOpenVisit'];onOpenClip?:ChatSurfaceProps['onOpenClip']}) {
+function Message({message,onOpenVisit,onOpenClip,onOpenCitation}: {message:ChatMessage;onOpenVisit?:ChatProps['onOpenVisit'];onOpenClip?:ChatSurfaceProps['onOpenClip'];onOpenCitation?:ChatProps['onOpenCitation']}) {
   return <li className={`v-chat-message v-chat-message--${message.author}`}>
     <span className="v-chat-message-author">{message.author==='you'?'You':message.author==='vigil'?'Vigil':'Household'}</span>
     <div className="v-chat-bubble">
       <p>{message.text}</p>
       {message.citations.length>0 && <div className="v-chat-citations" aria-label="Evidence citations">
-        {message.citations.map(citation=><button type="button" className="v-chat-citation" key={`${citation.visit_id}:${citation.event_id}`} aria-label={`Open evidence ${citation.event_id}`} disabled={!onOpenVisit} onClick={()=>onOpenVisit?.(citation.visit_id)}><Link2 aria-hidden="true"/>{citation.event_id}</button>)}
+        {message.citations.map(citation=><button type="button" className="v-chat-citation" key={`${citation.visit_id}:${citation.event_id}`} aria-label={`Open evidence ${citation.event_id}`} disabled={!onOpenVisit&&!onOpenCitation} onClick={()=>onOpenCitation?onOpenCitation(citation):onOpenVisit?.(citation.visit_id)}><Link2 aria-hidden="true"/>{citation.event_id}</button>)}
       </div>}
       {message.clip_id && <button type="button" className="v-chat-shared-clip" aria-label={`Shared clip ${message.clip_id}`} disabled={!onOpenClip} onClick={()=>onOpenClip?.(message.clip_id!)}><FileVideo aria-hidden="true"/><span>Shared clip<span className="v-chat-clip-id">{message.clip_id}</span></span>{!onOpenClip&&<span>Playback unavailable</span>}</button>}
     </div>
@@ -105,7 +106,7 @@ function ThreadView({thread,props,draft,onDraftChange}: {thread:Thread;props:Cha
   return <section className="v-chat-thread" aria-label={thread.title}>
     <header className="v-chat-thread-header"><span className="v-chat-avatar"><ThreadIcon thread={thread}/></span><div><h2>{thread.title}</h2><p>{thread.kind==='local_mock'?'Local to this browser':'Cached visit evidence'}</p></div></header>
     <div ref={historyRef} className="v-chat-history" role="log" aria-label={`${thread.title} messages`} aria-live="polite" tabIndex={0}>
-      {thread.messages.length===0&&!sending?<div className="v-chat-empty"><span className="v-chat-empty-icon"><ThreadIcon thread={thread}/></span><h3>{thread.kind==='assistant'?'Ask about a visit':'No messages yet'}</h3><p>{thread.kind==='assistant'?'Search what the cameras recorded. Answers link to the visit evidence.':'Share a note or a clip with this local household thread.'}</p>{thread.kind==='local_mock'&&<p>Messages stay in this browser. They are not delivered to anyone.</p>}</div>:thread.messages.length>0&&<ol className="v-chat-message-list">{thread.messages.map(message=><Message key={message.id} message={message} onOpenVisit={props.onOpenVisit} onOpenClip={props.onOpenClip}/>)}</ol>}
+      {thread.messages.length===0&&!sending?<div className="v-chat-empty"><span className="v-chat-empty-icon"><ThreadIcon thread={thread}/></span><h3>{thread.kind==='assistant'?'Ask about a visit':'No messages yet'}</h3><p>{thread.kind==='assistant'?'Search what the cameras recorded. Answers link to the visit evidence.':'Share a note or a clip with this local household thread.'}</p>{thread.kind==='local_mock'&&<p>Messages stay in this browser. They are not delivered to anyone.</p>}</div>:thread.messages.length>0&&<ol className="v-chat-message-list">{thread.messages.map(message=><Message key={message.id} message={message} onOpenCitation={props.onOpenCitation} onOpenVisit={props.onOpenVisit} onOpenClip={props.onOpenClip}/>)}</ol>}
       {sending&&<p className="v-chat-pending" role="status">{thread.kind==='assistant'?'Searching the visit ledger\u2026':'Saving your local message\u2026'}</p>}
     </div>
     <form className="v-chat-composer" onSubmit={event=>void submit(event)}>
@@ -124,7 +125,7 @@ function ThreadWorkspace({props,popup=false}: {props:ChatSurfaceProps;popup?:boo
   const drafts=useDrafts(props);
   const narrow=useNarrowLayout();
   const selected=props.threads.find(thread=>thread.id===props.selectedThreadId)??props.threads[0];
-  if(!selected)return <div className="v-chat-empty"><MessageCircle aria-hidden="true"/><h2>No threads available</h2><p>Messages will appear here when a session is loaded.</p></div>;
+  if(!selected)return <div className="v-chat-empty"><MessageCircle aria-hidden="true"/><h2>{props.pending?'Loading messages':props.error?'Messages unavailable':'No threads available'}</h2><p role={props.error?'alert':props.pending?'status':undefined}>{props.error||(props.pending?'Loading threads from the home box…':'Messages will appear here when a session is loaded.')}</p>{props.error&&props.onRetry&&<Button onClick={props.onRetry}>Try again</Button>}</div>;
   return <Tooltip.Provider delayDuration={visualNumber('--v-motion')}><Tabs.Root className={`v-chat-workspace${popup?' v-chat-workspace--popup':''}`} value={selected.id} onValueChange={props.onSelectThread} orientation={popup||narrow?'horizontal':'vertical'} activationMode="automatic">
     <aside className="v-chat-thread-list"><Tabs.List className="v-chat-tabs" aria-label="Message threads">{props.threads.map(thread=><Tabs.Trigger key={thread.id} value={thread.id} className="v-chat-thread-tab" aria-label={thread.title}><span className="v-chat-avatar"><ThreadIcon thread={thread}/></span><span><strong>{thread.title}</strong><small>{thread.kind==='assistant'?'Visit evidence':'Local to this browser'}</small></span></Tabs.Trigger>)}</Tabs.List>{!popup&&<p className="v-chat-thread-note">{selected.note}</p>}</aside>
     <Tabs.Content className="v-chat-tab-panel" value={selected.id} key={selected.id}><ThreadView thread={selected} props={props} draft={drafts.values[selected.id]??''} onDraftChange={text=>drafts.change(selected.id,text)}/></Tabs.Content>

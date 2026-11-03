@@ -14,7 +14,7 @@ import * as RadixTabs from "@radix-ui/react-tabs";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import * as Tooltip from "@radix-ui/react-tooltip";
 import { Camera, Eye, Layers3, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
-import { useMotionPreference } from "../motion";
+import { useMotionPreference,timeSeconds } from "../motion";
 import {
   DoubleSide,
   PerspectiveCamera,
@@ -117,8 +117,8 @@ function readPalette(lighting?:'day'|'night'): Palette {
     damping: numeric("--v-twin-damping"),
     clearance: numeric("--v-twin-camera-clearance"),
     markerScale: numeric("--v-twin-marker-scale"),
-    duration: numeric("--v-motion-view") / 1000,
-    pulsePeriod: numeric("--v-motion-pulse") / 1000,
+    duration: timeSeconds(color("--v-motion-view")),
+    pulsePeriod: timeSeconds(color("--v-motion-pulse")),
   };
   return lighting ? {...palette,
     background:color(`--v-scene-${lighting}-background`),
@@ -129,7 +129,7 @@ function readPalette(lighting?:'day'|'night'): Palette {
     light:numeric(`--v-scene-${lighting}-light`),
   }:palette;
 }
-function usePalette(lighting?:'day'|'night') {
+function usePalette(lighting:'day'|'night'|undefined,reduced:boolean) {
   const [palette, setPalette] = useState(()=>readPalette(lighting));
   useEffect(() => {
     setPalette(readPalette(lighting));
@@ -139,7 +139,7 @@ function usePalette(lighting?:'day'|'night') {
       attributeFilter: ["data-theme", "class", "style"],
     });
     return () => observer.disconnect();
-  }, [lighting]);
+  }, [lighting,reduced]);
   return palette;
 }
 
@@ -918,14 +918,18 @@ export function HouseView({
   preset: controlledPreset,
   lighting,
   forceMap,
+  presetRequestId,
 }: HouseViewProps) {
   const model = useMemo(() => parseTwin(twin), [twin]),
-    palette = usePalette(lighting),
-    reduced = useMotionPreference();
-  const [preset, setPreset] = useState("front"),
+    reduced = useMotionPreference(),
+    palette = usePalette(lighting,reduced);
+  const [preset, setPreset] = useState(controlledPreset??"front"),
     [reset, setReset] = useState(0),
     [zoom, setZoom] = useState({ factor: 1, serial: 0 }),
     [showCoverage, setShowCoverage] = useState(true);
+  useEffect(()=>{
+    if(controlledPreset!==undefined)setPreset(controlledPreset);
+  },[controlledPreset,presetRequestId]);
   const [hoveredRegion, setHoveredRegion] = useState<string | null>(null);
   const [failed,setFailed]=useState(false);
   const container = useRef<HTMLDivElement>(null!),
@@ -934,7 +938,9 @@ export function HouseView({
       () => evidenceAtTime(positions, time),
       [positions, time],
     );
-  const actualPreset = controlledPreset ?? preset;
+  const actualPreset = preset;
+  const zoomBy=(factor:number)=>setZoom(v=>({factor,serial:v.serial+1}));
+  const resetView=()=>{setPreset('front');setReset(v=>v+1);};
   const activeCamera = model.cameras.find((c) => c.id === activeCameraId);
   const canvasCamera = useMemo(
     () => ({
@@ -951,6 +957,9 @@ export function HouseView({
       className="house-view"
       aria-label="Property camera view"
       data-testid="house-view"
+      data-motion-seconds={palette.duration}
+      data-pulse-period={palette.pulsePeriod}
+      data-reduced-motion={reduced}
     >
       <div className="twin-toolbar">
         <RadixTabs.Root value={actualPreset} onValueChange={setPreset}>
@@ -979,9 +988,8 @@ export function HouseView({
               <button
                 type="button"
                 className="twin-camera-menu"
-                aria-label="Select camera"
-                title="Select camera"
-                disabled={!onCameraSelect}
+                aria-label="Camera and view controls"
+                title="Camera and view controls"
               >
                 <Camera aria-hidden="true" />
               </button>
@@ -999,7 +1007,7 @@ export function HouseView({
                   onValueChange={(id) => onCameraSelect?.(id)}
                 >
                   {model.cameras.map((camera) => (
-                    <DropdownMenu.RadioItem key={camera.id} value={camera.id}>
+                    <DropdownMenu.RadioItem key={camera.id} value={camera.id} disabled={!onCameraSelect}>
                       <Camera aria-hidden="true" />
                       <span>{camera.name}</span>
                       <span className="twin-menu-status">
@@ -1008,6 +1016,12 @@ export function HouseView({
                     </DropdownMenu.RadioItem>
                   ))}
                 </DropdownMenu.RadioGroup>
+                <DropdownMenu.Separator className="twin-view-separator"/>
+                <DropdownMenu.Label>View controls</DropdownMenu.Label>
+                <DropdownMenu.CheckboxItem checked={showCoverage} onCheckedChange={setShowCoverage}><Layers3 aria-hidden="true"/>Camera coverage</DropdownMenu.CheckboxItem>
+                <DropdownMenu.Item onSelect={()=>zoomBy(.8)}><ZoomIn aria-hidden="true"/>Zoom in</DropdownMenu.Item>
+                <DropdownMenu.Item onSelect={()=>zoomBy(1.25)}><ZoomOut aria-hidden="true"/>Zoom out</DropdownMenu.Item>
+                <DropdownMenu.Item onSelect={resetView}><RotateCcw aria-hidden="true"/>Reset view</DropdownMenu.Item>
               </DropdownMenu.Content>
             </DropdownMenu.Portal>
           </DropdownMenu.Root>
@@ -1024,9 +1038,7 @@ export function HouseView({
             type="button"
             aria-label="Zoom in"
             title="Zoom in"
-            onClick={() =>
-              setZoom((v) => ({ factor: 0.8, serial: v.serial + 1 }))
-            }
+            onClick={() => zoomBy(.8)}
           >
             <ZoomIn aria-hidden="true" />
           </button>
@@ -1034,9 +1046,7 @@ export function HouseView({
             type="button"
             aria-label="Zoom out"
             title="Zoom out"
-            onClick={() =>
-              setZoom((v) => ({ factor: 1.25, serial: v.serial + 1 }))
-            }
+            onClick={() => zoomBy(1.25)}
           >
             <ZoomOut aria-hidden="true" />
           </button>
@@ -1044,10 +1054,7 @@ export function HouseView({
             type="button"
             aria-label="Reset view"
             title="Reset view"
-            onClick={() => {
-              setPreset("front");
-              setReset((v) => v + 1);
-            }}
+            onClick={resetView}
           >
             <RotateCcw aria-hidden="true" />
           </button>

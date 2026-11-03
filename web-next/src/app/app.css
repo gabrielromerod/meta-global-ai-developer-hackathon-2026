@@ -21,3 +21,5 @@
 .protection-frame{position:relative}.protection-frame img{display:block;width:var(--v-full);height:auto;border-radius:var(--v-radius-sm);cursor:crosshair}.protection-frame svg{position:absolute;inset:var(--v-zero);width:var(--v-full);height:var(--v-full);pointer-events:none;fill:var(--v-accent);fill-opacity:var(--v-twin-cone-opacity);stroke:var(--v-accent);stroke-width:var(--v-focus-width)}
 
 .protection-request[aria-disabled="true"]{opacity:var(--v-disabled-opacity);cursor:wait}
+
+.visit-recorded-clock{display:flex;flex-direction:column;align-items:flex-end}.visit-recorded-clock small{font-size:var(--v-text-xs);color:var(--v-muted)}

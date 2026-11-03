@@ -1,7 +1,13 @@
 import {describe,it,expect} from 'vitest';
-import {cameraTime,frameAt,localThreads,readableError} from './model';
+import {cameraTime,frameAt,localThreads,readableError,recordedClock} from './model';
 
 describe('shared evidence clock',()=>{
+  it('preserves the recorded ISO offset instead of using the viewer timezone',()=>{
+    expect(recordedClock('2026-11-02T14:00:00-08:00',15245)).toEqual({text:'6:14:05 PM',date:'Nov 2, 2026',zone:'UTC-08:00'});
+    expect(recordedClock('2026-11-03T18:00:00+05:30',0).text).toBe('6:00:00 PM');
+    expect(recordedClock('2026-11-03T18:00:00Z',0).zone).toBe('UTC');
+    expect(recordedClock('not a recorded timestamp',5).zone).toBe('Timezone unavailable');
+  });
   it('maps absolute evidence time to each real video without fabricating media',()=>{
     expect(cameraTime(105,100,20)).toBe(5);
     expect(cameraTime(95,100,20)).toBe(0);

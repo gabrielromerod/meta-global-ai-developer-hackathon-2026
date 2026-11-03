@@ -22,12 +22,24 @@ export class Recorder{
   constructor(readonly onTick:(seconds:number)=>void=()=>{},readonly onLimit:()=>void=()=>{}){}
   static supported(){return typeof navigator.mediaDevices?.getUserMedia==='function'&&typeof window.AudioContext==='function';}
   async start(){
+    if(this.disposed)throw new Error('Recording was cancelled.');
+    try {
     this.stream=await navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:true,noiseSuppression:true},video:false});
-    if(this.disposed){this.stream.getTracks().forEach(t=>t.stop());throw new Error('Recording was cancelled.');}
+    if(this.disposed)throw new Error('Recording was cancelled.');
     this.context=new AudioContext();this.source=this.context.createMediaStreamSource(this.stream);this.processor=this.context.createScriptProcessor(4096,1,1);this.recording=true;
     this.processor.onaudioprocess=event=>{if(!this.recording)return;const data=event.inputBuffer.getChannelData(0);const left=Math.max(0,Math.ceil(this.context!.sampleRate*MAX_SECONDS)-this.length);const chunk=new Float32Array(data.subarray(0,left));this.chunks.push(chunk);this.length+=chunk.length;const seconds=this.length/this.context!.sampleRate;this.onTick(seconds);if(seconds>=MAX_SECONDS)this.onLimit();};
     this.source.connect(this.processor);this.processor.connect(this.context.destination);
+    } catch(error) {await this.stop().catch(()=>{});throw error;}
   }
-  async stop(){if(!this.recording||!this.context)return null;this.recording=false;this.source?.disconnect();this.processor?.disconnect();this.stream?.getTracks().forEach(t=>t.stop());const result=toWav(this.chunks,this.context.sampleRate);this.chunks=[];await this.context.close();return result;}
-  dispose(){this.disposed=true;void this.stop();}
+  async stop(){
+    const active=this.recording,context=this.context,stream=this.stream,source=this.source,processor=this.processor,chunks=this.chunks;
+    this.recording=false;this.context=null;this.stream=null;this.source=null;this.processor=null;this.chunks=[];this.length=0;
+    if(processor)processor.onaudioprocess=null;
+    try{source?.disconnect();}catch{/* An unconnected node is already released. */}
+    try{processor?.disconnect();}catch{/* Still release the stream after a partial setup. */}
+    stream?.getTracks().forEach(track=>track.stop());
+    try{return active&&context?toWav(chunks,context.sampleRate):null;}
+    finally{if(context&&context.state!=='closed')await context.close().catch(()=>{});}
+  }
+  dispose(){this.disposed=true;void this.stop().catch(()=>{});}
 }

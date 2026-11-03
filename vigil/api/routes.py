@@ -532,8 +532,13 @@ def router() -> APIRouter:
             if rule is None:
                 raise HTTPException(404, f"unknown rule {rule_id!r}")
             rule["state"] = "active"
+        note = (
+            "Sandbox: kept in memory for this server session."
+            if request.app.state.settings.mode == "sandbox"
+            else "Active for this server session."
+        )
         return {"id": rule_id, "state": "active", "rule": rule,
-                "note": "Sandbox: kept in memory for this server session."}  # fmt: skip
+                "note": note}  # fmt: skip
 
     # -- story re-run (FR-014 live, NFR-007) ---------------------------------------------
     @r.post("/visits/{visit_id}/rerun")

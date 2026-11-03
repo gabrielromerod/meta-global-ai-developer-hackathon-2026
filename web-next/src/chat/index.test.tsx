@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import '@testing-library/jest-dom/vitest';
 import {useState} from 'react';
-import {afterEach, describe, expect, it} from 'vitest';
+import {afterEach, describe, expect, it, vi} from 'vitest';
 import {cleanup, render, screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {ChatPopup, MessagesPage} from './index';
@@ -121,6 +121,18 @@ describe('Messages',()=>{
     render(<MessagesPage {...base} threads={[]}/>);
     expect(screen.getByRole('heading',{name:'No threads available'})).toBeVisible();
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument();
+  });
+  it('distinguishes initial loading from an empty thread list',()=>{
+    render(<MessagesPage {...base} threads={[]} pending/>);
+    expect(screen.getByRole('heading',{name:'Loading messages'})).toBeVisible();
+    expect(screen.queryByText('No threads available')).not.toBeInTheDocument();
+  });
+  it('shows an initial service failure and offers the actual retry callback',async()=>{
+    const retry=vi.fn();
+    render(<MessagesPage {...base} threads={[]} error="Chat service unavailable." onRetry={retry}/>);
+    expect(screen.getByRole('alert')).toHaveTextContent('Chat service unavailable.');
+    await userEvent.click(screen.getByRole('button',{name:'Try again'}));
+    expect(retry).toHaveBeenCalledOnce();
   });
   it('blocks clip sharing when the selected thread cannot send messages',async()=>{
     const user=userEvent.setup();

@@ -40,7 +40,7 @@
   --v-font-manrope: Manrope, "Segoe UI", system-ui, sans-serif;
   --v-font-dm-sans: "DM Sans", "Segoe UI", system-ui, sans-serif;
   --v-screen-dynamic: 100dvh; --v-screen-small: 100svh;
-  --v-breakpoint-phone: 640px; --v-breakpoint-rail: 1180px;
+  --v-breakpoint-twin-controls: 480px; --v-breakpoint-phone: 640px; --v-breakpoint-rail: 1180px;
   --v-grid-fr: 1fr; --v-motion-seconds: .22;
   --v-review-main-fr: 1.2fr; --v-snapshot-max: 70svh;
   --v-review-house-min: 320px; --v-review-house-phone: 400px;

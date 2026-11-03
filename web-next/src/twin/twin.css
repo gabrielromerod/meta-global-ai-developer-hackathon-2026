@@ -86,7 +86,7 @@
   overflow: auto;
   scrollbar-gutter: stable;
 }
-.twin-camera-dropdown [role="menuitemradio"] {
+.twin-camera-dropdown [role^="menuitem"] {
   display: flex;
   align-items: center;
   gap: var(--v-space-1);
@@ -96,12 +96,12 @@
   cursor: pointer;
   outline: none;
 }
-.twin-camera-dropdown [role="menuitemradio"][data-highlighted] {
+.twin-camera-dropdown [role^="menuitem"][data-highlighted] {
   background: var(--v-raised);
   outline: var(--v-focus-width) solid var(--v-accent);
   outline-offset: calc(-1 * var(--v-focus-width));
 }
-.twin-camera-dropdown [role="menuitemradio"][data-state="checked"] {
+.twin-camera-dropdown [role^="menuitem"][data-state="checked"] {
   color: var(--v-accent);
 }
 .twin-camera-dropdown svg {
@@ -375,3 +375,16 @@
     display: none;
   }
 }
+
+/* Native container-query thresholds cannot consume CSS custom properties. */
+@container twin (max-width: 480px) {
+  .twin-toolbar {flex-wrap:wrap;overflow:visible;gap:var(--v-zero)}
+  .twin-toolbar>div {min-width:var(--v-zero);max-width:var(--v-full);flex-shrink:var(--v-one)}
+  .twin-presets {gap:var(--v-zero);flex-wrap:wrap}
+  .house-view .twin-presets button {padding:var(--v-space-1)}
+  .twin-preset-full {display:none}
+  .twin-preset-compact {display:inline}
+  .house-view button.twin-camera-menu {display:grid}
+  .twin-tools>button:not(.twin-camera-menu) {display:none}
+}
+.twin-view-separator {height:var(--v-line);background:var(--v-border);margin:var(--v-space-1) var(--v-zero)}

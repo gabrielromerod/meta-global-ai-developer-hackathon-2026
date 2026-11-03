@@ -4,7 +4,7 @@ import {useState} from 'react';
 import {act, cleanup, render, screen, waitFor} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
-import {MotionProvider, PageTransition, PanelTransition, useMotionPolicy, useMotionPreference} from './index';
+import {MotionProvider, PageTransition, PanelTransition, useMotionPolicy, useMotionPreference,timeSeconds} from './index';
 
 let reduced=false;
 const listeners=new Set<()=>void>();
@@ -20,6 +20,11 @@ function Policy() {const policy=useMotionPolicy();return <output aria-label="Mot
 function readPolicy() {return JSON.parse(screen.getByLabelText('Motion policy').textContent||'{}');}
 
 describe('Vigil motion policy',()=>{
+  it('reads minified seconds and original milliseconds as the same duration',()=>{
+    expect(timeSeconds('480ms')).toBe(.48);expect(timeSeconds('.48s')).toBe(.48);
+    expect(timeSeconds('1600ms')).toBe(1.6);expect(timeSeconds('1.6s')).toBe(1.6);
+    expect(timeSeconds('0ms')).toBe(0);expect(timeSeconds('invalid')).toBe(0);
+  });
   it('honors an initial reduced preference synchronously',()=>{
     reduced=true;render(<MotionProvider><Policy/><PageTransition viewKey="home" label="Home"><button>Home control</button></PageTransition></MotionProvider>);
     expect(readPolicy().reduced).toBe(true);

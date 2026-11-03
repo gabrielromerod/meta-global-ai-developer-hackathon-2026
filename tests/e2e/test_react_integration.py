@@ -64,6 +64,38 @@ def test_react_owner_token_countdown_and_expected_window_crud(page: Page, tmp_pa
         expect(page.get_by_role("article", name="Fixture delivery")).to_contain_text("Cancelled")
 
 
+def test_react_confirmed_rule_clears_the_draft_and_uses_edge_session_copy(page, tmp_path):
+    settings = Settings(
+        _env_file=None,
+        mode="edge",
+        owner_token="synthetic-owner-token",
+        db_path=tmp_path / "owner.db",
+        ledger_path=tmp_path / "ledger.db",
+        data_dir=tmp_path,
+        meta_cache_only=True,
+    )
+    with running_app(create_app(settings, live_backend=UnreachableBackend())) as url:
+        page.goto(url + "/next/#/settings")
+        wait_ready(page)
+        page.get_by_role("tab", name="Owner controls").click()
+        page.get_by_role("textbox", name="Owner token").fill("synthetic-owner-token")
+        page.get_by_role("button", name="Save owner token").click()
+        expect(page.get_by_text("Owner session active")).to_be_visible()
+        page.get_by_role("button", name="Rules and protected objects", exact=True).click()
+        sample = page.request.get(url + "/api/voice/fixtures").json()["fixtures"][0]
+        page.get_by_role("button", name=sample["label"]).click()
+        expect(page.get_by_role("textbox", name="Rule text")).to_have_value(sample["transcript"])
+        page.get_by_role("button", name="Review rule draft").click()
+        draft = page.get_by_role("region", name="Rule draft", exact=True)
+        draft.get_by_role("button", name="Confirm rule").click()
+        expect(draft).not_to_be_visible()
+        expect(page.get_by_role("region", name="Current rules")).to_contain_text(
+            "Recycling bin after 9 PM"
+        )
+        expect(page.get_by_role("status")).to_contain_text("server session")
+        expect(page.get_by_role("status")).not_to_contain_text("Sandbox")
+
+
 def test_react_home_shows_household_and_external_gate_context(page: Page, server_url):
     page.goto(server_url + "/next/")
     wait_ready(page)
@@ -99,6 +131,54 @@ def test_react_map_fallback_keeps_cameras_and_explicit_gaps(page: Page, server_u
     expect(view.get_by_label("Current estimated position")).to_have_count(0)
     assert page.locator(".house-view canvas").count() == 0
     assert not errors, errors
+
+
+def test_react_group_view_allows_manual_presets_and_a_new_group_request(page, server_url):
+    page.emulate_media(reduced_motion="reduce")
+    page.goto(server_url + "/next/")
+    wait_ready(page)
+    page.get_by_role("tab", name="Front garden", exact=True).click()
+    canvas = page.get_by_test_id("twin-canvas")
+    expect(canvas).to_have_attribute("data-camera-position", re.compile(r".+"))
+    before = canvas.get_attribute("data-camera-position")
+    page.get_by_role("tab", name="Top-down", exact=True).click()
+    expect(page.get_by_role("tab", name="Top-down", exact=True)).to_have_attribute(
+        "aria-selected", "true"
+    )
+    page.wait_for_function(
+        "before=>document.querySelector('[data-testid=twin-canvas]')"
+        ".dataset.cameraPosition!==before",
+        arg=before,
+    )
+    page.get_by_role("tab", name="Porch", exact=True).first.click()
+    expect(page.get_by_role("tab", name="Front", exact=True)).to_have_attribute(
+        "aria-selected", "true"
+    )
+
+
+@pytest.mark.parametrize("timezone", ["UTC", "Asia/Tokyo", "America/Los_Angeles"])
+def test_react_recorded_clock_matches_citations_in_every_viewer_timezone(
+    browser, server_url, timezone
+):
+    context = browser.new_context(timezone_id=timezone, viewport={"width": 1470, "height": 870})
+    try:
+        page = context.new_page()
+        page.goto(server_url + "/next/#/visit/v_c")
+        wait_ready(page)
+        detail = page.request.get(server_url + "/api/ui/visits/v_c").json()
+        citation = next(
+            c
+            for sentence in detail["sentences"]
+            for c in sentence["citations"]
+            if c["event_id"] == "e17"
+        )
+        page.get_by_role("button", name="Show evidence e17", exact=True).click()
+        output = page.get_by_label("Recorded time", exact=True)
+        expect(output).to_contain_text(citation["clock"])
+        expect(output).to_contain_text("UTC-08:00")
+        expect(output).to_contain_text("Nov 2, 2026")
+    finally:
+        context.close()
 
 
 def test_react_voice_sample_keeps_editable_text_and_server_scope_explanation(
@@ -144,6 +224,38 @@ def test_react_messages_share_draft_and_keep_household_local(page: Page, server_
     expect(page.get_by_role("log")).to_contain_text("They touched the side gate")
     expect(page.get_by_role("button", name=re.compile("Open evidence")).first).to_be_visible()
     assert posts == [server_url + "/api/chat/ask"]
+
+
+def test_react_initial_chat_service_failure_is_visible_and_retry_recovers(page, server_url):
+    calls = []
+
+    def fail_once(route):
+        calls.append(route.request.url)
+        if len(calls) == 1:
+            route.fulfill(status=503, json={"detail": "Chat service unavailable."})
+        else:
+            route.continue_()
+
+    page.route("**/api/ui/chat", fail_once)
+    page.goto(server_url + "/next/#/messages")
+    wait_ready(page)
+    expect(page.get_by_role("alert")).to_have_text("Chat service unavailable.")
+    expect(page.get_by_role("heading", name="No threads available")).to_have_count(0)
+    page.get_by_role("button", name="Try again").click()
+    expect(page.get_by_role("textbox", name="Message", exact=True)).to_be_enabled()
+    assert len(calls) == 2
+
+
+def test_react_chat_citation_opens_its_exact_event_and_camera(page, server_url):
+    page.goto(server_url + "/next/#/messages")
+    wait_ready(page)
+    page.get_by_role("textbox", name="Message", exact=True).fill("side gate")
+    page.get_by_role("button", name="Send message").click()
+    page.get_by_role("button", name="Open evidence e17", exact=True).click()
+    expect(page.get_by_test_id("visit-card")).to_have_attribute("data-visit", "v_c")
+    page.wait_for_function("Number(document.querySelector('#evidence-clock')?.value)===15245")
+    expect(page.locator(".visit-camera.is-active")).to_contain_text("Left passage")
+    expect(page.get_by_label("Recorded time", exact=True)).to_contain_text("6:14:05 PM")
 
 
 def test_react_generated_video_decodes_seeks_overlays_and_snapshot(page: Page, video_server):
@@ -232,3 +344,50 @@ def test_react_point_selection_uses_exported_still_and_explicit_mocked_model_app
         dialog.get_by_role("button", name="Close Select an object").click()
         page.get_by_role("button", name="Rules and protected objects", exact=True).click()
         expect(page.get_by_role("heading", name="Fixture gate", exact=True)).to_be_visible()
+
+
+def test_react_phone_house_toolbar_keeps_every_control_reachable(page, server_url):
+    page.set_viewport_size({"width": 390, "height": 844})
+    page.emulate_media(reduced_motion="reduce")
+    page.goto(server_url + "/next/")
+    wait_ready(page)
+    toolbar = page.locator(".house-view .twin-toolbar")
+    toolbar.scroll_into_view_if_needed()
+    bounds = toolbar.evaluate("""element=>{
+      const box=element.getBoundingClientRect();
+      return [...element.querySelectorAll('button')].filter(b=>b.getClientRects().length)
+        .map(b=>({name:b.getAttribute('aria-label')||b.textContent,
+          left:b.getBoundingClientRect().left,right:b.getBoundingClientRect().right,
+          parentLeft:box.left,parentRight:box.right}));
+    }""")
+    assert all(b["left"] >= b["parentLeft"] and b["right"] <= b["parentRight"] for b in bounds), (
+        bounds
+    )
+    page.get_by_role("button", name="Camera and view controls", exact=True).click()
+    expect(page.get_by_role("menuitem", name="Zoom in", exact=True)).to_be_visible()
+    page.get_by_role("menuitem", name="Zoom in", exact=True).click()
+    page.get_by_role("button", name="Camera and view controls", exact=True).click()
+    expect(page.get_by_role("menuitem", name="Zoom out", exact=True)).to_be_visible()
+    expect(page.get_by_role("menuitem", name="Reset view", exact=True)).to_be_visible()
+
+
+def test_react_built_motion_tokens_refresh_after_initial_reduced_preference(page, server_url):
+    page.emulate_media(reduced_motion="reduce")
+    page.goto(server_url + "/next/")
+    wait_ready(page)
+    view = page.get_by_test_id("house-view")
+    expect(view).to_have_attribute("data-motion-seconds", "0")
+    canvas = page.get_by_test_id("twin-canvas")
+    expect(canvas).to_have_attribute("data-camera-position", re.compile(r".+"))
+    before = canvas.get_attribute("data-camera-position")
+    page.emulate_media(reduced_motion="no-preference")
+    expect(view).to_have_attribute("data-motion-seconds", "0.48")
+    expect(view).to_have_attribute("data-pulse-period", "1.6")
+    after = canvas.get_attribute("data-camera-position")
+    assert (
+        sum(
+            (float(a) - float(b)) ** 2
+            for a, b in zip(before.split(","), after.split(","), strict=True)
+        )
+        < 1e-10
+    )

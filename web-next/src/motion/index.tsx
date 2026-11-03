@@ -38,12 +38,16 @@ export interface MotionPolicy {
   offset:number;panelOffset:number;ease:[number,number,number,number]|'linear';
   zero:number;one:number;
 }
+export function timeSeconds(raw:string):number {
+  const match=raw.trim().match(/^([+-]?(?:\d+(?:\.\d*)?|\.\d+))(ms|s)$/i);
+  return match?Math.max(0,Number(match[1])/(match[2].toLowerCase()==='ms'?1000:1)):0;
+}
 const PolicyContext=createContext<MotionPolicy|null>(null);
 function policyFromTokens(reduced:boolean):MotionPolicy {
   const style=typeof document==='undefined'?null:getComputedStyle(document.documentElement);
   const value=(name:string)=>style?.getPropertyValue(name).trim()||'';
   const number=(name:string)=>{const parsed=parseFloat(value(name));return Number.isFinite(parsed)?parsed:0;};
-  const seconds=(name:string)=>{const raw=value(name);return Math.max(0,number(name)/(raw.endsWith('ms')?1000:1));};
+  const seconds=(name:string)=>timeSeconds(value(name));
   const bezier=value('--v-ease').match(/^cubic-bezier\(([^)]+)\)$/)?.[1].split(',').map(part=>Number(part.trim()));
   const ease=bezier?.length===4&&bezier.every(Number.isFinite)?bezier as [number,number,number,number]:'linear';
   return {

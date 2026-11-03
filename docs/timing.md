@@ -66,3 +66,5 @@ Initial baseline wall times are approximate; durations come from pytest. Later f
 - FIXTURE integrated layout source cb80f501: full 132-state rerun finished 2026-11-03 06:22 PT with zero failures; original 180 px scene and document-bound thresholds unchanged. 143-PNG provenance passed at 06:22 PT. Frontend 124 tests passed 06:22:46–06:22:51 PT; whole-repo Ruff check and format check passed (272 files).
 
 | Integrated consumer API/owner full offline regression | 2026-11-03T06:23:16.505545-08:00 | 2026-11-03T06:25:47.752473-08:00 | exit 0; full output data/react-full-backend.log |
+
+- FIXTURE final-review repairs: frontend134 tests/build passed (07:22 PT); integrated React+genuine-video E2E18 passed in55.79s, completion observed 2026-11-03T07:24:41.563408-08:00. First-failing regressions cover native transport/drift, chat initial error/retry, confirmation, group presets, microphone cleanup, viewer timezone, phone toolbar, minified time units/live preference and exact chat citations. Full pre-main gates remain required.

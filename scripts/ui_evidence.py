@@ -9,6 +9,7 @@ import hashlib
 import json
 import os
 import sys
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -109,10 +110,16 @@ def validate_manifest(root: Path, manifest: Path) -> tuple[int, list[str]]:
             ):
                 failures.append(f"{relative}: screenshot hash/path/type mismatch")
                 continue
-            report = scan_media(path, [])
-            if not report.ok or report.frames != 1:
-                failures.append(f"{relative}: screenshot failed decode/audio check")
             verified_paths.append(path)
+        # Each file still receives the exact decode/audio check. Bounded workers
+        # avoid serial ffprobe startup cost across large reviewed state matrices.
+        with ThreadPoolExecutor(max_workers=8) as workers:
+            reports = workers.map(lambda path: scan_media(path, []), verified_paths)
+            for path, report in zip(verified_paths, reports, strict=True):
+                if not report.ok or report.frames != 1:
+                    failures.append(
+                        f"{path.relative_to(root).as_posix()}: screenshot failed decode/audio check"
+                    )
         failures.extend(metadata_scan(root, files=verified_paths))
         return len(files), failures
     except (OSError, ValueError, KeyError, TypeError) as error:

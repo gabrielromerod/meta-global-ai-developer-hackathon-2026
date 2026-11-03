@@ -9,6 +9,65 @@ import numpy as np
 from scripts.privacy_scan import main
 
 
+def test_ui_audit_parallelism_keeps_every_hash_decode_and_metadata_failure(tmp_path, monkeypatch):
+    import threading
+    from types import SimpleNamespace
+
+    from scripts import ui_evidence
+
+    root = tmp_path / "qa"
+    root.mkdir()
+    fixture = root / "state.json"
+    fixture.write_text(json.dumps({"evidence": {"kind": "fixture"}, "clip_url": None}))
+    names = ["a.png", "bad.png", "c.png", "d.png"]
+    for name in names:
+        assert cv2.imwrite(str(root / name), np.zeros((8, 8, 3), dtype=np.uint8))
+    manifest = root / "ui-privacy.json"
+    manifest.write_text(
+        json.dumps(
+            {
+                "kind": "generated_ui",
+                "source": "http://localhost/preview",
+                "reviewer": "fixture",
+                "reviewed": True,
+                "contains_camera_pixels": False,
+                "fixtures": [{"path": "state.json", "sha256": ui_evidence.sha(fixture)}],
+                "files": {name: ui_evidence.sha(root / name) for name in names},
+            }
+        )
+    )
+    overlap = threading.Event()
+    lock = threading.Lock()
+    active = 0
+    decoded = []
+    metadata = []
+
+    def decode(path, polygons):
+        nonlocal active
+        with lock:
+            active += 1
+            if active > 1:
+                overlap.set()
+        overlap.wait(1)
+        with lock:
+            decoded.append(path.name)
+            active -= 1
+        return SimpleNamespace(ok=path.name != "bad.png", frames=1)
+
+    def scan_metadata(path, *, files):
+        metadata.extend(p.name for p in files)
+        return ["fixture metadata failure"]
+
+    monkeypatch.setattr(ui_evidence, "scan_media", decode)
+    monkeypatch.setattr(ui_evidence, "metadata_scan", scan_metadata)
+    count, failures = ui_evidence.validate_manifest(root, manifest)
+    assert overlap.is_set()
+    assert count == 4
+    assert sorted(decoded) == sorted(names)
+    assert metadata == names
+    assert failures == ["bad.png: screenshot failed decode/audio check", "fixture metadata failure"]
+
+
 def test_generated_ui_provenance_is_scoped_and_tamper_evident(tmp_path):
     root = tmp_path / "qa"
     root.mkdir()

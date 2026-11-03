@@ -41,6 +41,7 @@
   --v-font-dm-sans: "DM Sans", "Segoe UI", system-ui, sans-serif;
   --v-screen-dynamic: 100dvh; --v-screen-small: 100svh;
   --v-breakpoint-phone: 640px; --v-breakpoint-rail: 1180px;
+  --v-grid-fr: 1fr; --v-motion-seconds: .22;
 }
 [data-theme="light"] {
   color-scheme: light;

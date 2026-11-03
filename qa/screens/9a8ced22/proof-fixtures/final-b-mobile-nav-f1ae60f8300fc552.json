@@ -1,0 +1,67 @@
+{
+  "evidence": {
+    "kind": "fixture"
+  },
+  "focus": [
+    {
+      "tag": "BUTTON",
+      "label": "Home",
+      "outline": "solid"
+    },
+    {
+      "tag": "BUTTON",
+      "label": "Attention",
+      "outline": "solid"
+    },
+    {
+      "tag": "BUTTON",
+      "label": "Clips",
+      "outline": "solid"
+    },
+    {
+      "tag": "BUTTON",
+      "label": "Media library",
+      "outline": "solid"
+    },
+    {
+      "tag": "BUTTON",
+      "label": "Messages",
+      "outline": "solid"
+    },
+    {
+      "tag": "BUTTON",
+      "label": "Rules and protected objects",
+      "outline": "solid"
+    },
+    {
+      "tag": "BUTTON",
+      "label": "Benchmark",
+      "outline": "solid"
+    },
+    {
+      "tag": "BUTTON",
+      "label": "Settings",
+      "outline": "solid"
+    },
+    {
+      "tag": "BUTTON",
+      "label": "Close Navigation",
+      "outline": "solid"
+    },
+    {
+      "tag": "BUTTON",
+      "label": "Home",
+      "outline": "solid"
+    },
+    {
+      "tag": "BUTTON",
+      "label": "Attention",
+      "outline": "solid"
+    },
+    {
+      "tag": "BUTTON",
+      "label": "Clips",
+      "outline": "solid"
+    }
+  ]
+}

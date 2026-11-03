@@ -1,0 +1,17 @@
+{
+  "evidence": {
+    "kind": "fixture"
+  },
+  "native_play": {
+    "videoTime": 1.6586,
+    "paused": false,
+    "clock": 1,
+    "timelineButton": "Play evidence timeline"
+  },
+  "native_pause": {
+    "videoTime": 1.6921,
+    "paused": false,
+    "clock": 1.71,
+    "timelineButton": "Pause evidence timeline"
+  }
+}

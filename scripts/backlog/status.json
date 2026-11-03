@@ -1,0 +1,33 @@
+{
+  "offline_done": [
+    "FR-001",
+    "FR-002",
+    "FR-003",
+    "FR-004",
+    "FR-005",
+    "FR-006",
+    "FR-007",
+    "FR-009",
+    "FR-011",
+    "FR-014",
+    "FR-015",
+    "FR-016",
+    "FR-017",
+    "FR-018",
+    "FR-019",
+    "FR-020",
+    "FR-023",
+    "FR-024",
+    "FR-025",
+    "FR-026",
+    "FR-030",
+    "FR-031",
+    "FR-032",
+    "FR-038",
+    "FR-039"
+  ],
+  "close": {
+    "T-02": "Done: scaffold and CI landed (commits 3d53d05, 60d1318); see docs/readiness.md.",
+    "H-01": "Done: RTX 3090 Ready (eval/hardware/3090.json: CUDA 13.0, torch 2.14.1, ~64 TFLOPS burn, 67 C peak)."
+  }
+}

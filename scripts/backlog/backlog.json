@@ -82,14 +82,14 @@
   },
   {
     "id": "FR-008",
-    "title": "FR-008: Event builder",
+    "title": "FR-008: Event builder with origin tagging",
     "labels": [
       "type:fr",
       "P0",
       "track:A"
     ],
     "milestone": "G3 MVP freeze",
-    "body": "**Requirement (P0).** Event builder. Emits `enter`, `exit`, `cross`, `touch` (person mask overlaps a protected object), `removed` (watched object disappears while a person overlaps it) and `dwell`; each event has an ID, camera, times, track and clip range\n\n**Depends on:** FR-007, FR-019\n\n**Acceptance criteria:** Synthetic-track unit tests pass; each demo scenario yields its labelled events\n\n**Blocked by:** nothing (offline-buildable)\n\nSpec: [FR-008](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+    "body": "**Requirement (P0).** Event builder with origin tagging. Emits `enter`, `exit`, `cross`, `touch` (person mask overlaps a protected object), `removed` (watched object disappears while a person overlaps it) and `dwell`. When more than one person mask overlaps a protected or watched object, one `touch` (or `removed`) event is emitted per overlapping track, each carrying its own subject's `actor_role`; rules are evaluated per event. Each event has an ID, camera, times, track, clip range and the `actor_role` of its subject (filled in after visit assembly, FR-044). Each track also gets an `origin_zone`: the zone, by `kind` (`egress`, `perimeter`, `interior_yard`), that contains the track's foot point in the majority of its first 10 frames (1 s); no zone or a tie gives `null`. The origin is `null` unless that camera observed without interruption for the 2 s before the track's first frame: no outage, no skipped or unprocessed window, and not the first frame of a window whose predecessor was skipped. An `egress` origin is also `null` when any person track on that camera that did not itself originate in that egress zone was last seen overlapping the egress polygon, dilated by 50%, within the preceding 10 min\n\n**Depends on:** FR-007, FR-019\n\n**Acceptance criteria:** Synthetic-track unit tests pass for every event type. A track born inside `front_door_egress` gets that origin; a track born mid-yard gets `null`; a track re-born in `front_door_egress` 5 s after a courier's track ended there gets `null`; a track whose first frame follows a skipped window gets `null`. Two overlapping tracks on `po_side_gate` give two touch events. Each demo scenario yields its labelled events and origins\n\n**Blocked by:** nothing (offline-buildable)\n\nSpec: [FR-008](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
   },
   {
     "id": "FR-009",
@@ -113,7 +113,7 @@
       "blocked:hardware"
     ],
     "milestone": "G3 MVP freeze",
-    "body": "**Requirement (P0).** Visit assembly. Tracks are linked across cameras only when the gap fits a topology edge and the notes agree; two or more candidates means no link\n\n**Depends on:** FR-008, FR-009\n\n**Acceptance criteria:** Link precision at least 90% on the labelled set\n\n**Blocked by:** hardware\n\nSpec: [FR-010](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+    "body": "**Requirement (P0).** Visit assembly. Tracks are linked across cameras only when the gap fits a topology edge and the notes agree; two or more candidates means no link. *(Unchanged, plus:)* the visit records one subject chain per linked set of tracks, which carries the role (FR-044). When a link on a non-blind edge is ambiguous only because 2 or more candidates entered the edge together, every candidate holds the same role, and the same number of tracks emerge, each emerging chain takes that role with basis `group:<role>` while the tracks stay unlinked. This never applies across a blind-spot edge\n\n**Depends on:** FR-008, FR-009\n\n**Acceptance criteria:** Link precision at least 90% on the labelled set\n\n**Blocked by:** hardware\n\nSpec: [FR-010](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
   },
   {
     "id": "FR-011",
@@ -136,7 +136,7 @@
       "track:B"
     ],
     "milestone": "G3 MVP freeze",
-    "body": "**Requirement (P0).** Rules engine. Rule JSON with target, trigger, time window (crossing midnight) and severity, plus 2 default rules: watched package removed; anyone in the backyard 23:00 to 05:00\n\n**Depends on:** FR-008\n\n**Acceptance criteria:** Truth-table tests pass, including windows across midnight\n\n**Blocked by:** nothing (offline-buildable)\n\nSpec: [FR-012](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+    "body": "**Requirement (P0).** Rules engine. Rule JSON with target, trigger, time window (crossing midnight), severity and `applies_to` (`anyone` \\\n\n**Depends on:** `external_visitor_only` \\\n\n**Acceptance criteria:** `non_household`). A rule fires only when the event's `actor_role` is in the set its `applies_to` covers (table in 9.4). Two default rules: watched package removed (`non_household`), and a non-household person in the backyard 23:00 to 05:00 (`non_household`)\n\n**Blocked by:** nothing (offline-buildable)\n\nSpec: [FR-012](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
   },
   {
     "id": "FR-013",
@@ -148,7 +148,7 @@
       "blocked:credits"
     ],
     "milestone": "G4",
-    "body": "**Requirement (P1).** Triage. Code forces escalation when a rule fired, a protected object was touched, or a gap is unresolved; otherwise Spark decides. Visits not escalated get a story built from a template\n\n**Depends on:** FR-012\n\n**Acceptance criteria:** Forced cases always escalate; the escalation rate is reported in EVAL\n\n**Blocked by:** credits\n\nSpec: [FR-013](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+    "body": "**Requirement (P1).** Triage. Code forces escalation when a rule fired, a protected object was touched (except a 9.4 case-2 touch by a `household_insider`), or a gap is unresolved; otherwise Spark decides. Visits not escalated get a story built from a template\n\n**Depends on:** FR-012\n\n**Acceptance criteria:** Forced cases always escalate; the escalation rate is reported in EVAL\n\n**Blocked by:** credits\n\nSpec: [FR-013](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
   },
   {
     "id": "FR-014",
@@ -240,19 +240,19 @@
       "blocked:credits"
     ],
     "milestone": "G3 MVP freeze",
-    "body": "**Requirement (P0).** Typed rules. Spark compiles text into rule JSON whose targets are limited to existing objects and zones; a draft card states what Vigil cannot do (it never identifies people); the owner confirms\n\n**Depends on:** FR-012, FR-019\n\n**Acceptance criteria:** At least 9 of 10 reference phrasings compile to the expected JSON; an unresolvable target asks a question\n\n**Blocked by:** credits\n\nSpec: [FR-021](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+    "body": "**Requirement (P0).** Typed rules. Spark compiles text into rule JSON whose targets are limited to existing objects and zones. Identity phrases map to roles, never to people: \"anyone except family\", \"except us\" and \"not the household\" → `non_household`; \"strangers only\" and \"not guests or deliveries\" → `external_visitor_only`; a named person (\"except Sam\") → `non_household` plus the notice \"Vigil can't recognise individuals. It treats someone as household only if they came out of the house's own doors or checked in on the app, so Sam is exempt only in those cases.\" The draft card states the basis: *\"Vigil treats someone as household only when it saw them come out of the house's own doors, or when a household member checked in on the app just before coming into view. Household members arriving from the street without checking in, and anyone Vigil loses track of, count as non-household and can trigger this rule. Vigil places people by where they came from; it does not identify anyone and creates no face, voice or body templates.\"* The owner confirms\n\n**Depends on:** FR-012, FR-019, FR-044\n\n**Acceptance criteria:** At least 9 of 10 reference phrasings compile to the expected JSON, including 3 role phrasings. An unresolvable target asks a question. No compiled rule ever names a person\n\n**Blocked by:** credits\n\nSpec: [FR-021](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
   },
   {
     "id": "FR-022",
-    "title": "FR-022: Voice rules",
+    "title": "FR-022: Voice rules (\"tap and speak\")",
     "labels": [
       "type:fr",
-      "P2",
+      "P0",
       "track:B",
       "blocked:credits"
     ],
-    "milestone": null,
-    "body": "**Requirement (P2).** Voice rules. Browser records up to 30 s; Muse Voice Transcribe returns text the owner can edit before compiling\n\n**Depends on:** FR-021\n\n**Acceptance criteria:** 5 of 5 spoken reference phrasings compile correctly\n\n**Blocked by:** credits\n\nSpec: [FR-022](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+    "milestone": "G3 MVP freeze",
+    "body": "**Requirement (P0).** Voice rules (\"tap and speak\"). The browser records up to 30 s, downsamples to 16 kHz mono and encodes 16-bit PCM WAV in the client (30 s ≈ 0.96 MB; WAV input ⚠️ to be confirmed in T-03; the sandbox image has no ffmpeg). Muse Voice Transcribe 1.0 (batch endpoint, ⚠️ confirmed in T-03) returns text the owner can edit before compiling (FR-021). For judges without a microphone, 3 pre-recorded audio fixture buttons each send a short consented WAV (`demo/voice/`, NFR-002), and each has a cached transcript for the offline fallback\n\n**Depends on:** FR-021\n\n**Acceptance criteria:** 5 of 5 spoken reference phrasings compile correctly live. All 3 fixture buttons work live and in cached mode, and with `MODEL_API_KEY=invalid`. A 30 s recording is under 2 MB\n\n**Blocked by:** credits\n\nSpec: [FR-022](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
   },
   {
     "id": "FR-023",
@@ -310,7 +310,7 @@
       "blocked:hardware"
     ],
     "milestone": "G3 MVP freeze",
-    "body": "**Requirement (P0).** Export and scenario switcher. `vigil export` writes a demo bundle (masked clips, overlays, DB); the sandbox switches between scenarios A, B and C\n\n**Depends on:** FR-017\n\n**Acceptance criteria:** A clean clone plus `make demo` serves all 3 scenarios\n\n**Blocked by:** hardware\n\nSpec: [FR-027](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+    "body": "**Requirement (P0).** Export and scenario switcher. `vigil export` writes a demo bundle (masked clips, overlays, DB); the sandbox switches between scenarios A, A′, B, B′ and C\n\n**Depends on:** FR-017\n\n**Acceptance criteria:** A clean clone plus `make demo` serves all 5\n\n**Blocked by:** hardware\n\nSpec: [FR-027](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
   },
   {
     "id": "FR-028",
@@ -327,14 +327,14 @@
   },
   {
     "id": "FR-029",
-    "title": "FR-029: Owner label",
+    "title": "FR-029: Expected Guest / Delivery Window and owner check-in (was \"owner label\")",
     "labels": [
       "type:fr",
-      "P2",
+      "P1",
       "track:C"
     ],
-    "milestone": null,
-    "body": "**Requirement (P2).** Owner label. \"This was expected\" marks one visit Normal for that visit only and is logged as feedback\n\n**Depends on:** FR-017\n\n**Acceptance criteria:** Label persists; no other visit changes\n\n**Blocked by:** nothing (offline-buildable)\n\nSpec: [FR-029](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+    "milestone": "G4",
+    "body": "**Requirement (P1).** Expected Guest / Delivery Window and owner check-in (was \"owner label\"). The owner sets a time window before it starts (start and end, optional cameras or zones, optional label such as \"plumber\" or \"deliveries\"). Subjects whose first track starts in a `perimeter` zone in the window's scope while it is active are `expected_visitor` (FR-044 step 3). Windows are capped at 12 h, show on the cards, and can be cancelled. The post-hoc \"This was expected\" button stays as feedback only and never changes a verdict retroactively. Also: an \"I'm outside\" check-in (LAN app, `POST /api/checkin`), single-use and never retroactive, which binds at most one subject chain in the 120 s after the tap (FR-044 step 2); an unused check-in expires after 30 min\n\n**Depends on:** FR-044\n\n**Acceptance criteria:** A subject arriving inside an active window is `expected_visitor`, and one arriving from a perimeter zone 1 s after it ends, or on a camera outside its scope, is `external_visitor`; one with a `null` origin is `unknown`. Windows persist and expire. A check-in binds at most one chain\n\n**Blocked by:** nothing (offline-buildable)\n\nSpec: [FR-029](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
   },
   {
     "id": "FR-030",
@@ -411,7 +411,7 @@
   },
   {
     "id": "FR-036",
-    "title": "FR-036: Intrinsic calibration per camera from checkerboard views (standard or ",
+    "title": "FR-036: Intrinsics",
     "labels": [
       "type:fr",
       "P0",
@@ -419,11 +419,11 @@
       "blocked:hardware"
     ],
     "milestone": "G3 MVP freeze",
-    "body": "**Requirement (P0).** Intrinsic calibration per camera from checkerboard views (standard or fisheye model)\n\n**Depends on:** FR-030\n\n**Acceptance criteria:** RMS under 1.0 px, or the field-of-view fallback is used and flagged\n\n**Blocked by:** hardware\n\nSpec: [FR-036](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+    "body": "**Requirement (P0).** Intrinsics. The primary path is nominal lens FOV from the camera model's datasheet: focal length from the horizontal FOV at the processed resolution, principal point at the centre, no distortion. It is flagged `fov_nominal`. Optional lab refinement: one checkerboard session (about 20 views) per camera model, stored as a lens profile and reused for identical units; RMS under 1.0 px\n\n**Depends on:** FR-030\n\n**Acceptance criteria:** Every camera has intrinsics: nominal, flagged, or a model lens profile with RMS under 1.0 px. The source is shown in the calibration report\n\n**Blocked by:** hardware\n\nSpec: [FR-036](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
   },
   {
     "id": "FR-037",
-    "title": "FR-037: Extrinsic calibration",
+    "title": "FR-037: Extrinsics from landmarks",
     "labels": [
       "type:fr",
       "P0",
@@ -431,7 +431,7 @@
       "blocked:hardware"
     ],
     "milestone": "G3 MVP freeze",
-    "body": "**Requirement (P0).** Extrinsic calibration. Calibration tool for clicking marker pairs (still and mesh); PnP with RANSAC on 6 points, 2 held out; saved to `calibration.json`\n\n**Depends on:** FR-035, FR-036\n\n**Acceptance criteria:** Mean reprojection under 4 px at 1280 px; held-out ground error under 0.25 m\n\n**Blocked by:** hardware\n\nSpec: [FR-037](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+    "body": "**Requirement (P0).** Extrinsics from landmarks. In the calibration tool, SAM 3.1 proposes fixed-landmark masks on each camera still (concept prompts `door`, `gate`, `fence post`, `window`, plus the corners of masks). The installer accepts 6 landmark points per camera and clicks the same points on the mesh (one click each). PnP with RANSAC runs on the 6, saved to `calibration.json`. Accuracy is not asserted from the 6 points; it is measured by the audit harness (NFR-024 to NFR-026)\n\n**Depends on:** FR-035, FR-036, FR-019\n\n**Acceptance criteria:** Mean reprojection on the 6 landmarks under 6 px at 1280 px (nominal FOV) or under 4 px (lens profile). The audit-harness held-out ground error is reported per camera, target under 0.25 m\n\n**Blocked by:** hardware\n\nSpec: [FR-037](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
   },
   {
     "id": "FR-038",
@@ -504,39 +504,40 @@
       "blocked:credits"
     ],
     "milestone": "G3 MVP freeze",
-    "body": "**Requirement (P0).** Budget guard. Prices every call before sending; enforces the total, feature and daily caps; warns at 50, 75 and 90%; pre-flight estimates for batch commands; disables live calls after the credit window unless approved\n\n**Depends on:** FR-023\n\n**Acceptance criteria:** Unit tests: refusal at each cap; window-end switch; estimate within 10% of the Billing page after T-03\n\n**Blocked by:** credits\n\nSpec: [FR-043](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+    "body": "**Requirement (P0).** Budget guard. Prices every call before sending. Enforces the credit cap ($140, `credit`-tagged spend only), feature and daily caps, plus the judging cap (`VIGIL_JUDGING_CAP_USD=25`, $5 per day) on spend after the credit window ends. Warns at 50, 75 and 90%. Gives pre-flight estimates for batch commands. After the credit window, paid calls are allowed only while `VIGIL_ALLOW_PAID=1`, before `VIGIL_JUDGING_END` (Nov 10, 23:59 PT), and the judging cap has room. The ledger tags each call `credit` or `paid` (9.3)\n\n**Depends on:** FR-023\n\n**Acceptance criteria:** Unit tests: refusal at each cap; refusal at the judging cap; window-end switch with and without `VIGIL_ALLOW_PAID`; refusal after `VIGIL_JUDGING_END`; estimate within 10% of the Billing page after T-03\n\n**Blocked by:** credits\n\nSpec: [FR-043](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
+  },
+  {
+    "id": "FR-044",
+    "title": "FR-044: Spatial origin roles (new; no identification)",
+    "labels": [
+      "type:fr",
+      "P0",
+      "track:B",
+      "blocked:hardware"
+    ],
+    "milestone": "G3 MVP freeze",
+    "body": "**Requirement (P0).** Spatial origin roles (new; no identification). `visits.py` assigns each subject chain an `actor_role` from evidence only, in this order: (1) its first track's `origin_zone` is an `egress` zone of the house → `household_insider`, basis `egress:<zone>`; (2) an explicit check-in binds it: a household member tapped \"I'm outside\" in the LAN app (passive Wi-Fi presence never counts). A check-in is single-use and never retroactive. When the 120 s interval after the tap closes, it binds the one subject chain whose first track started in that interval with `origin_zone` `null`, `interior_yard` or `perimeter` (never `egress`), but only if exactly one such chain started and no subject other than `household_insider` was in view on any camera at that chain's first frame; otherwise it binds nothing. A bound chain is `household_insider` with basis `checkin:<id>`. An unused check-in expires after 30 min; (3) its first track's `origin_zone` is a `perimeter` zone on a camera (or zone) in the scope of an Expected Window (FR-029) that is active at that track's first frame → `expected_visitor`, basis `window:<id>`. A window with no listed cameras or zones covers every perimeter zone. A `null` origin never becomes `expected_visitor`; (4) its origin is a `perimeter` zone → `external_visitor`, basis `perimeter:<zone>`; (5) otherwise → `unknown`, basis `ambiguous_link:<track_id>` when its first track followed an ambiguous link, else `origin_null:<track_id>` (origin `null` or an `interior_yard` zone); the same-role group rule in FR-010 (basis `group:<role>`) is the only exception. Roles carry across a link only when the link is unambiguous. Across a blind-spot gap, `external_visitor` carries on any unambiguous re-link (it can only make rules fire). `household_insider` and `expected_visitor` carry only when both tracks' appearance notes agree on at least one attribute that is not `unknown` (upper colour, lower colour or a carried item). A re-link on transit time alone, as at night under IR, makes the chain `unknown` with basis `gap_unresolved:<gap_id>`. Every role has a stored `role_basis` shown in the trace. If FR-029 is not built, step (3) never matches and FR-044 still passes\n\n**Depends on:** FR-008, FR-010 (FR-029 and the check-in only supply inputs; without them, rules (2) and (3) never apply)\n\n**Acceptance criteria:** Truth table over origin × check-in × window × link outcome. Scenario A subject = `household_insider` (basis `egress:front_door_egress`); scenario C subject = `external_visitor` (basis `perimeter:side_alley`). An ambiguous re-link gives `unknown`. A household subject enters `shed_back`; a never-seen person with `unknown` colours emerges inside 5–180 s → `unknown`. Two household members leave the front door together and two tracks emerge on `side_left` → both `household_insider` (basis `group:household_insider`). Two chains starting in one check-in's 120 s interval → neither is bound. No face, voice, body or name field exists in any person-related schema (NFR-003). EVAL reports assigned vs labelled role per subject, day and night separately, including the share of household subjects not assigned `household_insider` (role miss rate) and the alerts it caused\n\n**Blocked by:** hardware\n\nSpec: [FR-044](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#1-functional-requirements) · Status: [docs/requirements/functional.md](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/requirements/functional.md)"
   },
   {
     "id": "T-01",
-    "title": "T-01: Audit repo; claim credits and set spend limit; pick track; commit EVAL.md targets, including NFR-025 and NFR-026",
+    "title": "T-01: Audit repo ✓; claim credits and set the spend limit; pick track; commit EVAL.md targets",
     "labels": [
       "type:task",
       "track:D",
       "blocked:owner"
     ],
     "milestone": "G1",
-    "body": "**Due:** Mon 11:30 PT · **Track:** D · **Depends on:** none\n\n**Files:** `EVAL.md`, `HACKATHON.md`\n\n**Done when:** Commit pushed; Status column in section 1 updated\n\n**Blocked by:** owner\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+    "body": "**Due:** Mon 13:00 PT · **Track:** D · **Depends on:** none\n\n**Files:** `EVAL.md`, `HACKATHON.md`\n\n**Done when:** Audit done (`docs/audit/2026-11-02-repo-audit.md`); credits claimed; $140 limit set\n\n**Blocked by:** owner\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
   },
   {
     "id": "T-02",
-    "title": "T-02: Scaffold and CI (skip what exists)",
+    "title": "T-02: Scaffold and CI ✓",
     "labels": [
       "type:task",
       "track:A"
     ],
     "milestone": "G1",
-    "body": "**Due:** Mon 12:30 PT · **Track:** A · **Depends on:** T-01\n\n**Files:** `pyproject.toml`, `Makefile`, `ci.yml`, `settings.py`\n\n**Done when:** CI green: ruff, pytest, gitleaks\n\n**Blocked by:** nothing\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
-  },
-  {
-    "id": "T-03",
-    "title": "T-03: Meta smoke tests; resolve the 3 open API questions",
-    "labels": [
-      "type:task",
-      "track:B",
-      "blocked:credits"
-    ],
-    "milestone": "G1",
-    "body": "**Due:** Mon 12:30 PT · **Track:** B · **Depends on:** T-01\n\n**Files:** `scripts/smoke_meta.py`, `tests/fixtures/meta/`\n\n**Done when:** One recorded response per model; findings written into section 5.14\n\n**Blocked by:** credits\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+    "body": "**Due:** done PT · **Track:** A · **Depends on:** T-01\n\n**Files:** `pyproject.toml`, `Makefile`, `ci.yml`\n\n**Done when:** CI green (commit `3d53d05`)\n\n**Blocked by:** nothing\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
   },
   {
     "id": "T-04",
@@ -547,7 +548,7 @@
       "blocked:hardware"
     ],
     "milestone": "G1",
-    "body": "**Due:** Mon 12:30 PT · **Track:** D · **Depends on:** T-01\n\n**Files:** `reolink/probe.py`, `config/cameras.yaml`\n\n**Done when:** FR-030 passes; mask confirmed in the RTSP stream\n\n**Blocked by:** hardware\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+    "body": "**Due:** Mon 13:45 PT · **Track:** D · **Depends on:** T-01\n\n**Files:** `reolink/probe.py`, `config/cameras.yaml`\n\n**Done when:** FR-030 passes; mask confirmed in the RTSP stream; zone `kind`s drawn (egress, perimeter)\n\n**Blocked by:** hardware\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
   },
   {
     "id": "T-05",
@@ -558,22 +559,33 @@
       "blocked:hardware"
     ],
     "milestone": "G1",
-    "body": "**Due:** Mon 14:00 PT · **Track:** A · **Depends on:** T-04\n\n**Files:** `reolink/capture.py`, `infra/go2rtc.yaml`\n\n**Done when:** 30 min test without gaps; 2 h test runs overnight (NFR-029)\n\n**Blocked by:** hardware\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+    "body": "**Due:** Mon 14:30 PT · **Track:** A · **Depends on:** T-04\n\n**Files:** `reolink/capture.py`, `infra/go2rtc.yaml`\n\n**Done when:** Capturing before T-07a starts; 2 h test runs overnight. Fallback: NVR or camera recording export\n\n**Blocked by:** hardware\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+  },
+  {
+    "id": "T-03",
+    "title": "T-03: Meta smoke tests; resolve the 3 open API questions (incl. Voice WAV)",
+    "labels": [
+      "type:task",
+      "track:B",
+      "blocked:credits"
+    ],
+    "milestone": "G1",
+    "body": "**Due:** Mon 14:30 PT · **Track:** B · **Depends on:** T-01 (credits)\n\n**Files:** `scripts/smoke_meta.py`\n\n**Done when:** One recorded response per model\n\n**Blocked by:** credits\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
   },
   {
     "id": "T-06",
-    "title": "T-06: Markers, 4 LiDAR loops, checkerboard views, calibration stills",
+    "title": "T-06: LiDAR loops; 6 landmark pairs per camera (nominal FOV); place and survey 6 audit markers per camera; 2 scale distances",
     "labels": [
       "type:task",
       "track:D",
       "blocked:hardware"
     ],
     "milestone": "G1",
-    "body": "**Due:** Mon 16:30 (before dusk) PT · **Track:** D · **Depends on:** T-04\n\n**Files:** `data/scan/`, `data/calib/`\n\n**Done when:** Exports on disk; 2 measured distances written down\n\n**Blocked by:** hardware\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+    "body": "**Due:** Mon 15:45 PT · **Track:** D · **Depends on:** T-04\n\n**Files:** `data/scan/`, `data/calib/`\n\n**Done when:** Exports on disk; landmarks visible in each still; marker survey sheet written\n\n**Blocked by:** hardware\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
   },
   {
-    "id": "T-07",
-    "title": "T-07: Film 12 scenarios with consent; write labels before processing",
+    "id": "T-07a",
+    "title": "T-07a: Film daytime scenarios A, B, B′ (and the other daytime benchmark scenarios) with consent; labels written before processing; audio fixtures for FR-022 recorded",
     "labels": [
       "type:task",
       "track:D",
@@ -581,27 +593,39 @@
       "blocked:owner"
     ],
     "milestone": "G1",
-    "body": "**Due:** Mon 21:00 PT · **Track:** D · **Depends on:** T-05\n\n**Files:** `eval/labels/`\n\n**Done when:** 12 labelled scenarios; consent records held privately\n\n**Blocked by:** hardware, owner\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+    "body": "**Due:** Mon 16:50 PT · **Track:** D · **Depends on:** T-05\n\n**Files:** `eval/labels/`\n\n**Done when:** Daytime scenarios recorded and labelled before sunset; A is filmed before B and B′, and nobody, the A actor included, crosses the front-door egress polygon from outside in the 10 min before the take: the A actor goes into the house another way, or waits 10 min (FR-008 egress voiding); 3 consented WAV fixtures in `demo/voice/`, their SHA-256 in `config/audio_fixtures.json`\n\n**Blocked by:** hardware, owner\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+  },
+  {
+    "id": "T-07b",
+    "title": "T-07b: Film night scenarios A′ (front-door egress, side-gate touch after 17:30) and C (side-alley entry, gate touch, 41 s shed gap), and the other night scenarios, after dark; optional labelled take of a household member returning through the side alley without a check-in (the documented false-alert case)",
+    "labels": [
+      "type:task",
+      "track:D",
+      "blocked:hardware",
+      "blocked:owner"
+    ],
+    "milestone": "G1",
+    "body": "**Due:** Mon 19:00 PT · **Track:** D · **Depends on:** T-07a\n\n**Files:** `eval/labels/`\n\n**Done when:** Night scenarios recorded and labelled; r7 window 17:30–06:00 covers both A′ and C; for at least 10 min before A′, no person who did not come out of the front door is seen on the front door zone (FR-008 egress voiding), so the A′ actor goes inside at least 10 min before the take\n\n**Blocked by:** hardware, owner\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
   },
   {
     "id": "T-08",
-    "title": "T-08: Privacy, windows, motion gate, privacy scan",
+    "title": "T-08: Privacy, windows, motion gate on real footage",
     "labels": [
       "type:task",
       "track:A"
     ],
     "milestone": "G1",
-    "body": "**Due:** Mon 17:00 PT · **Track:** A · **Depends on:** T-05\n\n**Files:** `ingest/*.py`, `scripts/privacy_scan.py`\n\n**Done when:** FR-003 to FR-005 tests pass\n\n**Blocked by:** nothing\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+    "body": "**Due:** Mon 20:00 PT · **Track:** A · **Depends on:** T-07a\n\n**Files:** `ingest/*.py`\n\n**Done when:** Offline code landed in the bootstrap; FR-003 to FR-005 pass on real footage\n\n**Blocked by:** nothing\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
   },
   {
     "id": "T-09",
-    "title": "T-09: Meta client, cache, ledger; SAM concept tracking",
+    "title": "T-09: SAM concept tracking on the 5 demo scenarios",
     "labels": [
       "type:task",
       "track:B"
     ],
     "milestone": "G1",
-    "body": "**Due:** Mon 18:00 PT · **Track:** B · **Depends on:** T-03\n\n**Files:** `meta/client.py`, `cache.py`, `sam.py`\n\n**Done when:** FR-006 and FR-023 tests pass on fixtures\n\n**Blocked by:** nothing\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+    "body": "**Due:** Mon 21:00 PT · **Track:** B · **Depends on:** T-03, T-07b\n\n**Files:** `meta/sam.py`\n\n**Done when:** Real SAM tracks for A, A′, B, B′, C (API or local)\n\n**Blocked by:** nothing\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
   },
   {
     "id": "T-10",
@@ -616,38 +640,49 @@
   },
   {
     "id": "T-11",
-    "title": "T-11: Track stitching and overlays",
+    "title": "T-11: Track stitching and overlays on real tracks",
     "labels": [
       "type:task",
       "track:A"
     ],
     "milestone": "G1",
-    "body": "**Due:** Mon 21:00 PT · **Track:** A · **Depends on:** T-09\n\n**Files:** `perception/tracks.py`, `overlays.py`\n\n**Done when:** FR-007 passes\n\n**Blocked by:** nothing\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+    "body": "**Due:** Mon 22:00 PT · **Track:** A · **Depends on:** T-09\n\n**Files:** `perception/*.py`\n\n**Done when:** FR-007 passes on real tracks\n\n**Blocked by:** nothing\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
   },
   {
     "id": "T-12",
-    "title": "T-12: Calibration tool and solver",
+    "title": "T-12: Landmark tool (SAM proposals + mesh clicks) and solver",
     "labels": [
       "type:task",
       "track:C",
       "blocked:hardware"
     ],
     "milestone": "G1",
-    "body": "**Due:** Mon 23:00 PT · **Track:** C · **Depends on:** T-10\n\n**Files:** `spatial/calibrate.py`, `web/calibrate/`\n\n**Done when:** FR-036 passes for 4 cameras\n\n**Blocked by:** hardware\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+    "body": "**Due:** Mon 23:00 PT · **Track:** C · **Depends on:** T-10\n\n**Files:** `spatial/calibrate.py`, `web/calibrate/`\n\n**Done when:** FR-036 (nominal or profile) for 4 cameras\n\n**Blocked by:** hardware\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
   },
   {
     "id": "T-13",
-    "title": "T-13: Event builder",
+    "title": "T-13: Event builder with origin tagging (real tracks)",
     "labels": [
       "type:task",
       "track:A"
     ],
     "milestone": "G2",
-    "body": "**Due:** Tue 09:00 PT · **Track:** A · **Depends on:** T-11\n\n**Files:** `perception/events.py`\n\n**Done when:** FR-008 passes\n\n**Blocked by:** nothing\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+    "body": "**Due:** Tue 09:00 PT · **Track:** A · **Depends on:** T-11\n\n**Files:** `perception/events.py`\n\n**Done when:** FR-008 on real tracks; origins match labels\n\n**Blocked by:** nothing\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+  },
+  {
+    "id": "T-15",
+    "title": "T-15: Audit-harness marker walk (daylight)",
+    "labels": [
+      "type:task",
+      "track:D",
+      "blocked:hardware"
+    ],
+    "milestone": "G2",
+    "body": "**Due:** Tue 10:30 PT · **Track:** D · **Depends on:** T-06\n\n**Files:** `eval/spatial/`\n\n**Done when:** Person on 6 markers per camera, recorded\n\n**Blocked by:** hardware\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
   },
   {
     "id": "T-14",
-    "title": "T-14: Extrinsics accepted, or switch to the fallback",
+    "title": "T-14: Extrinsics from landmarks accepted, or switch to the fallback",
     "labels": [
       "type:task",
       "track:C",
@@ -655,17 +690,6 @@
     ],
     "milestone": "G2",
     "body": "**Due:** Tue 10:00 cut-off PT · **Track:** C · **Depends on:** T-12\n\n**Files:** `config/calibration.json`\n\n**Done when:** FR-037 passes, or the site-plan fallback is active\n\n**Blocked by:** hardware\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
-  },
-  {
-    "id": "T-15",
-    "title": "T-15: Marker walk for 3D accuracy",
-    "labels": [
-      "type:task",
-      "track:D",
-      "blocked:hardware"
-    ],
-    "milestone": "G2",
-    "body": "**Due:** Tue 11:00 PT · **Track:** D · **Depends on:** T-14\n\n**Files:** `eval/spatial/`\n\n**Done when:** Recordings of 6 markers per camera\n\n**Blocked by:** hardware\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
   },
   {
     "id": "T-16",
@@ -691,13 +715,13 @@
   },
   {
     "id": "T-18",
-    "title": "T-18: Topology, visits, gaps",
+    "title": "T-18: Topology, visits, gaps, roles",
     "labels": [
       "type:task",
       "track:B"
     ],
     "milestone": "G2",
-    "body": "**Due:** Tue 12:00 PT · **Track:** B · **Depends on:** T-13, T-16, T-17\n\n**Files:** `reasoning/topology.py`, `visits.py`\n\n**Done when:** FR-010, FR-011 pass\n\n**Blocked by:** nothing\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+    "body": "**Due:** Tue 12:00 PT · **Track:** B · **Depends on:** T-13, T-16, T-17\n\n**Files:** `reasoning/visits.py`\n\n**Done when:** FR-010, FR-011, FR-044 pass on real data\n\n**Blocked by:** nothing\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
   },
   {
     "id": "T-19",
@@ -708,18 +732,18 @@
       "blocked:hardware"
     ],
     "milestone": "G2",
-    "body": "**Due:** Tue 12:00 PT · **Track:** C · **Depends on:** T-14\n\n**Files:** `spatial/locate.py`\n\n**Done when:** FR-039 unit tests pass\n\n**Blocked by:** hardware\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+    "body": "**Due:** Tue 12:00 PT · **Track:** C · **Depends on:** T-14\n\n**Files:** `spatial/locate.py`\n\n**Done when:** FR-039 unit tests pass; audit radii applied\n\n**Blocked by:** hardware\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
   },
   {
     "id": "T-20",
-    "title": "T-20: Rules, story, validator, verdict",
+    "title": "T-20: Rules (with `applies_to`), story, validator (check 7), verdict",
     "labels": [
       "type:task",
       "track:B",
       "blocked:credits"
     ],
     "milestone": "G2",
-    "body": "**Due:** Tue 13:00 PT · **Track:** B · **Depends on:** T-18\n\n**Files:** `rules.py`, `wonder.py`, `story.py`, `validator.py`, `verdict.py`\n\n**Done when:** FR-012, FR-014 to FR-016 pass\n\n**Blocked by:** credits\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+    "body": "**Due:** Tue 13:00 PT · **Track:** B · **Depends on:** T-18\n\n**Files:** `reasoning/*.py`, `meta/wonder.py`\n\n**Done when:** FR-012, FR-014 to FR-016 pass\n\n**Blocked by:** credits\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
   },
   {
     "id": "T-21",
@@ -733,14 +757,14 @@
   },
   {
     "id": "T-22",
-    "title": "T-22: Tap-to-protect, typed rules",
+    "title": "T-22: Tap-to-protect; voice and typed rules (mic, 3 audio fixture buttons, typing); expected windows and owner check-in",
     "labels": [
       "type:task",
       "track:B",
       "blocked:credits"
     ],
     "milestone": "G3 MVP freeze",
-    "body": "**Due:** Tue 16:00 PT · **Track:** B · **Depends on:** G2\n\n**Files:** `api/routes.py`, `meta/spark.py`\n\n**Done when:** FR-019, FR-021 pass\n\n**Blocked by:** credits\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+    "body": "**Due:** Tue 16:00 PT · **Track:** B · **Depends on:** G2\n\n**Files:** `api/routes.py`, `meta/spark.py`, `meta/asr.py`\n\n**Done when:** FR-019, FR-021, FR-022, FR-029 pass\n\n**Blocked by:** credits\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
   },
   {
     "id": "T-23",
@@ -765,13 +789,13 @@
   },
   {
     "id": "T-25",
-    "title": "T-25: Guards and telemetry panel",
+    "title": "T-25: Guards (incl. judging cap) and telemetry panel",
     "labels": [
       "type:task",
       "track:C"
     ],
     "milestone": "G3 MVP freeze",
-    "body": "**Due:** Tue 18:00 PT · **Track:** C · **Depends on:** T-21\n\n**Files:** `api/guards.py`, `web/cards.js`\n\n**Done when:** FR-023 UI and FR-026 pass\n\n**Blocked by:** nothing\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+    "body": "**Due:** Tue 18:00 PT · **Track:** C · **Depends on:** T-21\n\n**Files:** `api/guards.py`, `web/cards.js`\n\n**Done when:** FR-023 UI, FR-026, FR-043 pass\n\n**Blocked by:** nothing\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
   },
   {
     "id": "T-26",
@@ -786,7 +810,7 @@
   },
   {
     "id": "T-27",
-    "title": "T-27: Benchmark, spatial accuracy, baseline",
+    "title": "T-27: Benchmark, audit harness, baseline, unit-economics measurements (11.9)",
     "labels": [
       "type:task",
       "track:D",
@@ -794,18 +818,18 @@
       "blocked:hardware"
     ],
     "milestone": "G4",
-    "body": "**Due:** Tue 22:00 PT · **Track:** D · **Depends on:** G3, T-15\n\n**Files:** `eval/*.py`, `EVAL.md`\n\n**Done when:** Results committed, misses included\n\n**Blocked by:** credits, hardware\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+    "body": "**Due:** Tue 22:00 PT · **Track:** D · **Depends on:** G3, T-15\n\n**Files:** `eval/*.py`, `EVAL.md`\n\n**Done when:** Results committed, misses included; Tier 0/1 rates measured\n\n**Blocked by:** credits, hardware\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
   },
   {
     "id": "T-28",
-    "title": "T-28: Deploy sandbox; E2E suite in CI",
+    "title": "T-28: Deploy sandbox with judging config (`VIGIL_ALLOW_PAID=1` from window end, `VIGIL_JUDGING_CAP_USD=25`, `VIGIL_JUDGING_END`); E2E in CI",
     "labels": [
       "type:task",
       "track:C",
       "blocked:owner"
     ],
     "milestone": "G4",
-    "body": "**Due:** Tue 23:00 PT · **Track:** C · **Depends on:** G3\n\n**Files:** `Dockerfile`, `tests/e2e/`\n\n**Done when:** Live URL passes E2E from CI\n\n**Blocked by:** owner\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
+    "body": "**Due:** Tue 23:00 PT · **Track:** C · **Depends on:** G3\n\n**Files:** `Dockerfile`, `tests/e2e/`\n\n**Done when:** Live URL passes E2E from CI; the judging cap is verified by test\n\n**Blocked by:** owner\n\nSpec: [9.7 Tasks in order](https://github.com/gabrielromerod/meta-global-ai-developer-hackathon-2026/blob/main/docs/spec/vigil-spec.md#97-tasks-in-order-times-pt-tracks-a-pipeline-b-models-and-reasoning-c-app-and-3d-d-field-work-and-evidence)"
   },
   {
     "id": "T-29",

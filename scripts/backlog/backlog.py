@@ -64,13 +64,13 @@ FR_BLOCKERS = {
     "FR-033": ["hardware", "credits"], "FR-034": ["hardware"], "FR-035": ["hardware"],
     "FR-036": ["hardware"], "FR-037": ["hardware"], "FR-038": ["hardware"],
     "FR-039": ["hardware"], "FR-040": ["hardware"], "FR-041": ["hardware"],
-    "FR-042": ["hardware", "owner"], "FR-043": ["credits"],
+    "FR-042": ["hardware", "owner"], "FR-043": ["credits"], "FR-044": ["hardware"],
 }  # fmt: skip
 FR_TRACK = {
     **dict.fromkeys(["FR-001", "FR-002", "FR-003", "FR-004", "FR-005", "FR-006", "FR-007",
                      "FR-008", "FR-030", "FR-031", "FR-032", "FR-033"], "A"),
     **dict.fromkeys(["FR-009", "FR-010", "FR-011", "FR-012", "FR-013", "FR-014", "FR-015",
-                     "FR-016", "FR-019", "FR-020", "FR-021", "FR-022", "FR-023", "FR-028",
+                     "FR-016", "FR-019", "FR-020", "FR-021", "FR-022", "FR-023", "FR-028", "FR-044",
                      "FR-042", "FR-043"], "B"),
     **dict.fromkeys(["FR-017", "FR-018", "FR-026", "FR-027", "FR-029", "FR-034", "FR-035",
                      "FR-036", "FR-037", "FR-038", "FR-039", "FR-040"], "C"),
@@ -78,7 +78,7 @@ FR_TRACK = {
 }  # fmt: skip
 TASK_BLOCKERS = {
     "T-01": ["owner"], "T-03": ["credits"], "T-04": ["hardware"], "T-05": ["hardware"],
-    "T-06": ["hardware"], "T-07": ["hardware", "owner"], "T-10": ["hardware"],
+    "T-06": ["hardware"], "T-07a": ["hardware", "owner"], "T-07b": ["hardware", "owner"], "T-10": ["hardware"],
     "T-12": ["hardware"], "T-14": ["hardware"], "T-15": ["hardware"], "T-16": ["credits"],
     "T-17": ["hardware"], "T-19": ["hardware"], "T-20": ["credits"], "T-22": ["credits"],
     "T-23": ["hardware"], "T-26": ["hardware"], "T-27": ["credits", "hardware"],
@@ -98,6 +98,8 @@ def _clean(text: str) -> str:
 
 def _milestone_for_time(when: str) -> str:
     day = when.split()[0]
+    if day.lower() == "done":
+        return "G1"
     m = re.search(r"(\d{2}):(\d{2})", when)
     minutes = int(m.group(1)) * 60 + int(m.group(2)) if m else 0
     if day == "Mon":
@@ -123,7 +125,7 @@ def build() -> list[dict]:
             continue
         if line.startswith("| FR-") and top == "1.":
             c = _cells(line)
-            fr_id, pri, req, deps, acc = c[0], c[1], _clean(c[2]), c[3], _clean(c[4])
+            fr_id, pri, req, deps, acc = c[0], _clean(c[1]), _clean(c[2]), c[3], _clean(c[4])
             title_req = re.match(r"(.+?)\.\s", req)
             short = title_req.group(1) if title_req else req[:70]
             blockers = FR_BLOCKERS.get(fr_id, [])
@@ -141,14 +143,14 @@ def build() -> list[dict]:
                     f"Status: [docs/requirements/functional.md](https://github.com/{REPO}/blob/main/docs/requirements/functional.md)"
                 ),
             })  # fmt: skip
-        elif re.match(r"\| T-\d\d ", line) and section == "9.7":
+        elif re.match(r"\| T-\d\d[a-z]? ", line) and section == "9.7":
             c = _cells(line)
             tid, rest = c[0].split(" ", 1)
             track, when, deps, files, done = c[1], _clean(c[2]), c[3], c[4], c[5]
             blockers = TASK_BLOCKERS.get(tid, [])
             items.append({
                 "id": tid,
-                "title": f"{tid}: {rest}",
+                "title": f"{tid}: {_clean(rest)}",
                 "labels": ["type:task", f"track:{track}"] + [f"blocked:{b}" for b in blockers],
                 "milestone": _milestone_for_time(when),
                 "body": (

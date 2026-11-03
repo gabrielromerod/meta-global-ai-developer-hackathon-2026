@@ -482,6 +482,8 @@ async def run_capture(
     Reads the go2rtc restream by default; `via_restreamer=False` reads the camera directly
     with credentials from the environment. Returns the supervisors (outages, restarts).
     """
+    if any(c.power_profile in {"battery_wifi", "import"} for c in cams):
+        raise ValueError("battery cameras never hold a stream open; use import mode")
     out_dir = Path(out_dir)
     ff = ffmpeg or ffmpeg_bin()
     sups: list[CaptureSupervisor] = []

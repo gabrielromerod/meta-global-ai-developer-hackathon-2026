@@ -34,6 +34,17 @@ def test_battery_without_hub_probe_never_opens_stream():
     assert report.source_label == "Imported clips"
 
 
+def test_battery_restream_capture_is_refused_before_directories(tmp_path):
+    from vigil.reolink.capture import run_capture
+
+    camera = load_config(ROOT / "config/cameras.yaml").camera("side_left")
+    with pytest.raises(ValueError, match="battery"):
+        asyncio.run(
+            run_capture([camera], tmp_path / "never-created", via_restreamer=True, ffmpeg="unused")
+        )
+    assert not (tmp_path / "never-created").exists()
+
+
 def test_battery_import_preserves_timestamp_and_requires_review(tmp_path):
     from vigil.ingest.imports import import_clips
     from vigil.ingest.review import privacy_digest

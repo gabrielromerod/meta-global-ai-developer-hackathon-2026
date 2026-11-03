@@ -572,6 +572,8 @@ class ReolinkAioAdapter:
         from vigil.settings import ffprobe_bin
 
         transport = ["-rtsp_transport", "tcp"] if url.protocol == "rtsp" else []
+        if url.protocol == "rtsp":
+            transport += ["-allowed_media_types", "video"]
         cmd = [
             ffprobe_bin(),
             "-v",

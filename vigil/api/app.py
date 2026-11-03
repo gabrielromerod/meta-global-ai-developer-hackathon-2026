@@ -24,6 +24,7 @@ from fastapi.staticfiles import StaticFiles
 
 from vigil import __version__
 from vigil.api.backend import MetaLiveBackend
+from vigil.api.consumer import consumer_router
 from vigil.api.guards import Guards
 from vigil.api.live import LiveHub, live_router
 from vigil.api.owner import load_owner_state, owner_router
@@ -144,6 +145,7 @@ def create_app(
             return await call_next(request)
 
     app.include_router(router())
+    app.include_router(consumer_router())
     app.include_router(voice_router())
     app.include_router(owner_router())
     app.include_router(live_router())

@@ -43,7 +43,7 @@
   --v-breakpoint-phone: 640px; --v-breakpoint-rail: 1180px;
   --v-grid-fr: 1fr; --v-motion-seconds: .22;
   --v-review-main-fr: 1.2fr; --v-snapshot-max: 70svh;
-  --v-review-house-min: 180px; --v-review-house-phone: 400px;
+  --v-review-house-min: 320px; --v-review-house-phone: 400px;
   --v-review-player-min: 128px; --v-review-player-max: 40%;
   --v-scene-day-background: #e8edf4; --v-scene-day-ground: #d5dfdc;
   --v-scene-day-house: #9aa7b7; --v-scene-day-roof: #667789;

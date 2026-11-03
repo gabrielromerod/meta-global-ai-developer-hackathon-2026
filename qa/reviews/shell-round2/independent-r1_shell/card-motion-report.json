@@ -1,0 +1,2070 @@
+[
+  {
+    "viewport": "1470x870",
+    "theme": "dark",
+    "mode": "no-preference",
+    "cards": [
+      {
+        "client": 305,
+        "scroll": 305,
+        "bottom": 411.0625,
+        "captionBottom": 410.0625,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 305,
+        "scroll": 305,
+        "bottom": 411.0625,
+        "captionBottom": 410.0625,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 326,
+        "scroll": 326,
+        "bottom": 432.0625,
+        "captionBottom": 431.0625,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 305,
+        "scroll": 305,
+        "bottom": 411.0625,
+        "captionBottom": 410.0625,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 305,
+        "scroll": 305,
+        "bottom": 755.125,
+        "captionBottom": 754.125,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "1470x870",
+    "theme": "dark",
+    "mode": "reduce",
+    "cards": [
+      {
+        "client": 305,
+        "scroll": 305,
+        "bottom": 411.0625,
+        "captionBottom": 410.0625,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 305,
+        "scroll": 305,
+        "bottom": 411.0625,
+        "captionBottom": 410.0625,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 326,
+        "scroll": 326,
+        "bottom": 432.0625,
+        "captionBottom": 431.0625,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 305,
+        "scroll": 305,
+        "bottom": 411.0625,
+        "captionBottom": 410.0625,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 305,
+        "scroll": 305,
+        "bottom": 755.125,
+        "captionBottom": 754.125,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "1470x870",
+    "theme": "light",
+    "mode": "no-preference",
+    "cards": [
+      {
+        "client": 305,
+        "scroll": 305,
+        "bottom": 411.0625,
+        "captionBottom": 410.0625,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 305,
+        "scroll": 305,
+        "bottom": 411.0625,
+        "captionBottom": 410.0625,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 326,
+        "scroll": 326,
+        "bottom": 432.0625,
+        "captionBottom": 431.0625,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 305,
+        "scroll": 305,
+        "bottom": 411.0625,
+        "captionBottom": 410.0625,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 305,
+        "scroll": 305,
+        "bottom": 755.125,
+        "captionBottom": 754.125,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "1470x870",
+    "theme": "light",
+    "mode": "reduce",
+    "cards": [
+      {
+        "client": 305,
+        "scroll": 305,
+        "bottom": 411.0625,
+        "captionBottom": 410.0625,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 305,
+        "scroll": 305,
+        "bottom": 411.0625,
+        "captionBottom": 410.0625,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 326,
+        "scroll": 326,
+        "bottom": 432.0625,
+        "captionBottom": 431.0625,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 305,
+        "scroll": 305,
+        "bottom": 411.0625,
+        "captionBottom": 410.0625,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 305,
+        "scroll": 305,
+        "bottom": 755.125,
+        "captionBottom": 754.125,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "1512x895",
+    "theme": "dark",
+    "mode": "no-preference",
+    "cards": [
+      {
+        "client": 311,
+        "scroll": 311,
+        "bottom": 416.96875,
+        "captionBottom": 415.96875,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 311,
+        "scroll": 311,
+        "bottom": 416.96875,
+        "captionBottom": 415.96875,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 332,
+        "scroll": 332,
+        "bottom": 437.96875,
+        "captionBottom": 436.96875,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 311,
+        "scroll": 311,
+        "bottom": 416.96875,
+        "captionBottom": 415.96875,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 311,
+        "scroll": 311,
+        "bottom": 766.9375,
+        "captionBottom": 765.9375,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "1512x895",
+    "theme": "dark",
+    "mode": "reduce",
+    "cards": [
+      {
+        "client": 311,
+        "scroll": 311,
+        "bottom": 416.96875,
+        "captionBottom": 415.96875,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 311,
+        "scroll": 311,
+        "bottom": 416.96875,
+        "captionBottom": 415.96875,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 332,
+        "scroll": 332,
+        "bottom": 437.96875,
+        "captionBottom": 436.96875,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 311,
+        "scroll": 311,
+        "bottom": 416.96875,
+        "captionBottom": 415.96875,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 311,
+        "scroll": 311,
+        "bottom": 766.9375,
+        "captionBottom": 765.9375,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "1512x895",
+    "theme": "light",
+    "mode": "no-preference",
+    "cards": [
+      {
+        "client": 311,
+        "scroll": 311,
+        "bottom": 416.96875,
+        "captionBottom": 415.96875,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 311,
+        "scroll": 311,
+        "bottom": 416.96875,
+        "captionBottom": 415.96875,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 332,
+        "scroll": 332,
+        "bottom": 437.96875,
+        "captionBottom": 436.96875,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 311,
+        "scroll": 311,
+        "bottom": 416.96875,
+        "captionBottom": 415.96875,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 311,
+        "scroll": 311,
+        "bottom": 766.9375,
+        "captionBottom": 765.9375,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "1512x895",
+    "theme": "light",
+    "mode": "reduce",
+    "cards": [
+      {
+        "client": 311,
+        "scroll": 311,
+        "bottom": 416.96875,
+        "captionBottom": 415.96875,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 311,
+        "scroll": 311,
+        "bottom": 416.96875,
+        "captionBottom": 415.96875,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 332,
+        "scroll": 332,
+        "bottom": 437.96875,
+        "captionBottom": 436.96875,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 311,
+        "scroll": 311,
+        "bottom": 416.96875,
+        "captionBottom": 415.96875,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 311,
+        "scroll": 311,
+        "bottom": 766.9375,
+        "captionBottom": 765.9375,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "1728x1030",
+    "theme": "dark",
+    "mode": "no-preference",
+    "cards": [
+      {
+        "client": 300,
+        "scroll": 300,
+        "bottom": 406.4375,
+        "captionBottom": 405.4375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 300,
+        "scroll": 300,
+        "bottom": 406.4375,
+        "captionBottom": 405.4375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 321,
+        "scroll": 321,
+        "bottom": 427.4375,
+        "captionBottom": 426.4375,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 300,
+        "scroll": 300,
+        "bottom": 406.4375,
+        "captionBottom": 405.4375,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 300,
+        "scroll": 300,
+        "bottom": 406.4375,
+        "captionBottom": 405.4375,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "1728x1030",
+    "theme": "dark",
+    "mode": "reduce",
+    "cards": [
+      {
+        "client": 300,
+        "scroll": 300,
+        "bottom": 406.4375,
+        "captionBottom": 405.4375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 300,
+        "scroll": 300,
+        "bottom": 406.4375,
+        "captionBottom": 405.4375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 321,
+        "scroll": 321,
+        "bottom": 427.4375,
+        "captionBottom": 426.4375,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 300,
+        "scroll": 300,
+        "bottom": 406.4375,
+        "captionBottom": 405.4375,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 300,
+        "scroll": 300,
+        "bottom": 406.4375,
+        "captionBottom": 405.4375,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "1728x1030",
+    "theme": "light",
+    "mode": "no-preference",
+    "cards": [
+      {
+        "client": 300,
+        "scroll": 300,
+        "bottom": 406.4375,
+        "captionBottom": 405.4375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 300,
+        "scroll": 300,
+        "bottom": 406.4375,
+        "captionBottom": 405.4375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 321,
+        "scroll": 321,
+        "bottom": 427.4375,
+        "captionBottom": 426.4375,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 300,
+        "scroll": 300,
+        "bottom": 406.4375,
+        "captionBottom": 405.4375,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 300,
+        "scroll": 300,
+        "bottom": 406.4375,
+        "captionBottom": 405.4375,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "1728x1030",
+    "theme": "light",
+    "mode": "reduce",
+    "cards": [
+      {
+        "client": 300,
+        "scroll": 300,
+        "bottom": 406.4375,
+        "captionBottom": 405.4375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 300,
+        "scroll": 300,
+        "bottom": 406.4375,
+        "captionBottom": 405.4375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 321,
+        "scroll": 321,
+        "bottom": 427.4375,
+        "captionBottom": 426.4375,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 300,
+        "scroll": 300,
+        "bottom": 406.4375,
+        "captionBottom": 405.4375,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 300,
+        "scroll": 300,
+        "bottom": 406.4375,
+        "captionBottom": 405.4375,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "1920x960",
+    "theme": "dark",
+    "mode": "no-preference",
+    "cards": [
+      {
+        "client": 291,
+        "scroll": 291,
+        "bottom": 397.171875,
+        "captionBottom": 396.171875,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 291,
+        "scroll": 291,
+        "bottom": 397.171875,
+        "captionBottom": 396.171875,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 312,
+        "scroll": 312,
+        "bottom": 418.1875,
+        "captionBottom": 417.1875,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 291,
+        "scroll": 291,
+        "bottom": 397.171875,
+        "captionBottom": 396.171875,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 312,
+        "scroll": 312,
+        "bottom": 418.171875,
+        "captionBottom": 417.171875,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "1920x960",
+    "theme": "dark",
+    "mode": "reduce",
+    "cards": [
+      {
+        "client": 291,
+        "scroll": 291,
+        "bottom": 397.171875,
+        "captionBottom": 396.171875,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 291,
+        "scroll": 291,
+        "bottom": 397.171875,
+        "captionBottom": 396.171875,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 312,
+        "scroll": 312,
+        "bottom": 418.1875,
+        "captionBottom": 417.1875,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 291,
+        "scroll": 291,
+        "bottom": 397.171875,
+        "captionBottom": 396.171875,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 312,
+        "scroll": 312,
+        "bottom": 418.171875,
+        "captionBottom": 417.171875,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "1920x960",
+    "theme": "light",
+    "mode": "no-preference",
+    "cards": [
+      {
+        "client": 291,
+        "scroll": 291,
+        "bottom": 397.171875,
+        "captionBottom": 396.171875,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 291,
+        "scroll": 291,
+        "bottom": 397.171875,
+        "captionBottom": 396.171875,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 312,
+        "scroll": 312,
+        "bottom": 418.1875,
+        "captionBottom": 417.1875,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 291,
+        "scroll": 291,
+        "bottom": 397.171875,
+        "captionBottom": 396.171875,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 312,
+        "scroll": 312,
+        "bottom": 418.171875,
+        "captionBottom": 417.171875,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "1920x960",
+    "theme": "light",
+    "mode": "reduce",
+    "cards": [
+      {
+        "client": 291,
+        "scroll": 291,
+        "bottom": 397.171875,
+        "captionBottom": 396.171875,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 291,
+        "scroll": 291,
+        "bottom": 397.171875,
+        "captionBottom": 396.171875,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 312,
+        "scroll": 312,
+        "bottom": 418.1875,
+        "captionBottom": 417.1875,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 291,
+        "scroll": 291,
+        "bottom": 397.171875,
+        "captionBottom": 396.171875,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 312,
+        "scroll": 312,
+        "bottom": 418.171875,
+        "captionBottom": 417.171875,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "1536x730",
+    "theme": "dark",
+    "mode": "no-preference",
+    "cards": [
+      {
+        "client": 314,
+        "scroll": 314,
+        "bottom": 420.34375,
+        "captionBottom": 419.34375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 314,
+        "scroll": 314,
+        "bottom": 420.34375,
+        "captionBottom": 419.34375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 314,
+        "scroll": 314,
+        "bottom": 420.34375,
+        "captionBottom": 419.34375,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 314,
+        "scroll": 314,
+        "bottom": 420.34375,
+        "captionBottom": 419.34375,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 314,
+        "scroll": 314,
+        "bottom": 752.6875,
+        "captionBottom": 751.6875,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "1536x730",
+    "theme": "dark",
+    "mode": "reduce",
+    "cards": [
+      {
+        "client": 314,
+        "scroll": 314,
+        "bottom": 420.34375,
+        "captionBottom": 419.34375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 314,
+        "scroll": 314,
+        "bottom": 420.34375,
+        "captionBottom": 419.34375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 314,
+        "scroll": 314,
+        "bottom": 420.34375,
+        "captionBottom": 419.34375,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 314,
+        "scroll": 314,
+        "bottom": 420.34375,
+        "captionBottom": 419.34375,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 314,
+        "scroll": 314,
+        "bottom": 752.6875,
+        "captionBottom": 751.6875,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "1536x730",
+    "theme": "light",
+    "mode": "no-preference",
+    "cards": [
+      {
+        "client": 314,
+        "scroll": 314,
+        "bottom": 420.34375,
+        "captionBottom": 419.34375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 314,
+        "scroll": 314,
+        "bottom": 420.34375,
+        "captionBottom": 419.34375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 314,
+        "scroll": 314,
+        "bottom": 420.34375,
+        "captionBottom": 419.34375,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 314,
+        "scroll": 314,
+        "bottom": 420.34375,
+        "captionBottom": 419.34375,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 314,
+        "scroll": 314,
+        "bottom": 752.6875,
+        "captionBottom": 751.6875,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "1536x730",
+    "theme": "light",
+    "mode": "reduce",
+    "cards": [
+      {
+        "client": 314,
+        "scroll": 314,
+        "bottom": 420.34375,
+        "captionBottom": 419.34375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 314,
+        "scroll": 314,
+        "bottom": 420.34375,
+        "captionBottom": 419.34375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 314,
+        "scroll": 314,
+        "bottom": 420.34375,
+        "captionBottom": 419.34375,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 314,
+        "scroll": 314,
+        "bottom": 420.34375,
+        "captionBottom": 419.34375,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 314,
+        "scroll": 314,
+        "bottom": 752.6875,
+        "captionBottom": 751.6875,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "1280x600",
+    "theme": "dark",
+    "mode": "no-preference",
+    "cards": [
+      {
+        "client": 325,
+        "scroll": 325,
+        "bottom": 431.484375,
+        "captionBottom": 430.484375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 325,
+        "scroll": 325,
+        "bottom": 431.484375,
+        "captionBottom": 430.484375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 326,
+        "scroll": 326,
+        "bottom": 431.5,
+        "captionBottom": 430.5,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 325,
+        "scroll": 325,
+        "bottom": 774.984375,
+        "captionBottom": 773.984375,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 325,
+        "scroll": 325,
+        "bottom": 774.984375,
+        "captionBottom": 773.984375,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "1280x600",
+    "theme": "dark",
+    "mode": "reduce",
+    "cards": [
+      {
+        "client": 325,
+        "scroll": 325,
+        "bottom": 431.484375,
+        "captionBottom": 430.484375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 325,
+        "scroll": 325,
+        "bottom": 431.484375,
+        "captionBottom": 430.484375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 326,
+        "scroll": 326,
+        "bottom": 431.5,
+        "captionBottom": 430.5,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 325,
+        "scroll": 325,
+        "bottom": 774.984375,
+        "captionBottom": 773.984375,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 325,
+        "scroll": 325,
+        "bottom": 774.984375,
+        "captionBottom": 773.984375,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "1280x600",
+    "theme": "light",
+    "mode": "no-preference",
+    "cards": [
+      {
+        "client": 325,
+        "scroll": 325,
+        "bottom": 431.484375,
+        "captionBottom": 430.484375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 325,
+        "scroll": 325,
+        "bottom": 431.484375,
+        "captionBottom": 430.484375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 326,
+        "scroll": 326,
+        "bottom": 431.5,
+        "captionBottom": 430.5,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 325,
+        "scroll": 325,
+        "bottom": 774.984375,
+        "captionBottom": 773.984375,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 325,
+        "scroll": 325,
+        "bottom": 774.984375,
+        "captionBottom": 773.984375,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "1280x600",
+    "theme": "light",
+    "mode": "reduce",
+    "cards": [
+      {
+        "client": 325,
+        "scroll": 325,
+        "bottom": 431.484375,
+        "captionBottom": 430.484375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 325,
+        "scroll": 325,
+        "bottom": 431.484375,
+        "captionBottom": 430.484375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 326,
+        "scroll": 326,
+        "bottom": 431.5,
+        "captionBottom": 430.5,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 325,
+        "scroll": 325,
+        "bottom": 774.984375,
+        "captionBottom": 773.984375,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 325,
+        "scroll": 325,
+        "bottom": 774.984375,
+        "captionBottom": 773.984375,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "1366x650",
+    "theme": "dark",
+    "mode": "no-preference",
+    "cards": [
+      {
+        "client": 290,
+        "scroll": 290,
+        "bottom": 396.4375,
+        "captionBottom": 395.4375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 290,
+        "scroll": 290,
+        "bottom": 396.4375,
+        "captionBottom": 395.4375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 311,
+        "scroll": 311,
+        "bottom": 417.4375,
+        "captionBottom": 416.4375,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 290,
+        "scroll": 290,
+        "bottom": 396.4375,
+        "captionBottom": 395.4375,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 311,
+        "scroll": 311,
+        "bottom": 746.875,
+        "captionBottom": 745.875,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "1366x650",
+    "theme": "dark",
+    "mode": "reduce",
+    "cards": [
+      {
+        "client": 290,
+        "scroll": 290,
+        "bottom": 396.4375,
+        "captionBottom": 395.4375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 290,
+        "scroll": 290,
+        "bottom": 396.4375,
+        "captionBottom": 395.4375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 311,
+        "scroll": 311,
+        "bottom": 417.4375,
+        "captionBottom": 416.4375,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 290,
+        "scroll": 290,
+        "bottom": 396.4375,
+        "captionBottom": 395.4375,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 311,
+        "scroll": 311,
+        "bottom": 746.875,
+        "captionBottom": 745.875,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "1366x650",
+    "theme": "light",
+    "mode": "no-preference",
+    "cards": [
+      {
+        "client": 290,
+        "scroll": 290,
+        "bottom": 396.4375,
+        "captionBottom": 395.4375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 290,
+        "scroll": 290,
+        "bottom": 396.4375,
+        "captionBottom": 395.4375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 311,
+        "scroll": 311,
+        "bottom": 417.4375,
+        "captionBottom": 416.4375,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 290,
+        "scroll": 290,
+        "bottom": 396.4375,
+        "captionBottom": 395.4375,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 311,
+        "scroll": 311,
+        "bottom": 746.875,
+        "captionBottom": 745.875,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "1366x650",
+    "theme": "light",
+    "mode": "reduce",
+    "cards": [
+      {
+        "client": 290,
+        "scroll": 290,
+        "bottom": 396.4375,
+        "captionBottom": 395.4375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 290,
+        "scroll": 290,
+        "bottom": 396.4375,
+        "captionBottom": 395.4375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 311,
+        "scroll": 311,
+        "bottom": 417.4375,
+        "captionBottom": 416.4375,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 290,
+        "scroll": 290,
+        "bottom": 396.4375,
+        "captionBottom": 395.4375,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 311,
+        "scroll": 311,
+        "bottom": 746.875,
+        "captionBottom": 745.875,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "1024x768",
+    "theme": "dark",
+    "mode": "no-preference",
+    "cards": [
+      {
+        "client": 307,
+        "scroll": 307,
+        "bottom": 413.484375,
+        "captionBottom": 412.484375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 307,
+        "scroll": 307,
+        "bottom": 413.484375,
+        "captionBottom": 412.484375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 329,
+        "scroll": 329,
+        "bottom": 434.5,
+        "captionBottom": 433.5,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 307,
+        "scroll": 307,
+        "bottom": 759.984375,
+        "captionBottom": 758.984375,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 307,
+        "scroll": 307,
+        "bottom": 759.984375,
+        "captionBottom": 758.984375,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "1024x768",
+    "theme": "dark",
+    "mode": "reduce",
+    "cards": [
+      {
+        "client": 307,
+        "scroll": 307,
+        "bottom": 413.484375,
+        "captionBottom": 412.484375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 307,
+        "scroll": 307,
+        "bottom": 413.484375,
+        "captionBottom": 412.484375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 329,
+        "scroll": 329,
+        "bottom": 434.5,
+        "captionBottom": 433.5,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 307,
+        "scroll": 307,
+        "bottom": 759.984375,
+        "captionBottom": 758.984375,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 307,
+        "scroll": 307,
+        "bottom": 759.984375,
+        "captionBottom": 758.984375,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "1024x768",
+    "theme": "light",
+    "mode": "no-preference",
+    "cards": [
+      {
+        "client": 307,
+        "scroll": 307,
+        "bottom": 413.484375,
+        "captionBottom": 412.484375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 307,
+        "scroll": 307,
+        "bottom": 413.484375,
+        "captionBottom": 412.484375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 329,
+        "scroll": 329,
+        "bottom": 434.5,
+        "captionBottom": 433.5,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 307,
+        "scroll": 307,
+        "bottom": 759.984375,
+        "captionBottom": 758.984375,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 307,
+        "scroll": 307,
+        "bottom": 759.984375,
+        "captionBottom": 758.984375,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "1024x768",
+    "theme": "light",
+    "mode": "reduce",
+    "cards": [
+      {
+        "client": 307,
+        "scroll": 307,
+        "bottom": 413.484375,
+        "captionBottom": 412.484375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 307,
+        "scroll": 307,
+        "bottom": 413.484375,
+        "captionBottom": 412.484375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 329,
+        "scroll": 329,
+        "bottom": 434.5,
+        "captionBottom": 433.5,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 307,
+        "scroll": 307,
+        "bottom": 759.984375,
+        "captionBottom": 758.984375,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 307,
+        "scroll": 307,
+        "bottom": 759.984375,
+        "captionBottom": 758.984375,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "1180x820",
+    "theme": "dark",
+    "mode": "no-preference",
+    "cards": [
+      {
+        "client": 287,
+        "scroll": 287,
+        "bottom": 392.78125,
+        "captionBottom": 391.78125,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 287,
+        "scroll": 287,
+        "bottom": 392.78125,
+        "captionBottom": 391.78125,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 308,
+        "scroll": 308,
+        "bottom": 413.78125,
+        "captionBottom": 412.78125,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 287,
+        "scroll": 287,
+        "bottom": 392.78125,
+        "captionBottom": 391.78125,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 308,
+        "scroll": 308,
+        "bottom": 739.5625,
+        "captionBottom": 738.5625,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "1180x820",
+    "theme": "dark",
+    "mode": "reduce",
+    "cards": [
+      {
+        "client": 287,
+        "scroll": 287,
+        "bottom": 392.78125,
+        "captionBottom": 391.78125,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 287,
+        "scroll": 287,
+        "bottom": 392.78125,
+        "captionBottom": 391.78125,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 308,
+        "scroll": 308,
+        "bottom": 413.78125,
+        "captionBottom": 412.78125,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 287,
+        "scroll": 287,
+        "bottom": 392.78125,
+        "captionBottom": 391.78125,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 308,
+        "scroll": 308,
+        "bottom": 739.5625,
+        "captionBottom": 738.5625,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "1180x820",
+    "theme": "light",
+    "mode": "no-preference",
+    "cards": [
+      {
+        "client": 287,
+        "scroll": 287,
+        "bottom": 392.78125,
+        "captionBottom": 391.78125,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 287,
+        "scroll": 287,
+        "bottom": 392.78125,
+        "captionBottom": 391.78125,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 308,
+        "scroll": 308,
+        "bottom": 413.78125,
+        "captionBottom": 412.78125,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 287,
+        "scroll": 287,
+        "bottom": 392.78125,
+        "captionBottom": 391.78125,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 308,
+        "scroll": 308,
+        "bottom": 739.5625,
+        "captionBottom": 738.5625,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "1180x820",
+    "theme": "light",
+    "mode": "reduce",
+    "cards": [
+      {
+        "client": 287,
+        "scroll": 287,
+        "bottom": 392.78125,
+        "captionBottom": 391.78125,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 287,
+        "scroll": 287,
+        "bottom": 392.78125,
+        "captionBottom": 391.78125,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 308,
+        "scroll": 308,
+        "bottom": 413.78125,
+        "captionBottom": 412.78125,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 287,
+        "scroll": 287,
+        "bottom": 392.78125,
+        "captionBottom": 391.78125,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 308,
+        "scroll": 308,
+        "bottom": 739.5625,
+        "captionBottom": 738.5625,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "2560x1000",
+    "theme": "dark",
+    "mode": "no-preference",
+    "cards": [
+      {
+        "client": 298,
+        "scroll": 298,
+        "bottom": 403.609375,
+        "captionBottom": 402.609375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 298,
+        "scroll": 298,
+        "bottom": 403.609375,
+        "captionBottom": 402.609375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 319,
+        "scroll": 319,
+        "bottom": 424.609375,
+        "captionBottom": 423.609375,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 298,
+        "scroll": 298,
+        "bottom": 403.609375,
+        "captionBottom": 402.609375,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 298,
+        "scroll": 298,
+        "bottom": 403.609375,
+        "captionBottom": 402.609375,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "2560x1000",
+    "theme": "dark",
+    "mode": "reduce",
+    "cards": [
+      {
+        "client": 298,
+        "scroll": 298,
+        "bottom": 403.609375,
+        "captionBottom": 402.609375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 298,
+        "scroll": 298,
+        "bottom": 403.609375,
+        "captionBottom": 402.609375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 319,
+        "scroll": 319,
+        "bottom": 424.609375,
+        "captionBottom": 423.609375,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 298,
+        "scroll": 298,
+        "bottom": 403.609375,
+        "captionBottom": 402.609375,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 298,
+        "scroll": 298,
+        "bottom": 403.609375,
+        "captionBottom": 402.609375,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "2560x1000",
+    "theme": "light",
+    "mode": "no-preference",
+    "cards": [
+      {
+        "client": 298,
+        "scroll": 298,
+        "bottom": 403.609375,
+        "captionBottom": 402.609375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 298,
+        "scroll": 298,
+        "bottom": 403.609375,
+        "captionBottom": 402.609375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 319,
+        "scroll": 319,
+        "bottom": 424.609375,
+        "captionBottom": 423.609375,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 298,
+        "scroll": 298,
+        "bottom": 403.609375,
+        "captionBottom": 402.609375,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 298,
+        "scroll": 298,
+        "bottom": 403.609375,
+        "captionBottom": 402.609375,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "2560x1000",
+    "theme": "light",
+    "mode": "reduce",
+    "cards": [
+      {
+        "client": 298,
+        "scroll": 298,
+        "bottom": 403.609375,
+        "captionBottom": 402.609375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 298,
+        "scroll": 298,
+        "bottom": 403.609375,
+        "captionBottom": 402.609375,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 319,
+        "scroll": 319,
+        "bottom": 424.609375,
+        "captionBottom": 423.609375,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 298,
+        "scroll": 298,
+        "bottom": 403.609375,
+        "captionBottom": 402.609375,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 298,
+        "scroll": 298,
+        "bottom": 403.609375,
+        "captionBottom": 402.609375,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "390x844",
+    "theme": "dark",
+    "mode": "no-preference",
+    "cards": [
+      {
+        "client": 326,
+        "scroll": 326,
+        "bottom": 408.25,
+        "captionBottom": 407.25,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 326,
+        "scroll": 326,
+        "bottom": 752.5,
+        "captionBottom": 751.5,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 347,
+        "scroll": 347,
+        "bottom": 1117.75,
+        "captionBottom": 1116.75,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 326,
+        "scroll": 326,
+        "bottom": 1462,
+        "captionBottom": 1461,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 347,
+        "scroll": 347,
+        "bottom": 1827.25,
+        "captionBottom": 1826.25,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "390x844",
+    "theme": "dark",
+    "mode": "reduce",
+    "cards": [
+      {
+        "client": 326,
+        "scroll": 326,
+        "bottom": 408.25,
+        "captionBottom": 407.25,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 326,
+        "scroll": 326,
+        "bottom": 752.5,
+        "captionBottom": 751.5,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 347,
+        "scroll": 347,
+        "bottom": 1117.75,
+        "captionBottom": 1116.75,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 326,
+        "scroll": 326,
+        "bottom": 1462,
+        "captionBottom": 1461,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 347,
+        "scroll": 347,
+        "bottom": 1827.25,
+        "captionBottom": 1826.25,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "390x844",
+    "theme": "light",
+    "mode": "no-preference",
+    "cards": [
+      {
+        "client": 326,
+        "scroll": 326,
+        "bottom": 408.25,
+        "captionBottom": 407.25,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 326,
+        "scroll": 326,
+        "bottom": 752.5,
+        "captionBottom": 751.5,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 347,
+        "scroll": 347,
+        "bottom": 1117.75,
+        "captionBottom": 1116.75,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 326,
+        "scroll": 326,
+        "bottom": 1462,
+        "captionBottom": 1461,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 347,
+        "scroll": 347,
+        "bottom": 1827.25,
+        "captionBottom": 1826.25,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  },
+  {
+    "viewport": "390x844",
+    "theme": "light",
+    "mode": "reduce",
+    "cards": [
+      {
+        "client": 326,
+        "scroll": 326,
+        "bottom": 408.25,
+        "captionBottom": 407.25,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 2:42 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 326,
+        "scroll": 326,
+        "bottom": 752.5,
+        "captionBottom": 751.5,
+        "title": "Someone who came out of the house was seen on the Front entrance camera at 6:02 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 347,
+        "scroll": 347,
+        "bottom": 1117.75,
+        "captionBottom": 1116.75,
+        "title": "Someone who arrived from outside the property walked up to the porch on the Front entrance camera at 3:31 PM.",
+        "verdict": "Noteworthy"
+      },
+      {
+        "client": 326,
+        "scroll": 326,
+        "bottom": 1462,
+        "captionBottom": 1461,
+        "title": "An expected visitor walked up to the porch on the Front entrance camera at 4:20 PM.",
+        "verdict": "Normal"
+      },
+      {
+        "client": 347,
+        "scroll": 347,
+        "bottom": 1827.25,
+        "captionBottom": 1826.25,
+        "title": "Someone who arrived from outside the property came into view on the Left side camera at 6:13 PM.",
+        "verdict": "Needs attention"
+      }
+    ]
+  }
+]

@@ -1,0 +1,80 @@
+{
+  "immediate": {
+    "grid": {
+      "top": -999,
+      "bottom": 828.25,
+      "height": 1827.25,
+      "client": 1827,
+      "scroll": 1827
+    },
+    "card": {
+      "top": 399,
+      "bottom": 748.25,
+      "height": 349.25,
+      "client": 347,
+      "scroll": 347
+    },
+    "caption": {
+      "top": 600.25,
+      "bottom": 747.25,
+      "height": 147,
+      "client": 147,
+      "scroll": 147
+    },
+    "scrollY": 1079,
+    "viewport": 844,
+    "doc": 1923
+  },
+  "settled": {
+    "grid": {
+      "top": -999,
+      "bottom": 828.25,
+      "height": 1827.25,
+      "client": 1827,
+      "scroll": 1827
+    },
+    "card": {
+      "top": 399,
+      "bottom": 748.25,
+      "height": 349.25,
+      "client": 347,
+      "scroll": 347
+    },
+    "caption": {
+      "top": 600.25,
+      "bottom": 747.25,
+      "height": 147,
+      "client": 147,
+      "scroll": 147
+    },
+    "scrollY": 1079,
+    "viewport": 844,
+    "doc": 1923
+  },
+  "bottom": {
+    "grid": {
+      "top": -999,
+      "bottom": 828.25,
+      "height": 1827.25,
+      "client": 1827,
+      "scroll": 1827
+    },
+    "card": {
+      "top": 399,
+      "bottom": 748.25,
+      "height": 349.25,
+      "client": 347,
+      "scroll": 347
+    },
+    "caption": {
+      "top": 600.25,
+      "bottom": 747.25,
+      "height": 147,
+      "client": 147,
+      "scroll": 147
+    },
+    "scrollY": 1079,
+    "viewport": 844,
+    "doc": 1923
+  }
+}

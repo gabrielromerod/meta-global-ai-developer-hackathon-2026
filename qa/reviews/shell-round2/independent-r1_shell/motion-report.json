@@ -1,0 +1,838 @@
+[
+  {
+    "viewport": "1470x870",
+    "mode": "no-preference",
+    "theme": "dark",
+    "matched": false,
+    "root": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "scope": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "transition": "0.12s, 0.12s, 0.12s"
+  },
+  {
+    "viewport": "1470x870",
+    "mode": "reduce",
+    "theme": "dark",
+    "matched": true,
+    "root": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "scope": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "transition": "0s, 0s, 0s"
+  },
+  {
+    "viewport": "1470x870",
+    "mode": "no-preference",
+    "theme": "light",
+    "matched": false,
+    "root": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "scope": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "transition": "0.12s, 0.12s, 0.12s"
+  },
+  {
+    "viewport": "1470x870",
+    "mode": "reduce",
+    "theme": "light",
+    "matched": true,
+    "root": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "scope": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "transition": "0s, 0s, 0s"
+  },
+  {
+    "viewport": "1512x895",
+    "mode": "no-preference",
+    "theme": "dark",
+    "matched": false,
+    "root": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "scope": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "transition": "0.12s, 0.12s, 0.12s"
+  },
+  {
+    "viewport": "1512x895",
+    "mode": "reduce",
+    "theme": "dark",
+    "matched": true,
+    "root": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "scope": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "transition": "0s, 0s, 0s"
+  },
+  {
+    "viewport": "1512x895",
+    "mode": "no-preference",
+    "theme": "light",
+    "matched": false,
+    "root": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "scope": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "transition": "0.12s, 0.12s, 0.12s"
+  },
+  {
+    "viewport": "1512x895",
+    "mode": "reduce",
+    "theme": "light",
+    "matched": true,
+    "root": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "scope": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "transition": "0s, 0s, 0s"
+  },
+  {
+    "viewport": "1728x1030",
+    "mode": "no-preference",
+    "theme": "dark",
+    "matched": false,
+    "root": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "scope": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "transition": "0.12s, 0.12s, 0.12s"
+  },
+  {
+    "viewport": "1728x1030",
+    "mode": "reduce",
+    "theme": "dark",
+    "matched": true,
+    "root": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "scope": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "transition": "0s, 0s, 0s"
+  },
+  {
+    "viewport": "1728x1030",
+    "mode": "no-preference",
+    "theme": "light",
+    "matched": false,
+    "root": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "scope": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "transition": "0.12s, 0.12s, 0.12s"
+  },
+  {
+    "viewport": "1728x1030",
+    "mode": "reduce",
+    "theme": "light",
+    "matched": true,
+    "root": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "scope": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "transition": "0s, 0s, 0s"
+  },
+  {
+    "viewport": "1920x960",
+    "mode": "no-preference",
+    "theme": "dark",
+    "matched": false,
+    "root": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "scope": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "transition": "0.12s, 0.12s, 0.12s"
+  },
+  {
+    "viewport": "1920x960",
+    "mode": "reduce",
+    "theme": "dark",
+    "matched": true,
+    "root": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "scope": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "transition": "0s, 0s, 0s"
+  },
+  {
+    "viewport": "1920x960",
+    "mode": "no-preference",
+    "theme": "light",
+    "matched": false,
+    "root": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "scope": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "transition": "0.12s, 0.12s, 0.12s"
+  },
+  {
+    "viewport": "1920x960",
+    "mode": "reduce",
+    "theme": "light",
+    "matched": true,
+    "root": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "scope": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "transition": "0s, 0s, 0s"
+  },
+  {
+    "viewport": "1536x730",
+    "mode": "no-preference",
+    "theme": "dark",
+    "matched": false,
+    "root": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "scope": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "transition": "0.12s, 0.12s, 0.12s"
+  },
+  {
+    "viewport": "1536x730",
+    "mode": "reduce",
+    "theme": "dark",
+    "matched": true,
+    "root": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "scope": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "transition": "0s, 0s, 0s"
+  },
+  {
+    "viewport": "1536x730",
+    "mode": "no-preference",
+    "theme": "light",
+    "matched": false,
+    "root": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "scope": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "transition": "0.12s, 0.12s, 0.12s"
+  },
+  {
+    "viewport": "1536x730",
+    "mode": "reduce",
+    "theme": "light",
+    "matched": true,
+    "root": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "scope": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "transition": "0s, 0s, 0s"
+  },
+  {
+    "viewport": "1280x600",
+    "mode": "no-preference",
+    "theme": "dark",
+    "matched": false,
+    "root": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "scope": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "transition": "0.12s, 0.12s, 0.12s"
+  },
+  {
+    "viewport": "1280x600",
+    "mode": "reduce",
+    "theme": "dark",
+    "matched": true,
+    "root": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "scope": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "transition": "0s, 0s, 0s"
+  },
+  {
+    "viewport": "1280x600",
+    "mode": "no-preference",
+    "theme": "light",
+    "matched": false,
+    "root": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "scope": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "transition": "0.12s, 0.12s, 0.12s"
+  },
+  {
+    "viewport": "1280x600",
+    "mode": "reduce",
+    "theme": "light",
+    "matched": true,
+    "root": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "scope": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "transition": "0s, 0s, 0s"
+  },
+  {
+    "viewport": "1366x650",
+    "mode": "no-preference",
+    "theme": "dark",
+    "matched": false,
+    "root": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "scope": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "transition": "0.12s, 0.12s, 0.12s"
+  },
+  {
+    "viewport": "1366x650",
+    "mode": "reduce",
+    "theme": "dark",
+    "matched": true,
+    "root": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "scope": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "transition": "0s, 0s, 0s"
+  },
+  {
+    "viewport": "1366x650",
+    "mode": "no-preference",
+    "theme": "light",
+    "matched": false,
+    "root": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "scope": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "transition": "0.12s, 0.12s, 0.12s"
+  },
+  {
+    "viewport": "1366x650",
+    "mode": "reduce",
+    "theme": "light",
+    "matched": true,
+    "root": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "scope": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "transition": "0s, 0s, 0s"
+  },
+  {
+    "viewport": "1024x768",
+    "mode": "no-preference",
+    "theme": "dark",
+    "matched": false,
+    "root": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "scope": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "transition": "0.12s, 0.12s, 0.12s"
+  },
+  {
+    "viewport": "1024x768",
+    "mode": "reduce",
+    "theme": "dark",
+    "matched": true,
+    "root": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "scope": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "transition": "0s, 0s, 0s"
+  },
+  {
+    "viewport": "1024x768",
+    "mode": "no-preference",
+    "theme": "light",
+    "matched": false,
+    "root": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "scope": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "transition": "0.12s, 0.12s, 0.12s"
+  },
+  {
+    "viewport": "1024x768",
+    "mode": "reduce",
+    "theme": "light",
+    "matched": true,
+    "root": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "scope": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "transition": "0s, 0s, 0s"
+  },
+  {
+    "viewport": "1180x820",
+    "mode": "no-preference",
+    "theme": "dark",
+    "matched": false,
+    "root": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "scope": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "transition": "0.12s, 0.12s, 0.12s"
+  },
+  {
+    "viewport": "1180x820",
+    "mode": "reduce",
+    "theme": "dark",
+    "matched": true,
+    "root": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "scope": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "transition": "0s, 0s, 0s"
+  },
+  {
+    "viewport": "1180x820",
+    "mode": "no-preference",
+    "theme": "light",
+    "matched": false,
+    "root": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "scope": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "transition": "0.12s, 0.12s, 0.12s"
+  },
+  {
+    "viewport": "1180x820",
+    "mode": "reduce",
+    "theme": "light",
+    "matched": true,
+    "root": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "scope": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "transition": "0s, 0s, 0s"
+  },
+  {
+    "viewport": "2560x1000",
+    "mode": "no-preference",
+    "theme": "dark",
+    "matched": false,
+    "root": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "scope": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "transition": "0.12s, 0.12s, 0.12s"
+  },
+  {
+    "viewport": "2560x1000",
+    "mode": "reduce",
+    "theme": "dark",
+    "matched": true,
+    "root": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "scope": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "transition": "0s, 0s, 0s"
+  },
+  {
+    "viewport": "2560x1000",
+    "mode": "no-preference",
+    "theme": "light",
+    "matched": false,
+    "root": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "scope": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "transition": "0.12s, 0.12s, 0.12s"
+  },
+  {
+    "viewport": "2560x1000",
+    "mode": "reduce",
+    "theme": "light",
+    "matched": true,
+    "root": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "scope": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "transition": "0s, 0s, 0s"
+  },
+  {
+    "viewport": "390x844",
+    "mode": "no-preference",
+    "theme": "dark",
+    "matched": false,
+    "root": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "scope": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "transition": "0.12s, 0.12s, 0.12s"
+  },
+  {
+    "viewport": "390x844",
+    "mode": "reduce",
+    "theme": "dark",
+    "matched": true,
+    "root": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "scope": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "transition": "0s, 0s, 0s"
+  },
+  {
+    "viewport": "390x844",
+    "mode": "no-preference",
+    "theme": "light",
+    "matched": false,
+    "root": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "scope": {
+      "fast": "120ms",
+      "view": "480ms",
+      "pulse": "1600ms",
+      "seconds": ".22"
+    },
+    "transition": "0.12s, 0.12s, 0.12s"
+  },
+  {
+    "viewport": "390x844",
+    "mode": "reduce",
+    "theme": "light",
+    "matched": true,
+    "root": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "scope": {
+      "fast": "0ms",
+      "view": "0ms",
+      "pulse": "0ms",
+      "seconds": "0"
+    },
+    "transition": "0s, 0s, 0s"
+  }
+]

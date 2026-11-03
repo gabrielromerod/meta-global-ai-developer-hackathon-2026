@@ -2,6 +2,7 @@ import { useState } from "react";
 import { createRoot } from "react-dom/client";
 import twin from "../fixtures/twin.json";
 import positions from "../fixtures/positions.json";
+import visits from "../fixtures/visits.json";
 import { HouseView } from "./index";
 import "../styles/tokens.css";
 import "./preview.css";
@@ -29,7 +30,7 @@ function Preview() {
       <div className="twin-preview-stage">
         <HouseView
           twin={twin}
-          positions={positions}
+          positions={{ ...positions, events: visits.visits.v_c.events }}
           time={time}
           activeCameraId={camera}
           onCameraSelect={setCamera}

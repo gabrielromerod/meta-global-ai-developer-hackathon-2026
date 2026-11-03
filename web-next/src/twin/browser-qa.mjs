@@ -139,7 +139,7 @@ try {
       await capture("observed");
       for (const control of await page
         .locator(
-          ".twin-toolbar button,.twin-camera-list button,.twin-blind-label",
+          ".twin-toolbar button,.twin-camera-list button,.twin-blind-label,.twin-pin",
         )
         .all()) {
         await control.scrollIntoViewIfNeeded();
@@ -159,6 +159,7 @@ try {
         .focus();
       for (let i = 0; i < 24; i++) {
         await page.keyboard.press("Tab");
+        await page.waitForTimeout(50);
         const focus = await page.evaluate(() => {
           const el = document.activeElement;
           return el instanceof HTMLElement

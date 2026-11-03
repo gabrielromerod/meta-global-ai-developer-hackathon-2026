@@ -3,15 +3,13 @@ import {
   createContext,
   useContext,
   useEffect,
-  useId,
   useMemo,
   useRef,
   useState,
   type ReactNode,
-  type RefObject,
 } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { Html, Line, OrbitControls } from "@react-three/drei";
+import { Line, OrbitControls } from "@react-three/drei";
 import * as RadixTabs from "@radix-ui/react-tabs";
 import { Camera, Eye, Layers3, RotateCcw, ZoomIn, ZoomOut } from "lucide-react";
 import { useReducedMotion } from "framer-motion";
@@ -69,9 +67,6 @@ interface Palette {
   markerScale: number;
   duration: number;
 }
-const LabelPortal = createContext<RefObject<HTMLElement> | undefined>(
-  undefined,
-);
 interface AnnotationEntry {
   element: HTMLDivElement;
   position: Vec3;
@@ -179,38 +174,6 @@ function GroundPolygon({
     </mesh>
   );
 }
-function Annotation({
-  position,
-  priority = 1,
-  children,
-}: {
-  position: Vec3;
-  priority?: number;
-  children: ReactNode;
-}) {
-  const portal = useContext(LabelPortal),
-    registry = useContext(AnnotationRegistry),
-    id = useId();
-  return (
-    <Html
-      portal={portal}
-      center
-      position={position}
-      zIndexRange={[3, 0]}
-      style={{ pointerEvents: "none" }}
-    >
-      <div
-        className="twin-annotation"
-        ref={(element) => {
-          if (element) registry.set(id, { element, position, priority });
-          else registry.delete(id);
-        }}
-      >
-        {children}
-      </div>
-    </Html>
-  );
-}
 function AnnotationLayout() {
   const registry = useContext(AnnotationRegistry),
     { camera, size } = useThree(),
@@ -243,29 +206,212 @@ function AnnotationLayout() {
         "--v-space-1",
       ),
     );
-    const placed = layoutLabels(projected, size.width, size.height, margin);
+    const placed = layoutLabels(
+      projected,
+      size.width,
+      size.height - margin * 4,
+      margin,
+    );
     projected.forEach((item) => {
       const entry = registry.get(item.id),
         layout = placed.find((p) => p.id === item.id);
       if (!entry) return;
       entry.element.style.visibility = layout ? "visible" : "hidden";
       if (layout)
-        entry.element.style.transform = `translate(${layout.x - item.x + item.width / 2}px,${layout.y - item.y + item.height / 2}px)`;
+        entry.element.style.transform = `translate(${layout.x}px,${layout.y}px)`;
+      const leader = entry.element.parentElement?.querySelector<SVGLineElement>(
+        `[data-leader-id="${item.id}"]`,
+      );
+      if (leader) {
+        leader.style.display = layout ? "" : "none";
+        if (layout) {
+          leader.setAttribute("x1", String(item.x));
+          leader.setAttribute("y1", String(item.y));
+          leader.setAttribute("x2", String(layout.x + item.width / 2));
+          leader.setAttribute("y2", String(layout.y + item.height / 2));
+        }
+      }
     });
   });
   return null;
 }
-function RegionLabel({
-  position,
-  children,
+/** A single DOM overlay avoids the nested React roots used by drei Html. */
+function HouseAnnotations({
+  model,
+  palette,
+  evidence,
+  activeCameraId,
+  onCameraSelect,
+  registry,
 }: {
-  position: Vec3;
-  children: ReactNode;
+  model: TwinModel;
+  palette: Palette;
+  evidence: ReturnType<typeof evidenceAtTime>;
+  activeCameraId?: string | null;
+  onCameraSelect?: (id: string) => void;
+  registry: Map<string, AnnotationEntry>;
 }) {
+  const [hovered, setHovered] = useState<string | null>(null);
+  const labels: {
+    id: string;
+    position: Vec3;
+    priority: number;
+    children: ReactNode;
+  }[] = [];
+  const region = (
+    id: string,
+    position: Vec3,
+    children: ReactNode,
+    priority = 1,
+  ) =>
+    labels.push({
+      id,
+      position,
+      priority,
+      children: <span className="twin-region-label">{children}</span>,
+    });
+  const house = model.boxes.find((box) => box.kind === "building");
+  if (house) {
+    region(
+      "porch",
+      [
+        (house.min[0] + house.max[0]) / 2,
+        palette.clearance,
+        house.min[1] - palette.clearance,
+      ],
+      "Porch",
+    );
+    region(
+      "passage",
+      [
+        model.ground.max[0] * 0.55,
+        palette.clearance,
+        (house.min[1] + house.max[1]) / 2,
+      ],
+      "Left passage",
+    );
+    region(
+      "backyard",
+      [0, palette.clearance, (house.max[1] + model.ground.max[1]) / 2],
+      "Backyard",
+    );
+    region(
+      "garden",
+      [0, palette.clearance, (model.ground.min[1] + house.min[1]) / 2],
+      "Front garden",
+    );
+  }
+  model.boxes
+    .filter((box) => box.kind === "tree_barrier")
+    .forEach((box) =>
+      region(
+        `tree-${box.id}`,
+        [
+          (box.min[0] + box.max[0]) / 2,
+          box.h + palette.clearance,
+          (box.min[1] + box.max[1]) / 2,
+        ],
+        "Tree barrier",
+      ),
+    );
+  model.cameras.forEach((camera) =>
+    labels.push({
+      id: `camera-${camera.id}`,
+      position: [
+        camera.position[0],
+        camera.position[1] + palette.clearance,
+        camera.position[2],
+      ],
+      priority: activeCameraId === camera.id ? 20 : 10,
+      children: (
+        <button
+          type="button"
+          className={`twin-pin ${activeCameraId === camera.id ? "is-selected" : ""}`}
+          aria-label={`Select ${camera.name}`}
+          aria-pressed={activeCameraId === camera.id}
+          onClick={() => onCameraSelect?.(camera.id)}
+          disabled={!onCameraSelect}
+          title={`${camera.name} · ${camera.source_label}`}
+        >
+          <Camera aria-hidden="true" />
+          <span>{camera.name}</span>
+        </button>
+      ),
+    }),
+  );
+  model.blindRegions.forEach((region) => {
+    const center = region.polygon_m.reduce<Vec2>(
+      (sum, p) => [
+        sum[0] + p[0] / region.polygon_m.length,
+        sum[1] + p[1] / region.polygon_m.length,
+      ],
+      [0, 0],
+    );
+    labels.push({
+      id: `blind-${region.id}`,
+      position: [center[0], palette.clearance, center[1]],
+      priority: 5,
+      children: (
+        <button
+          type="button"
+          className="twin-blind-label"
+          onMouseEnter={() => setHovered(region.id)}
+          onMouseLeave={() => setHovered(null)}
+          onFocus={() => setHovered(region.id)}
+          onBlur={() => setHovered(null)}
+          aria-label={`Unobserved region: ${region.name}`}
+        >
+          <Eye aria-hidden="true" />
+          <span>{hovered === region.id ? region.name : "Unobserved"}</span>
+        </button>
+      ),
+    });
+  });
+  evidence.gaps.forEach((gap) =>
+    region(
+      `gap-${gap.id}`,
+      [
+        (gap.from[0] + gap.to[0]) / 2,
+        palette.clearance,
+        (gap.from[1] + gap.to[1]) / 2,
+      ],
+      gap.label,
+      3,
+    ),
+  );
+  if (evidence.current)
+    region(
+      "current-estimate",
+      [evidence.current.x, palette.clearance, evidence.current.z],
+      evidence.current.label,
+      4,
+    );
   return (
-    <Annotation position={position}>
-      <span className="twin-region-label">{children}</span>
-    </Annotation>
+    <div className="twin-label-layer">
+      <svg className="twin-leaders" aria-hidden="true">
+        {labels.map((label) => (
+          <line key={label.id} data-leader-id={label.id} />
+        ))}
+      </svg>
+      {labels.map((label) => (
+        <div
+          key={label.id}
+          className="twin-annotation"
+          data-label-id={label.id}
+          ref={(element) => {
+            if (element)
+              registry.set(label.id, {
+                element,
+                position: label.position,
+                priority: label.priority,
+              });
+            else registry.delete(label.id);
+          }}
+        >
+          {label.children}
+        </div>
+      ))}
+    </div>
   );
 }
 
@@ -304,9 +450,6 @@ function SitePlan({ model, palette }: { model: TwinModel; palette: Palette }) {
               <boxGeometry args={[width, box.h, depth]} />
               <meshStandardMaterial color={palette.tree} roughness={1} />
             </mesh>
-            <RegionLabel position={[x, box.h + palette.clearance, z]}>
-              Tree barrier
-            </RegionLabel>
           </group>
         ) : (
           <group key={box.id}>
@@ -333,42 +476,6 @@ function SitePlan({ model, palette }: { model: TwinModel; palette: Palette }) {
             y={palette.lift}
             color={palette.roof}
           />
-          <RegionLabel
-            position={[
-              (house.min[0] + house.max[0]) / 2,
-              palette.clearance,
-              house.min[1] - palette.clearance,
-            ]}
-          >
-            Porch
-          </RegionLabel>
-          <RegionLabel
-            position={[
-              ground.max[0] * 0.55,
-              palette.clearance,
-              (house.min[1] + house.max[1]) / 2,
-            ]}
-          >
-            Left passage
-          </RegionLabel>
-          <RegionLabel
-            position={[
-              0,
-              palette.clearance,
-              (house.max[1] + ground.max[1]) / 2,
-            ]}
-          >
-            Backyard
-          </RegionLabel>
-          <RegionLabel
-            position={[
-              0,
-              palette.clearance,
-              (ground.min[1] + house.min[1]) / 2,
-            ]}
-          >
-            Front garden
-          </RegionLabel>
         </>
       )}
       {model.coverage.map((region, i) => (
@@ -453,27 +560,6 @@ function CameraCone({
           color={selected ? palette.warning : palette.accent}
         />
       </mesh>
-      <Annotation
-        priority={selected ? 20 : 10}
-        position={[
-          camera.position[0],
-          camera.position[1] + palette.clearance,
-          camera.position[2],
-        ]}
-      >
-        <button
-          type="button"
-          className={`twin-pin ${selected ? "is-selected" : ""}`}
-          aria-label={`Select ${camera.name}`}
-          aria-pressed={selected}
-          onClick={onSelect}
-          disabled={!onSelect}
-          title={`${camera.name} · ${camera.source_label}`}
-        >
-          <Camera aria-hidden="true" />
-          <span>{camera.name}</span>
-        </button>
-      </Annotation>
     </group>
   );
 }
@@ -524,23 +610,6 @@ function BlindRegions({
                 lineWidth={palette.line}
               />
             ))}
-            <Annotation
-              priority={5}
-              position={[center[0], palette.clearance, center[1]]}
-            >
-              <button
-                type="button"
-                className="twin-blind-label"
-                onFocus={() => setHovered(region.id)}
-                onBlur={() => setHovered(null)}
-                aria-label={`Unobserved region: ${region.name}`}
-              >
-                <Eye aria-hidden="true" />
-                <span>
-                  {hovered === region.id ? region.name : "Unobserved"}
-                </span>
-              </button>
-            </Annotation>
           </group>
         );
       })}
@@ -606,15 +675,6 @@ function Evidence({
             dashSize={palette.radius}
             gapSize={palette.radius * 2}
           />
-          <RegionLabel
-            position={[
-              (gap.from[0] + gap.to[0]) / 2,
-              palette.clearance,
-              (gap.from[1] + gap.to[1]) / 2,
-            ]}
-          >
-            {gap.label}
-          </RegionLabel>
         </group>
       ))}
       {current && (
@@ -635,9 +695,6 @@ function Evidence({
             <sphereGeometry args={[palette.radius, 16, 12]} />
             <meshBasicMaterial color={palette.warning} />
           </mesh>
-          <RegionLabel position={[0, palette.clearance, 0]}>
-            {current.label}
-          </RegionLabel>
         </group>
       )}
     </group>
@@ -819,83 +876,88 @@ export function HouseView({
         </div>
       </div>
       <div className="twin-canvas" ref={container} data-testid="twin-canvas">
-        <LabelPortal.Provider value={container}>
-          <AnnotationRegistry.Provider value={registry.current}>
-            <CanvasBoundary>
-              <Canvas
-                camera={{
-                  position: pose.position,
-                  fov: palette.fov,
-                  near: 0.1,
-                  far: 300,
-                }}
-                dpr={[1, 2]}
-                gl={{ antialias: true, alpha: false }}
-                fallback={
-                  <div className="twin-unavailable" role="status">
-                    3D view unavailable. WebGL is required to show this view.
-                  </div>
-                }
-                onCreated={({ gl }) => {
-                  gl.domElement.setAttribute(
-                    "aria-label",
-                    "3D house view. Drag to orbit; use the view and zoom buttons for keyboard control.",
-                  );
-                  gl.domElement.setAttribute("role", "img");
-                  if (container.current)
-                    container.current.dataset.webgl = "ready";
-                }}
-              >
-                <color attach="background" args={[palette.background]} />
-                <ambientLight intensity={palette.light} />
-                <directionalLight
-                  position={[-8, 20, -6]}
-                  intensity={palette.light}
-                />
-                <SitePlan model={model} palette={palette} />
-                <BlindRegions model={model} palette={palette} />
-                {model.cameras.map((camera) => (
-                  <CameraCone
-                    key={camera.id}
-                    camera={camera}
-                    model={model}
-                    palette={{
-                      ...palette,
-                      opacity: showCoverage ? palette.opacity : 0,
-                      activeOpacity: showCoverage ? palette.activeOpacity : 0,
-                    }}
-                    selected={activeCameraId === camera.id}
-                    pulse={evidence.pulseCameras.includes(camera.id)}
-                    reduced={reduced}
-                    onSelect={
-                      onCameraSelect
-                        ? () => onCameraSelect(camera.id)
-                        : undefined
-                    }
-                  />
-                ))}
-                <Evidence data={positions} time={time} palette={palette} />
-                <BoundedControls
-                  ground={model.ground}
-                  palette={palette}
-                  preset={`${actualPreset}:${reset}`}
-                  zoom={zoom}
-                  reduced={reduced}
-                  onState={(position, target) => {
-                    if (container.current) {
-                      container.current.dataset.cameraY = String(position[1]);
-                      container.current.dataset.orbitDistance = String(
-                        Math.hypot(...position.map((n, i) => n - target[i])),
-                      );
-                      container.current.dataset.target = target.join(",");
-                    }
+        <AnnotationRegistry.Provider value={registry.current}>
+          <CanvasBoundary>
+            <Canvas
+              camera={{
+                position: pose.position,
+                fov: palette.fov,
+                near: 0.1,
+                far: 300,
+              }}
+              dpr={[1, 2]}
+              gl={{ antialias: true, alpha: false }}
+              fallback={
+                <div className="twin-unavailable" role="status">
+                  3D view unavailable. WebGL is required to show this view.
+                </div>
+              }
+              onCreated={({ gl }) => {
+                gl.domElement.setAttribute(
+                  "aria-label",
+                  "3D house view. Drag to orbit; use the view and zoom buttons for keyboard control.",
+                );
+                gl.domElement.setAttribute("role", "img");
+                if (container.current)
+                  container.current.dataset.webgl = "ready";
+              }}
+            >
+              <color attach="background" args={[palette.background]} />
+              <ambientLight intensity={palette.light} />
+              <directionalLight
+                position={[-8, 20, -6]}
+                intensity={palette.light}
+              />
+              <SitePlan model={model} palette={palette} />
+              <BlindRegions model={model} palette={palette} />
+              {model.cameras.map((camera) => (
+                <CameraCone
+                  key={camera.id}
+                  camera={camera}
+                  model={model}
+                  palette={{
+                    ...palette,
+                    opacity: showCoverage ? palette.opacity : 0,
+                    activeOpacity: showCoverage ? palette.activeOpacity : 0,
                   }}
+                  selected={activeCameraId === camera.id}
+                  pulse={evidence.pulseCameras.includes(camera.id)}
+                  reduced={reduced}
+                  onSelect={
+                    onCameraSelect ? () => onCameraSelect(camera.id) : undefined
+                  }
                 />
-                <AnnotationLayout />
-              </Canvas>
-            </CanvasBoundary>
-          </AnnotationRegistry.Provider>
-        </LabelPortal.Provider>
+              ))}
+              <Evidence data={positions} time={time} palette={palette} />
+              <BoundedControls
+                ground={model.ground}
+                palette={palette}
+                preset={`${actualPreset}:${reset}`}
+                zoom={zoom}
+                reduced={reduced}
+                onState={(position, target) => {
+                  if (container.current) {
+                    container.current.dataset.cameraY = String(position[1]);
+                    container.current.dataset.orbitDistance = String(
+                      Math.hypot(...position.map((n, i) => n - target[i])),
+                    );
+                    container.current.dataset.target = target.join(",");
+                  }
+                }}
+              />
+              <AnnotationLayout />
+            </Canvas>
+          </CanvasBoundary>
+        </AnnotationRegistry.Provider>
+
+        <HouseAnnotations
+          model={model}
+          palette={palette}
+          evidence={evidence}
+          activeCameraId={activeCameraId}
+          onCameraSelect={onCameraSelect}
+          registry={registry.current}
+        />
         <span className="twin-map-note">
           Stylized property · approximate locations
         </span>

@@ -1,4 +1,6 @@
 .house-view {
+  container-type: size;
+  container-name: twin;
   display: flex;
   flex-direction: column;
   min-width: var(--v-zero);
@@ -12,6 +14,7 @@
   font-family: var(--v-font);
 }
 .twin-toolbar {
+  flex-shrink: var(--v-zero);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -52,6 +55,12 @@
   outline: var(--v-focus-width) solid var(--v-accent);
   outline-offset: var(--v-focus-offset);
 }
+.twin-presets:focus-visible,
+.twin-presets:focus {
+  outline: var(--v-focus-width) solid var(--v-accent);
+  outline-offset: var(--v-focus-offset);
+  border-radius: var(--v-radius-sm);
+}
 .house-view button[data-state="active"],
 .house-view button[aria-pressed="true"] {
   background: var(--v-raised);
@@ -76,7 +85,7 @@
 }
 .twin-canvas {
   position: relative;
-  min-height: var(--v-twin-min);
+  min-height: var(--v-content-min);
   flex: var(--v-one);
   overflow: hidden;
   isolation: isolate;
@@ -115,8 +124,6 @@
 .twin-pin span {
   display: none;
 }
-.twin-pin:hover span,
-.twin-pin:focus-visible span,
 .twin-pin.is-selected span {
   display: inline;
 }
@@ -124,8 +131,31 @@
   border-color: var(--v-accent);
 }
 .twin-annotation {
+  position: absolute;
+  left: var(--v-zero);
+  top: var(--v-zero);
   width: max-content;
   pointer-events: none;
+  visibility: hidden;
+}
+.twin-label-layer {
+  position: absolute;
+  inset: var(--v-zero);
+  pointer-events: none;
+  overflow: hidden;
+}
+.twin-leaders {
+  position: absolute;
+  inset: var(--v-zero);
+  width: var(--v-full) !important;
+  height: var(--v-full) !important;
+  pointer-events: none;
+  overflow: visible;
+}
+.twin-leaders line {
+  stroke: var(--v-muted);
+  stroke-width: var(--v-line);
+  opacity: var(--v-disabled-opacity);
 }
 .twin-annotation > button {
   pointer-events: auto;
@@ -166,6 +196,7 @@
   white-space: nowrap;
 }
 .twin-footer {
+  flex-shrink: var(--v-zero);
   display: flex;
   align-items: center;
   gap: var(--v-space-2);
@@ -196,11 +227,30 @@
   border-top: var(--v-line) dashed var(--v-muted);
 }
 .twin-gap-summary {
+  flex-shrink: var(--v-zero);
   margin: var(--v-zero);
   padding: var(--v-space-1) var(--v-space-2);
   font-size: var(--v-text-xs);
   color: var(--v-muted);
   border-top: var(--v-line) solid var(--v-border);
+}
+@container twin (max-height: 420px) {
+  .twin-toolbar {
+    padding: var(--v-space-1);
+    gap: var(--v-zero);
+  }
+  .twin-footer {
+    padding: var(--v-zero) var(--v-space-2) var(--v-space-1);
+  }
+  .twin-footer > span:not(.twin-selection) {
+    display: none;
+  }
+  .twin-selection {
+    margin-left: var(--v-zero);
+  }
+  .twin-gap-summary {
+    line-height: var(--v-leading-tight);
+  }
 }
 .twin-unavailable {
   display: flex;

@@ -1,5 +1,11 @@
 # Non-functional requirements checklist
 
+Nov 3 FIXTURE evidence for NFR-010/FR-023 billing:
+`tests/integration/test_timeout_billing.py` covers unbilled ConnectTimeout, billed
+ReadTimeout/WriteTimeout with retries, a cut response stream charged at the estimate,
+and the default 20 s read timeout. These are deterministic respx faults, not measured
+live latency or confirmation of provider billing.
+
 Source: [spec section 2](../spec/vigil-spec.md#2-non-functional-requirements), including [Added for the real-world environment](../spec/vigil-spec.md#added-for-the-real-world-environment-nov-2-1) and [Added for compute and budget](../spec/vigil-spec.md#added-for-compute-and-budget-nov-2-1). The tables list **37** NFRs (NFR-001 to NFR-037).
 
 Every target is checked by a script or test, and the result is published even when missed. Targets marked ⚠️ are **first estimates**: Meta does not publish response times, so the first measured values are recorded in [EVAL.md](../../EVAL.md) before the benchmark run and the targets stay fixed after that.

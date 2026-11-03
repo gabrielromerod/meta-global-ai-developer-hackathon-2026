@@ -18,7 +18,7 @@ are the durable progress record. Existing recorded-input contracts remain suppor
 | 3 | pipeline/process cloud orchestration, split cutter, tagged media, SQLite, estimate/confirm; respx generated MP4 integration | Complete: 5abbbc7; 1428 default tests passed |
 | 4 | export clips/overlay/twin and actual video playback E2E | Complete: a55aed9; 1430 default and 19 browser tests passed |
 | 5 | time-ordered session watch feedback; next-window phrase regression | Complete: 377363c; 1431 default tests passed |
-| 6 | main owner UI, session token, checkin countdown, Expected Windows CRUD, sandbox example; undo | Pending |
+| 6 | main owner UI, session token, checkin countdown, Expected Windows CRUD, sandbox example; undo | Complete: 645ea2b; 1434 default and 21 browser tests passed; fake Undo removed |
 | 7 | MetaClient timeout billing classification and 20 s read deadline | Pending |
 | 8 | smoke script upload/schema/voice contract tests; never run live | Pending |
 | 9 | Wi-Fi source profile, stream/filter, probe telemetry and battery refusal; pinned reolink-aio and fake tests | Pending |

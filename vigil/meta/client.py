@@ -486,7 +486,7 @@ class MetaClient:
         max_retries: int = 2,
         backoff_base_s: float = 0.5,
         backoff_cap_s: float = 20.0,
-        timeout_s: float = 120.0,
+        timeout_s: float = 20.0,
         cache_only: bool = False,
         use_cache: bool = True,
     ):
@@ -946,9 +946,19 @@ class MetaClient:
         try:
             resp = self._http.request(method, path, headers=self._headers(), **kw)
         except httpx.TimeoutException as exc:
-            raise _Retryable("timeout", f"timeout: {type(exc).__name__}") from None
+            raise _Retryable(
+                "timeout",
+                f"timeout: {type(exc).__name__}",
+                billed=isinstance(exc, httpx.ReadTimeout | httpx.WriteTimeout),
+            ) from None
         except httpx.TransportError as exc:
-            raise _Retryable("network", f"network error: {type(exc).__name__}") from None
+            raise _Retryable(
+                "network",
+                f"network error: {type(exc).__name__}",
+                billed=isinstance(
+                    exc, httpx.ReadError | httpx.WriteError | httpx.RemoteProtocolError
+                ),
+            ) from None
         self._raise_for_status(resp)
         try:
             data = resp.json()
@@ -971,6 +981,7 @@ class MetaClient:
         raise MetaResponseFailed(f"response failed: {code or 'unknown'} {msg}".strip())
 
     def _send_stream(self, path: str, body: dict) -> dict:
+        started = False
         try:
             with self._http.stream(
                 "POST", path, json=body, headers=self._headers("text/event-stream")
@@ -978,11 +989,21 @@ class MetaClient:
                 if resp.status_code >= 400:
                     resp.read()
                     self._raise_for_status(resp)
+                started = True
                 return self._parse_sse(resp.iter_lines())
         except httpx.TimeoutException as exc:
-            raise _Retryable("timeout", f"timeout: {type(exc).__name__}") from None
+            raise _Retryable(
+                "timeout",
+                f"timeout: {type(exc).__name__}",
+                billed=isinstance(exc, httpx.ReadTimeout | httpx.WriteTimeout),
+            ) from None
         except httpx.TransportError as exc:
-            raise _Retryable("network", f"network error: {type(exc).__name__}") from None
+            raise _Retryable(
+                "network",
+                f"network error: {type(exc).__name__}",
+                billed=started
+                or isinstance(exc, httpx.ReadError | httpx.WriteError | httpx.RemoteProtocolError),
+            ) from None
 
     def _parse_sse(self, lines: Iterable[str]) -> dict:
         deltas: list[str] = []

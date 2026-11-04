@@ -1,22 +1,88 @@
 """Consumer contract from cached bundle/config, never from frontend fixture JSON."""
 
 import hashlib
+import json
 import re
 from datetime import date as Date
 from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Any
 from zoneinfo import ZoneInfo
 
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel, ConfigDict, Field
 
 from vigil.api import views
-from vigil.api.guards import LIVE_ESTIMATE_USD
+from vigil.api.guards import LIVE_ESTIMATE_USD, is_lan_request
 from vigil.api.owner import is_owner, windows_view
 from vigil.ingest.config import privacy_polygons
 from vigil.ingest.review import require_privacy_review
 
 VERSION = "vigil-ui/1"
 LEGACY_CAMERAS = {"front": "doorbell", "backyard": "backyard_1", "side_right": "front_right_duo"}
+
+
+BENCH_MODELS = (
+    ("sam-3.1", "Finds and tracks people, cars and objects"),
+    ("muse-spark-1.3", "Clothing notes, triage and rule drafts"),
+    ("muse-wonder-1.0", "Writes the cited story for escalated visits"),
+    ("muse-voice-transcribe-1.0", "Turns a spoken rule into text"),
+    ("muse-glimmer-30b-q4", "Local triage on the home GPU (Tier 1)"),
+)
+
+ECONOMICS: dict[str, Any] = {
+    "status": "hypothesis",
+    "note": "Spec 11.9 estimates from list prices for one home with 4 cameras, per month. "
+    "Not measured on this home.",
+    "rows": [
+        {"approach": "Cloud model on every motion window", "monthly": "$59–$119",
+         "basis": "50–100 windows a day × $0.039 per Spark clip"},
+        {"approach": "Human guard monitoring service", "monthly": "≈ $50–$80",
+         "basis": "overnight or 24/7 outdoor plans"},
+        {"approach": "Vigil: cloud only for escalated visits", "monthly": "≈ $1.80",
+         "basis": "2–3 escalations a day, compact Wonder story, triage on the edge; "
+         "excludes the edge box's power ($15–26 a month)"},
+    ],
+}  # fmt: skip
+
+
+def ledger_models(settings: Any) -> list[dict[str, Any]]:
+    """Per-model usage from the call ledger (live vs cached, spend, median latency).
+
+    Usage on this home box, not a benchmark: the ledger records every call MetaClient made.
+    """
+    import sqlite3
+    from statistics import median
+
+    stats: dict[str, dict[str, Any]] = {}
+    path = getattr(settings, "ledger_path", None)
+    if path is not None and Path(path).is_file():
+        try:
+            conn = sqlite3.connect(f"file:{Path(path).resolve()}?mode=ro", uri=True)
+            try:
+                rows = conn.execute(
+                    "select model, cached, cost_usd, latency_ms from model_calls"
+                ).fetchall()
+            finally:
+                conn.close()
+        except sqlite3.Error:
+            rows = []
+        for model, cached, cost, latency in rows:
+            s = stats.setdefault(model, {"live": 0, "cached": 0, "cost": 0.0, "lat": []})
+            if cached:
+                s["cached"] += 1
+            else:
+                s["live"] += 1
+                s["cost"] += float(cost or 0.0)
+                if latency:
+                    s["lat"].append(int(latency))
+    out = []
+    for model, role in BENCH_MODELS:
+        s = stats.get(model, {"live": 0, "cached": 0, "cost": 0.0, "lat": []})
+        out.append({"model": model, "role": role, "live_calls": s["live"],
+                    "cached_calls": s["cached"], "cost_usd": round(s["cost"], 4),
+                    "median_latency_ms": int(median(s["lat"])) if s["lat"] else None})  # fmt: skip
+    return out
 
 
 def evidence(bundle) -> dict:
@@ -249,6 +315,8 @@ def ui_state(request: Request) -> dict:
             for c in cameras
         ],
         "summary": {
+            # Motion triggers the recorded session logged before any model ran (spec 2.1 funnel).
+            "motion_triggers": (bundle.manifest.get("summary") or {}).get("motion_triggers"),
             "camera_events": measured.get("camera_events"),
             "on_property": measured.get("on_property"),
             "visits": len(visits),
@@ -270,6 +338,8 @@ def ui_state(request: Request) -> dict:
             "measured": False,
             "metrics": [],
             "note": "No real-camera benchmark has been measured.",
+            "models": ledger_models(request.app.state.settings),
+            "economics": ECONOMICS,
         },
         "owner": {
             "enabled": enabled,
@@ -351,14 +421,28 @@ def consumer_router() -> APIRouter:
         }
 
     @r.get("/ui/twin")
-    def twin(request: Request):
+    def twin(request: Request, model: str = "generic"):
         from vigil.spatial.public import public_twin
 
         cfg = request.app.state.config
         bundle = request.app.state.bundle
+        # A private massing (data/spatial/massing.json) is real house geometry: only LAN or
+        # loopback clients may learn it exists or receive it; the public diagram is the default.
+        private = request.app.state.settings.data_dir / "spatial" / "massing.json"
+        local = is_lan_request(request) and private.is_file()
+        if local and model == "house":
+            from vigil.spatial.massing import private_twin, validate_massing
+
+            doc = validate_massing(json.loads(private.read_text(encoding="utf-8")))
+            result = private_twin(cfg, doc)
+            result["private_available"] = True
+            result["evidence"] = evidence(bundle)
+            return result
         result = (
             public_twin(cfg) if cfg else {"generic_massing": True, "glb_url": None, "cameras": []}
         )
+        if is_lan_request(request):
+            result["private_available"] = local
         if bundle.manifest.get("synthetic"):
             result["blind_regions"] = bundle.twin.get("blind_regions", [])
         result["evidence"] = evidence(bundle)
@@ -389,6 +473,9 @@ def consumer_router() -> APIRouter:
         if visit is None:
             raise HTTPException(404, "Unknown visit")
         result = views.visit_view(bundle, visit)
+        result["watches"] = views.watches_view(
+            bundle, visit.id, request.app.state.runtime.undone_watches
+        )
         scenario = bundle.scenario(visit.scenario or "") or {}
         state = ui_state(request)
         inventory = {c["id"]: c for c in state["cameras"]}

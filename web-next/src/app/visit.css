@@ -1,0 +1,153 @@
+/* Visit evidence: proof first (camera + timeline), then why, then the cited story. Fixed page, internal scroll. Tokens only. */
+.visit-workspace{display:flex;flex-direction:column;gap:var(--v-space-2);height:var(--v-full);min-height:var(--v-zero);min-width:var(--v-zero)}
+.visit-heading{display:flex;align-items:flex-start;gap:12px;flex:none}
+.visit-title{min-width:var(--v-zero);flex:var(--v-one);display:flex;flex-direction:column;gap:4px}
+.visit-title h2{margin:var(--v-zero);font-size:var(--v-text-xl);font-weight:var(--v-weight-bold);line-height:var(--v-leading-tight)}
+.visit-first{margin:var(--v-zero);color:var(--v-muted);font-size:var(--v-text-sm);line-height:var(--v-leading)}
+.visit-columns{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(320px,1fr);gap:var(--v-space-3);min-height:var(--v-zero);flex:var(--v-one)}
+
+/* Left: camera evidence and route */
+.visit-visuals{display:flex;flex-direction:column;gap:var(--v-space-2);min-height:var(--v-zero);min-width:var(--v-zero);overflow-y:auto;scrollbar-gutter:stable;scrollbar-width:thin;overscroll-behavior:contain}
+.visit-player-card{flex:none;padding:12px;border-radius:var(--v-radius-md);background:var(--v-surface);container-type:inline-size}
+.visit-camera-grid{--stage-h:clamp(240px,46vh,560px);display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+.visit-camera{position:relative;min-width:var(--v-zero);border:2px solid var(--v-transparent);border-radius:12px;overflow:hidden;background:var(--v-raised);display:flex;flex-direction:column}
+.visit-camera.is-active{grid-column:1/4;grid-row:1;border-color:var(--v-accent)}
+.visit-camera-select{width:var(--v-full);justify-content:flex-start!important;font-size:var(--v-text-xs)!important;min-height:32px!important;border-radius:var(--v-zero)!important;padding:4px 10px!important}
+.visit-camera.is-active .visit-camera-select{position:absolute;top:8px;left:8px;width:auto;z-index:1;border-radius:var(--v-radius-pill)!important;background:var(--v-overlay)!important;font-weight:var(--v-weight-bold)!important}
+.visit-camera:not(.is-active):hover{border-color:var(--v-border)}
+.visit-video{position:relative;aspect-ratio:16/9;background:#000}
+.visit-video video{width:var(--v-full);height:var(--v-full);display:block;object-fit:contain}
+.visit-video canvas{position:absolute;inset:var(--v-zero);width:var(--v-full);height:var(--v-full);pointer-events:none}
+.visit-media-empty{aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;padding:8px;color:var(--v-muted);text-align:center}
+.visit-media-empty svg{width:18px;height:18px}
+.visit-media-empty p{margin:var(--v-zero);font-size:var(--v-text-xs)}
+.visit-media-empty small{font-size:var(--v-text-xs)}
+.visit-camera:not(.is-active) .visit-media-empty small{display:none}
+.visit-camera.is-active .visit-media-empty svg{width:32px;height:32px}
+.visit-camera.is-active .visit-media-empty p{font-size:var(--v-text-md);font-weight:var(--v-weight-medium);color:var(--v-text)}
+
+/* Timeline with event marks and shaded gaps */
+.visit-clock{display:flex;align-items:center;gap:12px;margin-top:12px}
+.visit-scrub{position:relative;flex:var(--v-one);min-width:var(--v-zero);height:var(--v-target);display:flex;align-items:center}
+.visit-scrub input{width:var(--v-full);accent-color:var(--v-accent);height:var(--v-target);margin:var(--v-zero);position:relative;z-index:1;background:var(--v-transparent)}
+.visit-marks{position:absolute;left:8px;right:8px;top:50%;height:18px;transform:translateY(-50%);pointer-events:none}
+.visit-mark{position:absolute;top:0;width:3px;height:18px;margin-left:-1.5px;border-radius:2px;background:var(--v-muted);opacity:.7}
+.visit-mark.is-rule{background:var(--v-danger);opacity:1}
+.visit-mark.is-current{background:var(--v-accent);opacity:1;height:22px;top:-2px}
+.visit-mark-gap{position:absolute;top:2px;height:14px;border-radius:4px;background:color-mix(in srgb,var(--v-unknown) 30%,transparent);border:1px dashed var(--v-unknown)}
+.visit-recorded-clock{display:flex;flex-direction:column;align-items:flex-end;font-variant-numeric:tabular-nums;white-space:nowrap;font-size:var(--v-text-sm);font-weight:var(--v-weight-bold)}
+.visit-recorded-clock small{font-size:var(--v-text-xs);color:var(--v-muted);font-weight:var(--v-weight-normal)}
+.visit-now{display:flex;align-items:center;gap:6px;margin:8px 0 0;font-size:var(--v-text-sm);color:var(--v-muted);min-height:20px}
+.visit-now svg{width:16px;height:16px;flex:none}
+.visit-now:has(.lucide-eye-off){color:var(--v-unknown)}
+
+.visit-panel-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.visit-panel-head h3{display:flex;align-items:center;gap:6px;margin:var(--v-zero);font-size:var(--v-text-md);font-weight:var(--v-weight-bold)}
+.visit-panel-head h3 svg{width:18px;height:18px;color:var(--v-accent)}
+.visit-panel-head span{font-size:var(--v-text-xs);color:var(--v-muted)}
+
+/* Right: why, story, timeline, trace, feedback */
+.visit-story-scroll{min-height:var(--v-zero);overflow-y:auto;scrollbar-gutter:stable;scrollbar-width:thin;overscroll-behavior:contain;display:flex;flex-direction:column;gap:12px}
+.visit-block{flex:none;padding:var(--v-space-2);border-radius:var(--v-radius-md);background:var(--v-surface)}
+.visit-block-title{margin:0 0 12px;font-size:var(--v-text-md);font-weight:var(--v-weight-bold)}
+.visit-context{background:var(--v-transparent)}
+.visit-context>.pv-row{padding:10px 0;align-items:flex-start}
+.visit-context>.pv-row .pv-bubble{width:36px;height:36px}
+.visit-context>.pv-row .pv-row-body>span:not(.pv-meta){font-size:var(--v-text-sm)}
+.visit-context code{font-size:var(--v-text-xs);color:var(--v-muted);overflow-wrap:anywhere}
+.pv-row[data-tone=danger] .pv-bubble{color:var(--v-danger);background:color-mix(in srgb,var(--v-danger) 16%,transparent)}
+.pv-row[data-tone=success] .pv-bubble{color:var(--v-success);background:color-mix(in srgb,var(--v-success) 14%,transparent)}
+.pv-row[data-tone=unknown] .pv-bubble{color:var(--v-unknown);background:color-mix(in srgb,var(--v-unknown) 16%,transparent)}
+
+.visit-story{display:flex;flex-direction:column;gap:4px}
+.visit-sentence{padding:10px 12px;border-radius:12px;border-left:3px solid var(--v-transparent);transition:background var(--v-motion-fast) var(--v-ease)}
+.visit-sentence[data-current]{background:var(--v-raised);border-left-color:var(--v-accent)}
+.visit-sentence[data-source="code"]{border-left-color:var(--v-unknown)}
+.visit-sentence p{margin:var(--v-zero);line-height:var(--v-leading);font-size:var(--v-text-md)}
+.visit-citations{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 4px}
+.visit-citation{font-size:var(--v-text-xs)!important;white-space:normal!important;text-align:left;min-height:32px!important;border-radius:var(--v-radius-pill)!important;padding:4px 12px!important}
+.visit-citation svg{width:14px;height:14px}
+.visit-citation.is-current{border-color:var(--v-accent)!important;color:var(--v-accent)!important}
+.visit-source{display:block;color:var(--v-muted);overflow-wrap:anywhere;font-size:11px}
+
+.visit-event-list{list-style:none;margin:var(--v-zero);padding:var(--v-zero);background:var(--v-transparent)}
+.visit-event-list>li+li{border-top:var(--v-line) solid var(--v-raised)}
+.visit-event-list button{display:grid;grid-template-columns:96px minmax(0,1fr) auto;align-items:center;gap:12px;width:var(--v-full);padding:10px 8px;border:var(--v-zero);border-radius:var(--v-radius-sm);background:var(--v-transparent);color:var(--v-text);font:inherit;text-align:left;cursor:pointer}
+.visit-event-list button:hover{background:var(--v-raised)}
+.visit-event-list button:focus-visible{outline:var(--v-focus-width) solid var(--v-accent);outline-offset:calc(var(--v-focus-width)*-1)}
+.visit-event-list li[data-current] button{background:var(--v-raised);box-shadow:inset 3px 0 0 var(--v-accent)}
+.visit-event-list time{font-size:var(--v-text-xs);color:var(--v-muted);font-variant-numeric:tabular-nums}
+.visit-event-list span{display:flex;flex-direction:column;min-width:var(--v-zero)}
+.visit-event-list strong{font-size:var(--v-text-sm);font-weight:var(--v-weight-medium);text-transform:capitalize}
+.visit-event-list small{font-size:var(--v-text-xs);color:var(--v-muted)}
+.visit-event-rule{width:16px;height:16px;color:var(--v-danger)}
+
+.visit-trace summary{display:flex;align-items:center;justify-content:space-between;cursor:pointer;min-height:var(--v-target);font-weight:var(--v-weight-bold);list-style:none}
+.visit-trace summary::-webkit-details-marker{display:none}
+.visit-trace summary svg{width:18px;height:18px;color:var(--v-muted);transition:transform var(--v-motion-fast) var(--v-ease)}
+.visit-trace[open] summary svg{transform:rotate(180deg)}
+.visit-trace summary:focus-visible{outline:var(--v-focus-width) solid var(--v-accent)}
+.visit-trace h3{font-size:var(--v-text-sm);margin:12px 0 4px}
+.visit-trace p{font-size:var(--v-text-sm);color:var(--v-muted);margin:4px 0}
+.visit-feedback-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.visit-feedback{display:flex;gap:8px;flex-wrap:wrap}
+
+@media(max-width:1100px){
+  .visit-workspace{overflow-y:auto}
+  .visit-columns{grid-template-columns:minmax(0,1fr);flex:none}
+  .visit-visuals,.visit-story-scroll{overflow:visible}
+}
+@media(max-width:640px){
+  .visit-workspace{height:auto;overflow:visible}
+  .visit-heading{flex-wrap:wrap}
+  .visit-title{flex-basis:calc(var(--v-full) - var(--v-space-8))}
+  .visit-heading>.v-button:last-child{margin-left:var(--v-space-6)}
+  .visit-title h2{font-size:var(--v-text-lg)}
+  .visit-event-list button{grid-template-columns:80px minmax(0,1fr) auto}
+}
+@media(prefers-reduced-motion:reduce){.visit-sentence,.visit-trace summary svg{transition:none}}
+/* Keep the proof visible with the timeline: cap the active tile, keep thumbnails short */
+.visit-camera.is-active .visit-video,.visit-camera.is-active .visit-media-empty{aspect-ratio:auto;height:var(--stage-h)}
+.visit-camera:not(.is-active) .visit-video,.visit-camera:not(.is-active) .visit-media-empty{aspect-ratio:auto;height:56px;flex-direction:row}
+/* The active tile appears after load; without this the browser's scroll anchoring scrolls it out of view. */
+.visit-visuals,.visit-story-scroll,.visit-workspace{overflow-anchor:none}
+
+/* Route replay: sits beside the live camera, same height. Always the night palette, like an operations screen. */
+.visit-replay-cell{grid-column:4/7;grid-row:1;position:relative;min-width:var(--v-zero);height:calc(var(--stage-h) + 4px);border-radius:12px;overflow:hidden}
+.visit-replay-cell>.house-view:not(.replay),.visit-replay-cell>[data-testid=property-map]{height:var(--v-full)}
+.replay{position:relative;height:var(--v-full);background:var(--v-scene-night-background);color:var(--v-text);isolation:isolate}
+.replay-canvas{position:absolute!important;inset:var(--v-zero)}
+.replay::after{content:"";position:absolute;inset:var(--v-zero);pointer-events:none;z-index:1;background:radial-gradient(ellipse at center,transparent 55%,color-mix(in srgb,var(--v-scene-night-background) 85%,transparent) 100%),repeating-linear-gradient(0deg,color-mix(in srgb,var(--v-accent) 5%,transparent) 0 1px,transparent 1px 3px)}
+.replay-hud{position:absolute;inset:10px;pointer-events:none;z-index:2}
+.replay-corner{position:absolute;width:14px;height:14px;border:0 solid color-mix(in srgb,var(--v-accent) 70%,transparent)}
+.replay-corner.tl{top:0;left:0;border-top-width:2px;border-left-width:2px}
+.replay-corner.tr{top:0;right:0;border-top-width:2px;border-right-width:2px}
+.replay-corner.bl{bottom:0;left:0;border-bottom-width:2px;border-left-width:2px}
+.replay-corner.br{bottom:0;right:0;border-bottom-width:2px;border-right-width:2px}
+.replay-top,.replay-bottom{position:absolute;left:18px;right:18px;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:8px;pointer-events:none}
+.replay-top{top:16px}
+.replay-bottom{bottom:16px;align-items:flex-end;flex-wrap:wrap}
+.replay-live,.replay-cam{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:var(--v-radius-pill);background:color-mix(in srgb,var(--v-scene-night-background) 70%,transparent);backdrop-filter:blur(6px);font-size:11px;font-weight:var(--v-weight-bold);letter-spacing:.06em;text-transform:uppercase}
+.replay-live svg{width:14px;height:14px;color:var(--v-accent)}
+.replay-live.is-on svg{animation:replay-spin 2.4s linear infinite}
+.replay-cam{color:var(--v-accent)}
+.replay-status{display:flex;align-items:center;gap:6px;margin:var(--v-zero);font-size:var(--v-text-xs);font-variant-numeric:tabular-nums;color:var(--v-text);text-shadow:0 1px 4px var(--v-scene-night-background)}
+.replay-status svg{width:14px;height:14px}
+.replay[data-state=gap] .replay-status{color:var(--v-unknown)}
+.replay-gap-tag{display:inline-block;white-space:nowrap;padding:2px 8px;border-radius:var(--v-radius-pill);border:1px dashed #8a94a3;background:color-mix(in srgb,var(--v-scene-night-background) 80%,transparent);font-size:var(--v-text-xs);font-variant-numeric:tabular-nums;pointer-events:none}
+.replay-guard-tag{display:inline-block;white-space:nowrap;padding:2px 8px;border-radius:var(--v-radius-pill);background:color-mix(in srgb,var(--v-scene-night-background) 75%,transparent);border:1px solid var(--v-twin-cone,#75aeff);color:var(--v-text);font-size:var(--v-text-xs);pointer-events:none}
+.replay .twin-gap-summary{display:flex;gap:6px;margin:var(--v-zero);font-size:11px}
+.replay .twin-gap-summary span{padding:3px 8px;border-radius:var(--v-radius-pill);border:1px dashed var(--v-unknown);color:var(--v-unknown);background:color-mix(in srgb,var(--v-scene-night-background) 70%,transparent)}
+.replay .twin-gap-summary span[data-active]{border-style:solid;border-color:var(--v-danger);color:var(--v-danger)}
+@keyframes replay-spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.replay-live.is-on svg{animation:none}}
+/* Narrow evidence column: stack camera above the replay. */
+@container (max-width:620px){
+  .visit-camera.is-active,.visit-replay-cell{grid-column:1/-1}
+  .visit-replay-cell{grid-row:2;height:var(--stage-h)}
+  .visit-camera:not(.is-active){grid-column:span 2}
+}
+.visit-camera.is-empty:not(.is-active) .visit-media-empty{display:none}
+.visit-camera:not(.is-active){grid-column:span 2}
+.visit-camera.is-empty:not(.is-active) .visit-camera-select{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.visit-camera.is-empty:not(.is-active) .visit-camera-select::after{content:"· no clip";margin-left:4px;color:var(--v-muted);font-weight:var(--v-weight-normal)}

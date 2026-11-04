@@ -6,15 +6,17 @@ import {AppShell} from '../shell';
 import {Button,EmptyState,Modal,VideoTile,VerdictBadge} from '../components/ui';
 import {HomePage} from '../pages/home';
 import {AttentionPage} from '../pages/attention';
-import {ClipsPage} from '../pages/clips';
 import {MediaPage} from '../pages/media';
 import {RulesPage} from '../pages/rules';
 import {SettingsPage} from '../pages/settings';
 import {BenchmarkPage} from '../pages/benchmark';
 import {ChatPopup,MessagesPage} from '../chat';
 import {HouseView} from '../twin';
+import {HouseScene} from './route-replay';
+import {LiveAlerts, LivePresence, useLiveAlerts} from './live-alerts';
+import {CapturedClips, useCaptures} from './captures';
 import {MotionProvider,PageTransition} from '../motion';
-import {api} from './api';
+import {adoptLocalOwner,api} from './api';
 import {localThreads,readableError} from './model';
 import {VisitReview} from './visit';
 import {VoiceDialog} from './voice-dialog';
@@ -23,7 +25,7 @@ import './app.css';
 
 const routes:Route[]=['home','attention','clips','media','messages','rules','benchmark','settings'];
 export function VigilApp(){
-  const state=useQuery({queryKey:['ui-state'],queryFn:()=>api<UIState>('/api/ui/state')});
+  const state=useQuery({queryKey:['ui-state'],queryFn:async()=>{await adoptLocalOwner();return api<UIState>('/api/ui/state');}});
   if(state.isPending)return <main className="app-start" role="status"><h1>Vigil</h1><p>Loading home evidence…</p></main>;
   if(state.isError)return <main className="app-start"><h1>Vigil</h1><p role="alert">{readableError(state.error)}</p><Button onClick={()=>void state.refetch()}>Try again</Button></main>;
   return <MotionProvider><Workspace state={state.data}/></MotionProvider>;
@@ -31,7 +33,7 @@ export function VigilApp(){
 function Workspace({state:original}:{state:UIState}){
   const navigate=useNavigate(),location=useLocation(),queries=useQueryClient();
   const parts=location.pathname.split('/').filter(Boolean);
-  const route:Route=routes.includes(parts[0] as Route)?parts[0] as Route:'home';
+  const route:Route=parts[0]==='clips'?'media':routes.includes(parts[0] as Route)?parts[0] as Route:'home';
   const visitId=parts[0]==='visit'?decodeURIComponent(parts[1]??''):null;
   const [theme,setTheme]=useState<'dark'|'light'>(()=>localStorage.getItem('vigil_theme')==='light'?'light':'dark');
   const [view,setView]=useState(original.views[0]?.id??'');
@@ -51,6 +53,15 @@ function Workspace({state:original}:{state:UIState}){
   const snapshotReady=useCallback((capture:(()=>Promise<Blob>)|null)=>{snapshotter.current=capture;setSnapshotAvailable(Boolean(capture));},[]);
   useEffect(()=>()=>{if(snapshotUrl)URL.revokeObjectURL(snapshotUrl);},[snapshotUrl]);
   const twin=useQuery({queryKey:['ui-twin'],queryFn:()=>api<Record<string,unknown>>('/api/ui/twin')});
+  // Private house massing (LAN/loopback only): shown by default where it is served; the diagram stays one tap away.
+  const [houseModel,setHouseModel]=useState<'generic'|'house'>(()=>{try{return localStorage.getItem('vigil_house_model')==='generic'?'generic':'house';}catch{return 'house';}});
+  useEffect(()=>{try{localStorage.setItem('vigil_house_model',houseModel);}catch{/* storage unavailable */}},[houseModel]);
+  const privateAvailable=twin.data?.private_available===true;
+  const live=useLiveAlerts();
+  const captures=useCaptures();
+  const liveCamera=live.alerts.find(alert=>alert.open)?.camera_id??null;
+  const privateTwin=useQuery({queryKey:['ui-twin','house'],queryFn:()=>api<Record<string,unknown>>('/api/ui/twin?model=house'),enabled:privateAvailable&&houseModel==='house'});
+  const privateHouse=houseModel==='house'&&privateTwin.data?.private_massing===true?privateTwin.data:null;
   const chat=useQuery({queryKey:['ui-chat'],queryFn:()=>api<{threads:Thread[]}>('/api/ui/chat')});
   const voices=useQuery({queryKey:['voice-fixtures'],queryFn:()=>api<{fixtures:{id:string;label:string;wav_url:string|null}[]}>('/api/voice/fixtures'),enabled:route==='rules'});
   const state={...original,notifications:original.notifications.map(n=>({...n,unread:n.unread&&!read.includes(n.id)}))};
@@ -61,7 +72,7 @@ function Workspace({state:original}:{state:UIState}){
   const owner=useMutation({mutationFn:({path,body,method}:{path:string;body?:unknown;method?:string})=>api<{checkin?:{start:string;expires:string};binds_within_s?:number}>(path,body,method),onSuccess:result=>{if(result.checkin)setExpires(new Date(Date.parse(result.checkin.start)+(result.binds_within_s??state.owner.checkin_duration_s)*1000).toISOString());void refresh();}});
   const rules=useMutation({mutationFn:({path,body}:{path:string;body:unknown})=>api<{rule?:Rule;result?:{rule?:Rule;text?:string;applies_label?:string;basis_note?:string;limits_note?:string[]};notice?:string;note?:string}>(path,body),onSuccess:result=>{if(result.rule?.state==='active'){setRuleDraft(null);setRuleExplanation(undefined);}else if(result.result?.rule){setRuleDraft(result.result.rule);setRuleExplanation({applies_label:result.result.applies_label??'',basis_note:result.result.basis_note??'',limits_note:result.result.limits_note??[]});}setRuleNotice(result.notice||result.note||'Recorded result shown. No model request was made.');void refresh();}});
   const voice=useMutation({mutationFn:(id:string)=>api<{result:{transcript:string};notice?:string}>('/api/voice/transcribe',{fixture_id:id,live:false}),onSuccess:result=>{setTranscript(result.result.transcript);setRuleNotice(result.notice||'Cached transcript shown. Review the text before drafting.');}});
-  const search=useMutation({mutationFn:(filters:Record<string,string>)=>api<{clips:unknown[]}>('/api/ui/search?'+new URLSearchParams(filters)),onSuccess:result=>setNotice(`${result.clips.length} matching clips confirmed by the home box.`)});
+  const search=useMutation({mutationFn:(filters:Record<string,string>)=>api<{clips:unknown[]}>('/api/ui/search?'+new URLSearchParams(filters)),onSuccess:()=>{void refresh();}});
   const send=useMutation({mutationFn:(text:string)=>api<{message:ChatMessage}>('/api/chat/ask',{thread_id:'ask-home',session_id:state.session.id,text})});
   function openVisit(id:string,eventId?:string){setRead(items=>[...new Set([...items,...state.notifications.filter(n=>n.visit_id===id).map(n=>n.id)])]);navigate('/visit/'+encodeURIComponent(id)+(eventId?'?event='+encodeURIComponent(eventId):''));}
   function openClip(id:string){const clip=state.clips.find(c=>c.id===id);if(!clip)return;setSelectedClip(id);openVisit(clip.visit_id);}
@@ -76,7 +87,9 @@ function Workspace({state:original}:{state:UIState}){
   const house=useMemo(()=>twin.data?{...twin.data,cameras:(twin.data.cameras as Record<string,unknown>[]??[]).map(c=>({...c,source_label:state.cameras.find(cam=>cam.id===c.id)?.source_label??''}))}:null,[twin.data,original.cameras]);
   const selectedCamera=state.cameras.find(c=>c.id===activeCamera);
   const props:PageProps={state,onOpenVisit:openVisit,onOpenClip:openClip,onViewChange:changeView,activeView:view,
-    twinSlot:house?<HouseView presetRequestId={view} forceMap={new URLSearchParams(window.location.search).get('twin')==='2d'} twin={house} lighting={view==='day'||view==='night'?view:undefined} activeCameraId={activeCamera} onCameraSelect={selectCamera} preset={view==='left-passage'?'left':view==='backyard'?'backyard':view==='front-garden'||view==='porch'?'front':undefined}/>:<EmptyState title={twin.isError?'House view unavailable':'Loading house view'} description={twin.isError?readableError(twin.error):undefined}/>,
+    capturesSlot:captures.length?(route==='attention'?<CapturedClips captures={captures.filter(c=>c.analysis==='analysed')} all={captures} variant="analysed"/>:<CapturedClips captures={captures} variant={route==='home'?'rail':'page'}/>):undefined,
+    houseSwitchSlot:privateAvailable?<div className="house-switch" role="group" aria-label="House model"><button type="button" aria-pressed={houseModel==='generic'} onClick={()=>setHouseModel('generic')}>Diagram</button><button type="button" aria-pressed={houseModel==='house'} onClick={()=>setHouseModel('house')}>My house</button></div>:undefined,
+    twinSlot:house?<><LivePresence alerts={live.alerts} onSelect={selectCamera}/>{privateHouse?<HouseScene twin={privateHouse} protectedObjects={state.protected_objects} activeCameraId={liveCamera??activeCamera} onCameraSelect={selectCamera} preset={view==='left-passage'?'left':view==='backyard'?'backyard':view==='front-garden'||view==='porch'?'front':undefined} fallback={<EmptyState title="3D view unavailable" description="This browser cannot draw the house model."/>}/>:<HouseView presetRequestId={view} forceMap={new URLSearchParams(window.location.search).get('twin')==='2d'} twin={house} lighting={view==='day'||view==='night'?view:undefined} activeCameraId={liveCamera??activeCamera} onCameraSelect={selectCamera} preset={view==='left-passage'?'left':view==='backyard'?'backyard':view==='front-garden'||view==='porch'?'front':undefined}/>}</>:<EmptyState title={twin.isError?'House view unavailable':'Loading house view'} description={twin.isError?readableError(twin.error):undefined}/>,
     playerSlot:view==='day'||view==='night'?<p className="home-camera-hint">{view==='day'?'Day':'Night'} schematic preview. Recorded clips keep their original lighting.</p>:selectedCamera?<VideoTile camera={selectedCamera} clip={state.clips.find(c=>c.camera_id===selectedCamera.id)} onOpen={openClip}/>:undefined,
     protectionSlot:<ProtectionPanel enabled={state.mode==='edge'&&state.owner.enabled}/>,
     onSearch:filters=>search.mutate(filters),
@@ -85,9 +98,10 @@ function Workspace({state:original}:{state:UIState}){
   };
   return <><AppShell title={visitId?'Visit evidence':undefined} state={state} route={route} onNavigate={id=>{navigate('/'+id);if(id==='messages')setChatOpen(false);}} theme={theme} onThemeChange={setTheme} onOpenVisit={openVisit} chatSlot={route!=='messages'?<ChatPopup {...chatProps} open={chatOpen} onClose={()=>setChatOpen(false)}/>:undefined}>
     <PageTransition viewKey={visitId?'visit:'+visitId:route}>
-      {visitId?<VisitReview id={visitId} initialEventId={new URLSearchParams(location.search).get('event')} selectionKey={location.key} state={state} twin={house} initialClipId={selectedClip} onBack={()=>navigate('/attention')} onShare={clip=>{setSelectedClip(clip);setShareThread(threadId);}} onSnapshotReady={snapshotReady}/>:route==='home'?<HomePage {...props}/>:route==='attention'?<AttentionPage {...props}/>:route==='clips'?<ClipsPage {...props}/>:route==='media'?<MediaPage {...props}/>:route==='messages'?<MessagesPage {...chatProps}/>:route==='rules'?<RulesPage {...props}/>:route==='settings'?<SettingsPage {...props}/>:<BenchmarkPage {...props}/>}
+      {visitId?<VisitReview id={visitId} initialEventId={new URLSearchParams(location.search).get('event')} selectionKey={location.key} state={state} twin={privateHouse&&state.evidence.kind!=='fixture'?privateHouse:house} initialClipId={selectedClip} onBack={()=>navigate('/attention')} onShare={clip=>{setSelectedClip(clip);setShareThread(threadId);}} onSnapshotReady={snapshotReady}/>:route==='home'?<HomePage {...props}/>:route==='attention'?<AttentionPage {...props}/>:route==='media'?<MediaPage {...props}/>:route==='messages'?<MessagesPage {...chatProps}/>:route==='rules'?<RulesPage {...props}/>:route==='settings'?<SettingsPage {...props}/>:<BenchmarkPage {...props}/>}
     </PageTransition>
   </AppShell>
+  {route!=='home'&&<LiveAlerts alerts={live.alerts} onSelect={id=>{navigate('/home');selectCamera(id);}}/>}
   {route!=='messages'&&<Button className="app-messages-pill" hidden={chatOpen} aria-haspopup="dialog" aria-expanded={chatOpen} onClick={()=>setChatOpen(true)}>Messages</Button>}
   <Modal open={shareThread!==null} title="Share a clip" onClose={()=>setShareThread(null)} description="Shared cards stay in this browser. They are not delivered to other people."><div className="app-share-list">{state.clips.length?state.clips.map(clip=><Button key={clip.id} variant="outline" onClick={()=>{append(shareThread!,{id:crypto.randomUUID(),author:'you',text:clip.title,citations:[],clip_id:clip.id});setShareThread(null);setChatOpen(route!=='messages');}}><VerdictBadge verdict={clip.verdict}/><span>{state.cameras.find(c=>c.id===clip.camera_id)?.name} · {clip.clock}</span></Button>):<EmptyState title="No clips to share"/>}</div></Modal>
   <Modal open={Boolean(notice||search.isError)} title="Media search" onClose={()=>{setNotice(null);search.reset();}}><p role={search.isError?'alert':'status'}>{search.isError?readableError(search.error):notice}</p></Modal>

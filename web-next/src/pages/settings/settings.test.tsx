@@ -18,10 +18,11 @@ describe('Settings owner boundaries (FR-029, FR-044)',()=>{
   it('keeps every owner action disabled in sandbox even when callbacks are supplied',async()=>{
     const props=base();const saveToken=vi.fn(),checkIn=vi.fn(),createWindow=vi.fn();
     render(<SettingsPage {...props} ownerActions={{saveToken,checkIn,createWindow}}/>);
-    await userEvent.click(screen.getByRole('tab',{name:'Owner controls'}));
+    await userEvent.click(screen.getByRole('tab',{name:'Owner access'}));
     expect(screen.getByText('Owner-only on the home box')).toBeVisible();
     expect(screen.getByLabelText('Owner token')).toBeDisabled();
     expect(screen.getByRole('button',{name:'Save owner token'})).toBeDisabled();
+    cleanup();render(<RulesPage {...props} ownerActions={{saveToken,checkIn,createWindow}}/>);
     expect(screen.getByRole('button',{name:"I'm outside"})).toBeDisabled();
     expect(screen.getByRole('button',{name:'New expected window'})).toBeDisabled();
     expect(saveToken).not.toHaveBeenCalled();expect(checkIn).not.toHaveBeenCalled();expect(createWindow).not.toHaveBeenCalled();
@@ -29,18 +30,19 @@ describe('Settings owner boundaries (FR-029, FR-044)',()=>{
   it('allows edge token entry before authentication, without enabling mutations',async()=>{
     const props=base();props.state.mode='edge';const saveToken=vi.fn();
     render(<SettingsPage {...props} ownerActions={{saveToken,checkIn:vi.fn()}}/>);
-    await userEvent.click(screen.getByRole('tab',{name:'Owner controls'}));
+    await userEvent.click(screen.getByRole('tab',{name:'Owner access'}));
+    expect(screen.getByText('Not signed in on this browser')).toBeVisible();
     await userEvent.type(screen.getByLabelText('Owner token'),'offline-test-value');
     await userEvent.click(screen.getByRole('button',{name:'Save owner token'}));
     expect(saveToken).toHaveBeenCalledWith('offline-test-value');
     expect(screen.getByLabelText('Owner token')).toHaveValue('');
+    cleanup();render(<RulesPage {...props} ownerActions={{saveToken,checkIn:vi.fn()}}/>);
     expect(screen.getByRole('button',{name:"I'm outside"})).toBeDisabled();
     expect(localStorage.getItem('vigil_owner_token')).toBeNull();
   });
   it('sends timezone-aware valid windows and the selected configured camera',async()=>{
     const props=base();props.state.mode='edge';props.state.owner.enabled=true;const createWindow=vi.fn();
-    render(<SettingsPage {...props} ownerActions={{createWindow,checkIn:vi.fn()}}/>);
-    await userEvent.click(screen.getByRole('tab',{name:'Owner controls'}));
+    render(<RulesPage {...props} ownerActions={{createWindow,checkIn:vi.fn()}}/>);
     await userEvent.click(screen.getByRole('button',{name:'New expected window'}));
     fireEvent.change(screen.getByLabelText('Window starts'),{target:{value:'2026-11-04T12:00'}});
     fireEvent.change(screen.getByLabelText('Window ends'),{target:{value:'2026-11-04T13:00'}});
@@ -55,8 +57,7 @@ describe('Settings owner boundaries (FR-029, FR-044)',()=>{
   });
   it('rejects reversed and over-twelve-hour windows without a callback',async()=>{
     const props=base();props.state.mode='edge';props.state.owner.enabled=true;const createWindow=vi.fn();
-    render(<SettingsPage {...props} ownerActions={{createWindow}}/>);
-    await userEvent.click(screen.getByRole('tab',{name:'Owner controls'}));
+    render(<RulesPage {...props} ownerActions={{createWindow}}/>);
     await userEvent.click(screen.getByRole('button',{name:'New expected window'}));
     fireEvent.change(screen.getByLabelText('Window starts'),{target:{value:'2026-11-04T12:00'}});
     fireEvent.change(screen.getByLabelText('Window ends'),{target:{value:'2026-11-04T11:00'}});
@@ -68,20 +69,20 @@ describe('Settings owner boundaries (FR-029, FR-044)',()=>{
   });
   it('keeps recorded windows immutable and shows the recorded expired example',async()=>{
     const props=base();props.state.mode='edge';props.state.owner.enabled=true;const cancelWindow=vi.fn();
-    render(<SettingsPage {...props} ownerActions={{cancelWindow}}/>);
-    await userEvent.click(screen.getByRole('tab',{name:'Owner controls'}));
+    render(<RulesPage {...props} ownerActions={{cancelWindow}}/>);
+    await userEvent.click(screen.getByText('Past windows (1)'));
     const row=screen.getByRole('article',{name:'deliveries'});
     expect(row).toHaveTextContent('Recorded example');expect(row).toHaveTextContent('Expired');
-    expect(within(row).getByRole('button',{name:'Cancel window'})).toBeDisabled();expect(cancelWindow).not.toHaveBeenCalled();
+    expect(within(row).queryByRole('button',{name:'Cancel window'})).not.toBeInTheDocument();expect(cancelWindow).not.toHaveBeenCalled();
   });
   it('uses real owner callbacks, pending/error props and expiry timestamps',async()=>{
     vi.setSystemTime(new Date('2026-11-03T12:00:00Z'));
     const props=base();props.state.mode='edge';props.state.owner.enabled=true;const checkIn=vi.fn();
-    const view=render(<SettingsPage {...props} ownerActions={{checkIn,checkinExpiresAt:'2026-11-03T12:02:00Z'}}/>);
-    await userEvent.click(screen.getByRole('tab',{name:'Owner controls'}));
+    const view=render(<RulesPage {...props} ownerActions={{checkIn}}/>);
+    fireEvent.click(screen.getByRole('button',{name:"I'm outside"}));expect(checkIn).toHaveBeenCalledOnce();
+    view.rerender(<RulesPage {...props} ownerActions={{checkIn,checkinExpiresAt:'2026-11-03T12:02:00Z'}}/>);
     expect(screen.getByText('120 s remaining')).toBeVisible();
-    await userEvent.click(screen.getByRole('button',{name:"I'm outside"}));expect(checkIn).toHaveBeenCalledOnce();
-    view.rerender(<SettingsPage {...props} ownerActions={{checkIn,pending:true,error:'Owner session expired'}}/>);
+    view.rerender(<RulesPage {...props} ownerActions={{checkIn,pending:true,error:'Owner session expired'}}/>);
     expect(screen.getByRole('button',{name:"I'm outside"})).toBeDisabled();expect(screen.getByRole('alert')).toHaveTextContent('Owner session expired');
   });
   it('shows seven supplied cameras and never turns unknown telemetry into zero or online',()=>{
@@ -93,8 +94,7 @@ describe('Settings owner boundaries (FR-029, FR-044)',()=>{
   });
   it('uses the shared dialog for expected-window creation and restores its opener',async()=>{
     const props=base();props.state.mode='edge';props.state.owner.enabled=true;
-    render(<SettingsPage {...props} ownerActions={{createWindow:vi.fn()}}/>);
-    await userEvent.click(screen.getByRole('tab',{name:'Owner controls'}));
+    render(<RulesPage {...props} ownerActions={{createWindow:vi.fn()}}/>);
     const opener=screen.getByRole('button',{name:'New expected window'});
     await userEvent.click(opener);expect(screen.getByRole('dialog',{name:'New expected window'})).toBeVisible();
     await userEvent.keyboard('{Escape}');
@@ -104,36 +104,34 @@ describe('Settings owner boundaries (FR-029, FR-044)',()=>{
   it('cancels only a mutable owner window using its actual ID',async()=>{
     const props=base();props.state.mode='edge';props.state.owner.enabled=true;
     props.state.owner.windows=[{...state.owner.windows[0],id:'mutable-id',recorded:false,state:'scheduled'}];
-    const cancelWindow=vi.fn();render(<SettingsPage {...props} ownerActions={{cancelWindow}}/>);
-    await userEvent.click(screen.getByRole('tab',{name:'Owner controls'}));
+    const cancelWindow=vi.fn();render(<RulesPage {...props} ownerActions={{cancelWindow}}/>);
     await userEvent.click(screen.getByRole('button',{name:'Cancel window'}));
     expect(cancelWindow).toHaveBeenCalledWith('mutable-id');
   });
   it('preserves the recorded offset instead of relabelling window times',async()=>{
-    render(<SettingsPage {...base()}/>);
-    await userEvent.click(screen.getByRole('tab',{name:'Owner controls'}));
+    render(<RulesPage {...base()}/>);
+    await userEvent.click(screen.getByText('Past windows (1)'));
     expect(screen.getByText('Nov 2, 4:00 PM (UTC-08:00) – Nov 2, 4:45 PM (UTC-08:00)')).toBeVisible();
   });
   it.each([
-    {name:'zone only',cameras:[],zones:['side_alley'],expected:['Zones: Side alley']},
-    {name:'camera only',cameras:['doorbell'],zones:[],expected:['Cameras: Doorbell']},
-    {name:'camera and zone',cameras:['doorbell'],zones:['side_alley'],expected:['Cameras: Doorbell','Zones: Side alley']},
-    {name:'unrestricted',cameras:[],zones:[],expected:['All configured cameras']},
+    {name:'zone only',cameras:[],zones:['side_alley'],expected:[/Side alley/]},
+    {name:'camera only',cameras:['doorbell'],zones:[],expected:[/Doorbell/]},
+    {name:'camera and zone',cameras:['doorbell'],zones:['side_alley'],expected:[/Doorbell/,/Side alley/]},
+    {name:'unrestricted',cameras:[],zones:[],expected:[/All cameras/]},
   ])('shows the actual expected-window scope: $name',async({cameras,zones,expected})=>{
     const props=base();
     props.state.owner.windows=[{...props.state.owner.windows[0],label:'Scope under review',cameras,zones}];
-    render(<SettingsPage {...props}/>);
-    await userEvent.click(screen.getByRole('tab',{name:'Owner controls'}));
+    render(<RulesPage {...props}/>);
+    await userEvent.click(screen.getByText('Past windows (1)'));
     const row=screen.getByRole('article',{name:'Scope under review'});
-    for(const text of expected)expect(within(row).getByText(text)).toBeVisible();
-    if(cameras.length||zones.length)expect(within(row).queryByText('All configured cameras')).not.toBeInTheDocument();
-    if(!cameras.length)expect(within(row).queryByText(/^Cameras:/)).not.toBeInTheDocument();
-    if(!zones.length)expect(within(row).queryByText(/^Zones:/)).not.toBeInTheDocument();
+    for(const text of expected)expect(row).toHaveTextContent(text);
+    if(cameras.length||zones.length)expect(row).not.toHaveTextContent(/All cameras/);
+    if(!cameras.length)expect(row).not.toHaveTextContent(/Doorbell/);
+    if(!zones.length)expect(row).not.toHaveTextContent(/Side alley/);
   });
   it('closes window creation only after a matching server-owned window appears',async()=>{
     const props=base();props.state.mode='edge';props.state.owner.enabled=true;const createWindow=vi.fn();
-    const view=render(<SettingsPage {...props} ownerActions={{createWindow}}/>);
-    await userEvent.click(screen.getByRole('tab',{name:'Owner controls'}));
+    const view=render(<RulesPage {...props} ownerActions={{createWindow}}/>);
     await userEvent.click(screen.getByRole('button',{name:'New expected window'}));
     await userEvent.type(screen.getByLabelText('Window label'),'Delivery');
     fireEvent.change(screen.getByLabelText('Window starts'),{target:{value:'2026-11-04T12:00'}});
@@ -141,9 +139,17 @@ describe('Settings owner boundaries (FR-029, FR-044)',()=>{
     await userEvent.click(screen.getByRole('button',{name:'Create expected window'}));
     expect(screen.getByRole('dialog',{name:'New expected window'})).toBeVisible();
     const received={...createWindow.mock.calls[0][0],id:'server-window',state:'scheduled',recorded:false,created_at:'2026-11-03T12:00:00Z'};
-    view.rerender(<SettingsPage {...props} state={{...props.state,owner:{...props.state.owner,windows:[...props.state.owner.windows,received]}}} ownerActions={{createWindow}}/>);
+    view.rerender(<RulesPage {...props} state={{...props.state,owner:{...props.state.owner,windows:[...props.state.owner.windows,received]}}} ownerActions={{createWindow}}/>);
     await vi.waitFor(()=>expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
     expect(screen.getByRole('article',{name:'Delivery'})).toHaveTextContent('Scheduled');
+  });
+  it('lists cameras as rows and opens honest telemetry for the selected camera',async()=>{
+    render(<SettingsPage {...base()}/>);
+    expect(screen.getByRole('region',{name:'Front left Duo details'})).toHaveTextContent('Not measured');
+    await userEvent.click(screen.getByRole('button',{name:'Show Backyard 2 details'}));
+    const detail=screen.getByRole('region',{name:'Backyard 2 details'});
+    expect(detail).toHaveTextContent('Battery');expect(detail).toHaveTextContent('Battery cameras never hold a stream open.');
+    expect(detail).not.toHaveTextContent(/0 dBm|Online/);
   });
   it('shows a reviewed camera only from an explicit successful review flag and fails closed on blocked status',async()=>{
     const props=base();props.state.cameras[0].privacy_reviewed=true;
@@ -159,30 +165,52 @@ describe('Settings owner boundaries (FR-029, FR-044)',()=>{
 });
 
 describe('Rules and benchmark evidence (FR-012, FR-021, FR-022, FR-024)',()=>{
-  it('renders actual rules and protected objects with icon-plus-word severity',()=>{
+  it('renders rules as a list and protected objects in their own section',async()=>{
     render(<RulesPage {...base()}/>);
     expect(screen.getByText('Watched package removed')).toBeVisible();
-    expect(screen.getByText('side gate')).toBeVisible();
     expect(screen.getAllByText('Needs attention')).toHaveLength(state.rules.length);
     expect(screen.getAllByText('Everyone except household')).toHaveLength(state.rules.length);
+    expect(screen.getByText('side gate')).toBeVisible();
   });
   it('does not fake compile when no callback exists',async()=>{
     render(<RulesPage {...base()}/>);
+    await userEvent.click(screen.getByRole('button',{name:'New rule'}));
     expect(screen.getByRole('button',{name:'Review rule draft'})).toBeDisabled();
-    expect(screen.getByRole('button',{name:'Record a voice rule'})).toBeDisabled();
+    expect(screen.getByRole('button',{name:'Dictate rule'})).toBeDisabled();
     expect(screen.getByText('Rule drafting is not available in this view.')).toBeVisible();
-    expect(screen.getByText('Voice recording is not available in this view.')).toBeVisible();
   });
   it('compiles trimmed text through the supplied callback and displays server notice',async()=>{
     const compile=vi.fn();render(<RulesPage {...base()} ruleActions={{compile,notice:'Recorded result shown'}}/>);
-    await userEvent.type(screen.getByLabelText('Rule text'),'  Alert when a package is removed  ');
+    await userEvent.click(screen.getByRole('button',{name:'New rule'}));
+    await userEvent.type(screen.getByLabelText('What should Vigil watch for?'),'  Alert when a package is removed  ');
     await userEvent.click(screen.getByRole('button',{name:'Review rule draft'}));
     expect(compile).toHaveBeenCalledWith('Alert when a package is removed');
     expect(screen.getByRole('status')).toHaveTextContent('Recorded result shown');
   });
-  it('requires owner context before confirming a draft and preserves its supplied role scope',()=>{
+  it('lets an owner switch a rule off and open it for editing',async()=>{
+    const props=base();props.state.mode='edge';props.state.owner.enabled=true;const onRuleAction=vi.fn();
+    render(<RulesPage {...props} onRuleAction={onRuleAction} ruleActions={{compile:vi.fn()}}/>);
+    const rule=props.state.rules[0];
+    await userEvent.click(screen.getByRole('switch',{name:`${rule.name} on`}));
+    expect(onRuleAction).toHaveBeenCalledWith(rule.id,rule.state==='active'?'deactivate':'activate');
+    await userEvent.click(screen.getByRole('button',{name:`Edit ${rule.name}`}));
+    expect(screen.getByRole('dialog',{name:'Edit rule'})).toBeVisible();
+    expect(screen.getByLabelText('What should Vigil watch for?')).toHaveValue(rule.name);
+  });
+  it('hides rule switches from viewers outside the owner session',()=>{
+    render(<RulesPage {...base()} onRuleAction={vi.fn()}/>);
+    expect(screen.queryByRole('switch')).not.toBeInTheDocument();
+  });
+  it('fills the rule text from a one-tap suggestion',async()=>{
+    render(<RulesPage {...base()} ruleActions={{compile:vi.fn()}}/>);
+    await userEvent.click(screen.getByRole('button',{name:'New rule'}));
+    await userEvent.click(screen.getByRole('button',{name:'Tell me if a package is removed from the porch'}));
+    expect(screen.getByLabelText('What should Vigil watch for?')).toHaveValue('Tell me if a package is removed from the porch');
+  });
+  it('requires owner context before confirming a draft and preserves its supplied role scope',async()=>{
     const props=base();const confirm=vi.fn();const draft={...state.rules[0],id:'draft-real-id',state:'draft'};
     const view=render(<RulesPage {...props} ruleActions={{draft,confirm}}/>);
+    await userEvent.click(screen.getByRole('button',{name:'New rule'}));
     expect(screen.getByRole('button',{name:'Confirm rule'})).toBeDisabled();
     props.state.mode='edge';props.state.owner.enabled=true;
     view.rerender(<RulesPage {...props} ruleActions={{draft,confirm}}/>);
@@ -191,14 +219,21 @@ describe('Rules and benchmark evidence (FR-012, FR-021, FR-022, FR-024)',()=>{
   it('uses consented phone fixture callbacks without requesting camera audio',async()=>{
     const transcribeFixture=vi.fn(),recordVoice=vi.fn();
     render(<RulesPage {...base()} ruleActions={{transcribeFixture,recordVoice,voiceFixtures:[{id:'consented',label:'Package rule sample',url:null}]}}/>);
+    await userEvent.click(screen.getByRole('button',{name:'New rule'}));
     await userEvent.click(screen.getByRole('button',{name:'Package rule sample'}));expect(transcribeFixture).toHaveBeenCalledWith('consented');
-    await userEvent.click(screen.getByRole('button',{name:'Record a voice rule'}));expect(recordVoice).toHaveBeenCalledOnce();
-    expect(screen.getByText(/Phone microphone only/)).toBeVisible();
+    await userEvent.click(screen.getByRole('button',{name:'Dictate rule'}));expect(recordVoice).toHaveBeenCalledOnce();
   });
   it('keeps benchmark empty when measured is false even if synthetic telemetry is present',()=>{
     const props=base();props.state.benchmark.metrics=[{label:'Invented test metric',value:99}];
     render(<BenchmarkPage {...props}/>);
     expect(screen.getByText('No field benchmark yet')).toBeVisible();expect(screen.queryByText('99')).not.toBeInTheDocument();
+  });
+  it('explains planned benchmark measurements without inventing values',()=>{
+    render(<BenchmarkPage {...base()}/>);
+    const list=screen.getByRole('list',{name:'Planned measurements'});
+    for(const label of ['Link precision','Alert reduction','Latency','Cost per visit'])expect(list).toHaveTextContent(label);
+    expect(within(list).getAllByText('Not measured yet')).toHaveLength(4);
+    expect(list).not.toHaveTextContent(/\d+ ?%/);
   });
   it('renders only supplied measured benchmark values and units',()=>{
     const props=base();props.state.benchmark={measured:true,note:'Measured offline fixture for rendering only',metrics:[{id:'precision',label:'Link precision',value:91,unit:'%'}]};

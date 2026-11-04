@@ -16,40 +16,42 @@ cameras:
   height: 720
   offset_s: 0
   clock_offset_s: null
-  privacy_reviewed: false
+  privacy_reviewed: true
+  privacy_polygons_sha256: 45996fae9631abcaef87631684a8d6017d3f84580c90a029119140ce4a84fb66
+  privacy_still_sha256: c49c0e131c73a48f77d679f0a15703846fe691537dc32413a1a9c1374500109d
   zones:
     left_street:
       kind: perimeter
       polygon:
-      - - 0
-        - 260
-      - - 1920
-        - 260
-      - - 1920
+      - - 160
         - 380
-      - - 0
+      - - 1760
         - 380
+      - - 1760
+        - 420
+      - - 160
+        - 420
     left_garden:
       kind: interior_yard
       polygon:
       - - 0
-        - 380
-      - - 1920
-        - 380
-      - - 1920
+        - 420
+      - - 1248
+        - 420
+      - - 1248
         - 720
       - - 0
         - 720
     left_driveway:
       kind: interior_yard
       polygon:
-      - - 1248.0
-        - 400
+      - - 1248
+        - 420
       - - 1920
-        - 400
+        - 420
       - - 1920
         - 720
-      - - 1248.0
+      - - 1248
         - 720
   zone_rings:
     left_street: outer
@@ -72,8 +74,36 @@ cameras:
       - 150
     - - 1920
       - 260
-    - - 0
+    - - 1760
       - 260
+    - - 1760
+      - 302
+    - - 1700
+      - 302
+    - - 1600
+      - 278
+    - - 1500
+      - 265
+    - - 1280
+      - 265
+    - - 1200
+      - 248
+    - - 1000
+      - 232
+    - - 900
+      - 228
+    - - 850
+      - 345
+    - - 620
+      - 345
+    - - 610
+      - 250
+    - - 400
+      - 265
+    - - 160
+      - 302
+    - - 0
+      - 302
     neighbour_left: &id003
     - - 0
       - 260
@@ -93,14 +123,58 @@ cameras:
     - - 1760
       - 720
     curb_numbers: &id005
-    - - 0
-      - 350
-    - - 1920
-      - 350
-    - - 1920
-      - 380
-    - - 0
-      - 380
+    - - 160
+      - 302
+    - - 400
+      - 265
+    - - 610
+      - 250
+    - - 620
+      - 345
+    - - 850
+      - 345
+    - - 900
+      - 228
+    - - 1000
+      - 232
+    - - 1200
+      - 248
+    - - 1280
+      - 265
+    - - 1500
+      - 265
+    - - 1600
+      - 278
+    - - 1700
+      - 302
+    - - 1760
+      - 302
+    - - 1760
+      - 277
+    - - 1700
+      - 277
+    - - 1600
+      - 253
+    - - 1500
+      - 240
+    - - 1280
+      - 240
+    - - 1200
+      - 223
+    - - 1000
+      - 207
+    - - 900
+      - 203
+    - - 850
+      - 320
+    - - 620
+      - 320
+    - - 610
+      - 225
+    - - 400
+      - 240
+    - - 160
+      - 277
     timestamp_watermark: &id006
     - - 0
       - 0
@@ -131,40 +205,42 @@ cameras:
   height: 720
   offset_s: 0
   clock_offset_s: null
-  privacy_reviewed: false
+  privacy_reviewed: true
+  privacy_polygons_sha256: f88b00a164ddb60975eb2329ff84a39732593f1e3aa7155800c6e37999a63576
+  privacy_still_sha256: da1d1748f624a054670d35e3d7239f28448f6c8bbbe7c2cdcdcffd271c2a67ab
   zones:
     right_street:
       kind: perimeter
       polygon:
-      - - 0
-        - 260
-      - - 1920
-        - 260
-      - - 1920
+      - - 160
         - 380
-      - - 0
+      - - 1760
         - 380
+      - - 1760
+        - 420
+      - - 160
+        - 420
     right_garden:
       kind: interior_yard
       polygon:
       - - 0
-        - 380
-      - - 1920
-        - 380
-      - - 1920
+        - 420
+      - - 1248
+        - 420
+      - - 1248
         - 720
       - - 0
         - 720
     right_driveway:
       kind: interior_yard
       polygon:
-      - - 1248.0
-        - 400
+      - - 1248
+        - 420
       - - 1920
-        - 400
+        - 420
       - - 1920
         - 720
-      - - 1248.0
+      - - 1248
         - 720
   zone_rings:
     right_street: outer
@@ -187,8 +263,32 @@ cameras:
       - 150
     - - 1920
       - 260
-    - - 0
+    - - 1640
       - 260
+    - - 1640
+      - 350
+    - - 1530
+      - 328
+    - - 1440
+      - 324
+    - - 1340
+      - 298
+    - - 1200
+      - 294
+    - - 1000
+      - 262
+    - - 900
+      - 254
+    - - 700
+      - 252
+    - - 500
+      - 252
+    - - 430
+      - 345
+    - - 160
+      - 345
+    - - 0
+      - 345
     neighbour_left: &id009
     - - 0
       - 260
@@ -199,7 +299,7 @@ cameras:
     - - 0
       - 720
     neighbour_right: &id010
-    - - 1760
+    - - 1640
       - 260
     - - 1920
       - 260
@@ -207,15 +307,55 @@ cameras:
       - 720
     - - 1760
       - 720
+    - - 1760
+      - 480
+    - - 1640
+      - 480
     curb_numbers: &id011
-    - - 0
+    - - 160
+      - 345
+    - - 430
+      - 345
+    - - 500
+      - 252
+    - - 700
+      - 252
+    - - 900
+      - 254
+    - - 1000
+      - 262
+    - - 1200
+      - 294
+    - - 1340
+      - 298
+    - - 1440
+      - 324
+    - - 1530
+      - 328
+    - - 1640
       - 350
-    - - 1920
-      - 350
-    - - 1920
-      - 380
-    - - 0
-      - 380
+    - - 1640
+      - 325
+    - - 1530
+      - 303
+    - - 1440
+      - 299
+    - - 1340
+      - 273
+    - - 1200
+      - 269
+    - - 1000
+      - 237
+    - - 900
+      - 229
+    - - 700
+      - 227
+    - - 500
+      - 227
+    - - 430
+      - 320
+    - - 160
+      - 320
     timestamp_watermark: &id012
     - - 0
       - 0
@@ -243,33 +383,35 @@ cameras:
     channel: null
     stream: sub
   width: 1280
-  height: 720
+  height: 960
   offset_s: 0
   clock_offset_s: null
-  privacy_reviewed: false
+  privacy_reviewed: true
+  privacy_polygons_sha256: f8a2fd630ae18a6e0402bba8d969e6efd35514ef2ea7815741472d087a275721
+  privacy_still_sha256: b87f5cd88a3fe83ebb7d982e0e8d5b6a5e60499a78dfba951639193c09f7190a
   zones:
     front_door_egress:
       kind: egress
       polygon:
-      - - 500
-        - 250
-      - - 780
-        - 250
-      - - 780
-        - 620
-      - - 500
-        - 620
+      - - 420
+        - 760
+      - - 700
+        - 760
+      - - 700
+        - 960
+      - - 420
+        - 960
     doorbell_entry:
       kind: interior_yard
       polygon:
-      - - 0
-        - 300
+      - - 120
+        - 600
       - - 1280
-        - 300
+        - 600
       - - 1280
-        - 720
-      - - 0
-        - 720
+        - 960
+      - - 120
+        - 960
   zone_rings:
     front_door_egress: inner
     doorbell_entry: inner
@@ -280,25 +422,35 @@ cameras:
     - - 1280
       - 0
     - - 1280
-      - 140
+      - 187
     - - 0
-      - 140
+      - 187
     neighbour_boundary: &id014
     - - 0
       - 0
     - - 120
       - 0
     - - 120
-      - 720
+      - 960
     - - 0
-      - 720
+      - 960
+    opposite_houses_street: &id015
+    - - 120
+      - 188
+    - - 670
+      - 188
+    - - 670
+      - 600
+    - - 120
+      - 600
   privacy:
   - *id013
   - *id014
+  - *id015
   hub_present: false
 - id: porch
   name: Porch
-  model: null
+  model: Lumus
   power_profile: plugin_wifi
   frame_layout: planar
   source:
@@ -309,7 +461,9 @@ cameras:
   height: 720
   offset_s: 0
   clock_offset_s: null
-  privacy_reviewed: false
+  privacy_reviewed: true
+  privacy_polygons_sha256: db8f4dce905e154fe7df1b37efa002b81adf1bf63b1b0d0316a7c4f4be7db4ec
+  privacy_still_sha256: 6777cad74a006e2e4c8ab0945548f856a3eddff5afef93170aae1f04a470f968
   zones:
     porch:
       kind: interior_yard
@@ -325,7 +479,7 @@ cameras:
   zone_rings:
     porch: inner
   privacy_regions:
-    timestamp_watermark: &id015
+    timestamp_watermark: &id016
     - - 0
       - 0
     - - 1280
@@ -334,7 +488,7 @@ cameras:
       - 140
     - - 0
       - 140
-    neighbour_boundary: &id016
+    neighbour_boundary: &id017
     - - 0
       - 0
     - - 120
@@ -344,8 +498,8 @@ cameras:
     - - 0
       - 720
   privacy:
-  - *id015
   - *id016
+  - *id017
   hub_present: false
 - id: side_left
   name: Left passage
@@ -394,7 +548,7 @@ cameras:
     - - 870
       - 655
   privacy_regions:
-    timestamp_watermark: &id017
+    timestamp_watermark: &id018
     - - 0
       - 0
     - - 1280
@@ -403,7 +557,7 @@ cameras:
       - 140
     - - 0
       - 140
-    neighbour_boundary: &id018
+    neighbour_boundary: &id019
     - - 0
       - 0
     - - 120
@@ -413,8 +567,8 @@ cameras:
     - - 0
       - 720
   privacy:
-  - *id017
   - *id018
+  - *id019
   hub_present: false
 - id: backyard_1
   name: Backyard 1
@@ -445,7 +599,7 @@ cameras:
   zone_rings:
     backyard_1_lawn: middle
   privacy_regions:
-    timestamp_watermark: &id019
+    timestamp_watermark: &id020
     - - 0
       - 0
     - - 1280
@@ -454,7 +608,7 @@ cameras:
       - 140
     - - 0
       - 140
-    neighbour_boundary: &id020
+    neighbour_boundary: &id021
     - - 0
       - 0
     - - 120
@@ -464,8 +618,8 @@ cameras:
     - - 0
       - 720
   privacy:
-  - *id019
   - *id020
+  - *id021
   hub_present: false
 - id: backyard_2
   name: Backyard 2
@@ -496,7 +650,7 @@ cameras:
   zone_rings:
     backyard_2_lawn: middle
   privacy_regions:
-    timestamp_watermark: &id021
+    timestamp_watermark: &id022
     - - 0
       - 0
     - - 1280
@@ -505,7 +659,7 @@ cameras:
       - 140
     - - 0
       - 140
-    neighbour_boundary: &id022
+    neighbour_boundary: &id023
     - - 0
       - 0
     - - 120
@@ -515,8 +669,8 @@ cameras:
     - - 0
       - 720
   privacy:
-  - *id021
   - *id022
+  - *id023
   hub_present: false
 blind_regions: []
 topology:
@@ -562,3 +716,13 @@ topology:
 - from: backyard_2
   to: side_left
   transit_measured: false
+- from: front_left_duo
+  to: front_right_duo
+  min_s: -60
+  max_s: 10
+  transit_measured: true
+- from: front_right_duo
+  to: front_left_duo
+  min_s: -60
+  max_s: 10
+  transit_measured: true

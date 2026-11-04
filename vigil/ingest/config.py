@@ -409,8 +409,13 @@ def _check(cfg: Config) -> None:
                     ref=edge.exit,
                     loc=(*base, "exit"),
                 )
+        # A negative min_s says two camera views overlap (both see the subject at once); it
+        # never applies to blind edges or blind regions, and max_s stays >= 0.
+        overlap_ok = (
+            not edge.blind and edge.from_ in cam_ids and edge.to in cam_ids
+        )  # fmt: skip
         for val, field in ((edge.min_s, "min_s"), (edge.max_s, "max_s")):
-            if val is not None and val < 0:
+            if val is not None and val < 0 and not (field == "min_s" and overlap_ok):
                 raise TopologyError(
                     f"topology edge {i}: {field} must be >= 0", ref=field, loc=(*base, field)
                 )

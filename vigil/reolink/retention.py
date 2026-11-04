@@ -56,6 +56,22 @@ class PinIndex:
             )
 
 
+FINISHED_MANIFESTS = ("capture.json", "session.json", "windows.json")
+"""A folder holding any of these is finished evidence (an event capture or an ingested
+session), never temporary processing output, so retention keeps all of it."""
+
+
+def _in_finished_folder(path: Path, root: Path, cache: dict[Path, bool]) -> bool:
+    for folder in path.parents:
+        if not folder.is_relative_to(root):
+            break
+        if folder not in cache:
+            cache[folder] = any((folder / name).is_file() for name in FINISHED_MANIFESTS)
+        if cache[folder]:
+            return True
+    return False
+
+
 def cleanup_processing(
     root: Path,
     retention_s: float,
@@ -70,6 +86,7 @@ def cleanup_processing(
     cutoff = (time.time() if now is None else now) - retention_s
     allowed = {".mp4", ".json", ".jpg", ".png", ".webp", ".txt", ".npz"}
     deleted = []
+    finished: dict[Path, bool] = {}
     index = PinIndex(root)
     with index.transaction() as conn:
         for path in sorted(root.rglob("*"), key=lambda p: p.name):
@@ -80,6 +97,7 @@ def cleanup_processing(
                 path.suffix.lower() not in allowed
                 or resolved in protected
                 or path.stat().st_mtime >= cutoff
+                or _in_finished_folder(resolved, root, finished)
             ):
                 continue
             if conn.execute(

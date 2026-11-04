@@ -1,5 +1,7 @@
 """FR-017/018: normalized UI reads actual bundle evidence; chat is cached and cited."""
 
+import json
+
 from fastapi.testclient import TestClient
 
 from vigil.api.app import create_app
@@ -22,8 +24,23 @@ def test_ui_state_seven_cameras_honest_counts_and_role_contrast():
         assert state["contract_version"] == "vigil-ui/1"
         assert state["evidence"]["kind"] == "fixture"
         assert len(state["cameras"]) == 7
-        assert all(c["status"] == "privacy_blocked" for c in state["cameras"])
-        assert all(not c["privacy_reviewed"] for c in state["cameras"])
+        # Owner-reviewed stills (Nov 3): doorbell and porch pass; battery cameras stay blocked.
+        # The front Duos are reviewed too, but a later zone edit voids their digest until the
+        # owner re-reviews, so they may be either; reviewed always means "not_connected".
+        reviewed = {c["id"] for c in state["cameras"] if c["privacy_reviewed"]}
+        assert (
+            {"doorbell", "porch"}
+            <= reviewed
+            <= {
+                "front_left_duo",
+                "front_right_duo",
+                "doorbell",
+                "porch",
+            }
+        )
+        assert all(
+            (c["status"] == "not_connected") == c["privacy_reviewed"] for c in state["cameras"]
+        )
         assert all(
             c["power_profile"] == "battery_wifi" and c["source_label"] == "Imported clips"
             for c in state["cameras"]
@@ -196,3 +213,98 @@ def test_duo_protect_coordinates_are_validated_against_full_frame():
             api.post("/api/protect", json={**scaled, "point": {"x": 3841, "y": 1200}}).status_code
             == 422
         )
+
+
+def _private_massing(data_dir):
+    from vigil.spatial.massing import build_massing
+
+    doc = build_massing(
+        {
+            "buildings": [{"id": "main", "min": [-5, 0], "max": [5, 12], "h": 2.9}],
+            "cameras": {"doorbell": {"position": [0.6, 1.3, -0.05], "look_at": [0, 0.8, -6]}},
+        }
+    )
+    (data_dir / "spatial").mkdir(parents=True)
+    (data_dir / "spatial" / "massing.json").write_text(json.dumps(doc), encoding="utf-8")
+
+
+def _client_at(data_dir, ip):
+    app = create_app(
+        Settings(
+            _env_file=None,
+            mode="sandbox",
+            MODEL_API_KEY="invalid",
+            meta_cache_only=True,
+            data_dir=data_dir,
+        )
+    )
+    return TestClient(app, client=(ip, 50000))
+
+
+def test_private_house_massing_is_served_to_loopback_only(tmp_path):
+    _private_massing(tmp_path)
+    with _client_at(tmp_path, "127.0.0.1") as api:
+        default = api.get("/api/ui/twin").json()
+        assert default["generic_massing"]
+        assert default["private_available"]
+        house = api.get("/api/ui/twin", params={"model": "house"}).json()
+        assert house["private_massing"]
+        assert not house["generic_massing"]
+        assert house["glb_url"] is None
+        assert house["blind_regions"] == []
+        assert [c["id"] for c in house["cameras"]] == ["doorbell"]
+        assert house["site_plan"]["boxes"][0]["id"] == "main"
+    with _client_at(tmp_path, "203.0.113.7") as api:
+        public = api.get("/api/ui/twin", params={"model": "house"}).json()
+        assert public["generic_massing"]
+        assert not public.get("private_available")
+        assert "detail" not in public
+
+
+def test_private_house_massing_absent_falls_back_to_generic(tmp_path):
+    with _client_at(tmp_path, "127.0.0.1") as api:
+        twin = api.get("/api/ui/twin", params={"model": "house"}).json()
+        assert twin["generic_massing"]
+        assert not twin["private_available"]
+
+
+def test_benchmark_lists_five_models_from_the_ledger_and_labels_economics(tmp_path):
+    """Benchmark tab: model rows come from the call ledger; 11.9 economics stay hypotheses."""
+    import sqlite3
+
+    ledger = tmp_path / "ledger.db"
+    conn = sqlite3.connect(ledger)
+    conn.execute(
+        "create table model_calls(id text primary key, model text, purpose text, visit_id text,"
+        " req_hash text, latency_ms int, in_tokens int, out_tokens int, units real,"
+        " cost_usd real, cached int, ok int, error text, backend text, gpu_s real,"
+        " feature text, funding text, created_at text)"
+    )
+    rows = [("a", "sam-3.1", 6000, 0.02, 0), ("b", "sam-3.1", 0, 0.0, 1),
+            ("c", "muse-wonder-1.0", 9000, 0.05, 0)]  # fmt: skip
+    rows = [(i, m, lat, c, k) for i, m, lat, c, k in rows]
+    conn.executemany(
+        "insert into model_calls(id, model, purpose, req_hash, latency_ms, cost_usd, cached, ok,"
+        " backend, feature, funding, created_at)"
+        " values (?, ?, 'test', 'h', ?, ?, ?, 1, 'api', 'perception_demo', 'credit',"
+        " '2026-11-04T12:00:00+00:00')",
+        rows,
+    )
+    conn.commit()
+    conn.close()
+    app = create_app(Settings(_env_file=None, mode="dev", ledger_path=ledger))
+    bench = TestClient(app).get("/api/ui/state").json()["benchmark"]
+    models = {m["model"]: m for m in bench["models"]}
+    assert list(models) == [
+        "sam-3.1", "muse-spark-1.3", "muse-wonder-1.0", "muse-voice-transcribe-1.0",
+        "muse-glimmer-30b-q4",
+    ]  # fmt: skip
+    assert models["sam-3.1"]["live_calls"] == 1
+    assert models["sam-3.1"]["cached_calls"] == 1
+    assert models["sam-3.1"]["cost_usd"] == 0.02
+    assert models["sam-3.1"]["median_latency_ms"] == 6000
+    assert models["muse-spark-1.3"]["live_calls"] == 0
+    econ = bench["economics"]
+    assert econ["status"] == "hypothesis"
+    assert any("1.80" in row["monthly"] for row in econ["rows"])
+    assert bench["measured"] is False  # a ledger is usage, not a field benchmark

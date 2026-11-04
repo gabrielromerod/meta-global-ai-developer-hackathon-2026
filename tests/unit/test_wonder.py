@@ -352,3 +352,19 @@ def test_role_phrases_fall_back_when_the_config_is_absent(tmp_path):
 
     assert load_role_phrases(tmp_path / "missing.json") == DEFAULT_ROLE_PHRASES
     assert {p.phrase: p.role for p in DEFAULT_ROLE_PHRASES} == ROLE_PHRASES
+
+
+def test_story_request_keeps_reasoning_low_and_leaves_room_for_the_story(ledger):
+    # Same live failure as Spark appearance (Nov 3): default effort spent the output budget.
+    body = build_story_request(ledger)
+    assert body["reasoning"] == {"effort": "low"}
+    assert body["max_output_tokens"] >= 3000
+
+
+def test_ledger_payload_gives_wonder_readable_place_names(ledger):
+    # Live run, Nov 4: Wonder copied "left_garden" from the ledger into the story.
+    from vigil.meta.wonder import ledger_payload
+
+    touch = next(e for e in ledger_payload(ledger)["events"] if e["id"] == "e17")
+    assert touch["target"] == "po_side_gate"
+    assert touch["target_name"] == "side gate"

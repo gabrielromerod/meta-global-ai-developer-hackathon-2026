@@ -3,7 +3,7 @@ import * as Dialog from '@radix-ui/react-dialog';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import * as Tabs from '@radix-ui/react-tabs';
 import * as Tooltip from '@radix-ui/react-tooltip';
-import {Camera, ChevronDown, FileVideo, House, Link2, MessageCircle, Plus, Send, Video, X} from 'lucide-react';
+import {ArrowUp, Camera, FileVideo, House, Link2, MessageCircle, Plus, Sparkles, Video, X} from 'lucide-react';
 import {motion} from 'framer-motion';
 import {useEntranceMotion} from '../motion';
 import type {ChatMessage, ChatProps, Thread} from '../contracts';
@@ -14,6 +14,7 @@ import './styles.css';
 export type ChatSurfaceProps = ChatProps;
 
 const narrowQuery='(max-width: 640px)';
+const SUGGESTIONS=['What happened at the side gate tonight?','Who came to the porch today?','Did anything need my attention?','Show me deliveries this week'];
 function visualNumber(name:string) {
   return parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name))||0;
 }
@@ -41,14 +42,16 @@ function ThreadIcon({thread}: {thread:Thread}) {
 }
 
 function Message({message,onOpenVisit,onOpenClip,onOpenCitation}: {message:ChatMessage;onOpenVisit?:ChatProps['onOpenVisit'];onOpenClip?:ChatSurfaceProps['onOpenClip'];onOpenCitation?:ChatProps['onOpenCitation']}) {
+  const author=message.author==='you'?'You':message.author==='vigil'?'Vigil':'Household';
   return <li className={`v-chat-message v-chat-message--${message.author}`}>
-    <span className="v-chat-message-author">{message.author==='you'?'You':message.author==='vigil'?'Vigil':'Household'}</span>
-    <div className="v-chat-bubble">
-      <p>{message.text}</p>
+    {message.author!=='you'&&<span className="v-chat-message-avatar" aria-hidden="true">{message.author==='vigil'?<House/>:<MessageCircle/>}</span>}
+    <div className="v-chat-message-body">
+      <span className={message.author==='you'?'v-chat-visually-hidden':'v-chat-message-author'}>{author}</span>
+      <div className="v-chat-bubble"><p>{message.text}</p></div>
       {message.citations.length>0 && <div className="v-chat-citations" aria-label="Evidence citations">
         {message.citations.map(citation=><button type="button" className="v-chat-citation" key={`${citation.visit_id}:${citation.event_id}`} aria-label={`Open evidence ${citation.event_id}`} disabled={!onOpenVisit&&!onOpenCitation} onClick={()=>onOpenCitation?onOpenCitation(citation):onOpenVisit?.(citation.visit_id)}><Link2 aria-hidden="true"/>{citation.event_id}</button>)}
       </div>}
-      {message.clip_id && <button type="button" className="v-chat-shared-clip" aria-label={`Shared clip ${message.clip_id}`} disabled={!onOpenClip} onClick={()=>onOpenClip?.(message.clip_id!)}><FileVideo aria-hidden="true"/><span>Shared clip<span className="v-chat-clip-id">{message.clip_id}</span></span>{!onOpenClip&&<span>Playback unavailable</span>}</button>}
+      {message.clip_id && <button type="button" className="v-chat-shared-clip" aria-label={`Shared clip ${message.clip_id}`} disabled={!onOpenClip} onClick={()=>onOpenClip?.(message.clip_id!)}><span className="v-chat-shared-clip-icon" aria-hidden="true"><FileVideo/></span><span>Shared clip<span className="v-chat-clip-id">{message.clip_id}</span></span>{!onOpenClip&&<span className="v-chat-clip-id">Playback unavailable</span>}</button>}
     </div>
   </li>;
 }
@@ -103,20 +106,35 @@ function ThreadView({thread,props,draft,onDraftChange}: {thread:Thread;props:Cha
   function onKeyDown(event:KeyboardEvent<HTMLTextAreaElement>) {
     if(event.key==='Enter'&&!event.shiftKey&&!event.nativeEvent.isComposing){event.preventDefault();void submit();}
   }
+  const assistant=thread.kind==='assistant';
+  const hints=[!canSend?(assistant?'Ask your home is unavailable for this session.':'Local household messaging is unavailable for this session.'):null,!snapshot&&!record?'Snapshots and recording are unavailable for this session.':null].filter(Boolean) as string[];
   return <section className="v-chat-thread" aria-label={thread.title}>
-    <header className="v-chat-thread-header"><span className="v-chat-avatar"><ThreadIcon thread={thread}/></span><div><h2>{thread.title}</h2><p>{thread.kind==='local_mock'?'Local to this browser':'Cached visit evidence'}</p></div></header>
+    <header className="v-chat-thread-header"><span className="v-chat-avatar"><ThreadIcon thread={thread}/></span><div><h2>{thread.title}</h2><p>{thread.kind==='local_mock'?'Local to this browser':'Answers cite cached visit evidence'}</p></div></header>
     <div ref={historyRef} className="v-chat-history" role="log" aria-label={`${thread.title} messages`} aria-live="polite" tabIndex={0}>
-      {thread.messages.length===0&&!sending?<div className="v-chat-empty"><span className="v-chat-empty-icon"><ThreadIcon thread={thread}/></span><h3>{thread.kind==='assistant'?'Ask about a visit':'No messages yet'}</h3><p>{thread.kind==='assistant'?'Search what the cameras recorded. Answers link to the visit evidence.':'Share a note or a clip with this local household thread.'}</p>{thread.kind==='local_mock'&&<p>Messages stay in this browser. They are not delivered to anyone.</p>}</div>:thread.messages.length>0&&<ol className="v-chat-message-list">{thread.messages.map(message=><Message key={message.id} message={message} onOpenCitation={props.onOpenCitation} onOpenVisit={props.onOpenVisit} onOpenClip={props.onOpenClip}/>)}</ol>}
-      {sending&&<p className="v-chat-pending" role="status">{thread.kind==='assistant'?'Searching the visit ledger\u2026':'Saving your local message\u2026'}</p>}
+      <div className="v-chat-column">
+      {thread.messages.length===0&&!sending?<div className="v-chat-empty">
+        <span className="v-chat-empty-icon"><ThreadIcon thread={thread}/></span>
+        <h3>{assistant?'Ask about your home':'No messages yet'}</h3>
+        <p>{assistant?'Search what the cameras recorded. Every answer links to the visit evidence.':'Share a note or a clip with this local household thread.'}</p>
+        {assistant&&<div className="v-chat-suggestions" aria-label="Suggested questions">{SUGGESTIONS.map(text=><button type="button" key={text} className="v-chat-suggestion" disabled={!canSend||sending} onClick={()=>onDraftChange(text)}><Sparkles aria-hidden="true"/>{text}</button>)}</div>}
+        {thread.kind==='local_mock'&&<p className="v-chat-fine">Messages stay in this browser. They are not delivered to anyone.</p>}
+      </div>:thread.messages.length>0&&<ol className="v-chat-message-list">{thread.messages.map(message=><Message key={message.id} message={message} onOpenCitation={props.onOpenCitation} onOpenVisit={props.onOpenVisit} onOpenClip={props.onOpenClip}/>)}</ol>}
+      {sending&&<p className="v-chat-pending" role="status"><span className="v-chat-dots" aria-hidden="true"><i/><i/><i/></span>{assistant?'Searching the visit ledger\u2026':'Saving your local message\u2026'}</p>}
+      </div>
     </div>
     <form className="v-chat-composer" onSubmit={event=>void submit(event)}>
+      <div className="v-chat-column">
       {(props.error||localError)&&<p className="v-chat-error" role="alert">{props.error||localError}</p>}
-      {!canSend&&<p className="v-chat-capability">{thread.kind==='assistant'?'Ask your home is unavailable for this session.':'Local household messaging is unavailable for this session.'}</p>}
       <label className="v-chat-visually-hidden" htmlFor={fieldId}>Message</label>
-      <div className="v-chat-input-row"><textarea id={fieldId} value={draft} onChange={event=>onDraftChange(event.target.value)} onKeyDown={onKeyDown} rows={2} disabled={!canSend||sending} maxLength={4000} placeholder={thread.kind==='assistant'?'Ask about your home':'Write a local message'} aria-describedby={`${fieldId}-help`}/><button type="submit" className="v-chat-send" aria-label="Send message" disabled={!canSend||sending||!draft.trim()}><Send aria-hidden="true"/></button></div>
-      <div className="v-chat-composer-tools"><div className="v-chat-attachments"><DropdownMenu.Root><DropdownMenu.Trigger asChild><button type="button" className="v-chat-icon-button" aria-label="Share options"><Plus aria-hidden="true"/><ChevronDown aria-hidden="true"/></button></DropdownMenu.Trigger><DropdownMenu.Portal><DropdownMenu.Content className="v-chat-menu" side="top" align="start" sideOffset={visualNumber('--v-space-1')}><DropdownMenu.Label className="v-chat-menu-label">Share evidence</DropdownMenu.Label><DropdownMenu.Item className="v-chat-menu-item" disabled={!canSend||!props.onShareClip} onSelect={()=>{if(canSend)props.onShareClip?.(thread.id);}}><FileVideo aria-hidden="true"/><span>Share a clip{!canSend?<small>Messaging unavailable for this session</small>:!props.onShareClip&&<small>Clip sharing unavailable</small>}</span></DropdownMenu.Item><DropdownMenu.Item className="v-chat-menu-item" disabled={!snapshot} onSelect={()=>props.onSnapshot?.()}><Camera aria-hidden="true"/><span>Take snapshot{!snapshot&&<small>Unavailable for this session</small>}</span></DropdownMenu.Item><DropdownMenu.Item className="v-chat-menu-item" disabled={!record} onSelect={()=>props.onRecord?.()}><Video aria-hidden="true"/><span>Record clip{!record&&<small>Unavailable for this session</small>}</span></DropdownMenu.Item></DropdownMenu.Content></DropdownMenu.Portal></DropdownMenu.Root>
-      <HintButton label="Take snapshot" explanation={snapshot?'Capture the selected camera frame':'Snapshots are unavailable for this session'} disabled={!snapshot} onClick={props.onSnapshot}><Camera aria-hidden="true"/></HintButton><HintButton label="Record clip" explanation={record?'Record the selected camera clip':'Recording is unavailable for this session'} disabled={!record} onClick={props.onRecord}><Video aria-hidden="true"/></HintButton></div><p id={`${fieldId}-help`}>{'Enter to send \u00b7 Shift+Enter for a new line'}</p></div>
-      {!snapshot&&!record&&<p className="v-chat-capability">Snapshots and recording are unavailable for this session.</p>}
+      <div className="v-chat-pill">
+        <DropdownMenu.Root><DropdownMenu.Trigger asChild><button type="button" className="v-chat-icon-button" aria-label="Share options"><Plus aria-hidden="true"/></button></DropdownMenu.Trigger><DropdownMenu.Portal><DropdownMenu.Content className="v-chat-menu" side="top" align="start" sideOffset={visualNumber('--v-space-1')}><DropdownMenu.Label className="v-chat-menu-label">Share evidence</DropdownMenu.Label><DropdownMenu.Item className="v-chat-menu-item" disabled={!canSend||!props.onShareClip} onSelect={()=>{if(canSend)props.onShareClip?.(thread.id);}}><FileVideo aria-hidden="true"/><span>Share a clip{!canSend?<small>Messaging unavailable for this session</small>:!props.onShareClip&&<small>Clip sharing unavailable</small>}</span></DropdownMenu.Item><DropdownMenu.Item className="v-chat-menu-item" disabled={!snapshot} onSelect={()=>props.onSnapshot?.()}><Camera aria-hidden="true"/><span>Take snapshot{!snapshot&&<small>Unavailable for this session</small>}</span></DropdownMenu.Item><DropdownMenu.Item className="v-chat-menu-item" disabled={!record} onSelect={()=>props.onRecord?.()}><Video aria-hidden="true"/><span>Record clip{!record&&<small>Unavailable for this session</small>}</span></DropdownMenu.Item></DropdownMenu.Content></DropdownMenu.Portal></DropdownMenu.Root>
+        <textarea id={fieldId} value={draft} onChange={event=>onDraftChange(event.target.value)} onKeyDown={onKeyDown} rows={1} disabled={!canSend||sending} maxLength={4000} placeholder={assistant?'Ask about your home':'Write a local message'} aria-describedby={`${fieldId}-help`}/>
+        <HintButton label="Take snapshot" explanation={snapshot?'Capture the selected camera frame':'Snapshots are unavailable for this session'} disabled={!snapshot} onClick={props.onSnapshot}><Camera aria-hidden="true"/></HintButton>
+        <HintButton label="Record clip" explanation={record?'Record the selected camera clip':'Recording is unavailable for this session'} disabled={!record} onClick={props.onRecord}><Video aria-hidden="true"/></HintButton>
+        <button type="submit" className="v-chat-send" aria-label="Send message" disabled={!canSend||sending||!draft.trim()}><ArrowUp aria-hidden="true"/></button>
+      </div>
+      <div className="v-chat-hints"><p id={`${fieldId}-help`}>{'Enter to send \u00b7 Shift+Enter for a new line'}</p>{hints.map(hint=><p key={hint} className="v-chat-capability">{hint}</p>)}</div>
+      </div>
     </form>
   </section>;
 }

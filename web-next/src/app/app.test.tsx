@@ -23,18 +23,16 @@ describe('production API integration',()=>{
     vi.stubGlobal('fetch',vi.fn(async(url:string)=>({ok:true,json:async()=>url.endsWith('/state')?fixture:url.endsWith('/chat')?chat:{cameras:[]}})));
     mount();expect(await screen.findByText('House model loaded')).toBeInTheDocument();
     await userEvent.click(screen.getByRole('button',{name:'Settings'}));
-    expect(screen.getByText('Front left Duo')).toBeInTheDocument();
-    await userEvent.click(screen.getByRole('tab',{name:'Owner controls'}));
+    expect(screen.getAllByText('Front left Duo').length).toBeGreaterThan(0);
+    await userEvent.click(screen.getByRole('tab',{name:'Owner access'}));
     expect(screen.getAllByText('Owner-only on the home box').length).toBeGreaterThan(0);
+    await userEvent.click(screen.getByRole('button',{name:'Protection'}));
     expect(screen.getByRole('button',{name:"I'm outside"})).toBeDisabled();
   });
-  it('makes Day and Night explicit schematic previews without relabelling recorded activity',async()=>{
+  it('asks the owner to pick a camera in the house view instead of guessing one',async()=>{
     vi.stubGlobal('fetch',vi.fn(async(url:string)=>({ok:true,json:async()=>url.endsWith('/state')?fixture:url.endsWith('/chat')?chat:{cameras:[]}})));
     mount();await screen.findByText('House model loaded');
-    await userEvent.click(screen.getByRole('tab',{name:'Day'}));
-    expect(screen.getByText('Day schematic preview. Recorded clips keep their original lighting.')).toBeInTheDocument();
-    await userEvent.click(screen.getByRole('tab',{name:'Night'}));
-    expect(screen.getByText('Night schematic preview. Recorded clips keep their original lighting.')).toBeInTheDocument();
+    expect(screen.getByText('Tap a camera in the house view to see what it recorded.')).toBeInTheDocument();
   });
   it('returns keyboard focus to the same floating Messages trigger after Escape',async()=>{
     vi.stubGlobal('fetch',vi.fn(async(url:string)=>({ok:true,json:async()=>url.endsWith('/state')?fixture:url.endsWith('/chat')?chat:{cameras:[]}})));

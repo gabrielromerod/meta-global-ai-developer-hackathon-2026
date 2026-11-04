@@ -40,7 +40,7 @@ All people who appear in the footage, and the team member who reads the 3 voice-
 - Raw video, scans and calibration frames never leave the edge machine and are not in this repository; only masked, audio-free clips selected for the demo are published.
 - Scans and images are stripped of GPS and device metadata, checked in CI.
 - Only Standard mode is used for Meta API calls (content not used for training).
-- Vigil does not identify anyone and creates no face, voice or body templates. People get a role only from where they came from (the house's own doors, an owner check-in, an expected window, or the perimeter).
+- Rules and roles never use a face, voice or body template. People get a role only from where they came from (the house's own doors, an owner check-in, an expected window, or the perimeter).
 - Camera audio is off and removed. Spoken rules go only to Muse Voice Transcribe and are never stored; the only audio files in the repository are the consented fixtures listed in `config/audio_fixtures.json`.
 - The home network has no inbound ports; the hosted sandbox never connects to the house.
 

@@ -10,6 +10,7 @@ export function attentionVisits(state: UIState, limit = 5): VisitRow[] {
 
 export function summaryText(summary: UIState['summary']): string {
   const stages: string[] = [];
+  if (summary.motion_triggers != null) stages.push(`${summary.motion_triggers} motion triggers`);
   if (summary.camera_events !== null) stages.push(`${summary.camera_events} camera events`);
   if (summary.on_property !== null) stages.push(`${summary.on_property} on the property`);
   stages.push(`${summary.visits} ${summary.visits === 1 ? 'visit' : 'visits'}`);

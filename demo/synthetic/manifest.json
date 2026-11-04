@@ -2,8 +2,8 @@
  "files": {
   "eval.json": "002ca33724797af901b2132c2fc7e973f967d1f5a2cf18dc7a9808b96f121d66",
   "media/ground.glb": "5229abfc9fe206cfa08c6c8073e21670624c35d6f144a94341ce5e7400cce05e",
-  "overlays.json": "286a8548dac521b95a54453b3daff3637a347d475b0b6bd747ba5bab6bf5e97b",
-  "presets.json": "28877f0999b3d8682e8767912d5fdb855b1dc5802c9f8786d8b2a0389ad6835c",
+  "overlays.json": "4f63c1cc6c9edec9b64b57362dcf102345756ed3944ef2bd2ad816d51366a776",
+  "presets.json": "8293fe6c53f67bf86ab82675c913b6a3fbc06fc24951570498847e52df53d5fc",
   "scenarios.json": "d6bfba6a0fe286a4813e1156409b85d515b496462dbb1bb8353718930d2bf463",
   "tables/appearance.json": "b046f13ed565002b21a9eaf036c4fc47bdd28979077ca5712ffaff12ad6a7b21",
   "tables/camera_ai_events.json": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",

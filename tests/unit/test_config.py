@@ -180,6 +180,24 @@ def test_transit_min_above_max_rejected(tmp_path: Path) -> None:
         load_config(write(tmp_path, text))
 
 
+def test_negative_min_marks_overlapping_camera_views(tmp_path: Path) -> None:
+    text = BASE.replace("min_s: 2, max_s: 20", "min_s: -60, max_s: 10")
+    cfg = load_config(write(tmp_path, text))
+    assert cfg.topology[-1].min_s == -60
+
+
+@pytest.mark.parametrize(
+    ("old", "new"),
+    [
+        ("min_s: 5, max_s: 180, blind: true", "min_s: -5, max_s: 180, blind: true"),
+        ("min_s: 2, max_s: 20", "min_s: -60, max_s: -1"),
+    ],
+)
+def test_overlap_only_on_open_camera_edges(tmp_path: Path, old: str, new: str) -> None:
+    with pytest.raises(TopologyError, match=">= 0"):
+        load_config(write(tmp_path, BASE.replace(old, new)))
+
+
 def test_edge_touching_blind_region_must_be_blind(tmp_path: Path) -> None:
     text = BASE.replace("to: shed_back, blind: true}", "to: shed_back, blind: false}")
     with pytest.raises(TopologyError, match="blind"):

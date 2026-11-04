@@ -25,13 +25,15 @@ pipeline's `assign_roles` reads them. The hosted sandbox writes nothing.
 from __future__ import annotations
 
 import hmac
+import ipaddress
+import os
 import sqlite3
 import uuid
 from datetime import datetime, timedelta
 from typing import Any, Literal
 from zoneinfo import ZoneInfo
 
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from pydantic import Field, ValidationError
 
 from vigil.api.guards import client_ip, require_lan
@@ -199,8 +201,41 @@ def _known_zones(request: Request) -> set[str] | None:
 # ---------------------------------------------------------------------------
 
 
+LOOPBACK_HOSTS = frozenset({"127.0.0.1", "localhost", "[::1]", "::1"})
+
+
+def local_owner_token(request: Request) -> str | None:
+    """The owner token for a browser on this very machine, when VIGIL_OWNER_AUTOLOGIN is on.
+
+    A demo convenience: loopback peer only (never a LAN device), a loopback Host header only
+    (no DNS-rebinding name), and never when no owner token is configured.
+    """
+    if os.environ.get("VIGIL_OWNER_AUTOLOGIN", "").strip().lower() not in {"1", "true", "yes"}:
+        return None
+    try:
+        if not ipaddress.ip_address(client_ip(request)).is_loopback:
+            return None
+    except ValueError:
+        return None
+    host = request.headers.get("host", "").lower()
+    name = host.rsplit(":", 1)[0] if not host.startswith("[") else host.split("]")[0] + "]"
+    if name not in LOOPBACK_HOSTS or _cross_site(request):
+        return None
+    secret = getattr(request.app.state.settings, "owner_token", None)
+    token = secret.get_secret_value() if secret is not None else ""
+    return token or None
+
+
 def owner_router() -> APIRouter:
     r = APIRouter(prefix="/api")
+
+    @r.get("/owner/local-session")
+    def local_session(request: Request, response: Response) -> dict[str, str]:
+        token = local_owner_token(request)
+        if token is None:
+            raise HTTPException(404, "not available")
+        response.headers["cache-control"] = "no-store"
+        return {"token": token}
 
     @r.get("/windows")
     def list_windows(request: Request) -> dict[str, Any]:
@@ -289,6 +324,17 @@ def owner_router() -> APIRouter:
             runtime.checkins[item.id] = item
         return {"checkin": item.model_dump(mode="json"), "binds_within_s": CHECKIN_BIND_S,
                 "expires_in_s": CHECKIN_EXPIRES_S, "note": CHECKIN_NOTE}  # fmt: skip
+
+    @r.post("/watches/{watch_id}/undo", dependencies=[Depends(require_owner)])
+    def undo_watch(watch_id: str, request: Request) -> dict[str, Any]:
+        """Stop a watch the closed loop started; the recorded visit itself is unchanged."""
+        bundle, _, runtime, _ = _state(request)
+        watch = next((w for w in bundle.watches if w["id"] == watch_id), None)
+        if watch is None:
+            raise HTTPException(404, f"unknown watch {watch_id!r}")
+        with runtime.lock:
+            runtime.undone_watches.add(watch_id)
+        return {"watch": {"id": watch_id, "status": "undone"}}
 
     @r.post("/visits/{visit_id}/feedback")
     async def feedback(visit_id: str, request: Request) -> dict[str, Any]:

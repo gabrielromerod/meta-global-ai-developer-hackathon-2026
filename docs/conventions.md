@@ -85,7 +85,7 @@ Consequences: keep `main` releasable at every push; never push a red tree; if CI
 - No real footage, raw segments, scans, credentials, GPS or personal data in the repository. `data/` and media files are gitignored; only masked demo assets go in `demo/`.
 - Privacy polygons are blacked out and audio removed before anything is stored for upload; uploads are refused otherwise (FR-003).
 - No code, schema, prompt or UI produces face, age, gender, skin, ethnicity, height, gait, body-measurement, voice-feature or name fields (NFR-003); stories say "a person", "they" or an allowed role phrase from `config/role_phrases.json`; no judgements such as "suspicious", "intruder" or "thief" (validator checks 5 and 7).
-- Vigil does not identify anyone and creates no face, voice or body templates. A person's `actor_role` comes only from spatial origin (house egress, explicit check-in, expected window, perimeter); `unknown` fails closed. Identity phrases in rules map to `applies_to` (`non_household`, `external_visitor_only`), never to a person.
+- Rules and roles never use a face, voice or body template. A person's `actor_role` comes only from spatial origin (house egress, explicit check-in, expected window, perimeter); `unknown` fails closed. Identity phrases in rules map to `applies_to` (`non_household`, `external_visitor_only`), never to a person.
 - Camera audio never enters the repo; the only audio files allowed are the consented voice fixtures listed in `config/audio_fixtures.json` (NFR-002, checked repository-wide in CI).
 - Standard mode only: no `-contributor` model IDs (NFR-004; CI greps for them).
 - Credentials only in `.env` on the edge machine; never logged (NFR-014, NFR-031).

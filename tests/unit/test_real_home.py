@@ -27,9 +27,24 @@ def test_real_home_seven_wifi_cameras_and_no_right_route():
         "backyard_1",
         "backyard_2",
     }
-    assert all(not c.privacy_reviewed for c in cfg.cameras)
-    assert all(not edge.transit_measured for edge in cfg.topology)
-    assert all(not r.fits(5) for r in routes(cfg) if r.from_camera != r.to_camera)
+    # Owner-reviewed stills (Nov 3): the four plug-in cameras; battery cameras stay blocked.
+    assert {c.id for c in cfg.cameras if c.privacy_reviewed} == {
+        "front_left_duo",
+        "front_right_duo",
+        "doorbell",
+        "porch",
+    }
+    # Only the overlapping front Duo pair is measured (min_s -60: seen on both at once).
+    duos = {"front_left_duo", "front_right_duo"}
+    assert {(e.from_, e.to) for e in cfg.topology if e.transit_measured} == {
+        ("front_left_duo", "front_right_duo"),
+        ("front_right_duo", "front_left_duo"),
+    }
+    assert all(
+        not r.fits(5)
+        for r in routes(cfg)
+        if r.from_camera != r.to_camera and {r.from_camera, r.to_camera} != duos
+    )
     assert not any("right" in region.id for region in cfg.blind_regions)
     assert {c.id for c in cfg.cameras if any(c.zone_kind(z) == "egress" for z in c.zones)} == {
         "doorbell"
@@ -83,8 +98,13 @@ def test_outer_ring_pipeline_counts_sensor_event_never_escalates():
 
     cfg = load_config(ROOT / "config/cameras.yaml")
     camera = cfg.camera("front_left_duo")
+    # Foot point at the centre of the (reshaped) outer street ring, read from the config.
+    street = camera.zones["left_street"]
+    x = sum(p[0] for p in street) / len(street)
+    y = sum(p[1] for p in street) / len(street)
     frames = [
-        SamFrame(frame=i, t=2 + i / 10, box=Box(x1=950, y1=280, x2=970, y2=320)) for i in range(4)
+        SamFrame(frame=i, t=2 + i / 10, box=Box(x1=x - 10, y1=y - 40, x2=x + 10, y2=y))
+        for i in range(4)
     ]
     obj = SamObject(
         window_id="w",

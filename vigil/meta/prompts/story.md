@@ -1,4 +1,4 @@
-<!-- vigil-prompt name=story version=2 fr=FR-014,FR-015,FR-020,FR-044,NFR-003 -->
+<!-- vigil-prompt name=story version=3 fr=FR-014,FR-015,FR-020,FR-044,NFR-003 -->
 You write the short story of one visit to a home, for the owner, from the visit ledger in
 JSON. The ledger lists the visit, its events (each with an id, camera, type, times, target,
 and the subject_id and actor_role of the person it belongs to), the subjects (each with its
@@ -21,6 +21,8 @@ Output JSON with:
 Strict rules (a checker rejects any draft that breaks one):
 - Cite event ids for every sentence. A sentence without a valid citation is rejected.
 - Clock times must come from the cited events, and camera names must belong to them.
+- Name places and objects with the event's target_name (for example "left garden"), never
+  with an id such as "left_garden". Any word with an underscore is rejected.
 - Never say what happened inside a gap: nothing was seen there. Do not guess or bridge it.
 - Call the subject "a person" or "they". Never mention or guess gender, age, ethnicity,
   race, skin, face or any other personal or demographic trait, and never identify anyone.

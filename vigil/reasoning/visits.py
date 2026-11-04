@@ -7,6 +7,12 @@ A *subject* track (person or car) that ends is linked to a later subject track o
 3. the pairing is unique both ways: one candidate successor, and that successor has one
    candidate predecessor. Two or more candidates means no link and an ``ambiguous_link`` gap.
 
+An edge with a negative ``min_s`` says the two views overlap: a track that starts on the
+other camera while this one is still in view (the gap is negative, down to ``min_s``) is a
+candidate under the same uniqueness rule. Only the later-starting track follows, so a link
+never runs backwards. When a clip was cut while the subject was still in view, only such
+overlap links remain: where they went after the cut is not evidence.
+
 Only the *first arrival* on each camera is a candidate (plus anyone arriving while that first
 arrival is still in view): a later sighting on the same camera is the chain's next step, not a
 competing candidate.
@@ -78,6 +84,8 @@ VISIT_CLOSE_S = 60.0
 """A visit closes after 60 s with no linked event (spec 5.9)."""
 SUBJECT_CLASSES = frozenset({"person", "car"})
 OUTAGE_EPS_S = 2.0
+OVERLAP_START_S = 0.5
+"""A track starting this close to its camera's first frame was already there, not arriving."""
 """An outage starting this soon after a track ends caught the subject in view."""
 EVENT_ATTACH_EPS_S = 1.0
 POSITION_MARGIN_M = 0.5
@@ -292,6 +300,7 @@ def assemble_visits(
     session_start: datetime | None = None,
     replay_bindings: Mapping[str, tuple[str, float, str]] | None = None,
     truncated_after: Mapping[str, float] | None = None,
+    camera_start: Mapping[str, float] | None = None,
 ) -> VisitAssembly:
     """Link tracks into visits, record every out-of-view interval as a gap, assign roles.
 
@@ -299,7 +308,9 @@ def assemble_visits(
     `now` (session seconds) leaves visits ``open``/``in_gap`` when they could still continue;
     without it every visit is ``closed`` (offline processing). `windows` and `checkins`
     (FR-029) are wall-clock inputs to the role rules and need the tz-aware `session_start`;
-    without them FR-044 steps 2 and 3 never match.
+    without them FR-044 steps 2 and 3 never match. `camera_start` (session seconds each
+    camera began recording) keeps a track that starts with its recording, already in view,
+    from following anyone across an overlap edge.
     """
     events = sorted(events, key=lambda e: (e.t0, e.id))
     known = {t.id: t for t in tracks}
@@ -319,8 +330,11 @@ def assemble_visits(
         headed[t.id] = toward or exit_leads_to_blind(cfg, t.camera_id, exit_region)
         rs = candidate_routes(cfg, t.camera_id, exit_region, toward)
         truncated = (truncated_after or {}).get(t.camera_id)
-        if truncated is not None and t.t_first <= truncated <= t.t_last + OUTAGE_EPS_S:
-            rs = []
+        clip_cut = truncated is not None and t.t_first <= truncated <= t.t_last + OUTAGE_EPS_S
+        if clip_cut:
+            # The clip ended, not the subject's walk: only a view that saw them at the same
+            # time (an overlap edge) can still continue the chain.
+            rs = [r for r in rs if r.kind == "direct" and not r.blind and r.min_s < 0]
         via = [r.max_s for r in rs if r.via_region is not None and r.via_region == headed[t.id]]
         route_max[t.id] = max(via, default=DEFAULT_TRANSIT_MAX_S)
 
@@ -329,7 +343,13 @@ def assemble_visits(
             if s.id == t.id or s.cls != t.cls:
                 continue
             gap = s.t_first - t.t_last
-            if gap < 0 or not appearance_agrees(app.get(t.id), app.get(s.id)):
+            if gap < 0 and (
+                s.camera_id == t.camera_id
+                or s.t_first <= t.t_first
+                or s.t_first < (camera_start or {}).get(s.camera_id, -1.0) + OVERLAP_START_S
+            ):
+                continue  # in view together: only a later, real arrival on another camera
+            if (clip_cut and gap > 0) or not appearance_agrees(app.get(t.id), app.get(s.id)):
                 continue
             ok = sorted(
                 (r for r in rs if r.to_camera == s.camera_id and r.fits(gap)), key=_route_rank

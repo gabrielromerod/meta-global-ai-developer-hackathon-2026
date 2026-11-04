@@ -26,7 +26,7 @@ SENTINEL_KEY = "sk-vigil-sentinel-7f3a9c2e1d"
 def make_settings(**kw: Any) -> Settings:
     base: dict[str, Any] = {"mode": "sandbox", "MODEL_API_KEY": SENTINEL_KEY}
     base.update(kw)
-    return Settings(**base)
+    return Settings(_env_file=None, **base)  # never the developer's .env (real ledger)
 
 
 class FakeClock:
@@ -411,7 +411,7 @@ def test_compile_cached_then_confirm(api: TestClient) -> None:
     assert rule["state"] == "draft"
     assert rule["applies_to"] == "anyone"
     assert body["result"]["applies_label"] == "Applies to everyone, including household members."
-    assert "does not identify anyone" in body["result"]["basis_note"]
+    assert "never use a face, voice or body template" in body["result"]["basis_note"]
     confirmed = api.post("/api/rules/r8/confirm").json()
     assert confirmed["state"] == "active"
     assert api.post("/api/rules/nope/confirm").status_code == 404
@@ -741,15 +741,12 @@ def test_compile_cached_role_phrasings() -> None:
         result = body["result"]
         assert body["notice"] is None, f["id"]
         assert result["rule"]["applies_to"] == want[f["id"]]
-        assert (
-            "does not identify anyone and creates no face, voice or body templates"
-            in (result["basis_note"])
-        )
+        assert "never use a face, voice or body template" in (result["basis_note"])
     family = client.post("/api/rules/compile", json={"text": fixtures[0]["transcript"]}).json()
     assert family["result"]["applies_label"] == "Applies to everyone except household members."
     assert family["result"]["basis_note"].startswith("Vigil treats someone as household only")
     named = client.post("/api/rules/compile", json={"text": fixtures[2]["transcript"]}).json()
-    assert any(n.startswith("Vigil can't recognise individuals") for n in
+    assert any(n.startswith("Rules can't recognise individuals") for n in
                named["result"]["limits_note"])  # fmt: skip
     assert "Sam" not in json.dumps(named["result"]["rule"])  # no rule ever names a person
 
@@ -961,3 +958,23 @@ def test_landmarks_default_adapter_says_when_no_still_exists(tmp_path) -> None:
     assert body["proposals"] == []
     assert body["blocked"] is False
     assert "still" in body["notice"]
+
+
+# --- closed loop: Muse Wonder -> SAM 3.1 watch with undo (spec 5.x, FR-024) -------------------
+
+
+def test_wonder_watch_shows_origin_and_owner_can_undo(tmp_path) -> None:
+    _, lan = _edge(tmp_path)
+    watch = lan.get("/api/ui/visits/v_b").json()["watches"][0]
+    assert watch["origin_label"] == "Muse Wonder → SAM 3.1"
+    assert watch["notice"].startswith("Now watching: package")
+    assert watch["can_undo"] is True
+    anonymous = TestClient(lan.app, client=("127.0.0.1", 50000))
+    assert anonymous.post(f"/api/watches/{watch['id']}/undo").status_code in {401, 403}
+    r = lan.post(f"/api/watches/{watch['id']}/undo")
+    assert r.status_code == 200
+    after = lan.get("/api/ui/visits/v_b").json()["watches"][0]
+    assert after["status"] == "undone"
+    assert after["notice"] == "Stopped watching: package on porch"
+    assert after["can_undo"] is False
+    assert lan.post("/api/watches/nope/undo").status_code == 404

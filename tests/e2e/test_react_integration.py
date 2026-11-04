@@ -6,7 +6,13 @@ import pytest
 from playwright.sync_api import Page, expect
 
 from tests.e2e.conftest import UnreachableBackend, wait_ready
-from tests.e2e.support import running_app
+from tests.e2e.support import (
+    RULE_TEXT,
+    open_protection,
+    open_rule_editor,
+    running_app,
+    sign_in_owner,
+)
 from tests.e2e.test_real_video import video_server as generated_video_fixture
 from vigil.api.app import create_app
 from vigil.settings import Settings
@@ -38,16 +44,12 @@ def test_react_owner_token_countdown_and_expected_window_crud(page: Page, tmp_pa
         meta_cache_only=True,
     )
     with running_app(create_app(settings, live_backend=UnreachableBackend())) as url:
-        page.goto(url + "/next/#/settings")
-        wait_ready(page)
-        page.get_by_role("tab", name="Owner controls").click()
-        page.get_by_role("textbox", name="Owner token").fill("synthetic-owner-token")
-        page.get_by_role("button", name="Save owner token").click()
-        expect(page.get_by_text("Owner session active")).to_be_visible()
+        sign_in_owner(page, url)
         assert (
             page.evaluate("sessionStorage.getItem('vigil_owner_token')") == "synthetic-owner-token"
         )
         assert page.evaluate("localStorage.getItem('vigil_owner_token')") is None
+        open_protection(page)
         page.get_by_role("button", name="I'm outside").click()
         countdown = page.get_by_role("status").filter(has_text="s remaining")
         expect(countdown).to_be_visible()
@@ -69,10 +71,13 @@ def test_react_owner_token_countdown_and_expected_window_crud(page: Page, tmp_pa
         expect(row).to_contain_text("Scheduled")
         expect(row).to_contain_text("Front left Duo")
         row.get_by_role("button", name="Cancel window").click()
+        # A cancelled window moves into the collapsed "Past windows" list.
+        past = page.get_by_text(re.compile(r"^Past windows"))
+        past.click()
         expect(row).to_contain_text("Cancelled")
         page.reload()
         wait_ready(page)
-        page.get_by_role("tab", name="Owner controls").click()
+        past.click()
         expect(page.get_by_role("article", name="Fixture delivery")).to_contain_text("Cancelled")
 
 
@@ -87,30 +92,28 @@ def test_react_confirmed_rule_clears_the_draft_and_uses_edge_session_copy(page, 
         meta_cache_only=True,
     )
     with running_app(create_app(settings, live_backend=UnreachableBackend())) as url:
-        page.goto(url + "/next/#/settings")
-        wait_ready(page)
-        page.get_by_role("tab", name="Owner controls").click()
-        page.get_by_role("textbox", name="Owner token").fill("synthetic-owner-token")
-        page.get_by_role("button", name="Save owner token").click()
-        expect(page.get_by_text("Owner session active")).to_be_visible()
-        page.get_by_role("button", name="Rules and protected objects", exact=True).click()
+        sign_in_owner(page, url)
+        open_protection(page)
         sample = page.request.get(url + "/api/voice/fixtures").json()["fixtures"][0]
-        page.get_by_role("button", name=sample["label"]).click()
-        expect(page.get_by_role("textbox", name="Rule text")).to_have_value(sample["transcript"])
-        page.get_by_role("button", name="Review rule draft").click()
-        draft = page.get_by_role("region", name="Rule draft", exact=True)
+        editor = open_rule_editor(page)
+        editor.get_by_role("button", name=sample["label"]).click()
+        expect(editor.get_by_role("textbox", name=RULE_TEXT)).to_have_value(sample["transcript"])
+        editor.get_by_role("button", name="Review rule draft").click()
+        draft = editor.get_by_role("region", name="Rule draft", exact=True)
         draft.get_by_role("button", name="Confirm rule").click()
         expect(draft).not_to_be_visible()
+        expect(editor.get_by_role("status")).to_contain_text("server session")
+        expect(editor.get_by_role("status")).not_to_contain_text("Sandbox")
+        editor.get_by_role("button", name="Close New rule").click()
         expect(page.get_by_role("region", name="Current rules")).to_contain_text(
             "Recycling bin after 9 PM"
         )
-        expect(page.get_by_role("status")).to_contain_text("server session")
-        expect(page.get_by_role("status")).not_to_contain_text("Sandbox")
 
 
 def test_react_home_shows_household_and_external_gate_context(page: Page, server_url):
-    page.goto(server_url + "/next/")
+    page.goto(server_url + "/next/#/attention")
     wait_ready(page)
+    page.get_by_text("Why did two side gate touches get different verdicts?").click()
     comparison = page.get_by_role("region", name="Same action, different context")
     expect(comparison).to_contain_text("Normal")
     expect(comparison).to_contain_text("Needs attention")
@@ -145,26 +148,37 @@ def test_react_map_fallback_keeps_cameras_and_explicit_gaps(page: Page, server_u
     assert not errors, errors
 
 
-def test_react_group_view_allows_manual_presets_and_a_new_group_request(page, server_url):
+def test_react_house_view_presets_move_the_camera_and_return(page, server_url):
+    # The home view tabs (and their group requests) were removed; the house view's own
+    # preset tabs are the remaining manual view control.
     page.emulate_media(reduced_motion="reduce")
     page.goto(server_url + "/next/")
     wait_ready(page)
-    page.get_by_role("tab", name="Front garden", exact=True).click()
+    presets = page.get_by_role("tablist", name="House view presets", exact=True)
     canvas = page.get_by_test_id("twin-canvas")
     expect(canvas).to_have_attribute("data-camera-position", re.compile(r".+"))
-    before = canvas.get_attribute("data-camera-position")
-    page.get_by_role("tab", name="Top-down", exact=True).click()
-    expect(page.get_by_role("tab", name="Top-down", exact=True)).to_have_attribute(
+    front = canvas.get_attribute("data-camera-position")
+    expect(presets.get_by_role("tab", name="Front", exact=True)).to_have_attribute(
+        "aria-selected", "true"
+    )
+    presets.get_by_role("tab", name="Top-down", exact=True).click()
+    expect(presets.get_by_role("tab", name="Top-down", exact=True)).to_have_attribute(
         "aria-selected", "true"
     )
     page.wait_for_function(
         "before=>document.querySelector('[data-testid=twin-canvas]')"
         ".dataset.cameraPosition!==before",
-        arg=before,
+        arg=front,
     )
-    page.get_by_role("tab", name="Porch", exact=True).first.click()
-    expect(page.get_by_role("tab", name="Front", exact=True)).to_have_attribute(
+    top = canvas.get_attribute("data-camera-position")
+    presets.get_by_role("tab", name="Front", exact=True).click()
+    expect(presets.get_by_role("tab", name="Front", exact=True)).to_have_attribute(
         "aria-selected", "true"
+    )
+    page.wait_for_function(
+        "before=>document.querySelector('[data-testid=twin-canvas]')"
+        ".dataset.cameraPosition!==before",
+        arg=top,
     )
 
 
@@ -199,14 +213,14 @@ def test_react_voice_sample_keeps_editable_text_and_server_scope_explanation(
     page.goto(server_url + "/next/#/rules")
     wait_ready(page)
     fixtures = page.request.get(server_url + "/api/voice/fixtures").json()["fixtures"]
+    editor = open_rule_editor(page)
     for fixture in fixtures:
-        page.get_by_role("button", name=fixture["label"]).click()
-        text = page.get_by_role("textbox", name="Rule text")
+        editor.get_by_role("button", name=fixture["label"]).click()
+        text = editor.get_by_role("textbox", name=RULE_TEXT)
         expect(text).to_have_value(fixture["transcript"])
-        page.get_by_role("button", name="Review rule draft").click()
-        draft = page.get_by_role("region", name="Rule draft")
-        expect(draft).to_contain_text("does not identify anyone")
-        expect(draft).to_contain_text("face, voice or body templates")
+        editor.get_by_role("button", name="Review rule draft").click()
+        draft = editor.get_by_role("region", name="Rule draft")
+        expect(draft).to_contain_text("never use a face, voice or body template")
         expect(draft.get_by_role("button", name="Confirm rule")).to_be_disabled()
     expect(draft).to_contain_text("can't recognise individuals")
     text.fill("Tell me if anyone except family touches the bin after 9 PM")
@@ -329,23 +343,21 @@ def test_react_point_selection_uses_exported_still_and_explicit_mocked_model_app
     app = create_app(settings, bundle_dir=bundle, live_backend=backend)
     assert app.state.live_backend is backend
     with running_app(app) as url:
-        page.goto(url + "/next/#/settings")
-        wait_ready(page)
-        page.get_by_role("tab", name="Owner controls").click()
-        page.get_by_role("textbox", name="Owner token").fill("synthetic-owner-token")
-        page.get_by_role("button", name="Save owner token").click()
-        page.get_by_role("button", name="Select an object", exact=True).click()
-        dialog = page.get_by_role("dialog", name="Select an object")
+        sign_in_owner(page, url)
+        open_protection(page)
+        page.get_by_role("button", name="Add object", exact=True).click()
+        dialog = page.get_by_role("dialog", name="Protect an object")
         image = dialog.get_by_role("img", name="Left side exported still")
         expect(image).to_be_visible()
         page.wait_for_function(
             "document.querySelector('.protection-frame img')?.naturalWidth===1280"
         )
+        dialog.get_by_text("Enter coordinates instead", exact=True).click()
         dialog.get_by_role("spinbutton", name="Pixel X").fill("160")
         dialog.get_by_role("spinbutton", name="Pixel Y").fill("600")
         dialog.get_by_role("textbox", name="Object label").fill("Fixture gate")
-        dialog.get_by_role("button", name="Request point model").click()
-        approval = page.get_by_role("dialog", name="Approve point model request")
+        dialog.get_by_role("button", name="Detect with SAM 3.1").click()
+        approval = page.get_by_role("dialog", name="Confirm detection")
         expect(approval).to_contain_text("$0.0025")
         assert backend.calls == []
         approval.get_by_role("button", name="Approve and run").click()
@@ -353,8 +365,7 @@ def test_react_point_selection_uses_exported_still_and_explicit_mocked_model_app
         expect(dialog).to_contain_text("Fixture gate")
         expect(dialog).to_contain_text("Added to this server session")
         assert backend.calls == ["protect"]
-        dialog.get_by_role("button", name="Close Select an object").click()
-        page.get_by_role("button", name="Rules and protected objects", exact=True).click()
+        dialog.get_by_role("button", name="Close Protect an object").click()
         expect(page.get_by_role("heading", name="Fixture gate", exact=True)).to_be_visible()
 
 
@@ -433,18 +444,34 @@ def test_react_popup_is_opaque_in_ordinary_motion_and_preserves_live_preference_
         assert field.evaluate("(e,old)=>e===old", element)
 
 
-def test_react_home_tabpanel_has_a_visible_keyboard_focus_indicator(page, server_url):
-    page.goto(server_url + "/next/")
-    wait_ready(page)
-    page.get_by_role("tab", name="Overview", exact=True).focus()
-    page.keyboard.press("Tab")
-    panel = page.locator(".home-view-tabs>.v-tab-panel")
-    expect(panel).to_be_focused()
-    focus = panel.evaluate("""element=>{
+def _focus_ring(locator):
+    return locator.evaluate("""element=>{
       const style=getComputedStyle(element);
       return {visible:element.matches(':focus-visible'),style:style.outlineStyle,
-              width:parseFloat(style.outlineWidth),color:style.outlineColor};
+              width:parseFloat(style.outlineWidth),shadow:style.boxShadow};
     }""")
+
+
+def test_react_home_and_settings_panels_have_a_visible_keyboard_focus_indicator(page, server_url):
+    # The home view tabpanel was removed; its keyboard-focusable successor on Home is the
+    # scrollable visit list, and the shared tabpanel component remains on Settings.
+    page.goto(server_url + "/next/")
+    wait_ready(page)
+    visits = page.get_by_role("list", name="Visits to review", exact=True)
+    visits.get_by_role("button").first.focus()
+    page.keyboard.press("Shift+Tab")
+    expect(visits).to_be_focused()
+    focus = _focus_ring(visits)
+    assert focus["visible"]
+    assert focus["style"] != "none"
+    assert focus["width"] >= 2
+    page.goto(server_url + "/next/#/settings")
+    wait_ready(page)
+    page.get_by_role("tab", name="Cameras", exact=True).focus()
+    page.keyboard.press("Tab")
+    panel = page.get_by_role("tabpanel")
+    expect(panel).to_be_focused()
+    focus = _focus_ring(panel)
     assert focus["visible"]
     assert focus["style"] != "none"
     assert focus["width"] >= 2
@@ -454,14 +481,16 @@ def test_react_roving_tablist_remains_visible_if_entry_focus_stays_on_its_wrappe
     page.goto(server_url + "/next/")
     wait_ready(page)
     page.keyboard.press("Tab")
-    tablist = page.get_by_role("tablist", name="House views", exact=True)
+    tablist = page.get_by_role("tablist", name="House view presets", exact=True)
     tablist.evaluate("""element=>{
       element.addEventListener('rovingFocusGroup.onEntryFocus',event=>event.preventDefault());
       element.focus();
     }""")
     expect(tablist).to_be_focused()
-    focus = tablist.evaluate("""element=>({visible:element.matches(':focus-visible'),
-      shadow:getComputedStyle(element).boxShadow})""")
+    focus = _focus_ring(tablist)
     assert focus["visible"]
-    assert "inset" in focus["shadow"]
-    assert "2px" in focus["shadow"]
+    # Either an outline or an inset ring of at least 2 px marks the focused wrapper.
+    ring = (focus["style"] != "none" and focus["width"] >= 2) or (
+        "inset" in focus["shadow"] and "2px" in focus["shadow"]
+    )
+    assert ring, focus

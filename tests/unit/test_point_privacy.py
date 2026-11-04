@@ -26,7 +26,8 @@ def test_point_backend_rejects_unreviewed_real_camera_before_model(tmp_path, mon
 
     stills = tmp_path / "stills"
     stills.mkdir()
-    assert cv2.imwrite(str(stills / "front_left_duo.jpg"), np.zeros((720, 1920, 3), dtype=np.uint8))
+    # side_left is never owner-reviewed in the real config (the front Duos are, Nov 3).
+    assert cv2.imwrite(str(stills / "side_left.jpg"), np.zeros((720, 1280, 3), dtype=np.uint8))
     backend = MetaLiveBackend(
         Settings(
             _env_file=None,
@@ -42,7 +43,7 @@ def test_point_backend_rejects_unreviewed_real_camera_before_model(tmp_path, mon
 
     monkeypatch.setattr(backend, "_meta_client", no_client)
     with pytest.raises(ValueError, match="owner privacy review"):
-        backend.protect("front_left_duo", None, 1600, 600, "generated object")
+        backend.protect("side_left", None, 600, 400, "generated object")
     assert backend._client is None
 
 

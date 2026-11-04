@@ -326,3 +326,75 @@ def test_prop_template_with_roles_always_valid(ledger, role, basis, with_subject
     sentences = template_story(ledger)
     res = validate(StoryDraft(sentences=sentences), ledger)
     assert res.passed, res.failures
+
+
+def test_instant_ambiguous_gap_sentence_does_not_say_zero_seconds() -> None:
+    # Live run, Nov 4: a window boundary left 0.1 s gaps, written as "for 0 s".
+    gap = Gap(id="g1", visit_id="v1", kind="ambiguous_link", t0=12.99, t1=13.09,
+              from_camera="side_left", to_camera="side_left")  # fmt: skip
+    text = gap_sentence(gap, {}, CAMERA_NAMES).text
+    assert "0 s" not in text
+    assert "more than one later sighting could be them" in text
+
+
+def _car_ledger() -> VisitLedger:
+    """Front left Duo, Nov 4: a parked car in view from the first frame, then a person."""
+
+    def ev(eid, track, typ, t0, target):
+        return Event(id=eid, visit_id="v1", camera_id="side_left", track_id=track, type=typ,
+                     t0=t0, t1=t0, target=target, clip_t0=t0, clip_t1=t0 + 1)  # fmt: skip
+
+    events = [
+        ev("e1", "side_left-car-1", "enter", 0.0, "left_garden"),
+        ev("e2", "side_left-person-1", "enter", 0.8, "left_driveway"),
+        ev("e3", "side_left-person-1", "exit", 18.8, "left_driveway"),
+    ]
+    visit = Visit(id="v1", t0=0.0, t1=24.6, event_ids=[e.id for e in events],
+                  track_ids=["side_left-car-1", "side_left-person-1"])  # fmt: skip
+    return VisitLedger(visit=visit, events=events, camera_names=CAMERA_NAMES, session_start=START)
+
+
+def test_template_calls_a_car_track_a_vehicle_without_appearance_notes() -> None:
+    # Spark described only some cars; the SAM class in the track id still says "car".
+    by_event = {s.event_ids[0]: s.text for s in template_story(_car_ledger())}
+    assert by_event["e1"].startswith("A vehicle")
+    assert by_event["e2"].startswith("A person")
+
+
+def test_template_does_not_say_entered_for_what_was_there_when_recording_started() -> None:
+    ledger = _car_ledger()
+    by_event = {s.event_ids[0]: s.text for s in template_story(ledger)}
+    assert "was already in the left garden area when the recording started" in by_event["e1"]
+    assert "entered the left driveway area" in by_event["e2"]
+    assert validate(StoryDraft(sentences=template_story(ledger)), ledger).passed
+
+
+def test_template_tells_the_person_not_the_parked_cars() -> None:
+    # Live run, Nov 4: four parked cars filled all six sentences and the person was dropped.
+    def ev(eid, track, typ, t0, target):
+        return Event(id=eid, visit_id="v1", camera_id="side_left", track_id=track, type=typ,
+                     t0=t0, t1=t0, target=target, clip_t0=t0, clip_t1=t0 + 1)  # fmt: skip
+
+    events = []
+    for n in range(1, 5):
+        car = f"side_left-car-{n}"
+        events += [ev(f"c{n}a", car, "enter", 0.0, "left_garden"),
+                   ev(f"c{n}b", car, "enter", 0.0, "left_driveway"),
+                   ev(f"c{n}z", car, "exit", 24.6, "left_garden")]  # fmt: skip
+    events += [
+        ev("p1", "side_left-person-1", "enter", 0.8, "left_driveway"),
+        ev("p2", "side_left-person-1", "enter", 18.7, "left_street"),
+        ev("p3", "side_left-person-1", "exit", 19.3, "left_street"),
+    ]
+    events.sort(key=lambda e: (e.t0, e.id))
+    visit = Visit(id="v1", t0=0.0, t1=24.6, event_ids=[e.id for e in events],
+                  track_ids=sorted({e.track_id for e in events}))  # fmt: skip
+    ledger = VisitLedger(visit=visit, events=events, camera_names=CAMERA_NAMES, session_start=START)
+    story = template_story(ledger)
+    texts = [s.text for s in story]
+    assert texts[0].startswith("4 vehicles were already in view when the recording started")
+    assert set(story[0].event_ids) == {f"c{n}{x}" for n in range(1, 5) for x in "ab"}
+    assert [s.event_ids for s in story[1:]] == [["p1"], ["p2"], ["p3"]]
+    assert texts[1].startswith("A person entered the left driveway area")
+    assert not any("vehicle left" in t for t in texts)  # the clip ended; the cars did not leave
+    assert validate(StoryDraft(sentences=story), ledger).passed

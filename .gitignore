@@ -18,6 +18,7 @@ dist/
 !.env.example
 
 # Raw home data never leaves the edge machine (spec section 6, NFR-001/032)
+/data/scan/
 data/
 *.mp4
 *.mov

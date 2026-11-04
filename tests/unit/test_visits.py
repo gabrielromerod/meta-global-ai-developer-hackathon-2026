@@ -2,10 +2,11 @@
 
 from __future__ import annotations
 
+import pytest
 from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
-from vigil.models import Appearance, Config, Event, Position, Track
+from vigil.models import Appearance, Config, Event, Position, TopologyEdge, Track
 from vigil.reasoning.topology import candidate_routes, routes
 from vigil.reasoning.visits import (
     VISIT_CLOSE_S,
@@ -375,3 +376,77 @@ def test_prop_ambiguity_never_links(sample_config: Config, k: int, gaps, cams) -
     out = assemble_visits([], tracks, {}, [], sample_config)
     assert not any(lk.from_track == "o" for lk in out.links)
     assert any(g.kind == "ambiguous_link" and g.t0 == 10 for g in out.gaps)
+
+
+# ---------------------------------------------------------------------------
+# Overlapping views: an edge with a negative min_s says two cameras see the same ground
+# ---------------------------------------------------------------------------
+
+
+def _overlap_config(cfg: Config) -> Config:
+    """sample_config plus side_left <-> side_right views that overlap by up to 60 s."""
+    extra = [
+        TopologyEdge.model_validate({"from": a, "to": b, "min_s": -60, "max_s": 10})
+        for a, b in (("side_left", "side_right"), ("side_right", "side_left"))
+    ]
+    return cfg.model_copy(update={"topology": [*cfg.topology, *extra]})
+
+
+def test_overlapping_views_link_a_person_seen_on_both_at_once(sample_config: Config) -> None:
+    cfg = _overlap_config(sample_config)
+    tracks = [trk("l1", "side_left", 0.5, 24.6), trk("r2", "side_right", 15.4, 22.0)]
+    out = assemble_visits([], tracks, {}, [], cfg)
+    assert len(out.visits) == 1
+    assert [(lk.from_track, lk.to_track) for lk in out.links] == [("l1", "r2")]  # no reverse
+    assert out.links[0].gap_s == pytest.approx(-9.2)
+    assert out.gaps == []
+
+
+def test_overlap_needs_an_edge_that_allows_it(sample_config: Config) -> None:
+    tracks = [trk("f1", "front", 0.0, 20.0), trk("s1", "side_left", 10.0, 30.0)]
+    out = assemble_visits([], tracks, {}, [], sample_config)  # front -> side_left is 2..20 s
+    assert out.links == []
+    assert len(out.visits) == 2
+
+
+def test_overlap_link_survives_a_truncated_clip_but_nothing_after_it(
+    sample_config: Config,
+) -> None:
+    cfg = _overlap_config(sample_config)
+    tracks = [
+        trk("l1", "side_left", 0.5, 24.6),
+        trk("r2", "side_right", 15.4, 22.0),
+        trk("r9", "side_right", 26.0, 30.0),
+    ]
+    out = assemble_visits([], tracks, {}, [], cfg, truncated_after={"side_left": 24.6})
+    assert [(lk.from_track, lk.to_track) for lk in out.links] == [("l1", "r2")]
+    assert {k for v in out.visits for k in v.track_ids if k == "r9"}  # r9 stands alone
+    assert not any("r9" in v.track_ids and "l1" in v.track_ids for v in out.visits)
+
+
+def test_two_people_in_the_overlap_is_ambiguous(sample_config: Config) -> None:
+    cfg = _overlap_config(sample_config)
+    tracks = [
+        trk("l1", "side_left", 0.5, 24.6),
+        trk("r2", "side_right", 15.4, 22.0),
+        trk("r3", "side_right", 15.9, 23.0),
+    ]
+    out = assemble_visits([], tracks, {}, [], cfg)
+    assert out.links == []
+    assert any(g.kind == "ambiguous_link" for g in out.gaps)
+
+
+def test_overlap_ignores_a_track_that_starts_when_its_camera_starts(sample_config: Config) -> None:
+    """Parked cars in view on both cameras: the right recording began at 4.08 s, so its car
+    did not arrive then and is no successor of any of the left camera's parked cars."""
+    cfg = _overlap_config(sample_config)
+    tracks = [
+        trk("lc1", "side_left", 0.0, 24.6, "car"),
+        trk("lc2", "side_left", 0.0, 24.6, "car"),
+        trk("rc1", "side_right", 4.08, 49.5, "car"),
+    ]
+    out = assemble_visits(
+        [], tracks, {}, [], cfg, camera_start={"side_left": 0.0, "side_right": 4.08}
+    )
+    assert out.links == []
+    assert not [g for g in out.gaps if g.kind == "ambiguous_link"]

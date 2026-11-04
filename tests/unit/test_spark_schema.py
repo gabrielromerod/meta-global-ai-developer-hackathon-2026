@@ -248,10 +248,10 @@ SPEC_BASIS = (
     "doors, or when a household member checked in on the app just before coming into view. "
     "Household members arriving from the street without checking in, and anyone Vigil loses "
     "track of, count as non-household and can trigger this rule. Vigil places people by where "
-    "they came from; it does not identify anyone and creates no face, voice or body templates."
+    "they came from; rules and roles never use a face, voice or body template."
 )
 SAM_NOTICE = (
-    "Vigil can't recognise individuals. It treats someone as household only if they came out "
+    "Rules can't recognise individuals. It treats someone as household only if they came out "
     "of the house's own doors or checked in on the app, so Sam is exempt only in those cases."
 )
 
@@ -279,7 +279,7 @@ def test_compile_rule_reference_phrasing(catalog, rule_r7):
     assert draft.basis_note == "Applies to everyone except household members. " + SPEC_BASIS
     assert draft.notice is None
     assert draft.identity_exception is True
-    assert any("does not identify anyone" in note for note in draft.limits)
+    assert any("never use a face, voice or body template" in note for note in draft.limits)
     assert fake.calls[0]["model"] == "muse-spark-1.3"
     assert fake.calls[0]["feature"] == "rule_compile"
 
@@ -288,7 +288,7 @@ def test_household_basis_is_the_spec_text():
     assert HOUSEHOLD_BASIS == SPEC_BASIS
     assert set(BASIS_NOTES) == {"anyone", "non_household", "external_visitor_only"}
     for note in BASIS_NOTES.values():
-        assert note.endswith("creates no face, voice or body templates.")
+        assert note.endswith("never use a face, voice or body template.")
 
 
 def test_compile_rule_family_exception_becomes_non_household(catalog):
@@ -481,7 +481,7 @@ def test_model_flag_without_a_name_in_text_gets_a_generic_notice(catalog):
     assert isinstance(draft, RuleDraft)
     assert draft.rule.applies_to == "non_household"
     assert draft.notice is not None
-    assert draft.notice.startswith("Vigil can't recognise individuals.")
+    assert draft.notice.startswith("Rules can't recognise individuals.")
 
 
 def test_model_role_without_any_exception_phrase_is_ignored(catalog):
@@ -722,3 +722,21 @@ def test_spark_triage_case2_household_touch_is_not_forced():
     decision = triage(fake, summary)
     assert decision.source == "spark"
     assert len(fake.calls) == 1
+
+
+# --- reasoning budget: a structured answer must fit after the model's reasoning -----------
+# Live run, Nov 3: Spark left effort at its default ("high") and spent 898 of 900 output tokens
+# reasoning, so the appearance answer came back empty ("incomplete: max_output_tokens").
+
+
+def _assert_low_effort(body: dict, floor: int) -> None:
+    assert body["reasoning"] == {"effort": "low"}
+    assert body["max_output_tokens"] >= floor
+
+
+def test_spark_requests_keep_reasoning_low_and_leave_room_for_json(catalog):
+    from vigil.meta.spark import build_rule_request, build_triage_request
+
+    _assert_low_effort(build_appearance_request("file_1", ["T4", "T5", "T6", "T7"]), 2000)
+    _assert_low_effort(build_triage_request(_summary()), 1500)
+    _assert_low_effort(build_rule_request("watch the side gate", catalog), 1500)

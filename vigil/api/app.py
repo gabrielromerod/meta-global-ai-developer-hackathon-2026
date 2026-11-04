@@ -10,10 +10,11 @@ there. Owner endpoints also need VIGIL_OWNER_TOKEN (`vigil.api.owner.require_own
 
 from __future__ import annotations
 
+import asyncio
 import ipaddress
 import time
 from collections.abc import AsyncIterator, Callable
-from contextlib import asynccontextmanager
+from contextlib import asynccontextmanager, suppress
 from pathlib import Path
 from typing import Any
 
@@ -24,7 +25,9 @@ from fastapi.staticfiles import StaticFiles
 
 from vigil import __version__
 from vigil.api.backend import MetaLiveBackend
+from vigil.api.captures import captures_router
 from vigil.api.consumer import consumer_router
+from vigil.api.faces import faces_router
 from vigil.api.guards import Guards
 from vigil.api.live import LiveHub, live_router
 from vigil.api.owner import load_owner_state, owner_router
@@ -92,8 +95,21 @@ def create_app(
     hub = LiveHub()
 
     @asynccontextmanager
-    async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+    async def lifespan(app_: FastAPI) -> AsyncIterator[None]:
+        from vigil.reolink import live_alerts
+
+        alerts = None
+        config = app_.state.config
+        if live_alerts.enabled(settings.mode) and config is not None:
+            # Camera push alerts (presence only) on the LAN live stream; off by default.
+            alerts = asyncio.create_task(
+                live_alerts.run(config.cameras, hub, Path(settings.data_dir))
+            )
         yield
+        if alerts is not None:
+            alerts.cancel()
+            with suppress(asyncio.CancelledError):
+                await alerts
         hub.close()
 
     app = FastAPI(
@@ -146,6 +162,8 @@ def create_app(
 
     app.include_router(router())
     app.include_router(consumer_router())
+    app.include_router(captures_router())
+    app.include_router(faces_router())
     app.include_router(voice_router())
     app.include_router(owner_router())
     app.include_router(live_router())

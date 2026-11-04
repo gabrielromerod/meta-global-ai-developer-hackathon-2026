@@ -11,13 +11,13 @@ import pytest
 from playwright.sync_api import Page, expect
 
 from tests.e2e.conftest import UnreachableBackend, wait_ready
-from tests.e2e.support import running_app
+from tests.e2e.support import RULE_TEXT, open_protection, open_rule_editor, running_app
 from vigil.api.app import create_app
 from vigil.settings import Settings
 
 pytestmark = pytest.mark.e2e
 GAP = "Not observed · 41 s"
-NO_TEMPLATES = "does not identify anyone and creates no face, voice or body templates"
+NO_TEMPLATES = "never use a face, voice or body template"
 
 
 def _visit(page, server_url, visit_id):
@@ -34,7 +34,8 @@ def test_judge_path_scenario_c(page: Page, server_url: str):
     page.goto(server_url + "/next/")
     wait_ready(page)
     expect(page.locator(".home-summary")).to_contain_text("5 visits → 1 needs attention")
-    expect(page.locator(".home-summary")).to_contain_text("unmeasured")
+    # The measurement caveat moved from the summary hero to the note under the visit list.
+    expect(page.locator(".home-note")).to_contain_text("unmeasured")
     expect(page.get_by_text("Demo data", exact=True)).to_be_visible()
     state = page.request.get(server_url + "/api/ui/state").json()
     row = next(v for v in state["visits"] if v["id"] == "v_c")
@@ -131,18 +132,20 @@ def test_cached_controls_keep_evidence_visible_when_action_api_is_down(page: Pag
     expect(card.get_by_role("alert")).to_contain_text("Story service unavailable")
     expect(card.locator(".visit-heading .v-verdict")).to_contain_text("Needs your attention")
     assert card.locator(".visit-sentence").count() >= 4
-    page.get_by_role("button", name="Rules and protected objects", exact=True).click()
+    open_protection(page)
     page.route(
         "**/api/rules/compile",
         lambda route: route.fulfill(
             status=503, json={"detail": "Rule service unavailable; current rules remain active."}
         ),
     )
-    field = page.get_by_role("textbox", name="Rule text")
+    editor = open_rule_editor(page)
+    field = editor.get_by_role("textbox", name=RULE_TEXT)
     field.fill("Tell me if anyone except family touches the bin after 9 PM")
-    page.get_by_role("button", name="Review rule draft").click()
-    expect(page.get_by_role("alert")).to_contain_text("Rule service unavailable")
+    editor.get_by_role("button", name="Review rule draft").click()
+    expect(editor.get_by_role("alert")).to_contain_text("Rule service unavailable")
     expect(field).to_have_value("Tell me if anyone except family touches the bin after 9 PM")
+    editor.get_by_role("button", name="Close New rule").click()
     expect(page.get_by_role("region", name="Current rules")).to_contain_text("Side gate after dark")
 
 
@@ -171,23 +174,24 @@ def test_step6_each_sample_audio_button_gives_an_editable_transcript_and_a_draft
     wait_ready(page)
     fixtures = page.request.get(server_url + "/api/voice/fixtures").json()["fixtures"]
     assert [f["id"] for f in fixtures] == ["vf_family_bin", "vf_strangers_gate", "vf_named_gate"]
+    editor = open_rule_editor(page)
     for fixture in fixtures:
-        page.get_by_role("button", name=fixture["label"]).click()
-        text = page.get_by_role("textbox", name="Rule text")
+        editor.get_by_role("button", name=fixture["label"]).click()
+        text = editor.get_by_role("textbox", name=RULE_TEXT)
         expect(text).to_have_value(fixture["transcript"])
         expect(text).to_be_editable()
         with page.expect_response("**/api/rules/compile") as response:
-            page.get_by_role("button", name="Review rule draft").click()
+            editor.get_by_role("button", name="Review rule draft").click()
         body = response.value.json()
         assert body["live"] is False
-        draft = page.get_by_role("region", name="Rule draft", exact=True)
+        draft = editor.get_by_role("region", name="Rule draft", exact=True)
         expect(draft).to_contain_text(body["result"]["applies_label"])
         expect(draft).to_contain_text(body["result"]["basis_note"])
         expect(draft).to_contain_text(NO_TEMPLATES)
         expect(draft.get_by_role("button", name="Confirm rule")).to_be_disabled()
-    expect(draft).to_contain_text("Vigil can't recognise individuals")
-    page.get_by_role("button", name=fixtures[0]["label"]).click()
-    page.get_by_role("button", name="Review rule draft").click()
+    expect(draft).to_contain_text("Rules can't recognise individuals")
+    editor.get_by_role("button", name=fixtures[0]["label"]).click()
+    editor.get_by_role("button", name="Review rule draft").click()
     expect(draft).to_contain_text("Applies to everyone except household members.")
     expect(draft).to_contain_text("Vigil treats someone as household only when it saw them")
 
@@ -239,7 +243,8 @@ def test_browser_encodes_16khz_mono_16bit_wav_the_server_accepts(page: Page, tmp
     with running_app(app) as url:
         page.goto(url + "/next/#/rules")
         wait_ready(page)
-        page.get_by_role("button", name="Record a voice rule").click()
+        editor = open_rule_editor(page)
+        editor.get_by_role("button", name="Dictate rule").click()
         dialog = page.get_by_role("dialog", name="Voice rule", exact=True)
         dialog.get_by_role("button", name="Start microphone").click()
         expect(dialog.get_by_role("button", name="Stop and transcribe")).to_be_visible()
@@ -248,7 +253,8 @@ def test_browser_encodes_16khz_mono_16bit_wav_the_server_accepts(page: Page, tmp
             dialog.get_by_role("button", name="Stop and transcribe").click()
         assert result.value.status == 200
         assert result.value.json()["result"]["transcript"] == ""
-        page.get_by_role("button", name="Record a voice rule").click()
+        expect(dialog).not_to_be_visible()
+        editor.get_by_role("button", name="Dictate rule").click()
         dialog.get_by_role("button", name="Start microphone").click()
         expect(dialog.get_by_role("button", name="Stop and transcribe")).to_be_visible()
         with page.expect_response("**/api/voice/transcribe") as limit:

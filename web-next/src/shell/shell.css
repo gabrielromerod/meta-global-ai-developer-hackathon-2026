@@ -11,3 +11,15 @@
 @media(max-width:640px){.v-app-shell{display:block;height:auto;min-height:var(--v-screen-small);min-height:var(--v-screen-dynamic);overflow:visible}.v-sidebar{display:none}.v-topbar{padding:var(--v-space-1) var(--v-space-2);min-height:var(--v-topbar);gap:var(--v-space-1)}.v-mobile-menu{display:inline-flex}.v-page-context{display:none}.v-page-title h1{font-size:var(--v-text-lg)}.v-topbar-actions{gap:calc(var(--v-space-1)/2)}.v-topbar-actions>.v-chip{font-size:var(--v-text-xs);padding:calc(var(--v-space-1)/2)}.v-main{padding:var(--v-space-2);overflow:visible;min-height:calc(100svh - var(--v-topbar))}.v-navigation-mobile{gap:var(--v-space-1)}.v-navigation-mobile .v-nav-item{justify-content:flex-start}.v-navigation-mobile .v-nav-settings{margin-top:var(--v-zero)}}
 @media(prefers-reduced-motion:reduce){.v-sidebar,.v-notification-scroll{scroll-behavior:auto}}
 .v-nav-tooltip{margin-left:var(--v-space-1)}.v-notifications{margin-top:var(--v-space-1)}
+.v-page-context{display:none}
+/* Put the time beside the status and keep each notification easy to scan. */
+.v-notification-heading{padding:var(--v-space-2)}
+.v-notification-item{padding:var(--v-space-1);align-items:center}
+.v-notification-thumb,.v-notification-item>img{width:var(--v-space-4);height:var(--v-space-4)}
+.v-notification-copy{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:var(--v-space-1)}
+.v-notification-copy p{grid-column:1 / -1;margin:calc(var(--v-space-1)/2) 0 0}
+.v-notification-copy time{grid-column:2;grid-row:1;white-space:nowrap}
+.v-unread-dot{width:6px;height:6px;margin-top:0}
+
+@media (min-width:641px) and (max-width:1180px){.v-brand span{display:block;font-size:var(--v-text-sm)}}
+@media (min-width:641px){.v-sidebar>.v-navigation{margin-top:clamp(var(--v-space-4),8vh,var(--v-space-12))}}

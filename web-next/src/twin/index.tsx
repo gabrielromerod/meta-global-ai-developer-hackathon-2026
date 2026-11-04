@@ -1119,7 +1119,7 @@ export function HouseView({
                 palette={palette}
                 preset={`${actualPreset}:${reset}`}
                 zoom={zoom}
-                reduced={reduced}
+                reduced={true}
                 onState={(position, target, fov) => {
                   if (container.current) {
                     container.current.dataset.cameraY = String(position[1]);

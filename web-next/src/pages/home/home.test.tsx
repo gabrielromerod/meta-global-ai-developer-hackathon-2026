@@ -22,8 +22,15 @@ it('full Attention can filter normal visits outside the urgent preview IDs',asyn
 });
 
 describe('Home cards and selection (FR-017, FR-044)', () => {
-  it('keeps verdict, spatial basis and supplied rule reason visible for both gate touches', () => {
+  it('keeps Home focused on what to review and links to the full list', () => {
     render(<HomePage state={state} {...callbacks()} />);
+    expect(screen.getByRole('heading',{name:/to review$/})).toBeVisible();
+    expect(screen.queryByRole('region',{name:'Same action, different context'})).not.toBeInTheDocument();
+    expect(screen.getByRole('link',{name:'See all visits'})).toHaveAttribute('href','#/attention');
+  });
+  it('keeps verdict, spatial basis and supplied rule reason visible for both gate touches', async () => {
+    render(<AttentionPage state={state} {...callbacks()} />);
+    await userEvent.click(screen.getByText(/Why did two side gate touches/));
     const comparison = screen.getByRole('region',{name:'Same action, different context'});
     expect(within(comparison).getByText('Normal')).toBeVisible();
     expect(within(comparison).getByText('Needs attention')).toBeVisible();
@@ -35,19 +42,20 @@ describe('Home cards and selection (FR-017, FR-044)', () => {
   });
   it('opens the actual compared visit when its card is selected', async () => {
     const props = callbacks();
-    render(<HomePage state={state} {...props} />);
+    render(<AttentionPage state={state} {...props} />);
+    await userEvent.click(screen.getByText(/Why did two side gate touches/));
     await userEvent.click(screen.getByRole('button',{name:/Open household side gate visit/i}));
     expect(props.onOpenVisit).toHaveBeenCalledWith('v_ap');
   });
-  it('uses config tabs and emits the selected view while rendering lead slots once', async () => {
-    const onViewChange = vi.fn();
-    render(<HomePage state={state} {...callbacks()} onViewChange={onViewChange}
+  it('renders the house and player slots once and lets the house expand', async () => {
+    render(<HomePage state={state} {...callbacks()}
       twinSlot={<div data-testid="twin-slot">House view</div>}
       playerSlot={<div data-testid="player-slot">Camera player</div>} />);
     expect(screen.getAllByTestId('twin-slot')).toHaveLength(1);
     expect(screen.getAllByTestId('player-slot')).toHaveLength(1);
-    await userEvent.click(screen.getByRole('tab',{name:'Night'}));
-    expect(onViewChange).toHaveBeenCalledWith('night');
+    const expand = screen.getByRole('button',{name:'Expand house'});
+    await userEvent.click(expand);
+    expect(screen.getByRole('button',{name:'Show recordings'})).toHaveAttribute('aria-pressed','true');
   });
   it('shows measured summary data and explicitly keeps unknown prefilter counts unavailable', () => {
     render(<HomePage state={state} {...callbacks()} />);

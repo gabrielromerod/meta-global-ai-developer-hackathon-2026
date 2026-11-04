@@ -24,6 +24,7 @@ reolink_aio), so `t` is the edge machine's receive time on the session clock.
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import hashlib
 import logging
 import time
@@ -206,6 +207,24 @@ async def stream_ai_events(
         yield ev
 
 
+async def connect_host(host_cls, ip: str, user: str, password: str):
+    """Log in over HTTP; when the camera's HTTP API is off, use port 9000 only (``bc_only``).
+
+    Alerts arrive over Baichuan either way, so a camera with HTTP and RTSP off still works.
+    """
+    host = host_cls(ip, user, password)
+    try:
+        await host.get_host_data()
+        return host
+    except Exception as err:
+        log.info("HTTP login to %s failed (%s); using port 9000 only", ip, redact(err))
+        with contextlib.suppress(Exception):
+            await host.logout()
+    host = host_cls(ip, user, password, bc_only=True)
+    await host.get_host_data()
+    return host
+
+
 class ReolinkAioPushAdapter:
     """Field adapter: one reolink_aio Host per device, Baichuan TCP push subscription."""
 
@@ -222,19 +241,21 @@ class ReolinkAioPushAdapter:
         queue: asyncio.Queue[PushState] = asyncio.Queue()
         hosts: dict[str, object] = {}
         channels: dict[str, set[int]] = {}
+        logins = {}
         for cam in cams:
             creds = camera_credentials(cam)
             key = cam.source.host_env  # type: ignore[union-attr]
             channels.setdefault(key, set()).add(channel_index(cam))
-            if key in hosts:
-                continue
-            host = self._host_cls(
-                creds.host, creds.user.get_secret_value(), creds.password.get_secret_value()
-            )
-            hosts[key] = host
+            logins.setdefault(key, creds)
         try:
-            for key, host in hosts.items():
-                await host.get_host_data()  # type: ignore[attr-defined]
+            for key, creds in logins.items():
+                host = await connect_host(
+                    self._host_cls,
+                    creds.host,
+                    creds.user.get_secret_value(),
+                    creds.password.get_secret_value(),
+                )
+                hosts[key] = host
 
                 def snapshot(key: str = key, host: object = host) -> None:
                     t = self.clock() - self.session_start

@@ -3,8 +3,11 @@
 SAM ids are only stable inside one response, so a person who walks through three
 overlapping windows comes back as three ids. Objects of the same camera and noun phrase in
 different windows are joined when their boxes agree (mean IoU) on the frames both windows
-cover. Matching is one-to-one between any two windows, a track never holds two ids of the
-same window, and the result does not depend on input order.
+cover. Windows that only touch (event-clip parts abut with a fraction of a second of overlap
+and no shared frame instant) hand off instead: the box nearest the later object's first
+frame must agree with that first box, within ``HANDOFF_S``. Matching is one-to-one
+between any two windows, a track never holds two ids of the same window, and the result
+does not depend on input order.
 
 Track ids are ``f"{camera}-{cls}-{n}"`` numbered by first appearance per camera and class;
 tags ``T1..Tn`` (burned into clips for Spark, FR-009) are numbered by first appearance over
@@ -19,6 +22,8 @@ from vigil.models import Box, SamObject, Track, TrackClass, TrackFrame
 
 IOU_THRESHOLD = 0.5
 MIN_SHARED_FRAMES = 1
+HANDOFF_S = 0.25
+"""Largest time between the boxes compared when two windows share no frame instant."""
 EDGE_PX = 1.0
 """A box whose bottom is within this many pixels of the image's bottom edge is clipped."""
 
@@ -40,6 +45,34 @@ TrackLink = tuple[str, str, int]
 """(track id, window id, SAM object id): one row of the track_windows table (spec 9.3)."""
 
 
+def to_camera_size(obj: SamObject, width: int, height: int) -> SamObject:
+    """The object with boxes and masks in the camera's configured frame size.
+
+    SAM answers in the pixels of the window it saw; an event clip mixes the sub stream
+    (e.g. 1536x576) and the main stream (1920x720), while zones, privacy polygons and
+    stitching all work in the camera's configured size. Unknown sizes are left as they are.
+    """
+    if obj.width is None or obj.height is None or (obj.width, obj.height) == (width, height):
+        return obj
+    sx, sy = width / obj.width, height / obj.height
+    frames = []
+    for f in obj.frames:
+        update: dict = {
+            "box": Box(x1=f.box.x1 * sx, y1=f.box.y1 * sy, x2=f.box.x2 * sx, y2=f.box.y2 * sy)
+        }
+        if f.mask_rle:
+            import cv2
+            import numpy as np
+
+            from vigil.perception.rle import decode_rle, encode_rle
+
+            small = decode_rle(f.mask_rle, obj.height, obj.width).astype(np.uint8)
+            big = cv2.resize(small, (width, height), interpolation=cv2.INTER_NEAREST)
+            update["mask_rle"] = encode_rle(big.astype(bool))
+        frames.append(f.model_copy(update=update))
+    return obj.model_copy(update={"frames": frames, "width": width, "height": height})
+
+
 def phrase_class(phrase: str) -> TrackClass:
     """Map a SAM noun phrase to the contract's track class (anything else is "object")."""
     return _CLASS_WORDS.get(" ".join(phrase.lower().split()), "object")
@@ -59,6 +92,16 @@ def _match_score(a: dict[int, Box], b: dict[int, Box], min_shared: int) -> float
     if len(shared) < max(1, min_shared):
         return None
     return sum(a[k].iou(b[k]) for k in shared) / len(shared)
+
+
+def _handoff_score(a: SamObject, b: SamObject, handoff_s: float) -> float | None:
+    """IoU across a window boundary: the earlier object's box nearest the later one's start."""
+    first, later = sorted((a, b), key=lambda o: (min(f.t for f in o.frames), o.window_id))
+    start = min(later.frames, key=lambda f: f.t)
+    near = min(first.frames, key=lambda f: (abs(f.t - start.t), f.t))
+    if abs(near.t - start.t) > handoff_s:
+        return None
+    return near.box.iou(start.box)
 
 
 class _Union:
@@ -123,6 +166,7 @@ def stitch_with_links(
     min_shared: int = MIN_SHARED_FRAMES,
     frame_height: int | Mapping[str, int] = 720,
     edge_px: float = EDGE_PX,
+    handoff_s: float = HANDOFF_S,
 ) -> tuple[list[Track], list[TrackLink]]:
     """Stitch objects into tracks and return the (track, window, SAM id) links too."""
     ordered = sorted((o for o in objs if o.frames), key=_obj_sort_key)
@@ -140,6 +184,8 @@ def stitch_with_links(
                 if ordered[i].window_id == ordered[j].window_id:
                     continue
                 score = _match_score(maps[i], maps[j], min_shared)
+                if score is None:
+                    score = _handoff_score(ordered[i], ordered[j], handoff_s)
                 if score is not None and score >= iou_threshold:
                     candidates.append((-score, i, j))
         used: set[tuple[int, str]] = set()

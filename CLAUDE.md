@@ -62,6 +62,11 @@ docs/          spec/, requirements/, runbooks/, architecture/, plans/, conventio
 - Model output can only act through allowlists (watch phrases, rule targets). No person-related
   schema (appearance, track, subject, event, position) has face, age, gender, skin, ethnicity,
   height, gait, body-measurement, voice-feature or name fields (NFR-003).
+- **Face templates are opt-in and stay out of reasoning** (change 2026-11-04). `vigil/faces/`
+  stores them in `data/faces.db` only when `VIGIL_FACE_TEMPLATES=1`. They come from local
+  YuNet/SFace models and never go to a model API. Only people inside the property are enrolled
+  (never a `perimeter` zone). A profile name shows only on the owner's card: never in a role,
+  a rule, the ledger, Wonder's input or a story.
 - **Roles are code, from spatial origin only (FR-044, spec 9.4).** `assign_roles` in
   `reasoning/visits.py` sets `actor_role` (`household_insider` | `expected_visitor` |
   `external_visitor` | `unknown`) with a stored `role_basis`. Never identify anyone or map a

@@ -1,29 +1,87 @@
-import {useEffect,useId,useRef,useState,type FormEvent} from 'react';
-import {Camera as CameraIcon,Clock3,House,LockKeyhole,Wifi} from 'lucide-react';
-import type {Camera,NewExpectedWindow,PageProps} from '../../contracts';
-import {Button,Card,Chip,EmptyState,Modal,Tabs} from '../../components/ui';
+import {useEffect,useId,useRef,useState,type FormEvent,type ReactNode} from 'react';
+import {CalendarClock,Camera as CameraIcon,ChevronRight,Clock3,DoorOpen,EyeOff,FileX,Film,House,Info,KeyRound,LockKeyhole,MicOff,Plug,Plus,Router,ShieldAlert,ShieldCheck,Wifi,X} from 'lucide-react';
+import type {Camera,ExpectedWindow,NewExpectedWindow,PageProps,UIState} from '../../contracts';
+import {Button,Chip,EmptyState,Modal,Tabs} from '../../components/ui';
 import {Field,formatRecordedTime,PageHeading,StatusChip,words} from './controls';
 import './controls.css';
 
-const tabs=[{id:'cameras',label:'Cameras'},{id:'privacy',label:'Privacy'},{id:'household',label:'Household'},{id:'owner',label:'Owner controls'}];
+const tabs=[{id:'cameras',label:'Cameras'},{id:'privacy',label:'Privacy'},{id:'owner',label:'Owner access'}];
 export function SettingsPage(props:PageProps){
   const [tab,setTab]=useState('cameras');
   return <div className="controls-page settings-page"><PageHeading title="Home setup" description="Cameras, privacy and owner access." action={<Chip>{props.state.cameras.length} configured cameras</Chip>}/>
-    <Tabs items={tabs} value={tab} onChange={setTab} label="Settings sections" className="controls-tabs"><div className="controls-scroll" tabIndex={0} aria-label={`${tabs.find(t=>t.id===tab)?.label} settings`}>
-      {tab==='cameras'?<Cameras cameras={props.state.cameras}/>:tab==='privacy'?<Privacy cameras={props.state.cameras}/>:tab==='household'?<Household {...props}/>:props.ownerSlot??<OwnerControls {...props}/>}
+    <Tabs items={tabs} value={tab} onChange={setTab} label="Settings sections" className="controls-tabs pv-tabs"><div className="pv-body st-body">
+      {tab==='cameras'?<Cameras cameras={props.state.cameras}/>:tab==='privacy'?<Privacy cameras={props.state.cameras}/>:props.ownerSlot??<div className="st-col st-narrow"><OwnerControls {...props} section="access" notice={false}/></div>}
     </div></Tabs>
   </div>;
 }
+function powerLabel(camera:Camera){return camera.power_profile==='battery_wifi'?'Battery':camera.power_profile==='import'?'Battery / imported clips':'AC power';}
+function DetailRow({icon,label,value,tone}:{icon:ReactNode;label:string;value:string;tone?:'warning'}){
+  return <li className="pv-row"><span className="pv-bubble" aria-hidden="true">{icon}</span><div className="pv-row-body"><span className="pv-meta">{label}</span><strong className={tone?'st-warn':undefined}>{value}</strong></div></li>;
+}
 function Cameras({cameras}:{cameras:Camera[]}){
-  return cameras.length?<div className="controls-grid">{cameras.map(camera=><article className="v-card" key={camera.id} aria-label={`${camera.name} camera`}><h3 className="controls-card-title"><CameraIcon aria-hidden="true"/>{camera.name}</h3><p className="controls-note">{camera.model||'Model not confirmed'}</p><div className="controls-inline"><StatusChip value={camera.status}/>{camera.source_label.toLowerCase()!==camera.status.replaceAll("_"," ").toLowerCase()&&<Chip>{camera.source_label}</Chip>}</div><dl className="controls-definition"><dt>Power</dt><dd>{camera.power_profile==='battery_wifi'?'Battery':camera.power_profile==='import'?'Battery / imported clips':'AC power'}</dd><dt><Wifi aria-hidden="true" className="controls-small-icon"/> Wi-Fi</dt><dd>{camera.wifi_signal_dbm===null?'Not measured':`${camera.wifi_signal_dbm} dBm`}</dd><dt><Clock3 aria-hidden="true" className="controls-small-icon"/> Clock offset</dt><dd>{camera.clock_offset_s===null?'Not measured':`${camera.clock_offset_s.toFixed(2)} s`}</dd><dt>Home Hub</dt><dd>{camera.hub_present===null?'Not confirmed':camera.hub_present?'Present':'Not present'}</dd></dl>{camera.clock_offset_s!==null&&Math.abs(camera.clock_offset_s)>2&&<p className="controls-error">Clock sync required before linking cameras.</p>}{['battery_wifi','import'].includes(camera.power_profile)&&<p className="controls-hint">Battery cameras never hold a stream open.</p>}</article>)}</div>:<EmptyState title="No cameras configured" description="Cameras appear after the home configuration is loaded."/>;
+  const [selectedId,setSelectedId]=useState(cameras[0]?.id??'');
+  const selected=cameras.find(c=>c.id===selectedId)??cameras[0];
+  if(!cameras.length)return <EmptyState title="No cameras configured" description="Cameras appear after the home configuration is loaded."/>;
+  const clockWarn=selected.clock_offset_s!==null&&Math.abs(selected.clock_offset_s)>2;
+  return <div className="st-layout">
+    <section className="st-col" aria-labelledby="st-cameras-title">
+      <header className="pv-section-head"><h2 id="st-cameras-title">Cameras</h2><span className="pv-meta">{cameras.length} configured</span></header>
+      <ul className="pv-list pv-scroll st-list" tabIndex={0} aria-label="Camera list">{cameras.map(camera=>{const isSelected=camera.id===selected.id;const extra=camera.source_label.toLowerCase()!==camera.status.replaceAll('_',' ').toLowerCase();
+        return <li key={camera.id}><article className="pv-row st-pick" data-selected={isSelected||undefined} aria-label={`${camera.name} camera`} onClick={()=>setSelectedId(camera.id)}>
+          <span className="pv-bubble" aria-hidden="true"><CameraIcon/></span>
+          <div className="pv-row-body"><strong>{camera.name}</strong><span className="pv-meta">{camera.model||'Model not confirmed'} · {powerLabel(camera)}</span></div>
+          <div className="pv-row-end st-chips"><StatusChip value={camera.status}/>{extra&&<Chip>{camera.source_label}</Chip>}</div>
+          <button type="button" className="pv-icon-btn" aria-pressed={isSelected} aria-label={`Show ${camera.name} details`} onClick={event=>{event.stopPropagation();setSelectedId(camera.id);}}><ChevronRight aria-hidden="true"/></button>
+        </article></li>;})}</ul>
+    </section>
+    <section className="st-col" aria-label={`${selected.name} details`}>
+      <header className="st-detail-head"><span className="pv-bubble st-bubble-lg" aria-hidden="true"><CameraIcon/></span><div className="pv-row-body"><h2>{selected.name}</h2><span className="pv-meta">{selected.model||'Model not confirmed'}</span></div></header>
+      <div className="pv-scroll st-stack" tabIndex={0} aria-label="Camera details">
+        <ul className="pv-list st-list">
+          <DetailRow icon={<Plug/>} label="Power" value={powerLabel(selected)}/>
+          <DetailRow icon={<Wifi/>} label="Wi-Fi signal" value={selected.wifi_signal_dbm===null?'Not measured':`${selected.wifi_signal_dbm} dBm`}/>
+          <DetailRow icon={<Clock3/>} label="Clock offset" value={selected.clock_offset_s===null?'Not measured':`${selected.clock_offset_s.toFixed(2)} s`} tone={clockWarn?'warning':undefined}/>
+          <DetailRow icon={<Router/>} label="Home Hub" value={selected.hub_present===null?'Not confirmed':selected.hub_present?'Present':'Not present'}/>
+          <DetailRow icon={<Film/>} label="Source" value={selected.source_label}/>
+        </ul>
+        {clockWarn&&<p className="controls-error">Clock sync required before linking cameras.</p>}
+        {['battery_wifi','import'].includes(selected.power_profile)&&<p className="pv-footnote"><Info aria-hidden="true"/>Battery cameras never hold a stream open.</p>}
+      </div>
+    </section>
+  </div>;
+}
+function reviewState(camera:Camera):{label:string;ok:boolean}{
+  if(camera.status==='privacy_blocked'||camera.privacy_reviewed===false)return {label:'Review required',ok:false};
+  return camera.privacy_reviewed===true?{label:'Reviewed',ok:true}:{label:'Review not confirmed',ok:false};
 }
 function Privacy({cameras}:{cameras:Camera[]}){
-  return <div className="controls-grid"><Card title="Review every camera"><p className="controls-note">Ingest stays blocked until the owner approves a real still and its exact privacy masks.</p><ul className="controls-list">{cameras.map(camera=><li className="controls-window" key={camera.id} aria-label={`${camera.name} privacy review`}><div className="controls-inline"><strong>{camera.name}</strong><Chip tone={camera.privacy_reviewed===true&&camera.status!=='privacy_blocked'?'success':'warning'}>{camera.status==='privacy_blocked'||camera.privacy_reviewed===false?'Review required':camera.privacy_reviewed===true?'Reviewed':'Review not confirmed'}</Chip></div></li>)}</ul></Card><div className="controls-stack"><Card title="Front panorama masks"><ul className="controls-policy-list"><li>Sky and mountain ridgeline</li><li>Opposite houses and cars</li><li>Neighbouring driveways and cars</li><li>Curb numbers and distant street furniture</li><li>On-screen timestamp and camera watermark</li></ul><p className="controls-note">The near street, sidewalk and owned property remain visible.</p></Card><Card title="Silent, metadata-free evidence"><p className="controls-note">Camera audio is never used. Ingest rejects any audio stream, and exported assets lose EXIF and GPS metadata.</p><p className="controls-hint">Mask coverage requires owner review on the home box. Templates are not field acceptance.</p></Card></div></div>;
+  const reviewed=cameras.filter(c=>reviewState(c).ok).length;
+  const masks=['Sky and mountain ridgeline','Opposite houses and cars','Neighbouring driveways and cars','Curb numbers and distant street furniture','On-screen timestamp and camera watermark'];
+  return <div className="st-layout">
+    <section className="st-col" aria-labelledby="st-review-title">
+      <header className="pv-section-head"><h2 id="st-review-title">Review every camera</h2><span className="pv-meta">{reviewed} of {cameras.length} reviewed</span></header>
+      <p className="pv-hint">Ingest stays blocked until the owner approves a real still and its exact privacy masks.</p>
+      <ul className="pv-list pv-scroll st-list" tabIndex={0} aria-label="Camera privacy reviews">{cameras.map(camera=>{const review=reviewState(camera);
+        return <li className="pv-row" key={camera.id} aria-label={`${camera.name} privacy review`}><span className="pv-bubble" aria-hidden="true">{review.ok?<ShieldCheck/>:<ShieldAlert/>}</span><div className="pv-row-body"><strong>{camera.name}</strong><span className="pv-meta">{review.ok?'Masks approved on the home box':'Approve a still and its masks on the home box'}</span></div><Chip tone={review.ok?'success':'warning'}>{review.label}</Chip></li>;})}</ul>
+    </section>
+    <section className="st-col" aria-labelledby="st-masks-title">
+      <header className="pv-section-head"><h2 id="st-masks-title">What stays private</h2></header>
+      <div className="pv-scroll st-stack" tabIndex={0} aria-label="Privacy policy">
+        <ul className="pv-list st-list" aria-label="Front panorama masks">{masks.map(mask=><li className="pv-row" key={mask}><span className="pv-bubble" aria-hidden="true"><EyeOff/></span><div className="pv-row-body"><strong>{mask}</strong><span className="pv-meta">Masked on the front panorama</span></div></li>)}</ul>
+        <p className="pv-hint">The near street, sidewalk and owned property remain visible.</p>
+        <ul className="pv-list st-list" aria-label="Evidence rules">
+          <li className="pv-row"><span className="pv-bubble" aria-hidden="true"><MicOff/></span><div className="pv-row-body"><strong>Silent evidence</strong><span className="pv-meta">Camera audio is never used. Ingest rejects any audio stream.</span></div></li>
+          <li className="pv-row"><span className="pv-bubble" aria-hidden="true"><FileX/></span><div className="pv-row-body"><strong>Metadata-free exports</strong><span className="pv-meta">Exported assets lose EXIF and GPS metadata.</span></div></li>
+        </ul>
+        <p className="pv-footnote"><Info aria-hidden="true"/>Mask coverage requires owner review on the home box. Templates are not field acceptance.</p>
+      </div>
+    </section>
+  </div>;
 }
-function Household({state}:PageProps){
-  return <div className="controls-grid"><Card title="Household"><div className="controls-inline"><span className="controls-avatar">{state.household.avatar_url?<img src={state.household.avatar_url} alt=""/>:<House aria-hidden="true"/>}</span><strong>{state.household.name}</strong></div><p className="controls-note">Household messages stay local to this browser. No people-to-people messaging server is connected.</p></Card><Card title="Roles follow observed routes"><p className="controls-note">Vigil does not identify people. Household and visitor roles come from where a subject was observed to arrive, an owner check-in or an expected window.</p><p className="controls-hint">An unknown origin is treated as non-household. A later label does not change a recorded verdict.</p></Card></div>;
+export function Household({state}:PageProps){
+  return <ul className="pv-list st-list" aria-label="Household"><li className="pv-row"><span className="pv-bubble st-avatar" aria-hidden="true">{state.household.avatar_url?<img src={state.household.avatar_url} alt=""/>:<House/>}</span><div className="pv-row-body"><strong>{state.household.name}</strong><span className="pv-meta">Household messages stay local to this browser. No people-to-people messaging server is connected.</span></div></li></ul>;
 }
-function OwnerControls({state,ownerActions,protectionSlot}:PageProps){
+export function OwnerControls({state,ownerActions,section='access',notice=true}:PageProps & {section?:'access'|'visitors';notice?:boolean}){
   const id=useId();
   const [token,setToken]=useState('');
   const [label,setLabel]=useState('');
@@ -79,34 +137,24 @@ function OwnerControls({state,ownerActions,protectionSlot}:PageProps){
   const failure=error||ownerActions?.error;
   const feedback=<>{failure&&<p className="controls-error" role="alert">{failure}</p>}{pending&&<p className="controls-status" role="status">Saving owner changes…</p>}</>;
   return <div className="controls-stack">
-    <div className="controls-inline"><LockKeyhole aria-hidden="true"/>{!owner?<p className="controls-status">Owner-only on the home box</p>:<Chip tone="success">Owner session active</Chip>}</div>
+    {notice&&<div className="controls-inline"><LockKeyhole aria-hidden="true"/>{!owner?<p className="controls-status">Owner access is required. Open Settings → Owner access on the home box.</p>:<Chip tone="success">Owner session active</Chip>}</div>}
     {!windowOpen&&feedback}
-    <div className="controls-grid">
-      <div className="controls-stack">
-        <Card title="Owner access"><p className="controls-note">The token stays in this tab. It is never put in a URL or shared in messages.</p>
-          <form onSubmit={save} className="controls-form">
+    {section==='access'&&<section className="st-stack" aria-labelledby={`${id}-access`}>
+      <header className="pv-section-head"><h2 id={`${id}-access`}>Owner access</h2></header>
+      <ul className="pv-list st-list">
+        <li className="pv-row"><span className="pv-bubble" aria-hidden="true">{owner?<ShieldCheck/>:<LockKeyhole/>}</span><div className="pv-row-body"><strong>Owner session</strong><span className="pv-meta">{!edge?'Owner-only on the home box':owner?'Active on this browser':'Not signed in on this browser'}</span></div>{owner?<Chip tone="success">Active</Chip>:<Chip>{edge?'Signed out':'Unavailable'}</Chip>}</li>
+        <li className="pv-row st-form-row"><span className="pv-bubble" aria-hidden="true"><KeyRound/></span>
+          <form onSubmit={save} className="st-token-form">
             <Field label="Owner token" id={`${id}-token`}><input id={`${id}-token`} className="controls-input" type="password" value={token} onChange={e=>setToken(e.target.value)} disabled={!tokenAllowed} autoComplete="off" spellCheck={false}/></Field>
             <Button type="submit" disabled={!tokenAllowed||!token.trim()}>Save owner token</Button>
-          </form>
-        </Card>
-        <Card title="Check in"><p className="controls-note">Single-use and never retroactive. A check-in can bind one observed subject chain within {state.owner.checkin_duration_s} seconds.</p>
-          <Button onClick={()=>ownerActions?.checkIn?.()} disabled={!owner||!ownerActions?.checkIn||pending}>I'm outside</Button>
-          {remaining!==null&&<p className="controls-status" role="status">{remaining>0?`${remaining} s remaining`:'Check-in window ended'}</p>}
-        </Card>
-      </div>
-      <Card title="Expected windows" actions={<Button variant="outline" disabled={!createAllowed} onClick={()=>{setError(null);submission.current=null;setWindowOpen(true);}}>New expected window</Button>}>
-        <p className="controls-note">Recorded examples stay unchanged. Owners can cancel their active or scheduled windows.</p>
-        {state.owner.windows.length?<div className="controls-list">{state.owner.windows.map(window=><article className="controls-window" key={window.id} aria-label={window.label||'Expected window'}>
-          <header><h3>{window.label||'Expected window'}</h3><div className="controls-inline"><StatusChip value={window.state}/>{window.recorded&&<Chip>Recorded example</Chip>}</div></header>
-          <p>{formatRecordedTime(window.start)} – {formatRecordedTime(window.end)}</p>
-          {window.cameras.length>0&&<p>Cameras: {window.cameras.map(cid=>state.cameras.find(c=>c.id===cid)?.name||words(cid)).join(', ')}</p>}
-          {window.zones.length>0&&<p>Zones: {window.zones.map(words).join(', ')}</p>}
-          {!window.cameras.length&&!window.zones.length&&<p>All configured cameras</p>}
-          <Button variant="outline" onClick={()=>ownerActions?.cancelWindow?.(window.id)} disabled={!owner||!ownerActions?.cancelWindow||pending||!!window.recorded||!['scheduled','active'].includes(window.state)}>Cancel window</Button>
-        </article>)}</div>:<EmptyState title="No expected windows" description="New windows appear after the owner saves them."/>}
-      </Card>
-    </div>
-    {protectionSlot}
+          </form></li>
+      </ul>
+      <p className="pv-footnote"><Info aria-hidden="true"/>The token stays in this tab. It is never put in a URL or shared in messages.</p>
+      <Household state={state} onOpenVisit={()=>{}} onOpenClip={()=>{}}/>
+    </section>}
+    {section==='visitors'&&<VisitorList state={state} owner={owner} pending={pending} remaining={remaining} canCheckIn={owner&&!!ownerActions?.checkIn&&!pending} createAllowed={createAllowed}
+      onCheckIn={()=>ownerActions?.checkIn?.()} onNew={()=>{setError(null);submission.current=null;setWindowOpen(true);}}
+      onCancel={ownerActions?.cancelWindow&&owner&&!pending?(windowId=>ownerActions.cancelWindow?.(windowId)):undefined}/>}
     <Modal open={windowOpen} title="New expected window" onClose={()=>setWindowOpen(false)} description="Set a delivery or guest window in advance. Maximum duration: 12 hours.">
       <div className="controls-stack">{feedback}<form className="controls-form" onSubmit={create} noValidate>
         <Field label="Window label" id={`${id}-label`}><input id={`${id}-label`} className="controls-input" value={label} onChange={e=>setLabel(e.target.value)} maxLength={60} disabled={!createAllowed}/></Field>
@@ -120,4 +168,32 @@ function OwnerControls({state,ownerActions,protectionSlot}:PageProps){
       </form></div>
     </Modal>
   </div>;
+}
+
+const MUTABLE_WINDOW=['scheduled','active'];
+function WindowRow({window,state,onCancel}:{window:ExpectedWindow;state:UIState;onCancel?:(id:string)=>void}){
+  const scope=[window.cameras.map(cid=>state.cameras.find(c=>c.id===cid)?.name||words(cid)).join(', '),window.zones.map(words).join(', ')].filter(Boolean).join(' · ')||'All cameras';
+  const mutable=!window.recorded&&MUTABLE_WINDOW.includes(window.state);
+  return <li className="pv-subrow"><article aria-label={window.label||'Expected window'}>
+    <div className="pv-row-body"><strong>{words(window.label||'Expected window')}</strong><span className="pv-meta">{formatRecordedTime(window.start)} – {formatRecordedTime(window.end)}</span><span className="pv-meta">{scope}{window.recorded?' · Recorded example':''}</span></div>
+    <StatusChip value={window.state}/>
+    {mutable&&onCancel&&<button type="button" className="pv-icon-btn" aria-label="Cancel window" onClick={()=>onCancel(window.id)}><X aria-hidden="true"/></button>}
+  </article></li>;
+}
+function VisitorList({state,owner,pending,remaining,canCheckIn,createAllowed,onCheckIn,onNew,onCancel}:{state:UIState;owner:boolean;pending:boolean;remaining:number|null;canCheckIn:boolean;createAllowed:boolean;onCheckIn:()=>void;onNew:()=>void;onCancel?:(id:string)=>void}){
+  const upcoming=state.owner.windows.filter(w=>MUTABLE_WINDOW.includes(w.state));
+  const past=state.owner.windows.filter(w=>!MUTABLE_WINDOW.includes(w.state));
+  const checking=remaining!==null&&remaining>0;
+  return <ul className="pv-list">
+    <li className="pv-row"><span className="pv-bubble" aria-hidden="true"><DoorOpen/></span>
+      <div className="pv-row-body"><strong>Check in</strong><span className="pv-meta" role={remaining!==null?'status':undefined}>{remaining===null?`Tap as you step outside. You count as household for ${state.owner.checkin_duration_s} s.`:checking?`${remaining} s remaining`:'Check-in window ended'}</span></div>
+      <Button size="sm" disabled={!canCheckIn||checking} onClick={onCheckIn}>I'm outside</Button></li>
+    <li className="pv-row pv-row-group"><div className="pv-row-top"><span className="pv-bubble" aria-hidden="true"><CalendarClock/></span>
+      <div className="pv-row-body"><strong>Expected visitors</strong><span className="pv-meta">Delivery or guest coming? Their visit is not flagged.</span></div>
+      <button type="button" className="pv-icon-btn pv-icon-btn-accent" aria-label="New expected window" disabled={!createAllowed} onClick={onNew}><Plus aria-hidden="true"/></button></div>
+      {upcoming.length>0?<ul className="pv-sublist">{upcoming.map(w=><WindowRow key={w.id} window={w} state={state} onCancel={onCancel}/>)}</ul>:<p className="pv-hint pv-indent">{owner?'Nothing scheduled.':'Nothing scheduled. Owners can add a window.'}</p>}
+      {past.length>0&&<details className="pv-past pv-indent"><summary>Past windows ({past.length})</summary><ul className="pv-sublist">{past.map(w=><WindowRow key={w.id} window={w} state={state}/>)}</ul></details>}
+      {pending&&<p className="pv-hint pv-indent" role="status">Saving…</p>}
+    </li>
+  </ul>;
 }

@@ -36,13 +36,23 @@ def _free_port() -> int:
 
 
 @pytest.fixture(scope="session")
-def server_url() -> Iterator[str]:
+def server_url(tmp_path_factory: pytest.TempPathFactory) -> Iterator[str]:
     external = os.environ.get("VIGIL_E2E_BASE_URL")
     if external:
         # CI (spec 12.2 step 7): run against the Docker container started with an invalid key.
         yield external.rstrip("/")
         return
-    settings = Settings(mode="sandbox", MODEL_API_KEY="invalid")
+    # Hermetic like CI: no developer .env, data/ (private massing, captures) or repo-root DB.
+    root = tmp_path_factory.mktemp("e2e-sandbox")
+    settings = Settings(
+        _env_file=None,
+        mode="sandbox",
+        MODEL_API_KEY="invalid",
+        data_dir=root / "data",
+        db_path=root / "state.db",
+        ledger_path=root / "ledger.db",
+        cache_dir=root / "cache",
+    )
     app = create_app(settings, live_backend=UnreachableBackend())
     port = _free_port()
     server = uvicorn.Server(uvicorn.Config(app, host="127.0.0.1", port=port, log_level="warning"))

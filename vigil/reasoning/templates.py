@@ -29,12 +29,19 @@ def _visit_events(ledger: VisitLedger) -> list[Event]:
     return sorted(evs, key=lambda e: (e.t0, e.id))
 
 
-def _select(events: list[Event], limit: int) -> list[Event]:
-    """Keep the first and last events, then the most important ones, in time order."""
+def _select(events: list[Event], limit: int, vehicles: set[str] | None = None) -> list[Event]:
+    """Keep the first and last events, then the most important ones, in time order.
+
+    People come before vehicles: the story is about who came, not what was parked.
+    """
     if len(events) <= limit:
         return events
+    vehicles = vehicles or set()
     keep = {events[0].id, events[-1].id}
-    rest = sorted(events[1:-1], key=lambda e: (_PRIORITY.get(e.type, 9), e.t0, e.id))
+    rest = sorted(
+        events[1:-1],
+        key=lambda e: (e.track_id in vehicles, _PRIORITY.get(e.type, 9), e.t0, e.id),
+    )
     for e in rest:
         if len(keep) >= limit:
             break
@@ -67,37 +74,82 @@ def _subject_key(ledger: VisitLedger, event: Event) -> str | None:
     return s.id if s is not None else event.subject_id
 
 
+AT_START_S = 0.5
+"""An enter event this close to second 0 of the recording was already in view, not arriving."""
+
+
+def _track_class(track_id: str) -> str | None:
+    """SAM's class from the track id contract ``{camera}-{cls}-{n}`` (perception/tracks.py)."""
+    parts = track_id.rsplit("-", 2)
+    return parts[1] if len(parts) == 3 and parts[2].isdigit() else None
+
+
 def template_story(
     ledger: VisitLedger, *, max_sentences: int = MAX_SENTENCES
 ) -> list[StorySentence]:
     all_events = _visit_events(ledger)
-    events = _select(all_events, max_sentences)
     labels = {p.id: p.label for p in ledger.protected_objects}
     # Leaving a zone is not leaving the view: only a track's last event can say that.
     last_t: dict[str, float] = {}
+    first_t: dict[str, float] = {}
     for ev in all_events:
         last_t[ev.track_id] = max(last_t.get(ev.track_id, ev.t1), ev.t1)
+        first_t[ev.track_id] = min(first_t.get(ev.track_id, ev.t0), ev.t0)
+
+    def is_vehicle(track_id: str) -> bool:
+        # Spark's note when there is one, else SAM's class: an undescribed car is still a car.
+        note = ledger.appearance.get(track_id)
+        return (note.class_ == "vehicle") if note is not None else _track_class(track_id) == "car"
+
+    vehicles = {e.track_id for e in all_events if is_vehicle(e.track_id)}
+    # Vehicles already in view when the recording started are one sentence, not one each;
+    # their zone flicker is noise, and an exit at the end of the clip is the clip ending.
+    parked = sorted(t for t in vehicles if first_t[t] < AT_START_S)
+    end_t = max((e.t1 for e in all_events), default=0.0)
+    parked_starts = [e for e in all_events if e.track_id in parked and e.t0 < AT_START_S]
+    rest_events = [
+        e
+        for e in all_events
+        if e.track_id not in parked
+        or (e.type == "exit" and e.t1 >= last_t[e.track_id] and e.t1 < end_t - 1.0)
+    ]
     out: list[StorySentence] = []
-    seen_tracks: set[str] = set()
+    if parked_starts:
+        at = _clock(ledger, parked_starts[0].t0)
+        if len(parked) == 1:
+            target = humanise_id(parked_starts[0].target or "")
+            where = f"in the {target} area" if target else "in view"
+            text = f"A vehicle was already {where} when the recording started{at}."
+        else:
+            text = f"{len(parked)} vehicles were already in view when the recording started{at}."
+        ids = list(dict.fromkeys(e.id for e in parked_starts))
+        out.append(StorySentence(text=text, event_ids=ids, source="template"))
+    events = _select(rest_events, max_sentences - len(out), vehicles)
+    seen_tracks: set[str] = set(parked)
     prev_subject: str | None = None
+    prev_vehicle = bool(out)
     for e in events:
         cam = ledger.camera_names.get(e.camera_id, e.camera_id)
         at = _clock(ledger, e.t0)
-        note = ledger.appearance.get(e.track_id)
-        vehicle = note is not None and note.class_ == "vehicle"
+        vehicle = e.track_id in vehicles
         first = e.track_id not in seen_tracks
         seen_tracks.add(e.track_id)
         if vehicle:
             subj = "A vehicle" if first else "The vehicle"
         else:
             key = _subject_key(ledger, e)
-            if not out or (key is not None and key != prev_subject):
+            # After a sentence about a vehicle, "They" would read as the vehicle.
+            if not out or prev_vehicle or (key is not None and key != prev_subject):
                 subj = role_phrase(ledger, e) or "A person"
             else:
                 subj = "They"
             prev_subject = key
+        prev_vehicle = vehicle
         target = labels.get(e.target or "") or humanise_id(e.target or "")
         match e.type:
+            case "enter" if first and e.t0 < AT_START_S:  # a person in view from the start
+                where = f"in the {target} area" if target else "in view"
+                text = f"{subj} was already {where} when the recording started{at}."
             case "enter":
                 where = f"entered the {target} area" if target else "came into view"
                 text = f"{subj} {where} on the {cam} camera{at}."

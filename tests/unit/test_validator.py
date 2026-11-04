@@ -635,3 +635,17 @@ def test_identity_banned_word_is_reported_once() -> None:
         with_sentence("A Hispanic person walked toward the shed.", ["e18"]), role_ledger()
     )
     assert [f.check for f in res.failures] == ["banned_word"]
+
+
+# --- raw identifiers: the owner reads names, not ids (live run, Nov 4) ---------------------
+
+
+def test_raw_zone_identifier_caught_with_the_readable_name() -> None:
+    res = validate(with_sentence("They walked toward to_shed_back.", ["e18"]), scenario_c_ledger())
+    assert checks(res) == {"schema"}
+    assert "shed back" in res.failures[0].detail
+
+
+def test_camera_id_is_not_double_reported_as_a_raw_identifier() -> None:
+    res = validate(with_sentence("A person was seen on side_right.", ["e18"]), scenario_c_ledger())
+    assert checks(res) == {"camera_mismatch"}

@@ -28,8 +28,9 @@ describe('Clips and Media library',()=>{
     const card=screen.getAllByRole('listitem')[0].querySelector('button')!;
     await userEvent.click(card);
     expect(props.onOpenClip).toHaveBeenCalledWith([...state.clips].sort((a,b)=>b.t0-a.t0)[0].id);
-    expect(screen.getAllByText('Media unavailable')).toHaveLength(state.clips.length);
-    expect(document.querySelector('video,img')).toBeNull();
+    // Demo clips carry a labelled illustration, never a fake recording.
+    expect(screen.getAllByText('Illustration · clip unavailable')).toHaveLength(state.clips.length);
+    expect(document.querySelector('video')).toBeNull();
   });
   it('searches actual evidence and clears back to the complete collection',async()=>{
     render(<MediaPage state={state} {...callbacks()}/>);

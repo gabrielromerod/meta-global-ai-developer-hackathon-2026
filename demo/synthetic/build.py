@@ -893,7 +893,7 @@ def build_glb() -> bytes:
 # ---------------------------------------------------------------------------
 
 NAMED_PERSON_NOTICE = (
-    "Vigil can't recognise individuals. It treats someone as household only if they came out "
+    "Rules can't recognise individuals. It treats someone as household only if they came out "
     "of the house's own doors or checked in on the app, so Sam is exempt only in those cases."
 )
 # The 3 sample-audio buttons (judge step 6). Their WAVs are recorded in T-07a (owner); until

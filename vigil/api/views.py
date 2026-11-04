@@ -10,6 +10,7 @@ measured r95 of each estimate, never a fixed figure (spec 4 step 3, NFR-026).
 from __future__ import annotations
 
 import math
+from collections.abc import Collection
 from datetime import datetime, timedelta
 from typing import Any
 from zoneinfo import ZoneInfo
@@ -369,16 +370,27 @@ def expected_windows_view(bundle: Bundle, visit: Visit) -> list[dict[str, Any]]:
     return [w.model_dump(mode="json") for w in bundle.expected_windows if w.id in ids]
 
 
-def watches_view(bundle: Bundle, visit_id: str) -> list[dict[str, Any]]:
+WATCH_ORIGINS = {"wonder": "Muse Wonder → SAM 3.1", "owner": "Owner → SAM 3.1"}
+
+
+def watches_view(
+    bundle: Bundle, visit_id: str, undone: Collection[str] = ()
+) -> list[dict[str, Any]]:
+    """Watches a visit started, with who proposed them and whether the owner undid them."""
     names = {"front": "porch"}
     out = []
     for w in bundle.watches:
-        if w.get("source_visit_id") == visit_id:
-            where = names.get(w["camera_id"], camera_names(bundle).get(w["camera_id"], ""))
-            notice = (
-                f"Now watching: {w['phrase']} on {where}" if w["status"] == "watching" else None
-            )
-            out.append({**w, "notice": notice})
+        if w.get("source_visit_id") != visit_id:
+            continue
+        where = names.get(w["camera_id"], camera_names(bundle).get(w["camera_id"], ""))
+        status = "undone" if w["id"] in undone else w["status"]
+        notice = {
+            "watching": f"Now watching: {w['phrase']} on {where}",
+            "undone": f"Stopped watching: {w['phrase']} on {where}",
+        }.get(status)
+        out.append({**w, "status": status, "notice": notice,
+                    "origin_label": WATCH_ORIGINS.get(w.get("origin", ""), "SAM 3.1"),
+                    "can_undo": status == "watching"})  # fmt: skip
     return out
 
 

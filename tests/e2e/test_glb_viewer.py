@@ -37,14 +37,17 @@ def _public_boundary(page: Page, server_url: str, data: bytes):
     page.route(
         "**/fixture.glb", lambda route: route.fulfill(body=data, content_type="model/gltf-binary")
     )
-    page.goto(server_url + "/next/")
+    with page.expect_response("**/api/ui/twin"):
+        page.goto(server_url + "/next/")
     wait_ready(page)
     expect(page.locator(".house-view canvas")).to_be_visible()
     page.wait_for_function("document.querySelector('[data-testid=twin-canvas]')?.dataset.cameraY")
     expect(
         page.get_by_text("Stylized property · approximate locations", exact=True)
     ).to_be_visible()
-    page.wait_for_load_state("networkidle")
+    # The live-alert EventSource stays open, so "networkidle" never fires; give any
+    # deferred asset loader a bounded window instead.
+    page.wait_for_timeout(1500)
     assert requests == [], "Public house view must never fetch a private GLB"
     assert not errors, errors
 

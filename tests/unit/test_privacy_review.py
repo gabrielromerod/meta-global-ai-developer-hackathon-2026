@@ -17,7 +17,8 @@ ROOT = Path(__file__).resolve().parents[2]
 def test_unreviewed_camera_blocked_at_ingest_before_output(tmp_path):
     clips = tmp_path / "clips"
     clips.mkdir()
-    texture_clip(clips / "front_left_duo.mp4", 0.2, size=(320, 120), audio=False)
+    # side_left is never owner-reviewed in the real config (the front Duos are, Nov 3).
+    texture_clip(clips / "side_left.mp4", 0.2, size=(320, 120), audio=False)
     out = tmp_path / "out"
     result = CliRunner().invoke(
         app,
@@ -40,6 +41,8 @@ def test_privacy_review_bound_to_still_and_exact_polygons():
     from vigil.ingest.review import privacy_digest, require_privacy_review
 
     camera = load_config(ROOT / "config/cameras.yaml").camera("front_left_duo")
+    # Start unreviewed whatever the live config says: the binding, not the inventory, is tested.
+    camera.privacy_reviewed = False
     with pytest.raises(ValueError, match="owner privacy review"):
         require_privacy_review(camera)
     camera.privacy_reviewed = True

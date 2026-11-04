@@ -1,16 +1,16 @@
 import React, {useEffect, useRef, useState, type ReactNode} from 'react';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import * as Tooltip from '@radix-ui/react-tooltip';
-import {House, ShieldAlert, Clapperboard, Images, MessagesSquare, ShieldCheck, ChartNoAxesColumnIncreasing, Settings2, Bell, Moon, Sun, Menu, Camera, ChevronRight} from 'lucide-react';
+import {House, ShieldAlert, Images, MessagesSquare, ShieldCheck, ChartNoAxesColumnIncreasing, Settings2, Bell, Moon, Sun, Menu, Camera, ChevronRight} from 'lucide-react';
 import type {UIState, Route, Notification} from '../contracts';
 import {Button, Chip, Modal, VerdictBadge, cn} from '../components/ui';
 import './shell.css';
 
-const destinations=[{id:'home',label:'Home',icon:House},{id:'attention',label:'Attention',icon:ShieldAlert},{id:'clips',label:'Clips',icon:Clapperboard},{id:'media',label:'Media library',icon:Images},{id:'messages',label:'Messages',icon:MessagesSquare},{id:'rules',label:'Rules and protected objects',icon:ShieldCheck},{id:'benchmark',label:'Benchmark',icon:ChartNoAxesColumnIncreasing},{id:'settings',label:'Settings',icon:Settings2}] as const;
+const destinations=[{id:'home',label:'Home',icon:House},{id:'attention',label:'Attention',icon:ShieldAlert},{id:'media',label:'Media library',icon:Images},{id:'messages',label:'Messages',icon:MessagesSquare},{id:'rules',label:'Protection',icon:ShieldCheck},{id:'benchmark',label:'Benchmark',icon:ChartNoAxesColumnIncreasing},{id:'settings',label:'Settings',icon:Settings2}] as const;
 export interface AppShellProps {title?:string;route:Route;onNavigate:(id:Route)=>void;state:UIState;theme:'dark'|'light';onThemeChange:(theme:'dark'|'light')=>void;onOpenVisit:(id:string)=>void;chatSlot?:ReactNode;children:ReactNode}
 
 function Navigation({route,onNavigate,mobile=false}: {route:Route;onNavigate:(id:Route)=>void;mobile?:boolean}) {return <nav aria-label={mobile?'Mobile navigation':'Main navigation'} className={cn('v-navigation',mobile&&'v-navigation-mobile')}>{destinations.map(({id,label,icon:Icon})=><Tooltip.Root key={id}><Tooltip.Trigger asChild><button type="button" className={cn('v-nav-item',route===id&&'is-active',id==='settings'&&'v-nav-settings')} aria-current={route===id?'page':undefined} aria-label={label} onClick={()=>onNavigate(id)}><Icon aria-hidden="true"/><span>{label}</span></button></Tooltip.Trigger><Tooltip.Portal><Tooltip.Content side="right" className="v-nav-tooltip">{label}</Tooltip.Content></Tooltip.Portal></Tooltip.Root>)}</nav>;}
-export function Sidebar({route,onNavigate,household}: Pick<AppShellProps,'route'|'onNavigate'>&{household:UIState['household']}) {return <aside className="v-sidebar"><div className="v-brand" aria-label="Vigil"><House aria-hidden="true"/><span>Vigil</span></div><div className="v-household">{household.avatar_url?<img src={household.avatar_url} alt=""/>:<span className="v-household-avatar"><House aria-hidden="true"/></span>}<span className="v-household-name">{household.name}</span></div><Navigation route={route} onNavigate={onNavigate}/></aside>;}
+export function Sidebar({route,onNavigate}: Pick<AppShellProps,'route'|'onNavigate'>&{household:UIState['household']}) {return <aside className="v-sidebar"><div className="v-brand" aria-label="Vigil"><span>Vigil</span></div><Navigation route={route} onNavigate={onNavigate}/></aside>;}
 export function NotificationBell({items,onOpenVisit,onOpenAttention}: {items:Notification[];onOpenVisit:(id:string)=>void;onOpenAttention:()=>void}) {
   const triggerRef=useRef<HTMLButtonElement>(null);
   const pendingVisit=useRef<string|null>(null);

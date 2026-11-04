@@ -7,7 +7,7 @@ This folder will hold the **3 consented voice-rule WAV fixtures** behind the san
 | --- | --- | --- |
 | `vf_family_bin` | Tell me if anyone except family touches the bin after 9 PM | `po_bin`, touch, 21:00–06:00, `non_household` |
 | `vf_strangers_gate` | Strangers only, not guests or deliveries: tell me if someone opens the side gate after dark | `po_side_gate`, touch, 17:30–06:00, `external_visitor_only` |
-| `vf_named_gate` | Tell me if anyone except Sam touches the side gate after 10 PM | `po_side_gate`, touch, 22:00–06:00, `non_household`, plus the "Vigil can't recognise individuals" notice |
+| `vf_named_gate` | Tell me if anyone except Sam touches the side gate after 10 PM | `po_side_gate`, touch, 22:00–06:00, `non_household`, plus the "Rules can't recognise individuals" notice |
 
 ## Who records them, and when
 

@@ -93,10 +93,17 @@ def gap_sentence(
     elif gap.kind == "ambiguous_link":
         cam = camera_names.get(gap.from_camera or "", gap.from_camera)
         after = f" after they left the {cam} camera's view" if cam else ""
-        text = (
-            f"Vigil can't confirm what happened for {dur}{after}: "
-            "more than one later sighting could be them."
-        )
+        if gap.duration_s < 1:
+            # An instant hand-off (a window boundary), not a stretch of time.
+            text = (
+                f"Vigil can't confirm where they went{after}: "
+                "more than one later sighting could be them."
+            )
+        else:
+            text = (
+                f"Vigil can't confirm what happened for {dur}{after}: "
+                "more than one later sighting could be them."
+            )
     else:
         where = region_names.get(gap.region_id or "") or "in a blind spot"
         if gap.resolved:

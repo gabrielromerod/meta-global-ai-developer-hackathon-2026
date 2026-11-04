@@ -461,3 +461,47 @@ def test_go2rtc_config_has_only_ac_cameras_and_no_literal_credentials() -> None:
         assert re.fullmatch(r"\$\{\w+\}:\$\{\w+\}", m.group(1)), m.group(1)
     assert cfg["rtsp"]["listen"].startswith("127.0.0.1:")
     assert "candidates" not in cfg["webrtc"]
+
+
+def test_http_api_off_falls_back_to_standard_rtsp_path(cams, creds, monkeypatch) -> None:
+    """Doorbell/Lumus with the HTTP API off: RTSP still resolves, without HTTP, redacted."""
+
+    class Host:
+        def __init__(self, *args, **kwargs) -> None:
+            pass
+
+        async def get_host_data(self) -> None:
+            raise ConnectionError(f"Login failed for http://{USER}:{PASSWORD}@{HOST}/api.cgi")
+
+        async def logout(self) -> None:
+            raise ConnectionError("not logged in")
+
+    monkeypatch.setattr(probe, "import_reolink_host", lambda: Host)
+    adapter = probe.ReolinkAioAdapter()
+    info = asyncio.run(adapter.host_info(HOST, USER, PASSWORD))
+    assert not info.http_api
+    creds_ = camera_credentials(cams[0])
+    main = probe.resolved_rtsp_url(info, cams[0], creds_, "main")
+    sub = probe.resolved_rtsp_url(info, cams[0], creds_, "sub")
+    assert main is not None
+    assert sub is not None
+    assert main.secret() == rtsp_url(HOST, USER, PASSWORD).secret()
+    assert sub.secret().endswith(f"@{HOST}:554/Preview_01_sub")
+    for shown in (str(main), repr(main), f"{main}", str(sub), repr(sub)):
+        assert "S3cr3t" not in shown
+        assert USER not in shown
+
+    class Checks:
+        async def host_info(self, *args):
+            return info
+
+        async def check_stream(self, url):
+            return url.protocol == "rtsp"
+
+    report = asyncio.run(probe.probe(cams[0], Checks()))
+    assert report.ok
+    assert report.rtsp_main
+    assert report.rtsp_sub
+    assert "Preview_01_main" in report.rtsp_url
+    assert "S3cr3t" not in report.model_dump_json()
+    assert any("HTTP API" in n for n in report.notes)

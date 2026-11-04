@@ -211,3 +211,92 @@ def test_overlay_json_groups_by_camera_and_time() -> None:
     assert "mask_rle" not in second[0]
     assert second[1]["clipped"] is True
     assert overlay_json([]) == {"version": 1, "cameras": {}}
+
+
+# --- windows that only touch (event clips: parts abut with ~0.1 s overlap, no shared frame) --
+# Live run, Nov 4: front_left_duo windows 0.0-5.8 / 5.7-13.1 / 13.1-24.7 shared no frame
+# instant, so three parked cars became nine tracks and the visit split on "ambiguous" links.
+
+CAR_A = Box(x1=100, y1=300, x2=400, y2=450)
+CAR_B = Box(x1=900, y1=300, x2=1200, y2=450)
+
+
+def test_stitch_hands_off_across_abutting_windows_by_boundary_boxes() -> None:
+    objs = [
+        _static("w0", 0.0, 1, CAR_A, range(58), phrase="car"),  # last frame t=5.7
+        _static("w0", 0.0, 2, CAR_B, range(58), phrase="car"),
+        _static("w1", 5.73, 7, CAR_B, range(70), phrase="car"),  # first frame t=5.73
+        _static("w1", 5.73, 8, CAR_A, range(70), phrase="car"),
+        _static("w2", 12.75, 3, CAR_A, range(30), phrase="car"),
+    ]
+    tracks, links = stitch_with_links(objs)
+    assert len(tracks) == 2
+    a = next(t for t in tracks if t.frames[0].box == CAR_A)
+    assert a.window_ids == ["w0", "w1", "w2"]
+    assert ("w1", 8) in {(w, o) for tid, w, o in links if tid == a.id}
+
+
+def test_stitch_handoff_needs_touching_windows_and_agreeing_boxes() -> None:
+    late = [
+        _static("w0", 0.0, 1, CAR_A, range(10), phrase="car"),  # ends t=0.9
+        _static("w1", 3.0, 1, CAR_A, range(10), phrase="car"),
+    ]  # starts 2.1 s later
+    moved = [_static("w0", 0.0, 1, CAR_A, range(10), phrase="car"),
+             _static("w1", 0.95, 1, CAR_B, range(10), phrase="car")]  # fmt: skip
+    assert len(stitch(late)) == 2
+    assert len(stitch(moved)) == 2
+
+
+def test_stitch_handoff_is_one_to_one_and_order_independent() -> None:
+    objs = [
+        _static("w0", 0.0, 1, CAR_A, range(10), phrase="car"),
+        _static("w1", 0.95, 1, CAR_A, range(10), phrase="car"),
+        _static("w1", 0.95, 2, Box(x1=110, y1=300, x2=410, y2=450), range(10), phrase="car"),
+    ]
+    first = stitch(objs)
+    again = stitch(list(reversed(objs)))
+    assert len(first) == 2
+    assert [(t.window_ids, t.frames[0].box) for t in first] == [
+        (t.window_ids, t.frames[0].box) for t in again
+    ]
+
+
+# --- mixed stream sizes (sub stream 1536x576, main stream 1920x720 on a Duo) -------------
+# Live run, Nov 4: boxes stayed in each window's pixels, so the parked cars of a 1536 window
+# never matched the same cars in the next 1920 window, and zones were off by 20%.
+
+
+def test_sam_objects_are_scaled_to_the_camera_frame() -> None:
+    import numpy as np
+
+    from vigil.perception.rle import decode_rle, encode_rle
+    from vigil.perception.tracks import to_camera_size
+
+    mask = np.zeros((576, 1536), dtype=bool)
+    mask[240:360, 80:320] = True
+    obj = _static("w0", 0.0, 1, Box(x1=80, y1=240, x2=320, y2=360), range(2), phrase="car")
+    obj = obj.model_copy(
+        update={
+            "width": 1536,
+            "height": 576,
+            "frames": [f.model_copy(update={"mask_rle": encode_rle(mask)}) for f in obj.frames],
+        }
+    )
+    scaled = to_camera_size(obj, 1920, 720)
+    assert (scaled.width, scaled.height) == (1920, 720)
+    assert scaled.frames[0].box == Box(x1=100, y1=300, x2=400, y2=450)
+    big = decode_rle(scaled.frames[0].mask_rle, 720, 1920)
+    assert big[300:450, 100:400].all()
+    assert big.sum() == 150 * 300
+    assert to_camera_size(scaled, 1920, 720) is scaled  # already the camera's size
+
+
+def test_stitch_joins_sub_and_main_stream_windows_after_scaling() -> None:
+    from vigil.perception.tracks import to_camera_size
+
+    sub = _static("w0", 0.0, 1, Box(x1=80, y1=240, x2=320, y2=360), range(58), phrase="car")
+    main = _static("w1", 5.73, 1, CAR_A, range(70), phrase="car")
+    sub = sub.model_copy(update={"width": 1536, "height": 576})
+    main = main.model_copy(update={"width": 1920, "height": 720})
+    assert len(stitch([sub, main])) == 2  # raw pixels disagree
+    assert len(stitch([to_camera_size(o, 1920, 720) for o in (sub, main)])) == 1

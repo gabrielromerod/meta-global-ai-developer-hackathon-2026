@@ -83,7 +83,7 @@ Run this before each gate from G3 onward, and once more before recording the vid
 - [ ] Step 4: trace shows rule r7, forced triage, `role_basis`, validator results and calibration figures
 - [ ] Cards A′ and C: same gate touch, opposite outcomes; A′ shows r7 excluded by `applies_to`
 - [ ] Step 5: live tap on the recycling bin returns a mask with latency and cost; preset points work if it misses
-- [ ] Step 6: mic, each of the 3 sample-audio buttons, and typing all give an editable transcript and a draft with `applies_to`; the named-person phrasing shows "Vigil can't recognise individuals"
+- [ ] Step 6: mic, each of the 3 sample-audio buttons, and typing all give an editable transcript and a draft with `applies_to`; the named-person phrasing shows "Rules can't recognise individuals"
 - [ ] Step 7: live re-run gives the same verdict with valid citations
 - [ ] Step 8: Benchmark tab shows the EVAL table with the pre-registration commit link
 - [ ] Total time about 4 minutes

@@ -38,8 +38,8 @@ W_MAX, H_MAX = 1280, 720
 
 # Draft-card wording (FR-021, UC-03). Code writes these; a model never does.
 NO_TEMPLATES = (
-    "Vigil places people by where they came from; it does not identify anyone and creates "
-    "no face, voice or body templates."
+    "Vigil places people by where they came from; rules and roles never use a face, voice "
+    "or body template."
 )
 APPLIES_LABELS: dict[str, str] = {
     "anyone": "Applies to everyone, including household members.",
@@ -51,8 +51,8 @@ APPLIES_LABELS: dict[str, str] = {
 }
 BASIS_NOTES: dict[str, str] = {
     "anyone": (
-        "This rule does not depend on where anyone came from. Vigil does not identify anyone "
-        "and creates no face, voice or body templates."
+        "This rule does not depend on where anyone came from. Rules and roles never use a "
+        "face, voice or body template."
     ),
     "non_household": (
         "Vigil treats someone as household only when it saw them come out of the house's own "
@@ -69,7 +69,7 @@ BASIS_NOTES: dict[str, str] = {
     ),
 }
 NAMED_PERSON_NOTICE = (
-    "Vigil can't recognise individuals. It treats someone as household only if they came out "
+    "Rules can't recognise individuals. It treats someone as household only if they came out "
     "of the house's own doors or checked in on the app, so {name} is exempt only in those cases."
 )
 _NOT_NAMES = {"family", "us", "the", "household", "me", "my", "our", "guests", "deliveries"}
@@ -145,6 +145,8 @@ class Runtime:
         self.feedback: list[dict[str, Any]] = []
         self.transcripts: dict[str, str] = {}
         """Transcript by audio SHA-256: the only trace a spoken rule leaves (NFR-002)."""
+        self.undone_watches: set[str] = set()
+        """Watches the owner stopped with Undo (closed loop, Muse Wonder -> SAM 3.1)."""
 
 
 def _state(request: Request) -> tuple[Bundle, Guards, Runtime, Any]:

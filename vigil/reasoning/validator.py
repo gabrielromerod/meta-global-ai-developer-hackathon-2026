@@ -25,6 +25,9 @@
    region or object name in the ledger, a weekday, a month, or AM/PM. Clock times are masked
    whole first ("p.m." with its dot), and a '.', '!' or '?' inside a story sentence does not
    make the next word sentence-initial.
+8. No raw identifiers: a snake_case token (a zone, object or region id such as
+   ``left_garden``) fails as ``schema`` with the readable name to use instead. Camera ids
+   are left to check 4.
 
 All failures are collected (not just the first) so the single retry gets the full list.
 Check 7 failures use ``ROLE_CHECK`` (``banned_word`` until the shared ``ValidationFailure``
@@ -140,6 +143,10 @@ _ROLE_CUE_RE = _phrase_alternation(ROLE_CUES)
 
 _ID_PREFIXES = ("po_", "zone_", "line_", "to_", "from_")
 """Prefixes of protected-object, zone, line and exit-polygon ids that are not part of a name."""
+
+
+_RAW_ID_RE = re.compile(r"\b[a-z][a-z0-9]*(?:_[a-z0-9]+)+\b")
+"""A snake_case token: how zone, object and region ids look, never how a name reads."""
 
 
 def humanise_id(ident: str) -> str:
@@ -551,6 +558,18 @@ def validate(draft: Any, ledger: VisitLedger, attempt: int = 1) -> ValidationRes
                     check="camera_mismatch",
                     sentence_index=i,
                     detail=f"names camera(s) {', '.join(wrong)} that no cited event is on",
+                )
+            )
+        # 8. raw identifiers (camera mentions already removed from ``rest``)
+        raw = sorted(set(_RAW_ID_RE.findall(rest)))
+        if raw:
+            failures.append(
+                ValidationFailure(
+                    check="schema",
+                    sentence_index=i,
+                    detail="writes identifiers "
+                    + ", ".join(f"{r!r} (write {humanise_id(r)!r})" for r in raw)
+                    + "; use each event's target_name",
                 )
             )
         # 5. banned words

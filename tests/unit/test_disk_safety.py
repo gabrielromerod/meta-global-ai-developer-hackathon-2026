@@ -58,3 +58,29 @@ def test_processing_retention_preserves_pinned_and_sqlite(tmp_path):
     assert cleanup_processing(tmp_path, retention_s=10, now=100, pinned=[pinned]) == [old]
     assert pinned.exists()
     assert ledger.exists()
+
+
+def test_processing_retention_keeps_finished_event_clips(tmp_path):
+    """Retention on data/windows deletes temporary files, never a finished capture folder."""
+    import json
+    import os
+
+    from vigil.reolink.retention import cleanup_processing
+
+    event = tmp_path / "porch-0123456789abcdef0123-0123456789ab"
+    event.mkdir()
+    kept = [event / "part-000.mp4", event / "part-001.mp4", event / "windows.json"]
+    kept += [event / "session.json", event / "capture.json"]
+    ingested = tmp_path / "imported"
+    (ingested / "porch").mkdir(parents=True)
+    kept += [ingested / "windows.json", ingested / "porch" / "clip-000.mp4"]
+    for p in kept:
+        p.write_text(json.dumps({"session_id": event.name}), encoding="utf-8")
+    temporary = tmp_path / "scratch" / "tmp-frame.jpg"
+    temporary.parent.mkdir()
+    temporary.write_bytes(b"temp")
+    for p in [*kept, temporary]:
+        os.utime(p, (1, 1))
+    deleted = cleanup_processing(tmp_path, 48 * 3600, now=1 + 49 * 3600)
+    assert deleted == [temporary]
+    assert all(p.exists() for p in kept)

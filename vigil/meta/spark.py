@@ -107,6 +107,14 @@ def appearance_schema(tags: list[str]) -> dict:
     }
 
 
+# Muse models reason before answering and the reasoning counts against max_output_tokens.
+# At the default effort Spark spent 898 of 900 tokens reasoning and returned no JSON (live
+# run, Nov 3), so every structured request asks for low effort and leaves room for the answer.
+# Measured at low effort (Nov 4): triage 517-600 output tokens (one hit a 600 cap), appearance
+# 566-1030, story 748-1229; budgets are about 1.5-2.5x the largest seen.
+LOW_REASONING = {"effort": "low"}
+
+
 def _json_format(name: str, schema: dict, strict: bool = True) -> dict:
     return {"format": {"type": "json_schema", "name": name, "schema": schema, "strict": strict}}
 
@@ -131,7 +139,8 @@ def build_appearance_request(file_id: str, tags: list[str]) -> dict:
             }
         ],
         "text": _json_format("appearance_notes", appearance_schema(tags)),
-        "max_output_tokens": 300 + 150 * len(tags),
+        "reasoning": LOW_REASONING,
+        "max_output_tokens": 1500 + 150 * len(tags),
     }
 
 
@@ -205,13 +214,13 @@ HOUSEHOLD_BASIS = (
     "doors, or when a household member checked in on the app just before coming into view. "
     "Household members arriving from the street without checking in, and anyone Vigil loses "
     "track of, count as non-household and can trigger this rule. Vigil places people by where "
-    "they came from; it does not identify anyone and creates no face, voice or body templates."
+    "they came from; rules and roles never use a face, voice or body template."
 )
 """The basis the draft card states for a role-scoped rule (FR-021, UC-03), verbatim."""
 
 NO_TEMPLATES = (
-    "Vigil places people by where they came from; it does not identify anyone and creates no "
-    "face, voice or body templates."
+    "Vigil places people by where they came from; rules and roles never use a face, voice "
+    "or body template."
 )
 
 BASIS_NOTES: dict[str, str] = {
@@ -226,7 +235,7 @@ BASIS_NOTES: dict[str, str] = {
 }
 """Draft-card basis note per ``applies_to`` (spec 9.6 ``POST /api/rules/compile``)."""
 
-BASE_LIMIT = "Vigil does not identify anyone and creates no face, voice or body templates."
+BASE_LIMIT = "Rules and roles never use a face, voice or body template."
 GENERIC_NAMED = "the person you named"
 
 
@@ -235,7 +244,7 @@ def named_person_notice(names: list[str]) -> str:
     who = " and ".join(names) if names else GENERIC_NAMED
     verb = "are" if len(names) > 1 else "is"
     return (
-        "Vigil can't recognise individuals. It treats someone as household only if they came "
+        "Rules can't recognise individuals. It treats someone as household only if they came "
         f"out of the house's own doors or checked in on the app, so {who} {verb} exempt only "
         "in those cases."
     )
@@ -617,7 +626,8 @@ def build_rule_request(text: str, catalog: TargetCatalog) -> dict:
             {"type": "message", "role": "user", "content": [{"type": "input_text", "text": user}]}
         ],
         "text": _json_format("rule_draft", rule_schema(catalog)),
-        "max_output_tokens": 400,
+        "reasoning": LOW_REASONING,
+        "max_output_tokens": 1600,
     }
 
 
@@ -780,7 +790,8 @@ def build_triage_request(summary: VisitSummary) -> dict:
             }
         ],
         "text": _json_format("triage", TRIAGE_SCHEMA),
-        "max_output_tokens": 200,
+        "reasoning": LOW_REASONING,
+        "max_output_tokens": 1600,
     }
 
 

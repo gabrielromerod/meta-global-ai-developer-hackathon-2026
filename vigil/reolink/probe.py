@@ -16,6 +16,7 @@ reolink_aio uses 0-based channel indexes; `channel_index()` converts.
 from __future__ import annotations
 
 import asyncio
+import contextlib
 import logging
 import os
 import re
@@ -291,6 +292,9 @@ class HostInfo(BaseModel):
     stream_sources: dict[int, dict[str, SecretStr]] = Field(default_factory=dict)
     stream_stats: dict[int, dict[str, StreamStats]] = Field(default_factory=dict)
     sources_resolved: bool = False
+    http_api: bool = True
+    """False when the HTTP login failed (API off, e.g. Video Doorbell WiFi or Lumus); stream
+    URLs then use the standard `Preview_0N_<stream>` RTSP path built without HTTP."""
     rtsp_port: int = RTSP_PORT
     http_port: int = HTTP_PORT
     rtmp_port: int = RTMP_PORT
@@ -422,6 +426,11 @@ async def probe(cam: CameraCfg, adapter: ProbeAdapter | None = None) -> ProbeRep
         log.warning("probe %s: %s", cam.id, report.error)
         return report
 
+    if not info.http_api:
+        if cam.power_profile not in {"plugin_wifi", "doorbell"}:
+            report.error = "HTTP API unavailable; battery cameras are never streamed"
+            return report
+        report.notes.append("HTTP API off; using the standard RTSP path (Preview_0N_<stream>)")
     nvr_channel = cam.source.channel if cam.source else None
     main = resolved_rtsp_url(info, cam, creds, "main")
     sub = resolved_rtsp_url(info, cam, creds, "sub")
@@ -507,6 +516,17 @@ class ReolinkAioAdapter:
         api = self._host_cls(host, username, password)
         try:
             await api.get_host_data()
+        except Exception as err:
+            # HTTP API off (Baichuan port 9000 only): no SDK stream sources. The standard
+            # RTSP path is built by `resolved_rtsp_url` from the credentials, without HTTP.
+            log.info(
+                "HTTP login failed (%s); using the standard RTSP path",
+                redact(f"{type(err).__name__}: {err}", [username, password]),
+            )
+            with contextlib.suppress(Exception):
+                await api.logout()
+            return HostInfo(http_api=False, sources_resolved=False)
+        try:
             channels = list(api.channels)
             battery = {ch: bool(api.supported(ch, "battery")) for ch in channels}
             sources, stats = {}, {}

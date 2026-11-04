@@ -147,8 +147,8 @@ def _clock_fn(ledger: VisitLedger):
 
 
 def ledger_payload(ledger: VisitLedger) -> dict:
-    """The ledger as Wonder sees it: JSON only, file references removed, clock times and
-    each subject's allowed ``role_phrase`` added."""
+    """The ledger as Wonder sees it: JSON only, file references removed, clock times, each
+    event target's readable ``target_name`` and each subject's allowed ``role_phrase`` added."""
     data = _strip(ledger.model_dump(mode="json", by_alias=True, exclude_none=True))
     data["subjects"] = [
         {
@@ -157,6 +157,11 @@ def ledger_payload(ledger: VisitLedger) -> dict:
         }
         for subj in ledger.subjects
     ]
+    from vigil.reasoning.validator import humanise_id
+
+    for item in data.get("events", []):
+        if isinstance(item.get("target"), str):
+            item["target_name"] = humanise_id(item["target"])
     clock = _clock_fn(ledger)
     if clock is not None:
         for key in ("events", "gaps"):
@@ -249,7 +254,9 @@ def build_story_request(
     body: dict[str, Any] = {
         "instructions": prompt.text,
         "input": [{"type": "message", "role": "user", "content": content}],
-        "max_output_tokens": 1500,
+        # Reasoning counts against the output budget; see spark.LOW_REASONING (live run, Nov 3).
+        "reasoning": {"effort": "low"},
+        "max_output_tokens": 3000,
     }
     if schema_mode == "json_schema":
         body["text"] = {

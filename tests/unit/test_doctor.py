@@ -117,8 +117,13 @@ def test_doctor_real_inventory_privacy_power_hub_clock_and_exiftool(tmp_path):
         "backyard_2",
     ):
         assert checks["power:" + camera].ready
-        assert not checks["privacy:" + camera].ready
         assert not checks["clock:" + camera].ready
+    # Owner-reviewed stills (Nov 3) pass; battery cameras stay blocked. The front Duos are
+    # reviewed too, but any later zone edit voids their digest, so they are not pinned here.
+    for camera in ("doorbell", "porch"):
+        assert checks["privacy:" + camera].ready
+    for camera in ("side_left", "backyard_1", "backyard_2"):
+        assert not checks["privacy:" + camera].ready
     assert checks["hub:side_left"].ready
     assert "import" in checks["hub:side_left"].detail.lower()
     for name in ("REOLINK_SIDE_LEFT_HOST", "REOLINK_BACKYARD_1_HOST", "REOLINK_BACKYARD_2_HOST"):

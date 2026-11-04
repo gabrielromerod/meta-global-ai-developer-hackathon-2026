@@ -387,7 +387,7 @@ def run_scenario(
     (FR-044 step 2) feed the role rules; without them steps 2 and 3 never match.
     """
     from vigil.perception.events import build_events
-    from vigil.perception.tracks import stitch
+    from vigil.perception.tracks import stitch, to_camera_size
     from vigil.reasoning.loop import accept_watches, load_allowlist
     from vigil.reasoning.rules import evaluate_rules
     from vigil.reasoning.story import region_names_from, run_story
@@ -410,6 +410,13 @@ def run_scenario(
 
     # perception ------------------------------------------------------------
     objs, sam_missing = _sam_objects(inp, windows, watches, session_start, sam)
+    # Sub- and main-stream windows answer in different pixels; zones work in the camera's.
+    objs = [
+        to_camera_size(o, cams[o.camera_id].width, cams[o.camera_id].height)
+        if o.camera_id in cams
+        else o
+        for o in objs
+    ]
     tracks = stitch(objs, frame_height={c.id: c.height for c in cfg.cameras})
     observation = _observation(windows, sam_missing, inp.outages)
     events = build_events(
@@ -447,6 +454,10 @@ def run_scenario(
         session_start=session_start,
         replay_bindings=replay_bindings,
         truncated_after=inp.truncated_after,
+        camera_start={
+            cam: min(w.t0 for w in windows if w.camera_id == cam)
+            for cam in {w.camera_id for w in windows}
+        },
     )
     subjects_by_id = {s.id: s for s in asm.subjects}
     by_track = {t.id: t for t in tracks}

@@ -15,6 +15,7 @@ it('navigates every configured destination and labels synthetic evidence',()=>{
   render(<AppShell route="home" onNavigate={onNavigate} state={fixture as UIState} theme="dark" onThemeChange={vi.fn()} onOpenVisit={vi.fn()}><p>Visit content</p></AppShell>);
   expect(screen.getByRole('main')).toHaveTextContent('Visit content');
   expect(screen.getByText('Demo data')).toBeVisible();
+  expect(screen.queryByRole('button',{name:/^Clips$/})).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole('button',{name:'Media library'}));
   expect(onNavigate).toHaveBeenCalledWith('media');
   expect(screen.getByRole('button',{name:'Home',current:'page'})).toBeVisible();

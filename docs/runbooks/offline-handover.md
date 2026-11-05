@@ -24,7 +24,7 @@ taskkill /PID 36112 /T /F
 
 Then use the start commands above. For an instance you start in CMD, press Ctrl+C and
 rerun the uvicorn command. Refresh the browser after frontend edits. Put QA reports in
-QA_NOTES.md; fixes are recorded there with their implementation SHA.
+qa/QA_NOTES.md; fixes are recorded there with their implementation SHA.
 
 ## Offline readiness check
 

@@ -39,4 +39,4 @@ Builders append requests below and keep edits within their assigned paths.
 
 ## Root resolution, Nov3 reviewed cutover060c583c
 
-All seven tasks are independently APPROVED and integrated; final A/B R2 are APPROVED (cde38c03/80e217f0). Shared motion/provider, live preference hook, event-gated token pulse, scroll clearance and canonical camera owner validation are integrated and covered by final interaction matrices. Root owns all API/shared-state/transport/chat/point work; no builder is waiting on an outside-path request. See docs/react-review-ledger.md, QA_NOTES.md and docs/readiness.md for exact fixes and genuine field prerequisites.
+All seven tasks are independently APPROVED and integrated; final A/B R2 are APPROVED (cde38c03/80e217f0). Shared motion/provider, live preference hook, event-gated token pulse, scroll clearance and canonical camera owner validation are integrated and covered by final interaction matrices. Root owns all API/shared-state/transport/chat/point work; no builder is waiting on an outside-path request. See docs/react-review-ledger.md, qa/QA_NOTES.md and docs/readiness.md for exact fixes and genuine field prerequisites.

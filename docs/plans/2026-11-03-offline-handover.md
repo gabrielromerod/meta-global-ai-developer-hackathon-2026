@@ -5,14 +5,14 @@ User's November 3 numbered request is the execution specification, alongside
 QA server reloads each small change. No Meta calls, cameras, paid settings, or real media.
 No requirement becomes Verified from generated media or fakes.
 
-For each numbered task: check QA_NOTES.md, add and observe the failing regression tests,
+For each numbered task: check qa/QA_NOTES.md, add and observe the failing regression tests,
 implement, run ruff check/format-check and the default pytest suite, run relevant browser
 tests, then commit and report SHA plus REAL / FIXTURE / STUB evidence. Commit IDs below
 are the durable progress record. Existing recorded-input contracts remain supported.
 
 | Task | Implementation boundary and acceptance | Progress |
 | --- | --- | --- |
-| 0 | Sandbox reload server, invalid key, cache only, QA_NOTES.md, CMD commands | HTTP 200; server started |
+| 0 | Sandbox reload server, invalid key, cache only, qa/QA_NOTES.md, CMD commands | HTTP 200; server started |
 | 1 | .gitignore, local three runtime, WebGL-required judge-path E2E | Complete: 94f6786; 1419 default tests and WebGL E2E passed |
 | 2 | sam/spark upload guards; CameraCfg explicit none_needed; ingest preflight | Complete: 4dab0a6; 1425 default tests passed |
 | 3 | pipeline/process cloud orchestration, split cutter, tagged media, SQLite, estimate/confirm; respx generated MP4 integration | Complete: 5abbbc7; 1428 default tests passed |

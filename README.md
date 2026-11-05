@@ -21,7 +21,8 @@ Built for the **Meta Global AI Developer Hackathon 2026**.
 A person arrives, crosses the yard, disappears behind a shed and reaches a gate. Separate camera alerts leave you piecing the visit together. Vigil assembles those observations into a timeline, places them in a 3D view, and links each story sentence to its evidence.
 
 - **See the visit in context.** Review camera observations, a shared playback clock, protected objects and estimated paths through the property.
-- **Protect by pointing.** Select an object in a reviewed camera frame; SAM 3.1 proposes its mask. A 3D footprint requires measured camera placement.
+- **Protect by pointing.** Select an object in a reviewed camera frame; SAM 3.1 proposes its mask. A 3D footprint requires measured camera placement. Alerts from tapped objects on real clips are not wired yet.
+- **Flag a possible knife or gun.** SAM 3.1 looks on zoomed crops around each person; a code rule raises the alert for anyone who is not household, and the story stays hedged. Built and tested offline; it has not yet raised an alert on real footage.
 - **Write rules in plain language.** Type a rule or use the separate voice-rule flow, review the draft, then confirm it. Rules execute deterministically.
 - **Keep blind spots visible.** Unobserved intervals stay explicit gaps. Vigil never invents a path or action inside one.
 - **Ask your home.** Follow cited answers back to the recorded events. The real-only home mode answers from analysed captures.
@@ -125,6 +126,7 @@ Vigil is a hackathon prototype. Offline tests exercise the pipeline, API and int
 | Rules, verdicts, citations, privacy boundaries and API | Covered by offline regression suites |
 | React interface | Component tests, production build and browser acceptance suite |
 | Real-camera cloud processing | Initial owner-approved runs; broader acceptance remains open |
+| Carried-object alerts | Offline tests pass. On a real clip SAM missed a knife on the full frame and found it on a 2.75x crop; the full path has no real alert yet |
 | 3D calibration and real visit replay | Measured placement and field acceptance still required |
 | Local SAM/Glimmer inference | Optional; hardware acceptance incomplete |
 | Accuracy, latency, alert reduction and unit economics | Targets and assumptions in [EVAL.md](EVAL.md); no production benchmark claimed |
@@ -156,7 +158,7 @@ Default Python tests exclude live, GPU, E2E and hardware cases. Never run paid i
 | `config/` | Cameras, privacy masks, rules and allowlists |
 | `demo/` | Synthetic bundle and voice-fixture documentation |
 | `tests/` | Offline unit, integration and marked browser suites |
-| `qa/final/` | Two curated screenshots and their provenance |
+| `qa/` | Two curated screenshots in `qa/final/`, their provenance, QA notes and review records |
 | `docs/`, `eval/` | Specification, architecture, runbooks, requirements and evaluation records |
 
 Start with [CLAUDE.md](CLAUDE.md) for repository rules and the [specification](docs/spec/vigil-spec.md) for contracts. The current package license is **Proprietary (hackathon submission)**; public source visibility does not grant an open-source license.

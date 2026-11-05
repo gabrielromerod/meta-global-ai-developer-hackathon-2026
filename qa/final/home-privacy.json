@@ -1,0 +1,26 @@
+{
+  "kind": "owner_reviewed_ui",
+  "source": "http://127.0.0.1:8000/#/home",
+  "reviewer": "Gabriel Romero (repository owner); visual privacy check by Codex",
+  "reviewed": true,
+  "contains_camera_pixels": true,
+  "authenticated": true,
+  "privacy": {
+    "masked_previews": true,
+    "no_identifying_details": true,
+    "no_raw_media": true
+  },
+  "owner_approval": {
+    "confirmed": true,
+    "date": "2026-11-04",
+    "scope": "private_repository_readme",
+    "statement": "Sí, ya revisé la captura y la apruebo. Pon esa en el README y súbela al remoto, mantén el repo privado.",
+    "files": {
+      "home.png": "4558d798e49ee792d32671445923ae9000bb42d669901822b234f4e5562391b3"
+    }
+  },
+  "review_notes": "Exact owner-approved local dashboard screenshot. Visible camera previews are masked/cropped to the property. No visible house numbers, street signs, plates, credentials or identifiable faces. House view is simplified untextured geometry, not a raw scan export. Approval is limited to this image in the private repository.",
+  "files": {
+    "home.png": "4558d798e49ee792d32671445923ae9000bb42d669901822b234f4e5562391b3"
+  }
+}

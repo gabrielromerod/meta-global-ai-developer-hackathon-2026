@@ -1,7 +1,7 @@
 {
   "kind": "generated_ui",
   "source": "http://127.0.0.1:8129/",
-  "reviewer": "Codex, Nov 4 2026: visually inspected both current React screenshots; synthetic data and labelled illustrations only; no camera footage, people, credentials, house numbers or private scan geometry",
+  "reviewer": "Codex, Nov 4 2026: visually inspected current React visit screenshot; synthetic data only, no camera pixels",
   "reviewed": true,
   "contains_camera_pixels": false,
   "authenticated": false,
@@ -14,7 +14,6 @@
     }
   ],
   "files": {
-    "home.png": "9babe68436614557e6dd0fae4e5e2790f85fb6eb4cf0fa258be59c2fb7861e44",
     "visit.png": "ab5c785a603d0f9535926c9bc0e1c98e78bd0672200974aa4a50a2e22ee1a92a"
   }
 }

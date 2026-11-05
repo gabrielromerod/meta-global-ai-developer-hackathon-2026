@@ -183,3 +183,88 @@ def test_capture_manifest_pins_immutable_fixture_snapshot(tmp_path, monkeypatch)
     assert ui_evidence.validate_manifest(root, root / "ui-privacy.json")[1] == []
     snapshot.write_text("tampered snapshot")
     assert ui_evidence.validate_manifest(root, root / "ui-privacy.json")[1]
+
+
+def _owner_reviewed_capture(root):
+    from scripts.ui_evidence import sha
+
+    root.mkdir()
+    image = root / "home.png"
+    assert cv2.imwrite(str(image), np.zeros((16, 16, 3), dtype=np.uint8))
+    files = {"home.png": sha(image)}
+    return {
+        "kind": "owner_reviewed_ui",
+        "source": "http://127.0.0.1:8000/#/home",
+        "reviewer": "Fixture owner",
+        "reviewed": True,
+        "contains_camera_pixels": True,
+        "privacy": {
+            "masked_previews": True,
+            "no_identifying_details": True,
+            "no_raw_media": True,
+        },
+        "owner_approval": {
+            "confirmed": True,
+            "date": "2026-11-04",
+            "scope": "private_repository_readme",
+            "statement": "I reviewed and approve this exact screenshot for the private repo.",
+            "files": dict(files),
+        },
+        "files": files,
+    }
+
+
+def test_owner_reviewed_ui_requires_approval_bound_to_the_exact_capture(tmp_path):
+    from scripts.ui_evidence import validate_manifest
+
+    root = tmp_path / "qa"
+    record = _owner_reviewed_capture(root)
+    manifest = root / "owner-privacy.json"
+    manifest.write_text(json.dumps(record))
+    assert validate_manifest(root, manifest) == (1, [])
+    # Replacing an approved image cannot reuse its owner's previous approval.
+    record["files"]["home.png"] = "0" * 64
+    manifest.write_text(json.dumps(record))
+    assert validate_manifest(root, manifest)[1]
+
+
+def test_owner_reviewed_ui_fails_closed_without_scoped_review(tmp_path):
+    from copy import deepcopy
+
+    from scripts.ui_evidence import validate_manifest
+
+    root = tmp_path / "qa"
+    original = _owner_reviewed_capture(root)
+    manifest = root / "owner-privacy.json"
+    changes = [
+        ("owner_approval", "confirmed", False),
+        ("owner_approval", "date", "not-a-date"),
+        ("owner_approval", "scope", "public_release"),
+        ("owner_approval", "statement", ""),
+        ("privacy", "masked_previews", False),
+        ("privacy", "no_identifying_details", False),
+        ("privacy", "no_raw_media", False),
+    ]
+    for section, key, value in changes:
+        record = deepcopy(original)
+        record[section][key] = value
+        manifest.write_text(json.dumps(record))
+        assert validate_manifest(root, manifest)[1], (section, key)
+    for key, value in [("source", "https://example.com/"), ("contains_camera_pixels", False)]:
+        record = deepcopy(original)
+        record[key] = value
+        manifest.write_text(json.dumps(record))
+        assert validate_manifest(root, manifest)[1], key
+
+
+def test_owner_review_does_not_bypass_image_decoding(tmp_path):
+    from scripts.ui_evidence import sha, validate_manifest
+
+    root = tmp_path / "qa"
+    record = _owner_reviewed_capture(root)
+    (root / "home.png").write_bytes(b"not an image")
+    record["files"] = {"home.png": sha(root / "home.png")}
+    record["owner_approval"]["files"] = dict(record["files"])
+    manifest = root / "owner-privacy.json"
+    manifest.write_text(json.dumps(record))
+    assert validate_manifest(root, manifest)[1]

@@ -12,9 +12,9 @@ Built for the **Meta Global AI Developer Hackathon 2026**.
 
 </div>
 
-![Vigil Home with synthetic demo data](qa/final/home.png)
+![Vigil real-home dashboard — owner-approved capture](qa/final/home.png)
 
-*Current React interface, captured November 4, 2026, using synthetic demo data. No home-camera footage is included.*
+*Owner-reviewed capture of the local Home dashboard at `http://127.0.0.1:8000/#/home`, November 4, 2026. It shows masked camera previews and the simplified house model. Approved for this private repository; the hosted sandbox below uses synthetic data.*
 
 ## From motion alerts to a visit story
 
@@ -110,7 +110,7 @@ The image defaults to sandbox mode and cache-only model access. Real-camera setu
 
 ## Privacy and trust boundaries
 
-- **Public demo data is synthetic.** Raw footage, private scans, camera credentials, local databases and `.env` stay out of Git. The public house view uses generic geometry.
+- **The hosted sandbox uses synthetic data.** The README Home image is a separate owner-approved local dashboard capture with masked previews. Raw footage, private scan files, camera credentials, local databases and `.env` stay out of Git. The public sandbox house view uses generic geometry.
 - **Mask before inference.** The cloud path sends reviewed, privacy-masked, audio-free inputs to Meta. Raw home footage stays local; streets, neighbours and identifying details must be excluded before processing or export.
 - **Decisions do not use identity.** Rules, roles, event ledgers and stories never use face templates or profile names. Optional local recurring-visitor profiles are isolated from reasoning and disabled by default. Clothing-based groups are labelled as uncertain matches. See the [profile design and limits](docs/spec/changes/2026-11-04-face-templates.md).
 - **Camera audio is excluded.** Voice rules use a separate flow. Only fixtures on the explicit audio allowlist may be versioned.

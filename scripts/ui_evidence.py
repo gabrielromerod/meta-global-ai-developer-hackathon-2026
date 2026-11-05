@@ -1,7 +1,8 @@
-"""Hash-bound manual review of static generated UI/public-reference screenshots.
+"""Hash-bound review of static UI and public-reference screenshots.
 
-This never accepts footage. It verifies screenshot provenance, pixels decode, audio
-absence and metadata. It makes no camera-polygon claim about UI screenshots.
+Fixture captures exclude camera pixels. A real-home UI capture additionally needs the
+owner's explicit, image-bound private-repository approval and masking review. Raw footage
+is never accepted; PNG decoding, audio absence and metadata checks apply to every kind.
 """
 
 import argparse
@@ -10,6 +11,7 @@ import json
 import os
 import sys
 from concurrent.futures import ThreadPoolExecutor
+from datetime import date
 from pathlib import Path
 from urllib.parse import urlparse
 
@@ -48,12 +50,11 @@ def pin_fixture(path: Path, manifest: Path) -> dict:
 def validate_manifest(root: Path, manifest: Path) -> tuple[int, list[str]]:
     try:
         record = json.loads(manifest.read_text(encoding="utf-8"))
-        if (
-            record.get("reviewed") is not True
-            or not record.get("reviewer")
-            or record.get("contains_camera_pixels") is not False
-        ):
-            raise ValueError("UI screenshots require explicit manual review and no camera pixels")
+        if record.get("reviewed") is not True or not record.get("reviewer"):
+            raise ValueError("UI screenshots require explicit manual review")
+        kind = record.get("kind")
+        if kind != "owner_reviewed_ui" and record.get("contains_camera_pixels") is not False:
+            raise ValueError("Fixture and reference UI screenshots cannot contain camera pixels")
         source = urlparse(record.get("source", ""))
         if record.get("kind") == "generated_ui":
             if source.hostname not in {"localhost", "127.0.0.1"} or not record.get("fixtures"):
@@ -84,6 +85,30 @@ def validate_manifest(root: Path, manifest: Path) -> tuple[int, list[str]]:
                             check(child)
 
                 check(data)
+        elif kind == "owner_reviewed_ui":
+            approval = record.get("owner_approval")
+            privacy = record.get("privacy")
+            if (
+                record.get("contains_camera_pixels") is not True
+                or source.scheme != "http"
+                or source.hostname not in {"localhost", "127.0.0.1"}
+                or source.username is not None
+                or source.password is not None
+                or not isinstance(approval, dict)
+                or approval.get("confirmed") is not True
+                or approval.get("scope") != "private_repository_readme"
+                or not isinstance(approval.get("statement"), str)
+                or not approval["statement"].strip()
+                or not record.get("files")
+                or approval.get("files") != record["files"]
+                or not isinstance(privacy, dict)
+                or any(
+                    privacy.get(key) is not True
+                    for key in ("masked_previews", "no_identifying_details", "no_raw_media")
+                )
+            ):
+                raise ValueError("Real-home UI needs exact-image owner approval and masking review")
+            date.fromisoformat(approval["date"])
         elif record.get("kind") == "public_reference":
             domains = ("meta.com", "instagram.com", "messenger.com", "facebook.com", "meta.ai")
             host = source.hostname or ""

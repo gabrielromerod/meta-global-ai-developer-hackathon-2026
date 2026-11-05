@@ -1,20 +1,20 @@
 {
   "kind": "generated_ui",
-  "source": "http://127.0.0.1:8000/",
-  "reviewer": "Root: two reviewed final captures; smaller original compressed PNGs retained with identical pixels",
+  "source": "http://127.0.0.1:8129/",
+  "reviewer": "Codex, Nov 4 2026: visually inspected both current React screenshots; synthetic data and labelled illustrations only; no camera footage, people, credentials, house numbers or private scan geometry",
   "reviewed": true,
   "contains_camera_pixels": false,
   "authenticated": false,
   "fixture_hash_mode": "lf-normalized",
   "fixtures": [
     {
-      "path": "proof-fixtures/qa-final-source-5f5275ad338add99.json",
-      "sha256": "5f5275ad338add9959b3d0653cc86af0cca0ca68d6e1e29463078b66394cfc02",
-      "original_path": "../../data/qa-final-source.json"
+      "path": "proof-fixtures/source-42180c9881340496.json",
+      "sha256": "42180c98813404960ad3897760ebbfb569a051416967f26a9fbf49488093ebf3",
+      "original_path": "../../data/qa/showcase-current/source.json"
     }
   ],
   "files": {
-    "home.png": "6576932ca3a3048db93958928629c943eca34a62740adc2eac778486debd1b3c",
-    "visit.png": "707fa540290b28f67a4608e325f4a372a240f404219abe421fce7807b0d899d5"
+    "home.png": "9babe68436614557e6dd0fae4e5e2790f85fb6eb4cf0fa258be59c2fb7861e44",
+    "visit.png": "ab5c785a603d0f9535926c9bc0e1c98e78bd0672200974aa4a50a2e22ee1a92a"
   }
 }

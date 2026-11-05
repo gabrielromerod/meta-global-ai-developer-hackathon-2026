@@ -14,7 +14,7 @@ Built for the **Meta Global AI Developer Hackathon 2026**.
 
 ![Vigil Home with synthetic demo data](qa/final/home.png)
 
-*Curated screenshot of the reviewed interface using synthetic demo data. No home-camera footage is included.*
+*Current React interface, captured November 4, 2026, using synthetic demo data. No home-camera footage is included.*
 
 ## From motion alerts to a visit story
 
@@ -34,7 +34,7 @@ Roles come from spatial origin and explicit owner context. An unknown role fails
 
 ![Vigil visit evidence with synthetic demo data](qa/final/visit.png)
 
-*Illustrative visit, synthetic observations and an explicitly marked blind gap.*
+*Current visit evidence view, captured November 4, 2026: synthetic observations, cited sentences and an explicitly marked blind gap.*
 
 </details>
 

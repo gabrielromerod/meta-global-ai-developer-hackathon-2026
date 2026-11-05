@@ -43,3 +43,17 @@ the validator; the story may not say weapon, armed, dangerous or threat.
 `tests/integration/test_captures_api.py`: `test_real_only_bell_lists_clips_whose_rule_raised_an_alert`,
 `test_capture_analysis_names_the_rule_and_the_carried_object`. `web-next/src/app/captures.test.tsx`:
 "shows which rule raised the alert and the object SAM marked, never a face match".
+
+## Field result and zoomed crops (Nov 4, evening)
+
+Real walk with a knife, filmed on the owner's cameras. The blade is visible to a person in the
+Front left clip. SAM 3.1 found no knife on the full frame in any of the 6 clips processed. On a
+2.75x crop of the main-stream part of that clip it found the blade in 9 consecutive frames at
+0.82 confidence. On a 3x crop of the sub-stream part it found nothing, and "kitchen knife" found
+nothing on either crop. That is one positive result, not an accuracy figure.
+
+`vigil/perception/zoom.py` now plans up to 3 crops per window from SAM's person boxes, and
+`vigil/cloud.py` asks for knife and gun on those crops only. A window with no person makes no
+carried-object call. Each crop is masked again and passes the upload guard with the polygons
+shifted into crop pixels. Boxes map back to the full frame, so events, rules and the verdict do
+not change. SAM calls for carried objects are now 2 per crop instead of 2 per window.

@@ -248,8 +248,8 @@ def test_sam_window_split_cloud_generated_mp4(tmp_path):
     ):
         calls = mock_models(router, saturated=True)
         result = process_session("generated", settings=settings, client=client, confirm=True)
-    # person (saturated, split in two) + car, plus one knife and one gun call (Nov 4)
-    assert len([c for c in calls if c["model"] == "sam-3.1"]) == 6
+    # person (saturated, split in two) + car, then knife and gun on each of 2 person crops
+    assert len([c for c in calls if c["model"] == "sam-3.1"]) == 8
     splits = list((settings.data_dir / "results" / "generated" / "splits").glob("*.mp4"))
     assert len(splits) == 2
     assert all(verify_clean(p, polygons, ref_size=(1280, 720)) for p in splits)

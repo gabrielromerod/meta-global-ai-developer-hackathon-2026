@@ -48,9 +48,13 @@ def run_cloud(
     camera_ai_events_measured: bool = False,
     truncated_after=None,
 ) -> dict:
+    from vigil.ingest.media import probe
+    from vigil.ingest.privacy import mask_clip
     from vigil.ingest.windows import cut_window
     from vigil.meta import sam, spark, wonder
+    from vigil.perception.events import CARRIED_OBJECTS
     from vigil.perception.tagged import burn_tags
+    from vigil.perception.zoom import cut_crop, map_back, plan_crops, shift_polygons
     from vigil.pipeline import phrases_for, run_scenario, upload_window
 
     estimates = cloud_estimates(windows)
@@ -66,12 +70,64 @@ def run_cloud(
     appearance_calls = {}
     ledger_start = len(client.ledger)
     sam_cache = {}
+    zoom_windows = {}
     notes_done = set()
     processed = []
     accepted = {}
     rejected = {}
 
+    def zoomed(w: Window, phrase: str):
+        """Carried objects are asked on crops around people (no person, no call)."""
+        cam = cfg.camera(w.camera_id)
+        info = probe(w.path)
+        size, ref = (info.width, info.height), (cam.width, cam.height)
+        people = sam_cache.get((w.id, "person"), [])
+        found = []
+        for i, plan in enumerate(plan_crops(people, *size, t0=w.t0, t1=w.t1)):
+            crop = zoom_windows.get((w.id, i))
+            polygons = shift_polygons(cam.privacy, plan, ref, size)
+            if crop is None:
+                raw = result_dir / "zoom" / f"{w.id}_{i}_raw.mp4"
+                path = result_dir / "zoom" / f"{w.id}_{i}.mp4"
+                cut_crop(w.path, raw, plan, w.t0)
+                mask_clip(raw, path, polygons, ref_size=(plan.out_w, plan.out_h))
+                raw.unlink()
+                crop = Window(
+                    id=f"{w.id}_zoom{i}",
+                    camera_id=w.camera_id,
+                    t0=plan.t0,
+                    t1=plan.t1,
+                    path=str(path),
+                    fps=w.fps,
+                    width=plan.out_w,
+                    height=plan.out_h,
+                )
+                zoom_windows[w.id, i] = crop
+            objs = sam.track_concept(
+                client,
+                crop,
+                phrase,
+                polygons=polygons,
+                ref_size=(plan.out_w, plan.out_h),
+                decode_masks=False,
+            )
+            found += [
+                map_back(
+                    o,
+                    plan,
+                    window_id=w.id,
+                    index=i,
+                    frame_size=size,
+                    fps=w.fps,
+                    window_t0=w.t0,
+                )
+                for o in objs
+            ]
+        return found
+
     def source(w: Window, phrase: str):
+        if phrase in CARRIED_OBJECTS:
+            return zoomed(w, phrase)
         cam = cfg.camera(w.camera_id)
         upload_window(client, w, cam)
 

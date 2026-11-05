@@ -1,0 +1,22 @@
+/* Masked stills cropped to the visible property area (tap-to-protect, camera preview). */
+.pv-still{position:relative;width:var(--v-full);overflow:hidden;border-radius:var(--v-radius-sm);background:#000;isolation:isolate}
+.pv-still img{display:block;max-width:none;object-fit:fill;cursor:crosshair;user-select:none}
+.pv-still-overlay{pointer-events:none;fill:var(--v-accent);fill-opacity:.28;stroke:var(--v-accent);stroke-width:4;vector-effect:non-scaling-stroke}
+.pv-still-overlay .pv-marker{fill:var(--v-warning);fill-opacity:1;stroke:#000;stroke-width:2}
+.pv-still-badge{position:absolute;top:8px;left:8px;display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:var(--v-radius-pill);background:#000000b3;color:#fff;font-size:var(--v-text-xs);font-weight:600;line-height:1.4;backdrop-filter:blur(6px);pointer-events:none}
+.pv-still-badge svg{width:12px;height:12px}
+.pv-protect{display:flex;flex-direction:column;align-items:stretch;gap:var(--v-space-1)}
+.pv-protect>.button,.pv-protect>button{align-self:flex-start}
+.pv-inline{margin:0;display:flex;flex-direction:column;gap:var(--v-space-1)}
+.pv-inline figcaption{display:flex;gap:6px;align-items:flex-start;margin:0}
+.pv-inline figcaption svg{width:14px;height:14px;flex:none;margin-top:3px;color:var(--v-accent)}
+.protection-frame .pv-still{margin:0}
+/* Zone polygons over a camera preview (Settings). */
+.st-preview{display:flex;flex-direction:column;gap:var(--v-space-1)}
+.st-preview .pv-still img{cursor:default}
+.st-zone{fill-opacity:.18;stroke-width:3;vector-effect:non-scaling-stroke}
+.st-zone[data-kind="perimeter"]{fill:var(--v-warning);stroke:var(--v-warning)}
+.st-zone[data-kind="interior_yard"]{fill:var(--v-success);stroke:var(--v-success)}
+.st-zone[data-kind="egress"]{fill:var(--v-accent);stroke:var(--v-accent)}
+.st-zone-legend{display:flex;flex-wrap:wrap;gap:var(--v-space-1);font-size:var(--v-text-xs);color:var(--v-muted)}
+.st-zone-legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px}

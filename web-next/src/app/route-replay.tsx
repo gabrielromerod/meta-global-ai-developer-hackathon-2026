@@ -196,7 +196,10 @@ function CameraDevice({camera,active,accent,onSelect}:{camera:TwinModel['cameras
     return flatShape(pts);
   },[x,z,lx,lz,camera.hfov_deg,camera.range_m]);
   return <group>
-    <mesh position={[x,y,z]} onClick={onSelect?event=>{event.stopPropagation();onSelect(camera.id);}:undefined} onPointerOver={onSelect?()=>{document.body.style.cursor='pointer';}:undefined} onPointerOut={onSelect?()=>{document.body.style.cursor='';}:undefined}><octahedronGeometry args={[active?.3:.22]}/><meshBasicMaterial color={accent} transparent opacity={active?1:.7}/></mesh>
+    <mesh position={[x,y,z]} onClick={onSelect?event=>{event.stopPropagation();onSelect(camera.id);}:undefined} onPointerOver={onSelect?()=>{document.body.style.cursor='pointer';}:undefined} onPointerOut={onSelect?()=>{document.body.style.cursor='';}:undefined}><octahedronGeometry args={[active?.6:.5]}/><meshBasicMaterial color={accent} transparent opacity={active?1:.85}/></mesh>
+    {onSelect&&<mesh position={[x,y,z]} onClick={event=>{event.stopPropagation();onSelect(camera.id);}} onPointerOver={()=>{document.body.style.cursor='pointer';}} onPointerOut={()=>{document.body.style.cursor='';}}><sphereGeometry args={[.9,12,8]}/><meshBasicMaterial transparent opacity={0} depthWrite={false}/></mesh>}
+    {!active&&onSelect&&<Line points={[[x,y,z],[x,.02,z]]} color={accent} lineWidth={1} transparent opacity={.35}/>}
+    {!active&&onSelect&&<mesh rotation={[-Math.PI/2,0,0]} position={[0,.012,0]}><shapeGeometry args={[fan]}/><meshBasicMaterial color={accent} transparent opacity={.035} blending={AdditiveBlending} side={DoubleSide} depthWrite={false}/></mesh>}
     {active&&<><mesh rotation={[-Math.PI/2,0,0]} position={[0,.015,0]}><shapeGeometry args={[fan]}/><meshBasicMaterial color={accent} transparent opacity={.1} blending={AdditiveBlending} side={DoubleSide} depthWrite={false}/></mesh>
       <Line points={[[x,y,z],[x,.02,z]]} color={accent} lineWidth={1} transparent opacity={.5}/></>}
   </group>;
@@ -261,7 +264,12 @@ function Marker({head,color,reduced}:{head:Head;color:string;reduced:boolean}){
 const EMPTY_ROUTE:ReturnType<typeof buildRoute>={gaps:[],segments:[]};
 
 /** Explorable private house (no route): cameras are selectable, views frame front/side/back. */
-export function HouseScene({twin,activeCameraId,onCameraSelect,preset,fallback,protectedObjects}:{twin:Rec;activeCameraId:string|null;onCameraSelect?:(id:string)=>void;preset?:string;fallback:ReactNode;protectedObjects?:unknown}){
+export function HouseScene({twin,activeCameraId,onCameraSelect,preset,fallback,protectedObjects,positions,note}:{twin:Rec;activeCameraId:string|null;onCameraSelect?:(id:string)=>void;preset?:string;fallback:ReactNode;protectedObjects?:unknown;positions?:Rec;note?:string}){
+  // With positions, the whole recorded route is drawn at once (end of the visit): trail, gap rings
+  // and the dotted "not observed" link, with the gap's blind region highlighted.
+  const route=useMemo(()=>positions?buildRoute(positions):EMPTY_ROUTE,[positions]);
+  const end=useMemo(()=>route.segments.reduce((m,s)=>Math.max(m,s.points[s.points.length-1]?.t??0),0),[route]);
+  const head=useMemo(()=>route.segments.length?headAt(route.segments,end):null,[route,end]);
   const guarded=useMemo(()=>guardedObjects(protectedObjects),[protectedObjects]);
   const host=useRef<HTMLDivElement>(null);
   const [palette,setPalette]=useState<Palette|null>(null);
@@ -287,7 +295,7 @@ export function HouseScene({twin,activeCameraId,onCameraSelect,preset,fallback,p
       {palette&&<Canvas className="replay-canvas" dpr={[1,2]} camera={{fov:40,near:.1,far:200,position:[14,16,-18]}} gl={{antialias:true}} aria-label="House model">
         <color attach="background" args={[palette.background]}/>
         <fog attach="fog" args={[palette.background,30,70]}/>
-        <Scene model={model} detail={detail} route={EMPTY_ROUTE} time={0} head={null} gap={null} activeCameraId={activeCameraId} palette={palette} playing={false} reduced={reduced} focusOverride={focus} onCameraSelect={onCameraSelect} rigOffset={[16,15,-24]} guarded={guarded}/>
+        <Scene model={model} detail={detail} route={route} time={end} head={head} gap={null} activeCameraId={activeCameraId} palette={palette} playing={false} reduced={reduced} focusOverride={activeCameraId||preset||!route.segments.length?focus:routeCentre(route)??focus} onCameraSelect={onCameraSelect} rigOffset={[16,15,-24]} guarded={guarded}/>
       </Canvas>}
     </Boundary>
     <div className="replay-hud" aria-hidden="true"><span className="replay-corner tl"/><span className="replay-corner tr"/><span className="replay-corner bl"/><span className="replay-corner br"/></div>
@@ -295,6 +303,6 @@ export function HouseScene({twin,activeCameraId,onCameraSelect,preset,fallback,p
       <span className="replay-live"><Radar aria-hidden="true"/>My house · private</span>
       {cameraName&&<span className="replay-cam">{cameraName}</span>}
     </div>
-    <div className="replay-bottom"><p className="replay-status">{detail?'Simplified from your LiDAR scan. Roof and camera spots are approximate.':'Generic diagram'}</p></div>
+    <div className="replay-bottom">{route.gaps.length>0&&<p className="twin-gap-summary">{route.gaps.map(g=><span key={g.id} data-active>{g.label}{g.regionName?` · ${g.regionName}`:''}</span>)}</p>}<p className="replay-status">{note??(detail?'Simplified from your LiDAR scan. Roof and camera spots are approximate.':'Generic diagram')}</p></div>
   </div>;
 }

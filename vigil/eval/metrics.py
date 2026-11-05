@@ -93,7 +93,7 @@ class LabelGap(_Strict):
 
 
 class LabelEvent(_Strict):
-    type: Literal["enter", "exit", "cross", "touch", "removed", "dwell"]
+    type: Literal["enter", "exit", "cross", "touch", "removed", "dwell", "carry"]
     camera_id: str
     t: float
     target: str | None = None

@@ -14,7 +14,11 @@ import './styles.css';
 export type ChatSurfaceProps = ChatProps;
 
 const narrowQuery='(max-width: 640px)';
-const SUGGESTIONS=['What happened at the side gate tonight?','Who came to the porch today?','Did anything need my attention?','Show me deliveries this week'];
+const STARTERS=[{text:'What happened at the side gate tonight?',note:'Answers cite the recorded events, with a link to each one.'},{text:'Has anyone been on the property more than once?',note:'Searches recorded visits; profiles and names are never sent to a model.'}];
+const REAL_NOTE='Answers come from your analysed clips.';
+/** Real-only home box: questions its analysed clips can answer (the front cameras today). */
+const REAL_STARTERS=[{text:'Who came into the front garden?',note:'Answers cite your analysed clips, with a link to each one.'},{text:'Has anyone been on the property more than once?',note:'Grouped by clothing on this home box; profiles and names are never sent to a model.'}];
+const SUGGESTIONS=['Who came to the porch today?','Did anything need my attention?'];
 function visualNumber(name:string) {
   return parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name))||0;
 }
@@ -41,6 +45,17 @@ function ThreadIcon({thread}: {thread:Thread}) {
   return thread.kind==='assistant' ? <House aria-hidden="true"/> : <MessageCircle aria-hidden="true"/>;
 }
 
+/** A real-only answer cites a recorded clip of this home (`capture_id`), not a demo visit. */
+export interface ClipCitation {capture_id:string;event_id:string|null;label?:string}
+export function clipCitation(citation:unknown):ClipCitation|null {
+  const c=citation as Partial<ClipCitation>|null;
+  return c&&typeof c.capture_id==='string'&&c.capture_id?{capture_id:c.capture_id,event_id:typeof c.event_id==='string'?c.event_id:null,...(typeof c.label==='string'&&c.label?{label:c.label}:{})}:null;
+}
+/** Short readable label for a capture id like `front_left_duo-<hash>-<hash>`. */
+export function clipLabel(captureId:string){return captureId.split('-')[0].replace(/_/g,' ')+' clip';}
+/** The Media library opens the clip named in `?capture=` (HashRouter). */
+export function openCaptureClip(captureId:string){window.location.hash=`#/clips?capture=${encodeURIComponent(captureId)}`;}
+
 function Message({message,onOpenVisit,onOpenClip,onOpenCitation}: {message:ChatMessage;onOpenVisit?:ChatProps['onOpenVisit'];onOpenClip?:ChatSurfaceProps['onOpenClip'];onOpenCitation?:ChatProps['onOpenCitation']}) {
   const author=message.author==='you'?'You':message.author==='vigil'?'Vigil':'Household';
   return <li className={`v-chat-message v-chat-message--${message.author}`}>
@@ -49,7 +64,9 @@ function Message({message,onOpenVisit,onOpenClip,onOpenCitation}: {message:ChatM
       <span className={message.author==='you'?'v-chat-visually-hidden':'v-chat-message-author'}>{author}</span>
       <div className="v-chat-bubble"><p>{message.text}</p></div>
       {message.citations.length>0 && <div className="v-chat-citations" aria-label="Evidence citations">
-        {message.citations.map(citation=><button type="button" className="v-chat-citation" key={`${citation.visit_id}:${citation.event_id}`} aria-label={`Open evidence ${citation.event_id}`} disabled={!onOpenVisit&&!onOpenCitation} onClick={()=>onOpenCitation?onOpenCitation(citation):onOpenVisit?.(citation.visit_id)}><Link2 aria-hidden="true"/>{citation.event_id}</button>)}
+        {message.citations.map((citation,i)=>{const clip=clipCitation(citation);
+          return clip?<button type="button" className="v-chat-citation" key={`${clip.capture_id}:${clip.event_id}:${i}`} aria-label={`Open clip ${clip.label??clipLabel(clip.capture_id)}`} onClick={()=>openCaptureClip(clip.capture_id)}><Link2 aria-hidden="true"/>{clip.label??clip.event_id??clipLabel(clip.capture_id)}</button>
+          :<button type="button" className="v-chat-citation" key={`${citation.visit_id}:${citation.event_id}`} aria-label={`Open evidence ${citation.event_id}`} disabled={!onOpenVisit&&!onOpenCitation} onClick={()=>onOpenCitation?onOpenCitation(citation):onOpenVisit?.(citation.visit_id)}><Link2 aria-hidden="true"/>{citation.event_id}</button>;})}
       </div>}
       {message.clip_id && <button type="button" className="v-chat-shared-clip" aria-label={`Shared clip ${message.clip_id}`} disabled={!onOpenClip} onClick={()=>onOpenClip?.(message.clip_id!)}><span className="v-chat-shared-clip-icon" aria-hidden="true"><FileVideo/></span><span>Shared clip<span className="v-chat-clip-id">{message.clip_id}</span></span>{!onOpenClip&&<span className="v-chat-clip-id">Playback unavailable</span>}</button>}
     </div>
@@ -90,11 +107,11 @@ function ThreadView({thread,props,draft,onDraftChange}: {thread:Thread;props:Cha
     if(props.error&&lastSent.current&&!draft)onDraftChange(lastSent.current);
   },[props.error]); // Restore a failed submission; lead may keep this draft controlled.
 
-  async function submit(event?:FormEvent) {
+  async function submit(event?:FormEvent,override?:string) {
     event?.preventDefault();
-    const text=draft.trim();
+    const text=(override??draft).trim();
     if(!text||sending||!canSend)return;
-    setLocalError(null);setSubmitting(true);lastSent.current=draft;
+    setLocalError(null);setSubmitting(true);lastSent.current=override??draft;
     try {
       const result=props.onSend(thread.id,text) as void|Promise<void>;
       if(result&&typeof result.then==='function')await result;
@@ -109,13 +126,14 @@ function ThreadView({thread,props,draft,onDraftChange}: {thread:Thread;props:Cha
   const assistant=thread.kind==='assistant';
   const hints=[!canSend?(assistant?'Ask your home is unavailable for this session.':'Local household messaging is unavailable for this session.'):null,!snapshot&&!record?'Snapshots and recording are unavailable for this session.':null].filter(Boolean) as string[];
   return <section className="v-chat-thread" aria-label={thread.title}>
-    <header className="v-chat-thread-header"><span className="v-chat-avatar"><ThreadIcon thread={thread}/></span><div><h2>{thread.title}</h2><p>{thread.kind==='local_mock'?'Local to this browser':'Answers cite cached visit evidence'}</p></div></header>
+    <header className="v-chat-thread-header"><span className="v-chat-avatar"><ThreadIcon thread={thread}/></span><div><h2>{thread.title}</h2><p>{thread.kind==='local_mock'?'Local to this browser':thread.note===REAL_NOTE?thread.note:'Answers cite cached visit evidence'}</p></div></header>
     <div ref={historyRef} className="v-chat-history" role="log" aria-label={`${thread.title} messages`} aria-live="polite" tabIndex={0}>
       <div className="v-chat-column">
       {thread.messages.length===0&&!sending?<div className="v-chat-empty">
         <span className="v-chat-empty-icon"><ThreadIcon thread={thread}/></span>
         <h3>{assistant?'Ask about your home':'No messages yet'}</h3>
         <p>{assistant?'Search what the cameras recorded. Every answer links to the visit evidence.':'Share a note or a clip with this local household thread.'}</p>
+        {assistant&&<div className="v-chat-starters" aria-label="Start with a question">{(thread.note===REAL_NOTE?REAL_STARTERS:STARTERS).map(starter=><button type="button" key={starter.text} className="v-chat-starter" disabled={!canSend||sending} onClick={()=>void submit(undefined,starter.text)}><MessageCircle aria-hidden="true"/><span><strong>{starter.text}</strong><small>{starter.note}</small></span><ArrowUp aria-hidden="true" className="v-chat-starter-go"/></button>)}</div>}
         {assistant&&<div className="v-chat-suggestions" aria-label="Suggested questions">{SUGGESTIONS.map(text=><button type="button" key={text} className="v-chat-suggestion" disabled={!canSend||sending} onClick={()=>onDraftChange(text)}><Sparkles aria-hidden="true"/>{text}</button>)}</div>}
         {thread.kind==='local_mock'&&<p className="v-chat-fine">Messages stay in this browser. They are not delivered to anyone.</p>}
       </div>:thread.messages.length>0&&<ol className="v-chat-message-list">{thread.messages.map(message=><Message key={message.id} message={message} onOpenCitation={props.onOpenCitation} onOpenVisit={props.onOpenVisit} onOpenClip={props.onOpenClip}/>)}</ol>}
@@ -145,7 +163,7 @@ function ThreadWorkspace({props,popup=false}: {props:ChatSurfaceProps;popup?:boo
   const selected=props.threads.find(thread=>thread.id===props.selectedThreadId)??props.threads[0];
   if(!selected)return <div className="v-chat-empty"><MessageCircle aria-hidden="true"/><h2>{props.pending?'Loading messages':props.error?'Messages unavailable':'No threads available'}</h2><p role={props.error?'alert':props.pending?'status':undefined}>{props.error||(props.pending?'Loading threads from the home box…':'Messages will appear here when a session is loaded.')}</p>{props.error&&props.onRetry&&<Button onClick={props.onRetry}>Try again</Button>}</div>;
   return <Tooltip.Provider delayDuration={visualNumber('--v-motion')}><Tabs.Root className={`v-chat-workspace${popup?' v-chat-workspace--popup':''}`} value={selected.id} onValueChange={props.onSelectThread} orientation={popup||narrow?'horizontal':'vertical'} activationMode="automatic">
-    <aside className="v-chat-thread-list"><Tabs.List className="v-chat-tabs" aria-label="Message threads">{props.threads.map(thread=><Tabs.Trigger key={thread.id} value={thread.id} className="v-chat-thread-tab" aria-label={thread.title}><span className="v-chat-avatar"><ThreadIcon thread={thread}/></span><span><strong>{thread.title}</strong><small>{thread.kind==='assistant'?'Visit evidence':'Local to this browser'}</small></span></Tabs.Trigger>)}</Tabs.List>{!popup&&<p className="v-chat-thread-note">{selected.note}</p>}</aside>
+    <aside className="v-chat-thread-list"><Tabs.List className="v-chat-tabs" aria-label="Message threads">{props.threads.map(thread=><Tabs.Trigger key={thread.id} value={thread.id} className="v-chat-thread-tab" aria-label={thread.title}><span className="v-chat-avatar"><ThreadIcon thread={thread}/></span><span><strong>{thread.title}</strong><small>{thread.kind==='assistant'?(thread.note===REAL_NOTE?'Your clips':'Visit evidence'):'Local to this browser'}</small></span></Tabs.Trigger>)}</Tabs.List>{!popup&&<p className="v-chat-thread-note">{selected.note}</p>}</aside>
     <Tabs.Content className="v-chat-tab-panel" value={selected.id} key={selected.id}><ThreadView thread={selected} props={props} draft={drafts.values[selected.id]??''} onDraftChange={text=>drafts.change(selected.id,text)}/></Tabs.Content>
   </Tabs.Root></Tooltip.Provider>;
 }

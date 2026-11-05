@@ -197,7 +197,7 @@ def test_template_names_zones_in_plain_words() -> None:
     assert res.passed, res.failures
 
 
-EVENT_TYPES = ["enter", "exit", "cross", "touch", "removed", "dwell"]
+EVENT_TYPES = ["enter", "exit", "cross", "touch", "removed", "dwell", "carry"]
 TARGETS = [None, "po_side_gate", "porch", "side_gate", "w2", "to_side_left", "from_house_side",
            "zone_back_yard"]  # fmt: skip
 

@@ -15,7 +15,7 @@ from vigil.reasoning.clock import format_clock, to_local
 from vigil.reasoning.validator import ROLE_PHRASES, humanise_id, role_and_basis, subject_index
 
 MAX_SENTENCES = 6
-_PRIORITY = {"removed": 0, "touch": 1, "cross": 2, "dwell": 3, "enter": 4, "exit": 5}
+_PRIORITY = {"carry": 0, "removed": 1, "touch": 2, "cross": 3, "dwell": 4, "enter": 5, "exit": 6}
 
 
 def _visit_events(ledger: VisitLedger) -> list[Event]:
@@ -168,6 +168,12 @@ def template_story(
                 what = labels.get(e.target or "", "object")
                 text = (
                     f"The watched {what} was taken away while a person was next to it "
+                    f"on the {cam} camera{at}."
+                )
+            case "carry":
+                what = " ".join((e.target or "object").split("_"))
+                text = (
+                    f"{subj} was holding an object marked as a possible {what} "
                     f"on the {cam} camera{at}."
                 )
             case "dwell":

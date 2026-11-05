@@ -18,16 +18,19 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import os
 import re
 from datetime import UTC, datetime, timedelta
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from fastapi.responses import FileResponse
 
 from vigil.api.guards import require_lan
+from vigil.faces.enroll import OUTSIDE_PROPERTY, foot_zone_kind
 from vigil.models import CameraCfg, Config
 
 CAPTURE_ID = re.compile(r"[a-z0-9_]{1,64}-[0-9a-f]{20}-[0-9a-f]{12}")
@@ -145,7 +148,218 @@ def _clip(request: Request, folder: Path, capture: dict) -> tuple[Path | None, b
     return part, True
 
 
-def _row(request: Request, folder: Path) -> dict[str, Any] | None:
+FULL_VIEW = {"x0": 0.0, "y0": 0.0, "x1": 1.0, "y1": 1.0}
+VISIBLE_ROW = 0.2
+"""A frame row counts as property view once this share of it is unmasked (UI crop only)."""
+MAX_CROP_TOP = 0.7
+
+
+def _view_of_mask(mask: Any) -> tuple[float, float, float, float]:
+    """(x0, y0, x1, y1) of the region worth showing, given a boolean masked-pixel array."""
+    import numpy as np
+
+    h, w = mask.shape
+    visible = 1.0 - mask.mean(axis=1)
+    rows = np.nonzero(visible >= VISIBLE_ROW)[0]
+    if not rows.size:
+        return 0.0, 0.0, 1.0, 1.0
+    y0 = min(MAX_CROP_TOP, math.floor(rows[0] / h * 100) / 100)
+    cols = np.nonzero((~mask[int(y0 * h) :]).any(axis=0))[0]
+    x0 = math.floor(cols[0] / w * 100) / 100 if cols.size else 0.0
+    x1 = math.ceil((cols[-1] + 1) / w * 100) / 100 if cols.size else 1.0
+    return float(x0), float(y0), float(min(1.0, x1)), 1.0
+
+
+@lru_cache(maxsize=64)
+def _view(width: int, height: int, polygons: str) -> tuple[float, float, float, float]:
+    from vigil.ingest.media import polygon_mask
+
+    poly = [[tuple(p) for p in polygon] for polygon in json.loads(polygons)]
+    w, h = max(64, width // 4), max(36, height // 4)
+    return _view_of_mask(polygon_mask((w, h), poly, ref_size=(width, height)))
+
+
+BLACK = 10
+"""A masked pixel stays at or below this level in every sampled frame (masking writes 0)."""
+
+
+def _measured_view(clip: Path) -> tuple[float, float, float, float] | None:
+    """The view measured from the masked clip itself: pixels black in three sampled frames.
+
+    Parts cut before a polygon change keep their old mask, so the pixels, not today's
+    config, decide what is black.
+    """
+    import cv2
+    import numpy as np
+
+    cap = cv2.VideoCapture(str(clip))
+    try:
+        n = int(cap.get(cv2.CAP_PROP_FRAME_COUNT) or 0)
+        peak = None
+        for f in (0.15, 0.5, 0.85):
+            if n > 0:
+                cap.set(cv2.CAP_PROP_POS_FRAMES, max(0, int(n * f)))
+            ok, frame = cap.read()
+            if not ok:
+                continue
+            small = cv2.resize(frame, (max(64, frame.shape[1] // 4), max(36, frame.shape[0] // 4)))
+            level = small.max(axis=2)
+            peak = level if peak is None else np.maximum(peak, level)
+    finally:
+        cap.release()
+    return None if peak is None else _view_of_mask(peak <= BLACK)
+
+
+MEASURE_PER_REQUEST = 12
+
+
+def clip_view(
+    request: Request, capture_id: str, clip: Path, camera: CameraCfg | None, budget: list[int]
+) -> dict[str, float]:
+    """Measured view of a masked clip (cached under data/ui/views), else the config's view.
+
+    At most `MEASURE_PER_REQUEST` clips are measured per list request so a long list stays
+    fast; the rest use the config's view until their turn.
+    """
+    cache = Path(request.app.state.settings.data_dir) / "ui" / "views" / f"{capture_id}.json"
+    data = _read_json(cache)
+    if isinstance(data, dict) and {"x0", "y0", "x1", "y1"} <= set(data):
+        return {k: float(data[k]) for k in ("x0", "y0", "x1", "y1")}
+    if budget[0] > 0:
+        budget[0] -= 1
+        measured = _measured_view(clip)
+        if measured is not None:
+            view = dict(zip(("x0", "y0", "x1", "y1"), measured, strict=True))
+            cache.parent.mkdir(parents=True, exist_ok=True)
+            cache.write_text(json.dumps(view), encoding="utf-8")
+            return view
+    return frame_view(camera)
+
+
+def frame_view(camera: CameraCfg | None) -> dict[str, float]:
+    """The part of a masked frame worth showing, as fractions of the frame.
+
+    Rows where less than `VISIBLE_ROW` of the width is unmasked (the street strip and the far
+    side) and fully masked side columns are cropped for display. The pixels are already black
+    in the masked part; this only stops the player spending half its height on them.
+    """
+    if camera is None or not camera.privacy:
+        return dict(FULL_VIEW)
+    polygons = json.dumps([[list(p) for p in poly] for poly in camera.privacy])
+    x0, y0, x1, y1 = _view(camera.width, camera.height, polygons)
+    return {"x0": x0, "y0": y0, "x1": x1, "y1": y1}
+
+
+_VISITS_CACHE: dict[Path, tuple[float, Any]] = {}
+
+
+def _visits(folder: Path) -> Any:
+    """`visits.json` of a results folder, parsed once per change (the list polls every 10 s)."""
+    path = folder / "visits.json"
+    try:
+        mtime = path.stat().st_mtime
+    except OSError:
+        return None
+    hit = _VISITS_CACHE.get(path)
+    if hit and hit[0] == mtime:
+        return hit[1]
+    data = _read_json(path)
+    _VISITS_CACHE[path] = (mtime, data)
+    return data
+
+
+VERDICT_RANK = {"needs_attention": 0, "cant_confirm": 1, "noteworthy": 2, "normal": 3}
+
+
+def headline(results: Path) -> tuple[str | None, str | None]:
+    """The capture's most serious verdict and the first sentence of that visit's story."""
+    data = _visits(results)
+    visits = [v for v in (data or {}).get("visits") or [] if isinstance(v, dict)]
+    if not visits:
+        return None, None
+    worst = min(visits, key=lambda v: VERDICT_RANK.get(str(v.get("verdict")), 9))
+    story = [s for s in worst.get("story") or [] if isinstance(s, dict) and s.get("text")]
+    return worst.get("verdict"), (str(story[0]["text"]) if story else None)
+
+
+def _subject(
+    request: Request,
+    capture_id: str,
+    camera: CameraCfg | None,
+    clip_start: float,
+    clip_len: float | None = None,
+) -> dict[str, Any] | None:
+    """The person to point at in a thumbnail: the track SAM boxed most often inside the property.
+
+    Only boxes whose foot point is in a non-`perimeter` zone count, so a person seen only on
+    the street strip, or on a camera without zones, gives no subject.
+    """
+    if camera is None or not camera.zones:
+        return None
+    folder = Path(request.app.state.settings.data_dir) / "results" / capture_id
+    data = _visits(folder)
+    if not isinstance(data, dict):
+        return None
+    overlay = ((data.get("overlays") or {}).get("cameras") or {}).get(camera.id) or {}
+    ow, oh = float(overlay.get("width") or 0), float(overlay.get("height") or 0)
+    if ow <= 0 or oh <= 0:
+        return None
+    tracks = {t.get("id"): t for t in data.get("tracks") or [] if isinstance(t, dict)}
+    scale = (camera.width / ow, camera.height / oh)
+    hits: dict[str, list[tuple[float, list[float]]]] = {}
+    for frame in overlay.get("frames") or []:
+        for obj in frame.get("objects") or []:
+            tid, box = obj.get("track_id"), obj.get("box")
+            phrase = (tracks.get(tid) or {}).get("phrase") or obj.get("cls")
+            if phrase != "person" or not isinstance(box, list) or len(box) != 4:
+                continue
+            kind = foot_zone_kind(camera, tuple(box), scale=scale)  # type: ignore[arg-type]
+            if kind is None or kind in OUTSIDE_PROPERTY:
+                continue
+            hits.setdefault(str(tid), []).append((float(frame.get("t", 0.0)), box))
+    if clip_len is not None:
+        # Only boxes inside the served clip: a box from outside it would sit on a frame
+        # where the person is not, and its crop would show no one.
+        inside = {
+            k: [r for r in v if clip_start <= r[0] <= clip_start + clip_len]
+            for k, v in hits.items()
+        }
+        hits = {k: v for k, v in inside.items() if v}
+    if not hits:
+        return None
+    tid, rows = max(hits.items(), key=lambda kv: (len(kv[1]), kv[0]))
+    rows.sort(key=lambda r: r[0])
+    t, box = rows[len(rows) // 2]
+    tag = (tracks.get(tid) or {}).get("tag")
+    return {
+        "track_id": tid,
+        "label": f"{tag} person" if tag else "person",
+        "t": round(max(0.0, t - clip_start), 2),
+        "box": [round(box[0] / ow, 4), round(box[1] / oh, 4),
+                round(box[2] / ow, 4), round(box[3] / oh, 4)],
+        "image_url": f"/api/ui/captures/{capture_id}/subject.jpg",
+        "_thumb": {"capture_id": capture_id, "camera_id": camera.id, "t": t,
+                   "box": [float(v) for v in box], "overlay_size": [ow, oh]},
+    }  # fmt: skip
+
+
+DARK = 14.0
+"""Mean brightness under which a subject crop shows nothing (night, or under the mask)."""
+
+
+def _too_dark(jpeg: bytes) -> bool:
+    import cv2
+    import numpy as np
+
+    image = cv2.imdecode(np.frombuffer(jpeg, np.uint8), cv2.IMREAD_GRAYSCALE)
+    return image is None or float(image.mean()) < DARK
+
+
+def _public(subject: dict[str, Any] | None) -> dict[str, Any] | None:
+    return None if subject is None else {k: v for k, v in subject.items() if k != "_thumb"}
+
+
+def _row(request: Request, folder: Path, budget: list[int] | None = None) -> dict[str, Any] | None:
     capture, session = _read_json(folder / "capture.json"), _read_json(folder / "session.json")
     if not isinstance(capture, dict) or not isinstance(session, dict):
         return None
@@ -164,6 +378,14 @@ def _row(request: Request, folder: Path) -> dict[str, Any] | None:
     camera = _camera(request, camera_id)
     clip, masked = _clip(request, folder, capture)
     results = Path(request.app.state.settings.data_dir) / "results" / folder.name
+    view = (
+        clip_view(request, folder.name, clip, camera, budget if budget is not None else [0])
+        if masked and clip is not None
+        else None
+    )
+    window = _clip_window(folder) if results.is_dir() else None
+    subject = _subject(request, folder.name, camera, *window) if window is not None else None
+    verdict, line = headline(results) if results.is_dir() else (None, None)
     return {
         "id": folder.name,
         "camera_id": camera_id,
@@ -175,7 +397,13 @@ def _row(request: Request, folder: Path) -> dict[str, Any] | None:
         "clip_url": f"/api/ui/captures/{folder.name}/clip" if clip is not None else None,
         "masked": masked,
         "analysis": "analysed" if results.is_dir() else "not_analysed",
+        "verdict": verdict,
+        "headline": line,
         "layer": "camera_ai",
+        "frame_aspect": round(camera.width / camera.height, 4) if camera else None,
+        "crop": view,
+        "crop_top": view["y0"] if view else 0,
+        "subject": _public(subject),
     }
 
 
@@ -224,7 +452,12 @@ def _seconds(value: Any, start: float) -> float | None:
     return round(max(0.0, float(value) - start), 2)
 
 
-def _analysis(capture_id: str, folder: Path, capture_folder: Path) -> dict[str, Any] | None:
+def _analysis(
+    capture_id: str,
+    folder: Path,
+    capture_folder: Path,
+    zone_kinds: dict[str, str] | None = None,
+) -> dict[str, Any] | None:
     """What Vigil made of a capture: verdict, cited story, roles and SAM tags with notes.
 
     Only fields the UI needs; appearance notes are the FR-009 allowlist (clothing and
@@ -268,14 +501,42 @@ def _analysis(capture_id: str, folder: Path, capture_folder: Path) -> dict[str, 
                 "to": _seconds(track.get("t_last"), start) if clip else None,
             }
         )
+    zone_kinds = dict(zone_kinds or {})
+    paths: dict[str, list[dict[str, Any]]] = {}
+    for e in sorted(events.values(), key=lambda e: e.get("t0") or 0):
+        target, track = e.get("target"), track_rows.get(e.get("track_id"))
+        if e.get("type") != "enter" or not target or not track or not track.get("tag"):
+            continue
+        if kind(track.get("id")) != "person":
+            continue
+        paths.setdefault(track["tag"], []).append({
+            "zone": str(target),
+            "kind": zone_kinds.get(str(target)),
+            "at": _seconds(e.get("t0"), start) if clip else None,
+        })  # fmt: skip
     tagged = sorted(
         p.stem
         for p in (folder / "tagged").glob("*.mp4")
         if WINDOW_ID.fullmatch(p.stem) and not p.is_symlink()
     )
+    rule_names = _rule_names()
+    alerts = []
+    for hit in visit.get("rule_hits") or []:
+        if not isinstance(hit, dict):
+            continue
+        e = events.get(hit.get("event_id")) or {}
+        alerts.append({
+            "rule_id": hit.get("rule_id"),
+            "rule": rule_names.get(str(hit.get("rule_id")), str(hit.get("rule_id"))),
+            "event_id": hit.get("event_id"),
+            "type": e.get("type"),
+            "object": e.get("target") if e.get("type") == "carry" else None,
+            "at": _seconds(e.get("t0"), start) if clip else None,
+        })  # fmt: skip
     return {
         "id": capture_id,
         "verdict": visit.get("verdict"),
+        "alerts": alerts,
         "story_source": visit.get("story_source"),
         "clip": {"duration": round(clip[1], 2)} if clip else None,
         "story": [
@@ -305,6 +566,7 @@ def _analysis(capture_id: str, folder: Path, capture_folder: Path) -> dict[str, 
         ],
         "visits": len(visits),
         "tracks": tracks,
+        "zones": [{"tag": tag, "path": path} for tag, path in paths.items()],
         "tagged": [
             {
                 "window_id": w,
@@ -314,6 +576,16 @@ def _analysis(capture_id: str, folder: Path, capture_folder: Path) -> dict[str, 
             for w in tagged
         ],
     }
+
+
+def _rule_names() -> dict[str, str]:
+    """Rule id -> the owner-facing rule name (default rules; compiled rules keep their id)."""
+    from vigil.reasoning.rules import DEFAULT_RULES_PATH, load_rules
+
+    try:
+        return {r.id: r.name for r in load_rules(DEFAULT_RULES_PATH)}
+    except (OSError, ValueError):
+        return {}
 
 
 MOMENT_ID = re.compile(r"moment-[0-9a-f]{16}")
@@ -357,10 +629,11 @@ def captures_router() -> APIRouter:
     def list_captures(request: Request) -> dict[str, list[dict[str, Any]]]:
         root = _windows_root(request)
         rows = []
+        budget = [MEASURE_PER_REQUEST]
         if root.is_dir():
             for child in root.iterdir():
                 folder = _capture_dir(root, child.name)
-                row = _row(request, folder) if folder is not None else None
+                row = _row(request, folder, budget) if folder is not None else None
                 if row is not None:
                     rows.append(row)
         rows.sort(
@@ -384,8 +657,15 @@ def captures_router() -> APIRouter:
     def capture_analysis(capture_id: str, request: Request) -> dict[str, Any]:
         folder = _results_dir(request, capture_id)
         capture_folder = _capture_dir(_windows_root(request), capture_id)
+        capture = _read_json(capture_folder / "capture.json") if capture_folder else None
+        camera = (
+            _camera(request, str(capture.get("camera_id") or ""))
+            if isinstance(capture, dict)
+            else None
+        )
+        kinds = {z: camera.zone_kind(z) for z in camera.zones} if camera is not None else {}
         body = (
-            _analysis(capture_id, folder, capture_folder)
+            _analysis(capture_id, folder, capture_folder, kinds)
             if folder is not None and capture_folder is not None
             else None
         )
@@ -393,6 +673,35 @@ def captures_router() -> APIRouter:
             raise HTTPException(404, "capture not analysed")
         body["moment"] = _moment(request, capture_id)
         return body
+
+    @r.get("/ui/captures/{capture_id}/subject.jpg")
+    def capture_subject(capture_id: str, request: Request) -> Response:
+        """Upper-body crop of the clip's subject from the masked parts (thumbnail badge)."""
+        from vigil.api.faces import _crop_from_video
+
+        folder = _capture_dir(_windows_root(request), capture_id)
+        capture = _read_json(folder / "capture.json") if folder is not None else None
+        if folder is None or not isinstance(capture, dict):
+            raise HTTPException(404, "capture not found")
+        crops = Path(request.app.state.settings.data_dir) / "appearance" / "crops"
+        cache = crops / f"subject__{capture_id}.jpg"
+        none = crops / f"subject__{capture_id}.none"
+        if none.is_file():
+            raise HTTPException(404, "no subject in this clip")
+        if not cache.is_file():
+            window = _clip_window(folder)
+            camera = _camera(request, str(capture.get("camera_id") or ""))
+            subject = _subject(request, capture_id, camera, *window) if window else None
+            body = _crop_from_video(request, subject["_thumb"]) if subject else None
+            if body is None or _too_dark(body):
+                if body is not None:  # remember: decoding the clip again gives the same frame
+                    crops.mkdir(parents=True, exist_ok=True)
+                    none.touch()
+                raise HTTPException(404, "no subject in this clip")
+            crops.mkdir(parents=True, exist_ok=True)
+            cache.write_bytes(body)
+        return Response(cache.read_bytes(), media_type="image/jpeg",
+                        headers={"cache-control": "no-store"})  # fmt: skip
 
     @r.get("/ui/captures/{capture_id}/tagged/{window_id}")
     def capture_tagged(capture_id: str, window_id: str, request: Request) -> FileResponse:

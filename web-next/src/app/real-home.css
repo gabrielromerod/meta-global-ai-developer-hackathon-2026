@@ -1,0 +1,67 @@
+/* Real-only home box: house model first, a camera panel beside it, analysed clips on the side. */
+.real-home{display:grid;grid-template-columns:minmax(0,1fr) minmax(340px,400px);grid-template-rows:auto minmax(0,1fr);gap:var(--v-space-2);height:var(--v-full);min-height:0;min-width:0;overflow:hidden;padding:var(--v-focus-offset)}
+.real-home h2,.real-home h3,.real-home p{margin:0}
+.real-home>.real-funnel{grid-column:1/-1}
+
+.real-funnel{display:flex;align-items:center;flex-wrap:wrap;gap:10px var(--v-space-2);padding:12px var(--v-space-2);border-radius:var(--v-radius-md);background:var(--v-surface);color:var(--v-muted);font-size:var(--v-text-sm)}
+.real-funnel>svg{width:16px;height:16px;flex:none;opacity:.7}
+.real-funnel strong{color:var(--v-text);font-size:var(--v-text-lg);font-weight:var(--v-weight-bold);margin-right:4px;font-variant-numeric:tabular-nums}
+.real-funnel-step[data-alert] strong{color:var(--v-danger)}
+
+.real-house{display:flex;flex-direction:column;gap:10px;min-height:0;min-width:0}
+.real-house-stage{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr);gap:var(--v-space-1);padding:var(--v-space-1);border-radius:var(--v-radius-md);background:var(--v-surface);overflow:hidden}
+.real-house-stage[data-camera]{grid-template-columns:minmax(0,1fr) minmax(300px,380px)}
+.real-house-model{position:relative;display:flex;min-height:0;min-width:0;border-radius:12px;overflow:hidden;background:var(--v-bg)}
+.real-house-model>*{flex:1;min-width:0;width:100%}
+
+.real-camera-chips,.real-filters{display:flex;flex-wrap:wrap;gap:6px}
+.real-camera-chips button,.real-filters button{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;border:var(--v-line) solid var(--v-border);border-radius:var(--v-radius-pill);background:var(--v-surface);color:var(--v-text);font:inherit;font-size:var(--v-text-sm);cursor:pointer}
+.real-camera-chips button svg{width:14px;height:14px;color:var(--v-muted)}
+.real-camera-chips button[aria-pressed="true"],.real-filters button[aria-pressed="true"]{border-color:var(--v-accent);background:color-mix(in srgb,var(--v-accent) 18%,var(--v-surface))}
+.real-camera-chips button:focus-visible,.real-filters button:focus-visible{outline:var(--v-focus-width) solid var(--v-accent);outline-offset:var(--v-focus-offset)}
+.real-chip-count{min-width:20px;padding:0 6px;border-radius:var(--v-radius-pill);background:var(--v-raised);color:var(--v-muted);font-size:var(--v-text-xs,12px);text-align:center;font-variant-numeric:tabular-nums}
+
+/* Camera panel */
+.real-camera{display:flex;flex-direction:column;min-height:0;min-width:0;gap:8px;padding:var(--v-space-1);border-radius:12px;background:var(--v-raised)}
+.real-camera-head{display:flex;align-items:center;gap:10px}
+.real-camera-head>div{flex:1;min-width:0}
+.real-camera-head h2{font-size:var(--v-text-md);font-weight:var(--v-weight-bold)}
+.real-camera-body{flex:1;min-height:0;display:flex;flex-direction:column;gap:10px;overflow-y:auto}
+.real-camera-body h3{font-size:var(--v-text-sm);color:var(--v-muted);font-weight:600}
+.real-camera-still{margin:0;display:flex;flex-direction:column;gap:6px}
+.real-camera-still img{cursor:default}
+.real-camera-still figcaption{font-size:var(--v-text-sm);color:var(--v-muted)}
+.real-camera-clips{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.real-camera-clips li{display:grid;grid-template-columns:120px minmax(0,1fr);gap:10px;align-items:center}
+.real-camera-clip-text{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:0;border:0;background:none;color:var(--v-text);font:inherit;font-size:var(--v-text-sm);text-align:left;cursor:pointer;min-width:0}
+.real-camera-clip-text small{color:var(--v-muted);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+
+/* Side column */
+.real-side{display:flex;flex-direction:column;gap:12px;min-height:0;min-width:0;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+.real-review-list{display:flex;flex-direction:column;gap:10px;flex:none}
+.real-review-list>ul.pv-scroll{overflow:visible}
+.real-side>*{flex:none}
+.real-review-list>ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.real-review{display:grid;grid-template-columns:128px minmax(0,1fr);gap:10px;align-items:center;padding:8px;border-radius:12px;background:var(--v-surface);border-left:3px solid transparent}
+.real-review[data-verdict="needs_attention"]{border-left-color:var(--v-danger)}
+.real-review[data-verdict="cant_confirm"],.real-review[data-verdict="noteworthy"]{border-left-color:var(--v-warning,#e8c547)}
+.real-review-text{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:0;border:0;background:none;color:var(--v-text);font:inherit;text-align:left;cursor:pointer;min-width:0}
+.real-review-text strong{font-size:var(--v-text-sm);line-height:1.35;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.real-review-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:var(--v-text-sm);color:var(--v-muted)}
+.real-review-camera{display:inline-flex;align-items:center;gap:4px;font-size:var(--v-text-sm);color:var(--v-muted)}
+.real-review-camera svg{width:13px;height:13px}
+.real-review-text:focus-visible,.real-camera-clip-text:focus-visible{outline:var(--v-focus-width) solid var(--v-accent);outline-offset:var(--v-focus-offset);border-radius:6px}
+
+/* Attention and Media */
+.real-attention,.real-media{display:flex;flex-direction:column;gap:var(--v-space-2);height:var(--v-full);min-height:0;min-width:0;overflow-y:auto;padding:var(--v-focus-offset)}
+.real-attention-list{display:flex;flex-direction:column;gap:10px}
+.real-attention-grid{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:10px}
+.real-media-note{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:0;color:var(--v-muted);font-size:var(--v-text-sm)}
+.real-media-note svg{width:15px;height:15px}
+
+@media (max-width:1100px){
+  .real-home{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(420px,1fr) auto;overflow-y:auto;height:auto}
+  .real-house-stage[data-camera]{grid-template-columns:minmax(0,1fr)}
+  .real-house-model{min-height:320px}
+  .real-attention-grid{grid-template-columns:minmax(0,1fr)}
+}

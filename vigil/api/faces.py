@@ -55,6 +55,7 @@ def _view(profile: dict[str, Any]) -> dict[str, Any]:
         "label": None,
         "seen_label": _seen(int(profile.get("count") or 0)),
         "crops": [f"/api/ui/faces/crops/{face_id}" for face_id in profile.get("crops") or []],
+        "crop_times": [],
     }
 
 
@@ -70,21 +71,35 @@ def _names(request: Request) -> dict[str, str]:
     return {str(k): str(v) for k, v in data.items()} if isinstance(data, dict) else {}
 
 
+def _flags_path(request: Request) -> Path:
+    return _data_dir(request) / "appearance" / "flags.json"
+
+
+def _flags(request: Request) -> dict[str, bool]:
+    try:
+        data = json.loads(_flags_path(request).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+    return {str(k): True for k, v in data.items() if v is True} if isinstance(data, dict) else {}
+
+
 def _clothing(request: Request) -> list[dict[str, Any]]:
     """Clothing-signature profiles (fallback when faces are too small), as card views."""
     config = getattr(request.app.state, "config", None)
     if config is None:
         return []
-    names = _names(request)
+    names, flags = _names(request), _flags(request)
     out = []
     for p in appearance_profiles(_data_dir(request) / "results", config.cameras):
         out.append({
-            "id": p["id"], "name": names.get(p["id"]), "flagged": False, "count": p["count"],
+            "id": p["id"], "name": names.get(p["id"]), "flagged": flags.get(p["id"], False),
+            "count": p["count"],
             "basis": "clothing", "label": p["label"], "seen_label": _seen(p["count"]),
             "sightings": [{"capture_id": s["capture_id"], "seen_at": s["seen_at"]}
                           for s in p["sightings"]],
             "crops": [f"/api/ui/faces/appearance/{t['capture_id']}/{t['track_id']}"
                       for t in p["thumbs"]],
+            "crop_times": [t["seen_at"] for t in p["thumbs"]],
         })  # fmt: skip
     return out
 
@@ -243,6 +258,15 @@ def faces_router() -> APIRouter:
     @r.post("/faces/{profile_id}/flag", dependencies=[Depends(require_owner)])
     def flag(profile_id: str, body: _Flag, request: Request) -> dict[str, Any]:
         pid = _pid(profile_id)
+        if pid.startswith("ap_"):
+            flags = _flags(request)
+            if body.flagged:
+                flags[pid] = True
+            else:
+                flags.pop(pid, None)
+            _flags_path(request).parent.mkdir(parents=True, exist_ok=True)
+            _flags_path(request).write_text(json.dumps(flags, indent=1), encoding="utf-8")
+            return {"id": pid, "flagged": body.flagged}
         try:
             _store(request).flag(pid, body.flagged)
         except KeyError as exc:

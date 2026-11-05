@@ -114,6 +114,7 @@ class ProtectRequest(_Req):
     live: bool = False
     frame_width: int | None = Field(default=None, ge=1, le=32768)
     frame_height: int | None = Field(default=None, ge=1, le=32768)
+    still_id: str | None = Field(default=None, max_length=140)
 
 
 class CompileRequest(_Req):
@@ -442,10 +443,26 @@ def router() -> APIRouter:
     async def protect(request: Request) -> dict[str, Any]:
         bundle, guards, runtime, backend = _state(request)
         req: ProtectRequest = await _parse(request, ProtectRequest)
-        if req.camera_id not in views.camera_names(bundle):
+        still = None
+        if req.still_id is not None:
+            # A masked still from a real capture: its camera comes from the home config.
+            from vigil.api.capture_stills import resolve
+
+            found = resolve(request.app.state.settings, req.still_id)
+            cfg = request.app.state.config
+            try:
+                home_camera = cfg.camera(req.camera_id)
+            except (KeyError, AttributeError):
+                home_camera = None
+            if found is None or home_camera is None or not found[0].startswith(req.camera_id + "-"):
+                raise HTTPException(422, "Unknown capture still for this camera")
+            still = found[1]
+            ref_width, ref_height = home_camera.width, home_camera.height
+        elif req.camera_id not in views.camera_names(bundle):
             raise HTTPException(422, f"unknown camera {req.camera_id!r}")
-        camera = next(c for c in bundle.cameras if c["id"] == req.camera_id)
-        ref_width, ref_height = camera.get("width", W_MAX), camera.get("height", H_MAX)
+        else:
+            camera = next(c for c in bundle.cameras if c["id"] == req.camera_id)
+            ref_width, ref_height = camera.get("width", W_MAX), camera.get("height", H_MAX)
         if (req.frame_width is None) != (req.frame_height is None):
             raise HTTPException(422, "Both frame dimensions are required")
         width, height = req.frame_width or ref_width, req.frame_height or ref_height
@@ -458,8 +475,9 @@ def router() -> APIRouter:
         notice, error = None, None
         if status is not None and status.available:
             try:
+                extra = {"still": still} if still is not None else {}
                 res = backend.protect(req.camera_id, req.frame_ts, req.point.x, req.point.y,
-                                      req.label)  # fmt: skip
+                                      req.label, **extra)  # fmt: skip
                 calls = _accept_live(guards, runtime, res)
                 return _envelope(True, True, _live_object(request, req, res, calls),
                                  _telemetry_live(calls))  # fmt: skip
@@ -467,6 +485,13 @@ def router() -> APIRouter:
                 error = _failure(guards, exc)
         elif status is not None:
             notice = status.notice
+        if still is not None:
+            # A real capture still has no recorded result: never show a demo outline over it.
+            hint = "Nothing recorded for this still yet. Approve a live SAM 3.1 detection."
+            if error:
+                hint = "Live call failed; nothing recorded for this still."
+            return _envelope(False, req.live, None, _telemetry_cached(None), notice or hint,
+                             error, hint=hint)  # fmt: skip
         preset = _nearest_preset(bundle, req)
         if preset is None:
             options = [
@@ -600,7 +625,10 @@ def _live_object(
             "label": req.label or "object",
             "bbox": bbox,
             "footprint": views.ground_footprint(cam, bbox)
-            if (bundle.manifest.get("synthetic") or cam.get("placement_measured") is True)
+            if (
+                (bundle.manifest.get("synthetic") and req.still_id is None)
+                or cam.get("placement_measured") is True
+            )
             else None,
             "call_id": calls[0].id if calls else None,
         }

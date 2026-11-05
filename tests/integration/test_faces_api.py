@@ -86,3 +86,28 @@ def test_owner_names_flags_merges_and_deletes(tmp_path, monkeypatch):
 def test_crop_rejects_unknown_ids(tmp_path, monkeypatch, path):
     client, _ = _client(tmp_path, monkeypatch)
     assert client.get(path).status_code == 404
+
+
+def test_owner_can_flag_a_clothing_profile(tmp_path, monkeypatch):
+    import json
+
+    import vigil.api.faces as faces_api
+
+    client, _ = _client(tmp_path, monkeypatch)
+    profile = {"id": "ap_0123456789", "basis": "clothing", "label": "white top, black bottoms",
+               "count": 2, "sightings": [], "thumbs": []}  # fmt: skip
+    monkeypatch.setattr(faces_api, "appearance_profiles", lambda *_a, **_k: [profile])
+    client.app.state.config = client.app.state.config or type("C", (), {"cameras": []})()
+    assert client.post("/api/faces/ap_0123456789/flag", json={"flagged": True}).status_code in {
+        401,
+        403,
+    }
+    owner = as_owner(client)
+    assert owner.post("/api/faces/ap_0123456789/flag", json={"flagged": True}).status_code == 200
+    flags = json.loads((tmp_path / "data" / "appearance" / "flags.json").read_text())
+    assert flags == {"ap_0123456789": True}
+    listed = next(p for p in client.get("/api/ui/faces").json()["profiles"]
+                  if p["id"] == "ap_0123456789")  # fmt: skip
+    assert listed["flagged"] is True
+    assert owner.post("/api/faces/ap_0123456789/flag", json={"flagged": False}).status_code == 200
+    assert json.loads((tmp_path / "data" / "appearance" / "flags.json").read_text()) == {}

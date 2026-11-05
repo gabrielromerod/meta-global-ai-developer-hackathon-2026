@@ -130,8 +130,15 @@ def test_captures_list_newest_first_with_unanalysed_camera_ai_rows(home):
         "clip_url",
         "masked",
         "analysis",
+        "verdict",
+        "headline",
         "layer",
+        "frame_aspect",
+        "crop",
+        "crop_top",
+        "subject",
     }
+    assert first["verdict"] is first["headline"] is None  # not analysed yet
     assert first["camera_id"] == "porch"
     assert first["camera_name"] == "Porch"
     assert first["kind"] == "person"
@@ -356,3 +363,209 @@ def test_capture_analysis_without_a_moment_says_none(home):
     _analysis(home)
     with _client(home) as api:
         assert api.get(f"/api/ui/captures/{home['first']}/analysis").json()["moment"] is None
+
+
+# --- crop to the property, subject box and crop (UI redesign, Nov 4) ----------------------
+
+
+def _zoned(home) -> None:
+    """Give the porch a street strip (perimeter) and a yard, keeping its review valid."""
+    data = yaml.safe_load(home["config"].read_text(encoding="utf-8"))
+    for cam in data["cameras"]:
+        if cam["id"] == "porch":
+            cam["zones"] = {
+                "street": [[0, 60], [1280, 60], [1280, 200], [0, 200]],
+                "yard": [[0, 200], [1280, 200], [1280, 720], [0, 720]],
+            }
+            cam["zone_kinds"] = {"street": "perimeter", "yard": "interior_yard"}
+            camera = CameraCfg(**cam)
+            cam["privacy_polygons_sha256"] = privacy_digest(camera, camera.privacy)
+    home["config"].write_text(yaml.safe_dump(data, sort_keys=False), encoding="utf-8")
+
+
+def _overlay(home, offset: float = 0.1) -> float:
+    """Add SAM boxes to the analysed capture: one in the yard, one on the street strip."""
+    import json
+
+    _analysis(home)
+    t = _clip_start(home) + offset  # seconds after the served clip starts
+    results = home["root"] / "results" / home["first"] / "visits.json"
+    visits = json.loads(results.read_text(encoding="utf-8"))
+    yard = {"box": [100, 300, 200, 700], "cls": "person", "track_id": "porch-person-1"}
+    street = {"box": [500, 20, 560, 150], "cls": "person", "track_id": "porch-person-2"}
+    visits["overlays"] = {"cameras": {"porch": {"width": 1280, "height": 720, "frames": [
+        {"t": t, "objects": [yard, street]},
+    ]}}}  # fmt: skip
+    visits["tracks"].append({"id": "porch-person-2", "phrase": "person", "tag": "T2",
+                             "camera_id": "porch", "t_first": t, "t_last": t})  # fmt: skip
+    visits["events"].append({"id": "e2", "t0": _clip_start(home) + 2.6, "type": "enter",
+                             "track_id": "porch-person-1", "target": "yard"})  # fmt: skip
+    results.write_text(json.dumps(visits), encoding="utf-8")
+    return t
+
+
+def test_capture_crop_follows_the_privacy_mask_only_when_masked(home, monkeypatch):
+    with _client(home) as api:
+        raw = next(r for r in api.get("/api/ui/captures").json()["captures"]
+                   if r["id"] == home["first"])  # fmt: skip
+    assert raw["crop"] is None
+    assert raw["crop_top"] == 0
+    assert raw["frame_aspect"] == pytest.approx(1280 / 720, abs=1e-3)
+    monkeypatch.setenv("VIGIL_MASKED_VIEW", "1")
+    with _client(home) as api:
+        rows = {r["id"]: r for r in api.get("/api/ui/captures").json()["captures"]}
+    masked = rows[home["first"]]
+    # Rows 0..60 of 720 are masked (plus the mask's safety margin): measured from the pixels.
+    assert 0.08 <= masked["crop"]["y0"] <= 0.15
+    assert (masked["crop"]["x0"], masked["crop"]["x1"], masked["crop"]["y1"]) == (0.0, 1.0, 1.0)
+    assert masked["crop_top"] == masked["crop"]["y0"]
+    assert rows[home["door"]]["crop"]["y0"] == 0.0  # never reviewed, nothing masked
+    assert (home["root"] / "ui" / "views" / f"{home['first']}.json").is_file()
+
+
+def test_capture_crop_uses_the_measured_mask_over_todays_config(home, monkeypatch):
+    """A part cut before a polygon change keeps its old, larger mask: the pixels decide."""
+    import json
+
+    monkeypatch.setenv("VIGIL_MASKED_VIEW", "1")
+    views = home["root"] / "ui" / "views"
+    views.mkdir(parents=True)
+    old = {"x0": 0.0, "y0": 0.5, "x1": 1.0, "y1": 1.0}
+    (views / f"{home['first']}.json").write_text(json.dumps(old), encoding="utf-8")
+    with _client(home) as api:
+        rows = {r["id"]: r for r in api.get("/api/ui/captures").json()["captures"]}
+    assert rows[home["first"]]["crop"] == old
+
+
+def test_capture_subject_never_points_outside_the_served_clip(home):
+    """A box from before the served clip would sit on a frame where the person is not."""
+    _zoned(home)
+    _overlay(home, offset=-5.0)
+    with _client(home) as api:
+        row = next(r for r in api.get("/api/ui/captures").json()["captures"]
+                   if r["id"] == home["first"])  # fmt: skip
+    assert row["subject"] is None
+
+
+def test_capture_subject_is_a_person_inside_the_property(home):
+    _zoned(home)
+    _overlay(home)
+    with _client(home) as api:
+        row = next(r for r in api.get("/api/ui/captures").json()["captures"]
+                   if r["id"] == home["first"])  # fmt: skip
+        subject = row["subject"]
+        assert subject["track_id"] == "porch-person-1"  # the street-strip person is skipped
+        assert subject["label"] == "T1 person"
+        assert subject["t"] == pytest.approx(0.1, abs=0.01)
+        assert subject["box"] == pytest.approx([100 / 1280, 300 / 720, 200 / 1280, 700 / 720],
+                                               abs=1e-3)  # fmt: skip
+        image = api.get(subject["image_url"])
+        assert image.status_code == 200
+        assert image.headers["content-type"] == "image/jpeg"
+        assert image.content[:2] == b"\xff\xd8"
+        analysis = api.get(f"/api/ui/captures/{home['first']}/analysis").json()
+        assert analysis["zones"] == [
+            {"tag": "T1", "path": [{"zone": "yard", "kind": "interior_yard",
+                                    "at": pytest.approx(2.6, abs=0.01)}]}
+        ]  # fmt: skip
+    assert next(iter(home["root"].glob("appearance/crops/subject__*.jpg"))).is_file()
+
+
+def test_capture_subject_absent_without_zones_and_ids_validated(home):
+    _overlay(home)  # porch has no zones: nothing proves the person is inside the property
+    with _client(home) as api:
+        row = next(r for r in api.get("/api/ui/captures").json()["captures"]
+                   if r["id"] == home["first"])  # fmt: skip
+        assert row["subject"] is None
+        assert api.get(f"/api/ui/captures/{home['first']}/subject.jpg").status_code == 404
+        assert api.get("/api/ui/captures/..%2F..%2Fx/subject.jpg").status_code in {400, 404}
+    with _client(home, ip="203.0.113.7") as api:
+        assert api.get(f"/api/ui/captures/{home['first']}/subject.jpg").status_code == 403
+
+
+def test_real_only_state_serves_nothing_from_the_demo_bundle(home, monkeypatch):
+    """Owner decision Nov 4: the home box shows only this home's recordings."""
+    monkeypatch.setenv("VIGIL_REAL_ONLY", "1")
+    _analysis(home)
+    with _client(home) as api:
+        state = api.get("/api/ui/state").json()
+        rows = {r["id"]: r for r in api.get("/api/ui/captures").json()["captures"]}
+    assert state["real_only"] is True
+    assert state["evidence"]["kind"] == "real"
+    assert state["visits"] == state["clips"] == state["notifications"] == []
+    assert state["events"] == state["camera_events"] == []
+    assert state["summary"]["motion_triggers"] == len(rows)
+    assert state["summary"]["visits"] == 1
+    assert state["summary"]["needs_attention"] == 0
+    assert rows[home["first"]]["verdict"] == "cant_confirm"
+    assert rows[home["first"]]["headline"] == "At 5:07 PM, a person entered the view of Porch."
+
+
+def test_real_only_chat_answers_from_the_home_clips(home, monkeypatch):
+    monkeypatch.setenv("VIGIL_REAL_ONLY", "1")
+    _analysis(home)
+    with _client(home) as api:
+        body = {"thread_id": "ask-home", "text": "Who entered the porch?", "session_id": "s"}
+        message = api.post("/api/chat/ask", json=body).json()["message"]
+    assert message["text"] == "At 5:07 PM, a person entered the view of Porch."
+    assert message["citations"] == [
+        {"capture_id": home["first"], "event_id": "e1", "label": "Porch"}
+    ]
+
+
+def test_demo_state_is_unchanged_without_real_only(home, monkeypatch):
+    monkeypatch.delenv("VIGIL_REAL_ONLY", raising=False)
+    with _client(home) as api:
+        state = api.get("/api/ui/state").json()
+    assert state["real_only"] is False
+    assert state["visits"]  # the bundle still serves the tests and the judges' sandbox
+
+
+def test_real_only_chat_threads_say_answers_come_from_the_home_clips(home, monkeypatch):
+    monkeypatch.setenv("VIGIL_REAL_ONLY", "1")
+    with _client(home) as api:
+        chat = api.get("/api/ui/chat").json()
+    assert chat["evidence"]["kind"] == "real"
+    assert chat["threads"][0]["note"] == "Answers come from your analysed clips."
+
+
+def test_real_only_bell_lists_clips_whose_rule_raised_an_alert(home, monkeypatch):
+    """A carried-object rule hit on a real clip reaches the bell; the story is the code's."""
+    import json
+
+    monkeypatch.setenv("VIGIL_REAL_ONLY", "1")
+    _analysis(home)
+    path = home["root"] / "results" / home["first"] / "visits.json"
+    data = json.loads(path.read_text(encoding="utf-8"))
+    data["visits"][0]["verdict"] = "needs_attention"
+    path.write_text(json.dumps(data), encoding="utf-8")
+    with _client(home) as api:
+        state = api.get("/api/ui/state").json()
+    (notice,) = state["notifications"]
+    assert notice["capture_id"] == home["first"]
+    assert notice["visit_id"] is None
+    assert notice["verdict"] == "needs_attention"
+    assert notice["story"] == "At 5:07 PM, a person entered the view of Porch."
+    assert state["summary"]["needs_attention"] == 1
+
+
+def test_capture_analysis_names_the_rule_and_the_carried_object(home):
+    import json
+
+    _analysis(home)
+    path = home["root"] / "results" / home["first"] / "visits.json"
+    data = json.loads(path.read_text(encoding="utf-8"))
+    carry = {**data["events"][0], "id": "e9", "type": "carry", "target": "knife"}
+    data["events"].append(carry)
+    data["visits"][0]["verdict"] = "needs_attention"
+    data["visits"][0]["rule_hits"] = [
+        {"rule_id": "r_carried_object", "visit_id": "v1", "event_id": "e9"}
+    ]
+    path.write_text(json.dumps(data), encoding="utf-8")
+    with _client(home) as api:
+        body = api.get(f"/api/ui/captures/{home['first']}/analysis").json()
+    (alert,) = body["alerts"]
+    assert alert["rule"] == "Possible knife or gun carried by a non-household person"
+    assert alert["object"] == "knife"
+    assert alert["type"] == "carry"
+    assert alert["event_id"] == "e9"

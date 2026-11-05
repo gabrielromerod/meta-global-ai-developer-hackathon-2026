@@ -205,12 +205,13 @@ def test_window_without_session_start_raises(rule_r7: Rule) -> None:
 
 def test_default_rules_load() -> None:
     rules = load_rules(DEFAULT_RULES_PATH)
-    assert [r.trigger for r in rules] == ["removed", "enter"]
-    # revised spec (FR-012, Nov 2): both default rules apply to non-household subjects
+    assert [r.trigger for r in rules] == ["removed", "enter", "carry"]
+    # revised spec (FR-012, Nov 2): every default rule applies to non-household subjects
     assert all(r.state == "active" and r.applies_to == "non_household" for r in rules)
     assert [r.name for r in rules] == [
         "Watched package removed",
         "Non-household person in the backyard 11 PM to 5 AM",
+        "Possible knife or gun carried by a non-household person",  # Nov 4
     ]
 
 

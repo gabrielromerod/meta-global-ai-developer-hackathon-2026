@@ -274,11 +274,17 @@ def test_golden_b_accepted_watch_adds_package_prompt_to_next_windows(
         session_start=sc.session_start,
         sam=sam,
     )
-    assert sorted(asked) == [
+    assert sorted(
+        asked
+    ) == [  # carried objects are asked everywhere (Nov 4); the watch only on front
         ("front", "car"),
+        ("front", "gun"),
+        ("front", "knife"),
         ("front", "package"),
         ("front", "person"),
         ("side_left", "car"),
+        ("side_left", "gun"),
+        ("side_left", "knife"),
         ("side_left", "person"),
     ]
 

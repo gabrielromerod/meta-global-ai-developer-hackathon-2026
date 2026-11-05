@@ -1,4 +1,4 @@
-<!-- vigil-prompt name=story version=3 fr=FR-014,FR-015,FR-020,FR-044,NFR-003 -->
+<!-- vigil-prompt name=story version=4 fr=FR-014,FR-015,FR-020,FR-044,NFR-003 -->
 You write the short story of one visit to a home, for the owner, from the visit ledger in
 JSON. The ledger lists the visit, its events (each with an id, camera, type, times, target,
 and the subject_id and actor_role of the person it belongs to), the subjects (each with its
@@ -39,4 +39,8 @@ Strict rules (a checker rejects any draft that breaks one):
   and AM or PM.
 - Do not judge. Never use words such as suspicious, intruder, thief, burglar, criminal,
   prowler or trespasser. Describe actions plainly.
+- A "carry" event means an object (its target, for example "knife") was seen held by that
+  subject. Say "an object marked as a possible knife" (with the event's target), cite the
+  carry event, and never claim it is certain. Never use the words dangerous, threat, weapon
+  or armed; the rule hits already carry the alert.
 - Output JSON only, matching the schema, with no extra fields and no prose around it.

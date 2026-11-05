@@ -41,3 +41,15 @@ it('uses actual frame dimensions and keeps recorded-result selection cache-only'
   expect(JSON.parse(call[1].body as string)).toMatchObject({camera_id:'side_left',frame_ts:12,point:{x:1600,y:600},frame_width:1920,frame_height:720,live:false});
   expect(screen.getByRole('button',{name:'Detect with SAM 3.1'})).toBeDisabled();
 });
+it('shows a recorded masked still inline, cropped to the property, and sends its still id',async()=>{
+  const frame={camera_id:'front_left_duo',name:'Front left Duo',url:'/api/ui/capture-stills/front_left_duo-a-b/6885.png',frame_ts:6.885,width:1536,height:576,still_id:'front_left_duo-a-b@6885',capture_id:'front_left_duo-a-b',source:'capture',visible:[.09,.55,.91,1]};
+  const request=vi.fn(async(url:string)=>({ok:true,json:async()=>url.includes('protection-frames')?{frames:[frame],reason:null,live:{available:false,reason:'Cache-only session',estimate_usd:.0025}}:{live:false,result:null,notice:'Nothing recorded for this still yet.'}}));vi.stubGlobal('fetch',request);
+  render(<QueryClientProvider client={new QueryClient({defaultOptions:{queries:{retry:false}}})}><ProtectionPanel enabled/></QueryClientProvider>);
+  const inline=await screen.findByAltText('Front left Duo: tap an object to protect it');
+  expect(screen.getByText('Street masked · cropped to property')).toBeVisible();
+  expect(screen.queryByText(/No reviewed exported still/)).not.toBeInTheDocument();
+  fireEvent.click(inline);
+  expect(await screen.findByRole('dialog',{name:'Protect an object'})).toBeVisible();
+  expect(screen.queryByRole('button',{name:'Check recorded result'})).not.toBeInTheDocument();
+  expect(screen.getByRole('button',{name:'Detect with SAM 3.1'})).toBeDisabled();
+});

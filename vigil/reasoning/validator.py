@@ -87,7 +87,7 @@ BANNED_WORDS: tuple[str, ...] = (
     "thief", "thieves", "theft", "steal", "stole", "stolen", "stealing", "burglar", "burglars",
     "burglary", "criminal", "criminals", "crime", "prowler", "prowling", "trespasser",
     "trespassing", "lurking", "lurker", "sneaking", "sneaky", "creepy", "dangerous", "threat",
-    "threatening", "illegal", "malicious",
+    "threatening", "illegal", "malicious", "weapon", "weapons", "armed",
 )  # fmt: skip
 _BANNED_RE = re.compile(
     r"\b(" + "|".join(sorted(BANNED_WORDS, key=len, reverse=True)) + r")\b", re.I

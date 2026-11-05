@@ -93,3 +93,25 @@
 .bench-model svg{flex:none;width:18px;height:18px;margin-top:2px;color:var(--v-accent)}
 .bench-model span{display:flex;flex-direction:column;gap:2px}
 .bench-model small{color:var(--v-muted);font-size:var(--v-text-xs);font-weight:normal}
+/* Rule creator at the top of the Rules column (voice and text). */
+.pv-composer-card{flex:none;display:flex;flex-direction:column;gap:6px;padding:var(--v-space-2);border:var(--v-line) solid var(--v-border);border-radius:var(--v-radius-md);background:linear-gradient(180deg,color-mix(in srgb,var(--v-accent) 9%,var(--v-surface)),var(--v-surface))}
+.pv-composer-card>h3{display:flex;align-items:center;gap:8px;margin:0;font-size:var(--v-text-md)}
+.pv-composer-card>h3 svg{width:18px;height:18px;color:var(--v-accent)}
+.pv-composer .controls-textarea{min-height:64px}
+.pv-composer .pv-suggest{flex-wrap:wrap}
+.pv-protect-slot{flex:none}
+/* Recurring visitors on the Protection page. */
+.pv-recurring{display:flex;flex-direction:column;gap:var(--v-space-1);margin-top:var(--v-space-2)}
+.pv-recurring>h3{margin:0;font-size:var(--v-text-sm);color:var(--v-muted);font-weight:600}
+.pv-recurring-crops{display:flex;gap:4px;flex:none}
+.pv-recurring-crops img{width:36px;height:44px;object-fit:cover;border-radius:6px;border:var(--v-line) solid var(--v-border);background:#000}
+.pv-recurring-crops svg{width:20px;height:20px;color:var(--v-muted)}
+.pv-visitors>.pv-scroll>*,.pv-objects>.pv-scroll>*{flex:none}
+/* Protection side column scrolls as one, so every section shows at its natural height */
+aside.pv-side{overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+aside.pv-side>.pv-visitors,aside.pv-side>.pv-objects{flex:none;max-height:none;min-height:0;overflow:visible}
+aside.pv-side>.pv-visitors>.pv-scroll,aside.pv-side>.pv-objects>.pv-scroll{overflow:visible}
+/* Protection rules column scrolls as one: the inline composer never squeezes the rules list away */
+section.pv-main{overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+section.pv-main>.pv-composer-card{flex:none}
+section.pv-main>.pv-fill{flex:none;min-height:320px}

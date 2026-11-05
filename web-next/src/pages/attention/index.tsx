@@ -1,10 +1,12 @@
 import {useState} from 'react';
-import {ChevronLeft, ChevronRight, Lightbulb} from 'lucide-react';
+import {ChevronLeft, ChevronRight, EyeOff, Lightbulb} from 'lucide-react';
 import type {PageProps, Verdict} from '../../contracts';
 import {EmptyState, Tabs} from '../../components/ui';
-import {attentionVisits, touchComparison} from '../home/model';
-import {TouchCard, VisitCard} from '../home/visit-card';
+import {attentionVisits, touchComparison, type TouchEvidence} from '../home/model';
+import {TouchCard} from '../home/visit-card';
+import {MiniPath, RoleBadge, StoryCard, cameraChain, useVisitDetails, useVisitPaths, type OpenVisit} from '../home/insights';
 import '../home/home.css';
+import '../home/insights.css';
 import './attention.css';
 
 const PAGE_SIZE = 8;
@@ -29,6 +31,23 @@ export function AttentionPage({state,onOpenVisit,visitSlot,capturesSlot}: PagePr
   const pageCount = Math.max(1, Math.ceil(shown.length/PAGE_SIZE));
   const safePage = Math.min(page, pageCount-1);
   const visible = shown.slice(safePage*PAGE_SIZE, (safePage+1)*PAGE_SIZE);
+  const ids = [...new Set([...visible.map(v=>v.id), ...(comparison?[comparison.household.visit.id,comparison.external.visit.id]:[])])];
+  const details = useVisitDetails(ids);
+  const paths = useVisitPaths(ids);
+  const open = onOpenVisit as OpenVisit;
+  const side = (evidence:TouchEvidence, heading:string) => {
+    const {visit, event} = evidence;
+    return <div className="att-compare-col" data-verdict={visit.verdict}>
+      <h3>{heading}<RoleBadge visit={visit}/></h3>
+      <MiniPath path={paths[visit.id]} label={`Estimated route for ${visit.title}`}/>
+      <ul className="att-compare-facts">
+        <li><strong>Seen by:</strong> {event.camera_name}</li>
+        <li><strong>Cameras:</strong> {cameraChain(visit, state.cameras, state.events).join(' → ')}</li>
+        {visit.gaps.length ? visit.gaps.map((g,i)=><li key={i} className="ins-gap"><EyeOff aria-hidden="true"/>{g}</li>) : <li>No blind-spot gap</li>}
+      </ul>
+      <TouchCard evidence={evidence} label={comparison?.label ?? 'Object'} context={event.actor_role==='household_insider'?'household':'external'} onOpen={onOpenVisit}/>
+    </div>;
+  };
   return <div className="attention-page">
     {capturesSlot&&<div className="attention-real">{capturesSlot}</div>}
     <Tabs className="pv-tabs attention-tabs" items={filters} value={filter} label="Filter visits by verdict"
@@ -41,12 +60,14 @@ export function AttentionPage({state,onOpenVisit,visitSlot,capturesSlot}: PagePr
             <summary><Lightbulb aria-hidden="true"/>Why did two {comparison.label} touches get different verdicts?</summary>
             <section className="pv-section" aria-label="Same action, different context">
               <p className="pv-hint">Vigil judges the route someone took, never how they look.</p>
-              <ul className="pv-list"><li><TouchCard evidence={comparison.household} label={comparison.label} context="household" onOpen={onOpenVisit}/></li>
-                <li><TouchCard evidence={comparison.external} label={comparison.label} context="external" onOpen={onOpenVisit}/></li></ul>
+              <div className="att-compare">
+                {side(comparison.household, `${comparison.household.visit.scenario.replace('-prime','′')} · came from inside`)}
+                {side(comparison.external, `${comparison.external.visit.scenario.replace('-prime','′')} · arrived from outside`)}
+              </div>
             </section>
           </details>}
-          {shown.length ? <ul className="pv-list pv-scroll vc-list" tabIndex={0} aria-label="Filtered visits">
-              {visible.map(visit=><li key={visit.id}><VisitCard visit={visit} cameras={state.cameras} onOpen={onOpenVisit}/></li>)}
+          {shown.length ? <ul className="pv-list pv-scroll ins-list" tabIndex={0} aria-label="Filtered visits">
+              {visible.map(visit=><li key={visit.id}><StoryCard state={state} visit={visit} detail={details[visit.id]} path={paths[visit.id]} onOpenVisit={open}/></li>)}
             </ul>
             : <EmptyState title="No matching visits" description="No recorded visit has this verdict. Try another filter."/>}
           <Pager page={safePage} count={pageCount} onChange={setPage}/>

@@ -1,5 +1,7 @@
 import {useEffect,useId,useRef,useState,type FormEvent,type ReactNode} from 'react';
-import {CalendarClock,Camera as CameraIcon,ChevronRight,Clock3,DoorOpen,EyeOff,FileX,Film,House,Info,KeyRound,LockKeyhole,MicOff,Plug,Plus,Router,ShieldAlert,ShieldCheck,Wifi,X} from 'lucide-react';
+import {Box,CalendarClock,Camera as CameraIcon,ChevronRight,Clock3,DoorOpen,EyeOff,FileX,Film,House,Info,KeyRound,LockKeyhole,MicOff,Plug,Plus,Router,ShieldAlert,ShieldCheck,Video,Wifi,X} from 'lucide-react';
+import {api} from '../../app/api';
+import {CroppedStill} from '../../app/protection';
 import type {Camera,ExpectedWindow,NewExpectedWindow,PageProps,UIState} from '../../contracts';
 import {Button,Chip,EmptyState,Modal,Tabs} from '../../components/ui';
 import {Field,formatRecordedTime,PageHeading,StatusChip,words} from './controls';
@@ -14,6 +16,33 @@ export function SettingsPage(props:PageProps){
     </div></Tabs>
   </div>;
 }
+interface CameraFacts {id:string;captures:number;privacy_reviewed:boolean;placement_measured:boolean;zones:number}
+interface Preview {width:number;height:number;still:{url:string;width:number;height:number;frame_ts:number;capture_id:string;camera_id:string;name:string;visible?:number[]}|null;zones:{name:string;kind:string|null;points:number[][]}[]}
+/** LAN-only facts from the home box; null in the hosted sandbox or when unreachable. */
+function useCameraFacts(){
+  const [facts,setFacts]=useState<Record<string,CameraFacts>|null>(null);
+  useEffect(()=>{let live=true;api<{cameras:CameraFacts[]}>('/api/ui/cameras/overview').then(r=>{if(live)setFacts(Object.fromEntries(r.cameras.map(c=>[c.id,c])));}).catch(()=>{});return()=>{live=false;};},[]);
+  return facts;
+}
+/** Badges state only what is true: a reviewed mask, captured clips, a measured position. */
+function CameraBadges({camera,facts}:{camera:Camera;facts?:CameraFacts}){
+  const reviewed=facts?facts.privacy_reviewed:camera.privacy_reviewed===true;
+  return <>{camera.status==='privacy_blocked'||camera.privacy_reviewed===false?<Chip tone="warning">Privacy review required</Chip>:reviewed&&<Chip tone="success">Street mask enforced</Chip>}
+    {facts&&facts.captures>0?<Chip tone="success">{facts.captures} event clips</Chip>:camera.status==='not_connected'?<Chip>No live stream</Chip>:camera.status!=='privacy_blocked'&&<StatusChip value={camera.status}/>}</>;
+}
+function CameraPreview({camera}:{camera:Camera}){
+  const [preview,setPreview]=useState<Preview|null|undefined>(undefined);
+  useEffect(()=>{let live=true;setPreview(undefined);api<Preview>(`/api/ui/cameras/${encodeURIComponent(camera.id)}/preview`).then(r=>{if(live)setPreview(r);}).catch(()=>{if(live)setPreview(null);});return()=>{live=false;};},[camera.id]);
+  if(preview===undefined||preview===null)return null;
+  if(!preview.still)return <p className="pv-hint">No recorded clip from this camera yet, so there is no masked preview.</p>;
+  const still=preview.still,sx=still.width/preview.width,sy=still.height/preview.height;
+  const kinds=[...new Set(preview.zones.map(z=>z.kind||'zone'))];
+  const legend:Record<string,string>={perimeter:'Street edge (outside the property)',interior_yard:'Yard',egress:'Door or gate'};
+  return <figure className="st-preview" aria-label={`${camera.name} masked preview with zones`}>
+    <CroppedStill frame={{...still,source:'capture'}} alt={`${camera.name} masked preview`}>{preview.zones.map(z=><polygon key={z.name} className="st-zone" data-kind={z.kind||undefined} points={z.points.map(([x,y])=>`${x*sx},${y*sy}`).join(' ')}><title>{z.name}</title></polygon>)}</CroppedStill>
+    {kinds.length>0&&<figcaption className="st-zone-legend">{kinds.map(k=><span key={k}><i style={{background:k==='perimeter'?'var(--v-warning)':k==='interior_yard'?'var(--v-success)':'var(--v-accent)'}}/>{legend[k]||k.replaceAll('_',' ')}</span>)}</figcaption>}
+  </figure>;
+}
 function powerLabel(camera:Camera){return camera.power_profile==='battery_wifi'?'Battery':camera.power_profile==='import'?'Battery / imported clips':'AC power';}
 function DetailRow({icon,label,value,tone}:{icon:ReactNode;label:string;value:string;tone?:'warning'}){
   return <li className="pv-row"><span className="pv-bubble" aria-hidden="true">{icon}</span><div className="pv-row-body"><span className="pv-meta">{label}</span><strong className={tone?'st-warn':undefined}>{value}</strong></div></li>;
@@ -21,6 +50,7 @@ function DetailRow({icon,label,value,tone}:{icon:ReactNode;label:string;value:st
 function Cameras({cameras}:{cameras:Camera[]}){
   const [selectedId,setSelectedId]=useState(cameras[0]?.id??'');
   const selected=cameras.find(c=>c.id===selectedId)??cameras[0];
+  const facts=useCameraFacts();
   if(!cameras.length)return <EmptyState title="No cameras configured" description="Cameras appear after the home configuration is loaded."/>;
   const clockWarn=selected.clock_offset_s!==null&&Math.abs(selected.clock_offset_s)>2;
   return <div className="st-layout">
@@ -30,19 +60,23 @@ function Cameras({cameras}:{cameras:Camera[]}){
         return <li key={camera.id}><article className="pv-row st-pick" data-selected={isSelected||undefined} aria-label={`${camera.name} camera`} onClick={()=>setSelectedId(camera.id)}>
           <span className="pv-bubble" aria-hidden="true"><CameraIcon/></span>
           <div className="pv-row-body"><strong>{camera.name}</strong><span className="pv-meta">{camera.model||'Model not confirmed'} · {powerLabel(camera)}</span></div>
-          <div className="pv-row-end st-chips"><StatusChip value={camera.status}/>{extra&&<Chip>{camera.source_label}</Chip>}</div>
+          <div className="pv-row-end st-chips"><CameraBadges camera={camera} facts={facts?.[camera.id]}/>{extra&&camera.status!=='not_connected'&&<Chip>{camera.source_label}</Chip>}</div>
           <button type="button" className="pv-icon-btn" aria-pressed={isSelected} aria-label={`Show ${camera.name} details`} onClick={event=>{event.stopPropagation();setSelectedId(camera.id);}}><ChevronRight aria-hidden="true"/></button>
         </article></li>;})}</ul>
     </section>
     <section className="st-col" aria-label={`${selected.name} details`}>
       <header className="st-detail-head"><span className="pv-bubble st-bubble-lg" aria-hidden="true"><CameraIcon/></span><div className="pv-row-body"><h2>{selected.name}</h2><span className="pv-meta">{selected.model||'Model not confirmed'}</span></div></header>
       <div className="pv-scroll st-stack" tabIndex={0} aria-label="Camera details">
+        <CameraPreview camera={selected}/>
         <ul className="pv-list st-list">
+          <DetailRow icon={<ShieldCheck/>} label="Street privacy mask" value={selected.status==='privacy_blocked'||selected.privacy_reviewed===false?'Review required before ingest':selected.privacy_reviewed?'Enforced on every clip':'Review not confirmed'} tone={selected.status==='privacy_blocked'||selected.privacy_reviewed===false?'warning':undefined}/>
+          {facts?.[selected.id]&&<DetailRow icon={<Video/>} label="Event clips captured" value={facts[selected.id].captures?`${facts[selected.id].captures} clips`:'None yet'}/>}
+          <DetailRow icon={<Box/>} label="Position on the house model" value={facts?.[selected.id]?.placement_measured?'Measured':'Estimated, not measured'}/>
           <DetailRow icon={<Plug/>} label="Power" value={powerLabel(selected)}/>
           <DetailRow icon={<Wifi/>} label="Wi-Fi signal" value={selected.wifi_signal_dbm===null?'Not measured':`${selected.wifi_signal_dbm} dBm`}/>
           <DetailRow icon={<Clock3/>} label="Clock offset" value={selected.clock_offset_s===null?'Not measured':`${selected.clock_offset_s.toFixed(2)} s`} tone={clockWarn?'warning':undefined}/>
           <DetailRow icon={<Router/>} label="Home Hub" value={selected.hub_present===null?'Not confirmed':selected.hub_present?'Present':'Not present'}/>
-          <DetailRow icon={<Film/>} label="Source" value={selected.source_label}/>
+          <DetailRow icon={<Film/>} label="Source" value={selected.status==='not_connected'?'Event clips from camera alerts (no live stream)':selected.source_label}/>
         </ul>
         {clockWarn&&<p className="controls-error">Clock sync required before linking cameras.</p>}
         {['battery_wifi','import'].includes(selected.power_profile)&&<p className="pv-footnote"><Info aria-hidden="true"/>Battery cameras never hold a stream open.</p>}

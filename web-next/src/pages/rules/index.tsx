@@ -1,5 +1,6 @@
 import {useEffect,useId,useState,type FormEvent} from 'react';
-import {ChevronLeft,ChevronRight,Clock,Info,Mic,Pencil,Plus,ShieldCheck,Sparkles,Tag} from 'lucide-react';
+import {ChevronLeft,ChevronRight,Clock,Info,Mic,Pencil,Plus,ShieldCheck,Sparkles,Tag,UserRound} from 'lucide-react';
+import {api} from '../../app/api';
 import type {PageProps,Rule} from '../../contracts';
 import {Button,Card,Chip,EmptyState,Modal,VerdictBadge} from '../../components/ui';
 import {Field,ruleVerdict,scopeLabel,StatusChip,words} from '../settings/controls';
@@ -40,25 +41,10 @@ export function RulesPage(props:PageProps){
   const canToggle=owner&&!!onRuleAction&&!pending;
   function openEditor(seed=''){setText(seed);setEditing(!!seed);setRuleOpen(true);}
 
-  const rules=<section className="pv-section pv-main" aria-labelledby={`${id}-rules`}>
-    <header className="pv-section-head"><h2 id={`${id}-rules`}>Rules</h2><Button onClick={()=>openEditor()}><Plus aria-hidden="true"/>New rule</Button></header>
-    <div className="pv-toolbar">
-      <div className="pv-chips" role="group" aria-label="Filter rules by status">{filters.map(filter=><button key={filter.id} type="button" aria-pressed={ruleFilter===filter.id} className="pv-pill" onClick={()=>{setRuleFilter(filter.id);setRulePage(0);}}>{filter.label} <span className="pv-count">{filter.count}</span></button>)}</div>
-    </div>
-    <section className="pv-fill" aria-label="Current rules">{filteredRules.length?<ul className="pv-list pv-scroll" tabIndex={0} aria-label="Rule list">{visibleRules.map(rule=>{
-      const target=state.protected_objects.find(object=>object.id===rule.target.id);const verdict=ruleVerdict(rule);const hours=hoursOf(rule);
-      return <li key={rule.id} className="pv-row"><span className="pv-bubble" aria-hidden="true">{hours==='Always'?<ShieldCheck/>:<Clock/>}</span>
-        <div className="pv-row-body"><strong>{rule.name}</strong><span className="pv-meta">{words(rule.trigger)} · {words(target?.label||rule.target.id)} · {hours}</span><span className="pv-meta">{scopeLabel(rule)}</span></div>
-        <div className="pv-row-end">{verdict?<VerdictBadge verdict={verdict}/>:<Chip>Not provided</Chip>}{rule.state!=='active'&&<StatusChip value={rule.state}/>}
-          {owner&&<><button type="button" role="switch" className="pv-switch" aria-checked={rule.state==='active'} aria-label={`${rule.name} on`} disabled={!canToggle} title={onRuleAction?undefined:'Turning rules on or off is not available on this server yet'} onClick={()=>onRuleAction?.(rule.id,rule.state==='active'?'deactivate':'activate')}><span/></button>
-          <button type="button" className="pv-icon-btn" aria-label={`Edit ${rule.name}`} disabled={!ruleActions?.compile||pending} onClick={()=>openEditor(rule.name)}><Pencil aria-hidden="true"/></button></>}</div></li>;})}</ul>
-      :<EmptyState title={state.rules.length?'No matching rules':'No rules yet'} description={state.rules.length?'Choose another filter.':'Describe what should get your attention, in your own words.'} action={!state.rules.length?<Button onClick={()=>openEditor()}><Plus aria-hidden="true"/>New rule</Button>:undefined}/>}
-      <Pager page={safePage} count={pageCount} onChange={setRulePage} label="Rule pages"/>
-    </section>
-    <Modal open={ruleOpen} title={editing?'Edit rule':'New rule'} onClose={()=>setRuleOpen(false)} description={editing?'Change the wording and review the new draft. Turn the old rule off once the new one is confirmed.':'Say it like you would to a neighbour. You review it before it is saved.'}>
-      <div className="pv-flow">
+  /** The rule creator: typed text, suggestions, the 3 recorded voice samples and dictation, then the draft. */
+  const composer=(where:'inline'|'dialog')=><div className={where==='inline'?'pv-flow pv-composer':'pv-flow'}>
         <form className="controls-form" onSubmit={compile}>
-          <Field label="What should Vigil watch for?" id={`${id}-text`}><textarea id={`${id}-text`} className="controls-textarea" placeholder="Type it, tap a suggestion or dictate" value={text} onChange={e=>setText(e.target.value)} maxLength={500} disabled={!canDraft}/></Field>
+          <Field label="What should Vigil watch for?" id={`${id}-${where}-text`}><textarea id={`${id}-${where}-text`} className="controls-textarea" placeholder="Type it, tap a suggestion or dictate" value={text} onChange={e=>setText(e.target.value)} maxLength={500} disabled={!canDraft}/></Field>
           <div className="pv-suggest" aria-label="Suggestions"><Sparkles aria-hidden="true"/>{SUGGESTIONS.map(s=><button key={s} type="button" className="pv-pill" disabled={!canDraft} onClick={()=>setText(s)}>{s}</button>)}</div>
           {!!ruleActions?.voiceFixtures?.length&&<div className="pv-suggest" aria-label="Voice samples"><Mic aria-hidden="true"/>{ruleActions.voiceFixtures.map(fixture=><button type="button" className="pv-pill" key={fixture.id} onClick={()=>ruleActions?.transcribeFixture?.(fixture.id)} disabled={!ruleActions?.transcribeFixture||pending}>{fixture.label}</button>)}</div>}
           <div className="pv-actions pv-actions-split">
@@ -73,12 +59,32 @@ export function RulesPage(props:PageProps){
           {ruleActions.explanation&&<ul className="pv-notes"><li>{ruleActions.explanation.applies_label}</li><li>{ruleActions.explanation.basis_note}</li>{ruleActions.explanation.limits_note.map((note,index)=><li key={index}>{note}</li>)}</ul>}
           <Button disabled={!canConfirm} onClick={()=>ruleActions.confirm?.(ruleActions.draft!.id)}>Confirm rule</Button>
           {!canConfirm&&<p className="pv-hint">{owner?'Rule confirmation is not available in this view.':'Owner-only on the home box'}</p>}</Card>}
-      </div>
+  </div>;
+
+  const rules=<section className="pv-section pv-main" aria-labelledby={`${id}-rules`}>
+    <header className="pv-section-head"><h2 id={`${id}-rules`}>Rules</h2><Button onClick={()=>openEditor()}><Plus aria-hidden="true"/>New rule</Button></header>
+    {!ruleOpen&&<section className="pv-composer-card" aria-label="Create a rule by voice or text"><h3><Mic aria-hidden="true"/>Say or type a rule</h3><p className="pv-meta">Voice is transcribed by Muse Voice Transcribe, then Muse Spark drafts the rule. You confirm it before it is saved.</p>{composer('inline')}</section>}
+    <div className="pv-toolbar">
+      <div className="pv-chips" role="group" aria-label="Filter rules by status">{filters.map(filter=><button key={filter.id} type="button" aria-pressed={ruleFilter===filter.id} className="pv-pill" onClick={()=>{setRuleFilter(filter.id);setRulePage(0);}}>{filter.label} <span className="pv-count">{filter.count}</span></button>)}</div>
+    </div>
+    <section className="pv-fill" aria-label="Current rules">{filteredRules.length?<ul className="pv-list pv-scroll" tabIndex={0} aria-label="Rule list">{visibleRules.map(rule=>{
+      const target=state.protected_objects.find(object=>object.id===rule.target.id);const verdict=ruleVerdict(rule);const hours=hoursOf(rule);
+      return <li key={rule.id} className="pv-row"><span className="pv-bubble" aria-hidden="true">{hours==='Always'?<ShieldCheck/>:<Clock/>}</span>
+        <div className="pv-row-body"><strong>{rule.name}</strong><span className="pv-meta">{words(rule.trigger)} · {words(target?.label||rule.target.id)} · {hours}</span><span className="pv-meta">{scopeLabel(rule)}</span></div>
+        <div className="pv-row-end">{verdict?<VerdictBadge verdict={verdict}/>:<Chip>Not provided</Chip>}{rule.state!=='active'&&<StatusChip value={rule.state}/>}
+          {owner&&<><button type="button" role="switch" className="pv-switch" aria-checked={rule.state==='active'} aria-label={`${rule.name} on`} disabled={!canToggle} title={onRuleAction?undefined:'Turning rules on or off is not available on this server yet'} onClick={()=>onRuleAction?.(rule.id,rule.state==='active'?'deactivate':'activate')}><span/></button>
+          <button type="button" className="pv-icon-btn" aria-label={`Edit ${rule.name}`} disabled={!ruleActions?.compile||pending} onClick={()=>openEditor(rule.name)}><Pencil aria-hidden="true"/></button></>}</div></li>;})}</ul>
+      :<EmptyState title={state.rules.length?'No matching rules':'No rules yet'} description={state.rules.length?'Choose another filter.':'Describe what should get your attention, in your own words.'} action={!state.rules.length?<Button onClick={()=>openEditor()}><Plus aria-hidden="true"/>New rule</Button>:undefined}/>}
+      <Pager page={safePage} count={pageCount} onChange={setRulePage} label="Rule pages"/>
+    </section>
+    <Modal open={ruleOpen} title={editing?'Edit rule':'New rule'} onClose={()=>setRuleOpen(false)} description={editing?'Change the wording and review the new draft. Turn the old rule off once the new one is confirmed.':'Say it like you would to a neighbour. You review it before it is saved.'}>
+      {ruleOpen&&composer('dialog')}
     </Modal>
   </section>;
 
   const objects=<section className="pv-section pv-objects" aria-labelledby={`${id}-objects`}>
-    <header className="pv-section-head"><h2 id={`${id}-objects`}>Protected objects</h2>{protectionSlot}</header>
+    <header className="pv-section-head"><h2 id={`${id}-objects`}>Protected objects</h2></header>
+    {protectionSlot&&<div className="pv-protect-slot">{protectionSlot}</div>}
     {state.protected_objects.length?<ul className="pv-list pv-scroll" tabIndex={0} aria-label="Protected object list">{visibleObjects.map(object=>{
       const visitIds=state.events.filter(event=>event.target===object.id).map(event=>event.visit_id);const visit=state.visits.find(v=>visitIds.includes(v.id));
       const ruleCount=state.rules.filter(rule=>rule.target.id===object.id).length;
@@ -93,7 +99,8 @@ export function RulesPage(props:PageProps){
     <header className="pv-section-head"><h2 id={`${id}-visitors`}>Visitors</h2></header>
     <div className="pv-scroll" tabIndex={0} aria-label="Visitor controls">
     <OwnerControls {...props} section="visitors" notice={false}/>
-    <p className="pv-footnote"><Info aria-hidden="true"/>Vigil never identifies people. Household and visitor roles come from where someone arrived, a check-in or an expected window. Unknown arrivals count as non-household.</p>
+    <RecurringVisitors/>
+    <p className="pv-footnote"><Info aria-hidden="true"/>Street and neighbours are masked out. Recurring-visitor profiles come only from inside your property. Rules use arrival origin, check-ins and expected windows, never a profile.</p>
     </div>
   </section>;
 
@@ -104,4 +111,16 @@ export function RulesPage(props:PageProps){
 function RuleCard({rule,objects}:{rule:Rule;objects:Record<string,unknown>[]}){
   const verdict=ruleVerdict(rule);const target=objects.find(o=>o.id===rule.target.id);
   return <article className="pv-row pv-row-flat" aria-label={rule.name}><span className="pv-bubble" aria-hidden="true"><ShieldCheck/></span><div className="pv-row-body"><strong>{rule.name}</strong><span className="pv-meta">{words(rule.trigger)} · {words(target?.label||rule.target.id)} · {hoursOf(rule)}</span><span className="pv-meta">{scopeLabel(rule)}</span></div><div className="pv-row-end">{verdict?<VerdictBadge verdict={verdict}/>:<Chip>Severity not provided</Chip>}</div></article>;
+}
+
+interface Profile {id:string;name:string|null;count:number;basis:'face'|'clothing';label:string|null;seen_label:string;sightings:{capture_id:string;seen_at:string}[];crops:string[]}
+/** Recurring-visitor profiles from inside the property (LAN only, opt-in). Real counts; never a role. */
+function RecurringVisitors(){
+  const [profiles,setProfiles]=useState<Profile[]|null>(null);
+  useEffect(()=>{let live=true;api<{enabled:boolean;profiles:Profile[]}>('/api/ui/faces').then(r=>{if(live)setProfiles(r.enabled?r.profiles:[]);}).catch(()=>{if(live)setProfiles([]);});return()=>{live=false;};},[]);
+  if(!profiles?.length)return null;
+  const shown=[...profiles].sort((a,b)=>b.count-a.count).slice(0,4);
+  return <section className="pv-recurring" aria-label="Recurring visitors on the property"><h3>Recurring visitors on the property</h3><ul className="pv-list">{shown.map(p=>{const last=p.sightings[0]?.seen_at;
+    return <li key={p.id} className="pv-row"><span className="pv-recurring-crops" aria-hidden="true">{p.crops.length?p.crops.slice(0,2).map(c=><img key={c} src={c} alt="" loading="lazy"/>):<UserRound/>}</span>
+      <div className="pv-row-body"><strong>{p.name||(p.count>1?'Recurring visitor':'Visitor')}</strong><span className="pv-meta">{p.seen_label}{last?` · last ${new Date(last).toLocaleString([], {month:'short',day:'numeric',hour:'numeric',minute:'2-digit'})}`:''}</span>{p.basis==='clothing'&&p.label&&<span className="pv-meta">Matched by clothing ({p.label}), not by face</span>}</div></li>;})}</ul></section>;
 }

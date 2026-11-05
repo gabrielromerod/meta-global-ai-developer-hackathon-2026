@@ -24,12 +24,13 @@ Verdict = Literal["normal", "noteworthy", "needs_attention", "cant_confirm"]
 VerdictProposal = Literal["normal", "noteworthy"]
 """Wonder may only propose these two (spec 9.4 Story contract)."""
 
-EventType = Literal["enter", "exit", "cross", "touch", "removed", "dwell"]
+EventType = Literal["enter", "exit", "cross", "touch", "removed", "dwell", "carry"]
+"""``carry``: a listed object (CARRIED_OBJECTS, e.g. knife) held by a tracked person (Nov 4)."""
 GapKind = Literal[
     "blind_spot", "ambiguous_link", "outage", "battery_wake", "clock_drift", "clip_truncated"
 ]
-RuleTrigger = Literal["touch", "cross", "enter", "removed", "dwell"]
-TargetKind = Literal["protected_object", "zone", "line", "watch"]
+RuleTrigger = Literal["touch", "cross", "enter", "removed", "dwell", "carry"]
+TargetKind = Literal["protected_object", "zone", "line", "watch", "carried_object"]
 RuleState = Literal["draft", "active", "disabled", "discarded"]
 WatchStatus = Literal["proposed", "rejected", "watching", "revoked", "expired"]
 WatchOrigin = Literal["wonder", "owner"]

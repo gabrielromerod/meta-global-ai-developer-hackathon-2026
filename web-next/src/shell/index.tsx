@@ -30,15 +30,17 @@ export function NotificationBell({items,onOpenVisit,onOpenAttention}: {items:Not
         // the menu, so the dialog records its stable bell trigger as the opener.
         event.preventDefault();
         triggerRef.current?.focus();
+        // A real clip's alert (home box, real-only) opens that clip in the Media library.
+        if(visitId.startsWith('capture:')){window.location.hash=`#/clips?capture=${encodeURIComponent(visitId.slice(8))}`;return;}
         onOpenVisit(visitId);
       }}>
         <DropdownMenu.Label className="v-notification-heading">Notifications<span>{unread} unread</span></DropdownMenu.Label>
         <div className="v-notification-scroll">
-          {items.length?items.map(item=><DropdownMenu.Item key={item.id} className="v-notification-item" onSelect={()=>{pendingVisit.current=item.visit_id;}}>
+          {items.length?items.map(item=><DropdownMenu.Item key={item.id} className="v-notification-item" onSelect={()=>{const capture=(item as {capture_id?:string|null}).capture_id;pendingVisit.current=capture?`capture:${capture}`:item.visit_id;}}>
             {item.thumbnail_url?<img src={item.thumbnail_url} alt=""/>:<span className="v-notification-thumb"><Camera aria-hidden="true"/></span>}
             <div className="v-notification-copy"><VerdictBadge verdict={item.verdict}/><p>{item.story}</p><time>{item.clock}</time></div>
             {item.unread&&<span className="v-unread-dot" aria-label="Unread"/>}
-          </DropdownMenu.Item>):<p className="v-notification-empty">No notifications yet</p>}
+          </DropdownMenu.Item>):<p className="v-notification-empty">No new alerts</p>}
         </div>
         <DropdownMenu.Separator className="v-notification-separator"/>
         <DropdownMenu.Item className="v-notification-all" onSelect={onOpenAttention}>Open Attention<ChevronRight aria-hidden="true"/></DropdownMenu.Item>

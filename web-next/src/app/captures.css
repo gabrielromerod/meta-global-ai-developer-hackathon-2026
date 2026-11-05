@@ -43,14 +43,14 @@
 /* ---------------------------------------------------------------------------------------- */
 /* Evidence viewer: video and timeline left, verdict and story right                          */
 .v-dialog-content.ev-dialog{width:min(calc(100vw - 32px),1180px);max-height:calc(100dvh - 32px)}
-.ev{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(300px,1fr);gap:var(--v-space-3);align-items:start}
+.ev{display:grid;grid-template-columns:minmax(0,1.85fr) minmax(320px,1fr);gap:var(--v-space-3);align-items:start}
 .ev p,.ev h3{margin:0}
 .ev-stage{display:flex;flex-direction:column;gap:14px;min-width:0}
 .ev-stage>.ev-section{margin-top:6px}
 .ev-stage .ev-seen{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px 20px}
 .ev-video{position:relative;border-radius:12px;overflow:hidden;background:#000}
-.ev-video video{display:block;width:100%;max-height:58vh;background:#000}
-.ev-layer{position:absolute;left:10px;top:10px;display:inline-flex;gap:2px;padding:3px;border-radius:var(--v-radius-pill);background:rgb(0 0 0 / .6);backdrop-filter:blur(6px)}
+.ev-video>video{display:block;width:100%;max-height:58vh;background:#000}
+.ev-layer{position:absolute;right:10px;top:10px;display:inline-flex;gap:2px;padding:3px;border-radius:var(--v-radius-pill);background:rgb(0 0 0 / .6);backdrop-filter:blur(6px)}
 .ev-layer button{border:0;border-radius:var(--v-radius-pill);padding:5px 12px;background:none;color:rgb(255 255 255 / .75);font:inherit;font-size:var(--v-text-xs);font-weight:var(--v-weight-medium);cursor:pointer}
 .ev-layer button[aria-pressed="true"]{background:#fff;color:#000}
 .ev-layer button:focus-visible{outline:2px solid #fff;outline-offset:2px}
@@ -138,3 +138,93 @@
 .captures[data-variant="analysed"]{padding:var(--v-space-2);border-radius:var(--v-radius-md);background:var(--v-surface)}
 .captures[data-variant="analysed"] .captures-body{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(260px,320px);gap:var(--v-space-2);overflow-x:auto;padding-bottom:6px}
 .captures[data-variant="analysed"] .capture-moment{min-width:0}
+
+/* ---------------------------------------------------------------------------------------- */
+/* Crop to the property: the masked street strip is left out of thumbnails and the player     */
+.capture-crop{position:relative;display:block;width:100%;overflow:hidden;background:#000}
+.capture-frame{position:absolute;display:block}
+.capture-frame>video,.capture-frame>.capture-lazy,.capture-frame>.capture-lazy>video{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;display:block}
+.capture-frame-plain{position:relative;width:100%;height:100%}
+.capture-frame-plain>.capture-lazy>video{object-fit:cover}
+.capture-thumb .capture-thumb-crop{position:absolute;inset:0;width:100%;height:100%}
+.capture-box{position:absolute;border:2px solid var(--v-accent);border-radius:3px;box-shadow:0 0 0 1px rgb(0 0 0 / .45);pointer-events:none}
+.capture-box span{position:absolute;left:-2px;bottom:100%;padding:0 5px;border-radius:3px 3px 0 0;background:var(--v-accent);color:var(--v-accent-ink);font-size:10px;line-height:15px;font-weight:var(--v-weight-bold);white-space:nowrap}
+.capture-mask{position:absolute;right:6px;top:6px;display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:var(--v-radius-pill);background:rgb(0 0 0 / .66);backdrop-filter:blur(6px);color:#fff;font-size:var(--v-text-xs);font-weight:var(--v-weight-medium);white-space:nowrap}
+.capture-mask svg{width:12px;height:12px;flex:none}
+.capture-mask[data-compact]{padding:0;width:22px;height:22px;justify-content:center}
+.capture-mask[data-compact] svg{width:11px;height:11px}
+.capture-subject{position:absolute;left:6px;bottom:6px;width:30px;height:38px;object-fit:cover;border-radius:6px;border:2px solid #fff;background:var(--v-raised);box-shadow:0 2px 6px rgb(0 0 0 / .4)}
+.capture-thumb[data-large] .capture-subject{width:46px;height:58px;left:8px;bottom:8px}
+.capture-thumb[data-large] .capture-mask{right:8px;top:8px}
+
+/* Player: the cropped frame keeps its own panoramic shape; the mask pill sits top left */
+.ev-video .capture-crop{border-radius:12px}
+.ev-video>.capture-mask{left:10px;right:auto;top:10px}
+.ev-video .capture-frame>video{background:#000}
+
+/* Side: people first, then the verdict, Spark's notes, the other camera and Protect */
+.ev-side{max-height:min(74vh,700px)}
+.ev-protect{display:inline-flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:10px 14px;border:var(--v-line) solid var(--v-accent);border-radius:var(--v-radius-md);background:color-mix(in srgb,var(--v-accent) 12%,transparent);color:var(--v-text);font:inherit;font-size:var(--v-text-sm);font-weight:var(--v-weight-medium);cursor:pointer}
+.ev-protect svg{width:16px;height:16px;color:var(--v-accent)}
+.ev-protect:hover{background:color-mix(in srgb,var(--v-accent) 20%,transparent)}
+.ev-protect:focus-visible{outline:var(--v-focus-width) solid var(--v-accent);outline-offset:2px}
+.ev-side .ev-seen li{grid-template-columns:32px minmax(0,1fr) auto auto}
+.ev-zones{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.ev-zones li{display:flex;flex-wrap:wrap;align-items:center;gap:4px 6px;font-size:var(--v-text-xs)}
+.ev-zone{display:inline-flex;align-items:center;gap:5px;padding:2px 8px;border-radius:var(--v-radius-pill);background:var(--v-raised);color:var(--v-text)}
+.ev-zone+.ev-zone::before{content:"";width:6px;height:6px;margin-left:-14px;margin-right:4px;border-top:1.5px solid var(--v-muted);border-right:1.5px solid var(--v-muted);transform:rotate(45deg)}
+.ev-zone[data-kind="perimeter"]{background:none;border:var(--v-line) dashed var(--v-border);color:var(--v-muted)}
+.ev-zone time{color:var(--v-muted);font-variant-numeric:tabular-nums}
+
+/* Recurring profile card: crops with their times in a row */
+.ev-face{grid-template-columns:minmax(0,1fr)}
+ol.ev-face-crops{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+ol.ev-face-crops li{display:flex;flex-direction:column;gap:3px;min-width:0}
+ol.ev-face-crops img,ol.ev-face-crops[data-basis="clothing"] img{width:100%;height:auto;aspect-ratio:4/5;margin:0;border:0;border-radius:8px;object-fit:cover;background:var(--v-raised)}
+ol.ev-face-crops img+img{margin-left:0}
+ol.ev-face-crops time{font-size:10px;color:var(--v-muted);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ev-face-body strong{display:flex;align-items:center;gap:8px}
+.ev-face-flag{padding:1px 8px;border-radius:var(--v-radius-pill);background:color-mix(in srgb,var(--v-danger) 18%,transparent);color:var(--v-danger);font-size:10px;font-weight:var(--v-weight-bold)}
+.ev-face[data-flagged]{border-color:color-mix(in srgb,var(--v-danger) 55%,var(--v-border))}
+.ev-face-name .ev-face-flag-btn{display:inline-flex;align-items:center;gap:5px;background:none}
+.ev-face-name .ev-face-flag-btn svg{width:12px;height:12px}
+.ev-face-name .ev-face-flag-btn[aria-pressed="true"]{border-color:var(--v-danger);color:var(--v-danger)}
+.ev-face-name button[type="submit"]{background:var(--v-accent);border-color:var(--v-accent);color:var(--v-accent-ink);font-weight:var(--v-weight-medium)}
+
+/* People seen inside the property: a horizontal strip of profiles above the clips */
+.people-strip{display:flex;flex-direction:column;gap:10px;min-width:0}
+.people-strip header{display:flex;flex-direction:column;gap:2px}
+.people-strip h2{margin:0;font-size:var(--v-text-md);font-weight:var(--v-weight-bold)}
+.people-strip header p{margin:0;max-width:80ch;font-size:var(--v-text-xs);color:var(--v-muted);line-height:1.45}
+.people-strip ul{list-style:none;margin:0;padding:0 0 4px;display:grid;grid-auto-flow:column;grid-auto-columns:minmax(250px,290px);gap:10px;overflow-x:auto}
+.people-strip li>button,.people-strip li>div{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:center;width:100%;height:100%;padding:10px;border:var(--v-line) solid var(--v-border);border-radius:var(--v-radius-md);background:var(--v-surface);color:var(--v-text);font:inherit;text-align:left}
+.people-strip li>button{cursor:pointer}
+.people-strip li>button:hover{border-color:color-mix(in srgb,var(--v-accent) 55%,var(--v-border))}
+.people-strip li>button[aria-pressed="true"]{border-color:var(--v-accent);background:color-mix(in srgb,var(--v-accent) 10%,var(--v-surface))}
+.people-strip li>button:focus-visible{outline:var(--v-focus-width) solid var(--v-accent);outline-offset:2px}
+.people-crops{display:flex;gap:4px}
+.people-crops img{width:38px;height:48px;object-fit:cover;border-radius:7px;background:var(--v-raised)}
+.people-text{display:flex;flex-direction:column;gap:1px;min-width:0;font-size:var(--v-text-xs);color:var(--v-muted);line-height:1.35}
+.people-text strong{display:flex;align-items:center;gap:6px;font-size:var(--v-text-sm);color:var(--v-text)}
+.people-text>span,.people-text time{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.people-seen[data-recurring]{color:var(--v-accent);font-weight:var(--v-weight-bold)}
+.people-strip[data-compact] ul{grid-auto-flow:row;grid-auto-columns:auto;grid-template-columns:minmax(0,1fr);overflow:visible}
+.captures[data-variant="page"]>.people-strip{padding-bottom:var(--v-space-2);border-bottom:var(--v-line) solid var(--v-border)}
+.captures-person-chip{margin-left:auto;display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border:var(--v-line) solid var(--v-accent);border-radius:var(--v-radius-pill);background:color-mix(in srgb,var(--v-accent) 12%,transparent);color:var(--v-text);font:inherit;font-size:var(--v-text-sm);cursor:pointer}
+.captures-person-chip svg{width:13px;height:13px}
+.captures-person-chip:focus-visible{outline:var(--v-focus-width) solid var(--v-accent);outline-offset:2px}
+/* Media page: moments side by side, not one full-width clip each */
+.captures[data-variant="page"] .captures-body{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:var(--v-space-3) var(--v-space-2);align-items:start}
+.captures[data-variant="page"] .captures-body>.captures-grid,.captures[data-variant="page"] .captures-body>.captures-empty{grid-column:1/-1}
+/* The media page never scrolls: real clips get their own scroll region above the demo search */
+.evidence-page>.captures[data-variant="page"]{flex:0 1 auto;max-height:70%;min-height:240px;overflow-y:auto;scrollbar-gutter:stable;padding-right:6px}
+.capture-box[data-tag-inside] span{bottom:auto;top:0;left:0;border-radius:0 0 3px 0}
+/* Mini tiles of a moment: the lead clip above already carries the mask badge, crop and box */
+.captures-mini .capture-mask,.captures-mini .capture-subject,.captures-mini .capture-box{display:none}
+
+/* Rule alert on a clip (e.g. a possible knife carried by a non-household person) */
+.ev-alert{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:var(--v-radius-md);background:color-mix(in srgb,var(--v-danger, #e5484d) 14%,transparent);border:1px solid color-mix(in srgb,var(--v-danger, #e5484d) 55%,transparent)}
+.ev-alert>svg{flex:none;width:22px;height:22px;color:var(--v-danger, #e5484d);margin-top:2px}
+.ev-alert strong{display:block;color:var(--v-danger, #e5484d);font-size:var(--v-text-md)}
+.ev-alert p{margin:4px 0 0;font-weight:600}
+.ev-alert small{display:block;margin-top:6px;color:var(--v-muted)}

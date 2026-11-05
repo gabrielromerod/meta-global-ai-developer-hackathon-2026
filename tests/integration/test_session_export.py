@@ -94,6 +94,7 @@ def test_export_session_generated_mp4(tmp_path):
         frames = api.get(
             "/api/ui/protection-frames", headers={"X-Vigil-Owner": "synthetic-owner-token"}
         ).json()["frames"]
+        frames = [f for f in frames if f.get("source") != "capture"]  # bundle stills only
         assert len(frames) == 1
         assert frames[0]["camera_id"] == "side_left"
         assert frames[0]["width"] == 1280
@@ -115,7 +116,7 @@ def test_export_session_generated_mp4(tmp_path):
             "/api/ui/protection-frames", headers={"X-Vigil-Owner": "synthetic-owner-token"}
         )
         assert refused.status_code == 200
-        assert refused.json()["frames"] == []
+        assert [f for f in refused.json()["frames"] if f.get("source") != "capture"] == []
 
 
 def test_export_coverage_preserves_holes():

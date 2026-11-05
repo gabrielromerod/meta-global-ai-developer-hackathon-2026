@@ -17,3 +17,13 @@
 .att-explainer>summary svg{width:16px;height:16px;flex:none}
 .att-explainer[open]>summary{margin-bottom:var(--v-space-1)}
 .att-explainer .pv-list{background:var(--v-raised)}
+
+/* Rich cards need room: the page scrolls as one column (the body never does); the evidence
+   pane, when present, keeps its own scroll. */
+.attention-page{overflow-y:auto;gap:var(--v-space-2)}
+.attention-page>.attention-real{flex:none}
+.attention-tabs,.attention-workspace{flex:none}
+.attention-tabs>.v-tab-panel{display:block;flex:none;min-width:0}
+.attention-workspace:not(:has(.attention-evidence)) .attention-list-panel{overflow:visible}
+.attention-workspace:not(:has(.attention-evidence)) .attention-list-panel>.ins-list{overflow:visible;max-height:none}
+.attention-workspace:not(:has(.attention-evidence)) .att-explainer[open]{max-height:none;overflow:visible}

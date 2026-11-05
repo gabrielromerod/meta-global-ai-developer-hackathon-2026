@@ -1,9 +1,0 @@
-{
-  "evidence": {
-    "kind": "fixture"
-  },
-  "citation": "e17",
-  "requested_visit": "v_c",
-  "expected_event_time": 15245.0,
-  "actual_shared_time": 15186.0
-}

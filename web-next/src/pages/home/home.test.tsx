@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
 import React from 'react';
 import {afterEach, describe, expect, it, vi} from 'vitest';
-import {cleanup, render, screen, within} from '@testing-library/react';
+import {cleanup, render as rtlRender, screen, within} from '@testing-library/react';
+import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom/vitest';
 import fixture from '../../fixtures/state.json';
@@ -10,6 +11,8 @@ import {HomePage} from './index';
 import {AttentionPage} from '../attention/index';
 
 const state = fixture as unknown as UIState;
+// The rich visit cards fetch cited sentences and routes; offline tests render without them.
+const render = (ui:React.ReactElement) => rtlRender(<QueryClientProvider client={new QueryClient({defaultOptions:{queries:{retry:false}}})}>{ui}</QueryClientProvider>);
 const callbacks = () => ({onOpenVisit:vi.fn(),onOpenClip:vi.fn()});
 afterEach(cleanup);
 
@@ -55,7 +58,7 @@ describe('Home cards and selection (FR-017, FR-044)', () => {
     expect(screen.getAllByTestId('player-slot')).toHaveLength(1);
     const expand = screen.getByRole('button',{name:'Expand house'});
     await userEvent.click(expand);
-    expect(screen.getByRole('button',{name:'Show recordings'})).toHaveAttribute('aria-pressed','true');
+    expect(screen.getByRole('button',{name:'Show visits'})).toHaveAttribute('aria-pressed','true');
   });
   it('shows measured summary data and explicitly keeps unknown prefilter counts unavailable', () => {
     render(<HomePage state={state} {...callbacks()} />);
@@ -88,7 +91,7 @@ describe('Attention center', () => {
   it('keeps supplied gaps visible and opens a visit from the ranked list', async () => {
     const props = callbacks();
     render(<AttentionPage state={state} {...props} />);
-    expect(screen.getByText('Not observed · 41 s')).toBeVisible();
+    expect(within(screen.getByLabelText('Filtered visits')).getByText('Not observed · 41 s')).toBeVisible();
     await userEvent.click(screen.getByRole('button',{name:/Open visit C ·/}));
     expect(props.onOpenVisit).toHaveBeenCalledWith('v_c');
   });
@@ -97,5 +100,36 @@ describe('Attention center', () => {
     await userEvent.click(screen.getByRole('tab',{name:'Needs attention'}));
     expect(screen.getAllByRole('button',{name:/Open visit/})).toHaveLength(1);
     expect(screen.getByRole('button',{name:/Open visit C ·/})).toBeVisible();
+  });
+});
+
+describe('Rich visit pieces (Home funnel, story cards)', () => {
+  it('computes the filtered share from the session counts and labels demo data', async () => {
+    const {FunnelBar} = await import('./insights');
+    const current = structuredClone(state);
+    current.summary = {...current.summary, motion_triggers:40, visits:4, needs_attention:2};
+    render(<FunnelBar state={current} onOpenVisit={vi.fn()}/>);
+    const funnel = screen.getByRole('region',{name:'Alert funnel'});
+    expect(within(funnel).getByText('95%')).toBeVisible();
+    if (current.evidence.kind === 'fixture') expect(within(funnel).getByText(current.evidence.label)).toBeVisible();
+  });
+  it('opens a visit from a funnel pill', async () => {
+    const {FunnelBar} = await import('./insights');
+    const open = vi.fn();
+    render(<FunnelBar state={state} onOpenVisit={open}/>);
+    const first = state.visits.find(v => v.id === state.attention_ids[0])!;
+    await userEvent.click(screen.getByRole('button',{name:new RegExp(first.title.slice(0, 12).replace(/[.*+?^${}()|[\]\\]/g,'\\$&'))}));
+    expect(open).toHaveBeenCalledWith(first.id);
+  });
+  it('shows the recorded role, never a recurring-visitor role, and citation chips open the cited event', async () => {
+    const {StoryCard} = await import('./insights');
+    const visit = state.visits.find(v => v.id === 'v_c')!;
+    const open = vi.fn();
+    render(<StoryCard state={state} visit={visit} onOpenVisit={open}
+      detail={{sentences:[{index:0,text:'They touched the side gate.',citations:[{event_id:'e18',clock:'6:14:05 PM',camera_name:'Left side'}]}]}}/>);
+    expect(screen.getByText('External visitor')).toBeVisible();
+    expect(screen.queryByText(/Recurring/)).not.toBeInTheDocument();
+    await userEvent.click(screen.getByRole('button',{name:'Open event e18 at 6:14:05 PM'}));
+    expect(open).toHaveBeenCalledWith('v_c','e18');
   });
 });

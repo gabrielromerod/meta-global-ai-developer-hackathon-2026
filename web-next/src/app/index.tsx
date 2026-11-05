@@ -15,6 +15,7 @@ import {HouseView} from '../twin';
 import {HouseScene} from './route-replay';
 import {LiveAlerts, LivePresence, useLiveAlerts} from './live-alerts';
 import {CapturedClips, useCaptures} from './captures';
+import {RealAttention, RealHome, RealMedia} from './real-home';
 import {MotionProvider,PageTransition} from '../motion';
 import {adoptLocalOwner,api} from './api';
 import {localThreads,readableError} from './model';
@@ -57,11 +58,18 @@ function Workspace({state:original}:{state:UIState}){
   const [houseModel,setHouseModel]=useState<'generic'|'house'>(()=>{try{return localStorage.getItem('vigil_house_model')==='generic'?'generic':'house';}catch{return 'house';}});
   useEffect(()=>{try{localStorage.setItem('vigil_house_model',houseModel);}catch{/* storage unavailable */}},[houseModel]);
   const privateAvailable=twin.data?.private_available===true;
+  // Real-only home box (VIGIL_REAL_ONLY): nothing from the demo bundle; the house model is the home view.
+  const real=(original as UIState&{real_only?:boolean}).real_only===true;
+  const wantHouse=real||houseModel==='house';
   const live=useLiveAlerts();
   const captures=useCaptures();
   const liveCamera=live.alerts.find(alert=>alert.open)?.camera_id??null;
-  const privateTwin=useQuery({queryKey:['ui-twin','house'],queryFn:()=>api<Record<string,unknown>>('/api/ui/twin?model=house'),enabled:privateAvailable&&houseModel==='house'});
-  const privateHouse=houseModel==='house'&&privateTwin.data?.private_massing===true?privateTwin.data:null;
+  const privateTwin=useQuery({queryKey:['ui-twin','house'],queryFn:()=>api<Record<string,unknown>>('/api/ui/twin?model=house'),enabled:privateAvailable&&wantHouse});
+  const privateHouse=wantHouse&&privateTwin.data?.private_massing===true?privateTwin.data:null;
+  // Home shows the top attention visit's route, cameras and blind-spot gap on load, without a click.
+  const featuredId=original.attention_ids[0]??null;
+  const featured=useQuery({queryKey:['positions',featuredId],queryFn:()=>api<Record<string,unknown>>('/api/ui/visits/'+encodeURIComponent(featuredId??'')+'/positions'),enabled:Boolean(featuredId)&&route==='home'});
+  const featuredEnd=useMemo(()=>{const p=featured.data?.positions;return Array.isArray(p)&&p.length?Math.max(...p.map(x=>Number((x as Record<string,unknown>).t)||0)):0;},[featured.data]);
   const chat=useQuery({queryKey:['ui-chat'],queryFn:()=>api<{threads:Thread[]}>('/api/ui/chat')});
   const voices=useQuery({queryKey:['voice-fixtures'],queryFn:()=>api<{fixtures:{id:string;label:string;wav_url:string|null}[]}>('/api/voice/fixtures'),enabled:route==='rules'});
   const state={...original,notifications:original.notifications.map(n=>({...n,unread:n.unread&&!read.includes(n.id)}))};
@@ -87,9 +95,9 @@ function Workspace({state:original}:{state:UIState}){
   const house=useMemo(()=>twin.data?{...twin.data,cameras:(twin.data.cameras as Record<string,unknown>[]??[]).map(c=>({...c,source_label:state.cameras.find(cam=>cam.id===c.id)?.source_label??''}))}:null,[twin.data,original.cameras]);
   const selectedCamera=state.cameras.find(c=>c.id===activeCamera);
   const props:PageProps={state,onOpenVisit:openVisit,onOpenClip:openClip,onViewChange:changeView,activeView:view,
-    capturesSlot:captures.length?(route==='attention'?<CapturedClips captures={captures.filter(c=>c.analysis==='analysed')} all={captures} variant="analysed"/>:<CapturedClips captures={captures} variant={route==='home'?'rail':'page'}/>):undefined,
+    capturesSlot:captures.length?(route==='attention'?<CapturedClips captures={captures.filter(c=>c.analysis==='analysed')} all={captures} variant="analysed"/>:route==='home'?undefined:<CapturedClips captures={captures} variant="page"/>):undefined,
     houseSwitchSlot:privateAvailable?<div className="house-switch" role="group" aria-label="House model"><button type="button" aria-pressed={houseModel==='generic'} onClick={()=>setHouseModel('generic')}>Diagram</button><button type="button" aria-pressed={houseModel==='house'} onClick={()=>setHouseModel('house')}>My house</button></div>:undefined,
-    twinSlot:house?<><LivePresence alerts={live.alerts} onSelect={selectCamera}/>{privateHouse?<HouseScene twin={privateHouse} protectedObjects={state.protected_objects} activeCameraId={liveCamera??activeCamera} onCameraSelect={selectCamera} preset={view==='left-passage'?'left':view==='backyard'?'backyard':view==='front-garden'||view==='porch'?'front':undefined} fallback={<EmptyState title="3D view unavailable" description="This browser cannot draw the house model."/>}/>:<HouseView presetRequestId={view} forceMap={new URLSearchParams(window.location.search).get('twin')==='2d'} twin={house} lighting={view==='day'||view==='night'?view:undefined} activeCameraId={liveCamera??activeCamera} onCameraSelect={selectCamera} preset={view==='left-passage'?'left':view==='backyard'?'backyard':view==='front-garden'||view==='porch'?'front':undefined}/>}</>:<EmptyState title={twin.isError?'House view unavailable':'Loading house view'} description={twin.isError?readableError(twin.error):undefined}/>,
+    twinSlot:house?<><LivePresence alerts={live.alerts} onSelect={selectCamera}/>{privateHouse?<HouseScene twin={privateHouse} positions={route==='home'&&state.evidence.kind!=='fixture'?featured.data:undefined} note={route==='home'&&state.evidence.kind==='fixture'&&featuredId?'Demo visit routes use the diagram layout, so they are drawn on Diagram, not on your house.':undefined} protectedObjects={state.protected_objects} activeCameraId={liveCamera??activeCamera} onCameraSelect={selectCamera} preset={view==='left-passage'?'left':view==='backyard'?'backyard':view==='front-garden'||view==='porch'?'front':undefined} fallback={<EmptyState title="3D view unavailable" description="This browser cannot draw the house model."/>}/>:<HouseView positions={route==='home'?featured.data:undefined} time={featuredEnd} presetRequestId={view} forceMap={new URLSearchParams(window.location.search).get('twin')==='2d'} twin={house} lighting={view==='day'||view==='night'?view:undefined} activeCameraId={liveCamera??activeCamera} onCameraSelect={selectCamera} preset={view==='left-passage'?'left':view==='backyard'?'backyard':view==='front-garden'||view==='porch'?'front':undefined}/>}</>:<EmptyState title={twin.isError?'House view unavailable':'Loading house view'} description={twin.isError?readableError(twin.error):undefined}/>,
     playerSlot:view==='day'||view==='night'?<p className="home-camera-hint">{view==='day'?'Day':'Night'} schematic preview. Recorded clips keep their original lighting.</p>:selectedCamera?<VideoTile camera={selectedCamera} clip={state.clips.find(c=>c.camera_id===selectedCamera.id)} onOpen={openClip}/>:undefined,
     protectionSlot:<ProtectionPanel enabled={state.mode==='edge'&&state.owner.enabled}/>,
     onSearch:filters=>search.mutate(filters),
@@ -98,7 +106,7 @@ function Workspace({state:original}:{state:UIState}){
   };
   return <><AppShell title={visitId?'Visit evidence':undefined} state={state} route={route} onNavigate={id=>{navigate('/'+id);if(id==='messages')setChatOpen(false);}} theme={theme} onThemeChange={setTheme} onOpenVisit={openVisit} chatSlot={route!=='messages'?<ChatPopup {...chatProps} open={chatOpen} onClose={()=>setChatOpen(false)}/>:undefined}>
     <PageTransition viewKey={visitId?'visit:'+visitId:route}>
-      {visitId?<VisitReview id={visitId} initialEventId={new URLSearchParams(location.search).get('event')} selectionKey={location.key} state={state} twin={privateHouse&&state.evidence.kind!=='fixture'?privateHouse:house} initialClipId={selectedClip} onBack={()=>navigate('/attention')} onShare={clip=>{setSelectedClip(clip);setShareThread(threadId);}} onSnapshotReady={snapshotReady}/>:route==='home'?<HomePage {...props}/>:route==='attention'?<AttentionPage {...props}/>:route==='media'?<MediaPage {...props}/>:route==='messages'?<MessagesPage {...chatProps}/>:route==='rules'?<RulesPage {...props}/>:route==='settings'?<SettingsPage {...props}/>:<BenchmarkPage {...props}/>}
+      {real&&!visitId&&(route==='home'||route==='attention'||route==='media')?(route==='home'?<RealHome state={state} captures={captures} activeCamera={activeCamera} onSelectCamera={id=>setActiveCamera(id)} houseSlot={privateHouse?<HouseScene twin={privateHouse} activeCameraId={liveCamera??activeCamera} onCameraSelect={id=>setActiveCamera(current=>current===id?null:id)} protectedObjects={state.protected_objects} fallback={<EmptyState title="3D view unavailable" description="This browser cannot draw the house model."/>}/>:house?<HouseView twin={house} activeCameraId={liveCamera??activeCamera} onCameraSelect={id=>setActiveCamera(current=>current===id?null:id)}/>:<EmptyState title={twin.isError?'House view unavailable':'Loading house view'}/>}/>:route==='attention'?<RealAttention captures={captures}/>:<RealMedia captures={captures} openId={new URLSearchParams(location.search).get('capture')}/>):visitId?<VisitReview id={visitId} initialEventId={new URLSearchParams(location.search).get('event')} selectionKey={location.key} state={state} twin={privateHouse&&state.evidence.kind!=='fixture'?privateHouse:house} initialClipId={selectedClip} onBack={()=>navigate('/attention')} onShare={clip=>{setSelectedClip(clip);setShareThread(threadId);}} onSnapshotReady={snapshotReady}/>:route==='home'?<HomePage {...props}/>:route==='attention'?<AttentionPage {...props}/>:route==='media'?<MediaPage {...props}/>:route==='messages'?<MessagesPage {...chatProps}/>:route==='rules'?<RulesPage {...props}/>:route==='settings'?<SettingsPage {...props}/>:<BenchmarkPage {...props}/>}
     </PageTransition>
   </AppShell>
   {route!=='home'&&<LiveAlerts alerts={live.alerts} onSelect={id=>{navigate('/home');selectCamera(id);}}/>}

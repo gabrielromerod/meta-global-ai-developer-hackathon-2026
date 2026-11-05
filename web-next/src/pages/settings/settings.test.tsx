@@ -90,7 +90,17 @@ describe('Settings owner boundaries (FR-029, FR-044)',()=>{
     expect(screen.getAllByRole('article',{name:/camera$/})).toHaveLength(7);
     expect(screen.queryByText(/^Online$/)).not.toBeInTheDocument();
     expect(screen.getAllByText('Not measured').length).toBeGreaterThan(0);
-    expect(within(screen.getByRole('article',{name:'Front left Duo camera'})).getAllByText('Not connected')).toHaveLength(1);
+    const frontLeft=within(screen.getByRole('article',{name:'Front left Duo camera'}));
+    expect(frontLeft.queryByText('Not connected')).not.toBeInTheDocument();
+    expect(frontLeft.getAllByText('No live stream')).toHaveLength(1);
+    expect(screen.queryByText(/calibrated/i)).not.toBeInTheDocument();
+    expect(screen.getAllByText('Estimated, not measured').length).toBeGreaterThan(0);
+  });
+  it('puts the voice and text rule creator above the rule list and states the profile footnote',()=>{
+    render(<RulesPage {...base()}/>);
+    expect(screen.getByRole('region',{name:'Create a rule by voice or text'})).toBeVisible();
+    expect(screen.getByText(/Recurring-visitor profiles come only from inside your property/)).toBeVisible();
+    expect(screen.queryByText(/never identifies people/)).not.toBeInTheDocument();
   });
   it('uses the shared dialog for expected-window creation and restores its opener',async()=>{
     const props=base();props.state.mode='edge';props.state.owner.enabled=true;

@@ -10,8 +10,10 @@ Documents that teams tick (checklists, status tables) live here; explanations st
 | --- | --- |
 | [spec/vigil-spec.md](spec/vigil-spec.md) | The source of truth: requirements, architecture, plan, budget and unit economics, quality, readiness (read-only for workstreams) |
 | [spec/changes/2026-11-02-business-corrections.md](spec/changes/2026-11-02-business-corrections.md) | The Nov 2 change set: spatial-origin roles, voice rules back to P0, landmark onboarding versus audit harness, unit economics, live calls during judging, re-baselined schedule |
+| [spec/changes/2026-11-04-face-templates.md](spec/changes/2026-11-04-face-templates.md) | Optional local profile cards, isolated from rules, roles and stories |
+| [spec/changes/2026-11-04-carried-objects.md](spec/changes/2026-11-04-carried-objects.md) | FR-045: deterministic rules for possible carried objects, with offline coverage and field acceptance still open |
 | [audit/2026-11-02-repo-audit.md](audit/2026-11-02-repo-audit.md) | Section 0 repo audit: no prior work, every requirement starts at *Not verified* |
-| [requirements/functional.md](requirements/functional.md) | Checklist of FR-001 to FR-044 with module, test, demo evidence, blocker and status |
+| [requirements/functional.md](requirements/functional.md) | Checklist of FR-001 to FR-045 with module, test, demo evidence, blocker and status |
 | [requirements/non-functional.md](requirements/non-functional.md) | Checklist of NFR-001 to NFR-037 with target, validation, blocker and status |
 | [use-cases.md](use-cases.md) | Actors, UC-01 to UC-11, journeys J1 to J4 and the global error table, condensed with links |
 | [demo-happy-path.md](demo-happy-path.md) | Scenarios A, A′, B, B′, C (A′ versus C), the 8-step judge sequence with voice in step 6, fallback notices, evidence per criterion and a rehearsal checklist |

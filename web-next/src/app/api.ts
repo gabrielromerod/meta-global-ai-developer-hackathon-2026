@@ -18,7 +18,7 @@ export function ownerToken() {return sessionStorage.getItem('vigil_owner_token')
 /** On this machine only (VIGIL_OWNER_AUTOLOGIN), the home box hands its owner token to the browser. */
 let localTried=false;
 export async function adoptLocalOwner():Promise<void> {
-  if(localTried||ownerToken())return;localTried=true;
+  if(localTried)return;localTried=true;
   try{const r=await fetch('/api/owner/local-session',{credentials:'same-origin',cache:'no-store'});if(!r.ok)return;const d=await r.json();if(typeof d.token==='string'&&d.token)sessionStorage.setItem('vigil_owner_token',d.token);}catch{/* not offered: owner controls stay locked */}
 }
 export async function api<T>(path:string,body?:unknown,method?:string):Promise<T> {

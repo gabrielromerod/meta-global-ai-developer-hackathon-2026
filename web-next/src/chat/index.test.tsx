@@ -22,6 +22,24 @@ function Harness({pending=false}: {pending?:boolean}) {
 }
 
 describe('Messages',()=>{
+  it('real-only answers cite this home\'s clips and open them in the Media library',async()=>{
+    const user=userEvent.setup();window.location.hash='#/messages';
+    const cite={capture_id:'front_left_duo-abc-123',event_id:'e1'} as unknown as Thread['messages'][number]['citations'][number];
+    const real:Thread[]=[{...threads[0],note:'Answers come from your analysed clips.',messages:[
+      {id:'m1',author:'vigil',text:'A person entered the right garden area.',citations:[cite],clip_id:null}]},threads[1]];
+    render(<MessagesPage {...base} threads={real}/>);
+    expect(screen.getAllByText('Answers come from your analysed clips.').length).toBeGreaterThan(0);
+    await user.click(screen.getByRole('button',{name:'Open clip front left duo clip'}));
+    expect(window.location.hash).toBe('#/clips?capture=front_left_duo-abc-123');
+  });
+  it('opens with two starter questions that send through the ask flow, never pre-written answers',async()=>{
+    const user=userEvent.setup();const onSend=vi.fn();
+    render(<MessagesPage {...base} onSend={onSend}/>);
+    const starters=screen.getByLabelText('Start with a question');
+    expect(starters).not.toHaveTextContent(/Seen 4 times/);
+    await user.click(screen.getByRole('button',{name:/What happened at the side gate tonight\?/}));
+    expect(onSend).toHaveBeenCalledWith('ask-home','What happened at the side gate tonight?');
+  });
   it('sends trimmed text to the selected thread and clears the composer', async()=>{
     const user=userEvent.setup();render(<Harness/>);
     await user.type(screen.getByRole('textbox',{name:'Message'}),'  What happened by the gate?  ');

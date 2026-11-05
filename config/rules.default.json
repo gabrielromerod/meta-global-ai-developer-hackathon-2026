@@ -20,5 +20,16 @@
     "severity": "needs_attention",
     "applies_to": "non_household",
     "state": "active"
+  },
+  {
+    "id": "r_carried_object",
+    "name": "Possible knife or gun carried by a non-household person",
+    "target": {"kind": "carried_object", "id": "*"},
+    "trigger": "carry",
+    "min_dwell_s": null,
+    "active": null,
+    "severity": "needs_attention",
+    "applies_to": "non_household",
+    "state": "active"
   }
 ]

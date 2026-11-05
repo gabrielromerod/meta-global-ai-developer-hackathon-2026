@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import os
 import re
 from datetime import date as Date
 from datetime import datetime, timedelta
@@ -9,11 +10,11 @@ from pathlib import Path
 from typing import Any
 from zoneinfo import ZoneInfo
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request, Response
 from pydantic import BaseModel, ConfigDict, Field
 
-from vigil.api import views
-from vigil.api.guards import LIVE_ESTIMATE_USD, is_lan_request
+from vigil.api import capture_stills, views
+from vigil.api.guards import LIVE_ESTIMATE_USD, is_lan_request, require_lan
 from vigil.api.owner import is_owner, windows_view
 from vigil.ingest.config import privacy_polygons
 from vigil.ingest.review import require_privacy_review
@@ -227,13 +228,178 @@ def camera_event_rows(bundle) -> list[dict]:
     ]
 
 
+def real_only() -> bool:
+    """Home box shows only this home's recordings: nothing from the demo bundle (Nov 4)."""
+    return os.environ.get("VIGIL_REAL_ONLY", "").strip().lower() in {"1", "true", "yes"}
+
+
+REAL_EVIDENCE = {
+    "kind": "real",
+    "label": "Your home",
+    "source": "Masked event clips from your cameras",
+}
+
+
+def real_alerts(request: Request) -> list[dict]:
+    """Bell items for this home's clips whose rules raised needs_attention, newest first."""
+    from vigil.api.captures import _capture_dir, _row, _windows_root, headline
+
+    root = _windows_root(request)
+    results = Path(request.app.state.settings.data_dir) / "results"
+    tz = request.app.state.config.timezone if request.app.state.config else None
+    out = []
+    for child in root.iterdir() if root.is_dir() else []:
+        folder = _capture_dir(root, child.name)
+        if folder is None or not (results / child.name).is_dir():
+            continue
+        verdict, line = headline(results / child.name)
+        if verdict != "needs_attention":
+            continue
+        row = _row(request, folder, [0])  # no new crop measurement for the bell
+        if row is None:
+            continue
+        at = datetime.fromisoformat(row["started_at"])
+        out.append(
+            {
+                "id": "notice_" + child.name,
+                "visit_id": None,
+                "capture_id": child.name,
+                "verdict": verdict,
+                "story": line,
+                "clock": _clock(at, tz),
+                "started_at": row["started_at"],
+                "thumbnail_url": (row.get("subject") or {}).get("image_url"),
+                "unread": True,
+            }
+        )
+    out.sort(key=lambda n: n["started_at"], reverse=True)
+    return out
+
+
+def real_summary(request: Request) -> dict:
+    """Funnel from this home's own clips: saved by the cameras, analysed, needing attention."""
+    from vigil.api.captures import _capture_dir, _windows_root, headline
+
+    root = _windows_root(request)
+    results = Path(request.app.state.settings.data_dir) / "results"
+    clips = analysed = attention = 0
+    for child in root.iterdir() if root.is_dir() else []:
+        if _capture_dir(root, child.name) is None:
+            continue
+        clips += 1
+        if (results / child.name).is_dir():
+            verdict, _ = headline(results / child.name)
+            analysed += verdict is not None
+            attention += verdict == "needs_attention"
+    return {
+        "motion_triggers": clips,
+        "camera_events": clips,
+        "on_property": None,
+        "visits": analysed,
+        "needs_attention": attention,
+        "street_events": None,
+        "note": "Counts from your cameras' saved event clips and the clips Vigil analysed.",
+    }
+
+
+RECURRING_WORDS = {"before", "again", "once", "recurring", "twice", "times", "returned"}
+
+
+def _clock(at: datetime, tz: str | None) -> str:
+    try:
+        local = at.astimezone(ZoneInfo(tz)) if tz else at
+    except (KeyError, ValueError):
+        local = at
+    return local.strftime("%b %-d, %-I:%M %p")
+
+
+def real_answer(request: Request, terms: set[str]) -> tuple[str, list[dict]]:
+    """Answer from this home's analysed clips only. Code-written; no model, no names."""
+    settings = request.app.state.settings
+    results = Path(settings.data_dir) / "results"
+    cfg = request.app.state.config
+    tz = getattr(cfg, "timezone", None)
+    names = {c.id: c.name for c in cfg.cameras} if cfg else {}
+
+    def cite(capture_id: str, event_id: str | None, at: datetime | None) -> dict:
+        camera = names.get(capture_id.split("-")[0], "Camera")
+        label = f"{camera} · {_clock(at, tz)}" if at else camera
+        return {"capture_id": capture_id, "event_id": event_id, "label": label}
+
+    if terms & RECURRING_WORDS:
+        from vigil.faces.appearance import appearance_profiles
+
+        profiles = appearance_profiles(results, cfg.cameras) if cfg else []
+        repeat = [p for p in profiles if p["count"] > 1]
+        if not profiles:
+            return "No person has been seen inside the property in the analysed clips.", []
+        if not repeat:
+            return (
+                f"Vigil grouped {len(profiles)} people by clothing; each was seen once.",
+                [],
+            )
+        parts = []
+        for p in repeat[:3]:
+            times = sorted({s["seen_at"] for s in p["sightings"]})
+            clocks = ", ".join(_clock(datetime.fromisoformat(t), tz) for t in times[:4])
+            parts.append(f"Someone in {p['label']} was seen {p['count']} times ({clocks})")
+        text = (
+            "; ".join(parts) + ". This is a clothing match, not a face match: people dressed "
+            "alike are grouped together."
+        )
+        cites = [
+            cite(s["capture_id"], None, datetime.fromisoformat(s["seen_at"]))
+            for p in repeat[:3]
+            for s in p["sightings"][:2]
+        ]
+        return text, cites
+    matches = []
+    for folder in sorted(results.iterdir()) if results.is_dir() else []:
+        if folder.name.startswith("moment-") or not folder.is_dir():
+            continue
+        try:
+            data = json.loads((folder / "visits.json").read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        try:
+            start = datetime.fromisoformat(str(data.get("session_start")))
+        except ValueError:
+            start = datetime.fromtimestamp(0, tz=ZoneInfo("UTC"))
+        if start.tzinfo is None:
+            start = start.replace(tzinfo=ZoneInfo("UTC"))
+        for visit in data.get("visits") or []:
+            for sentence in visit.get("story") or []:
+                text = str(sentence.get("text") or "")
+                score = len(terms & set(re.findall(r"[\w]+", text.casefold())))
+                if score and sentence.get("event_ids"):
+                    matches.append((score, start, folder.name, sentence))
+    matches.sort(key=lambda row: (-row[0], -row[1].timestamp()))
+    seen, selected = set(), []
+    for row in matches:
+        if row[3]["text"] not in seen:
+            seen.add(row[3]["text"])
+            selected.append(row)
+        if len(selected) == 3:
+            break
+    if not selected:
+        return "No matching observations were found in your analysed clips.", []
+    text = " ".join(str(s["text"]) for _, _, _, s in selected)
+    cites = [
+        cite(cid, eid, start if start.timestamp() > 0 else None)
+        for _, start, cid, s in selected
+        for eid in (s.get("event_ids") or [])[:1]
+    ]
+    return text, cites
+
+
 def ui_state(request: Request) -> dict:
     bundle = request.app.state.bundle
     cfg = request.app.state.config
     runtime = request.app.state.runtime
     settings = request.app.state.settings
-    visits = visit_rows(bundle)
-    clips = clip_rows(bundle, visits)
+    real = real_only()
+    visits = [] if real else visit_rows(bundle)
+    clips = [] if real else clip_rows(bundle, visits)
     cameras = []
     for cam in cfg.cameras if cfg else []:
         try:
@@ -299,10 +465,13 @@ def ui_state(request: Request) -> dict:
     measured = bundle.manifest.get("prefilter_counts") or {}
     return {
         "contract_version": VERSION,
-        "evidence": evidence(bundle),
+        "real_only": real,
+        "evidence": REAL_EVIDENCE if real else evidence(bundle),
         "mode": settings.mode,
         "household": {"name": "Home", "avatar_url": None},
-        "session": {
+        "session": {"id": "home", "start": None}
+        if real
+        else {
             "id": bundle.manifest.get(
                 "session_id", "synthetic" if bundle.manifest.get("synthetic") else "recorded"
             ),
@@ -314,7 +483,9 @@ def ui_state(request: Request) -> dict:
             {"id": "camera-" + c["id"], "label": c["name"], "camera_ids": [c["id"]]}
             for c in cameras
         ],
-        "summary": {
+        "summary": real_summary(request)
+        if real
+        else {
             # Motion triggers the recorded session logged before any model ran (spec 2.1 funnel).
             "motion_triggers": (bundle.manifest.get("summary") or {}).get("motion_triggers"),
             "camera_events": measured.get("camera_events"),
@@ -328,12 +499,14 @@ def ui_state(request: Request) -> dict:
         },
         "visits": visits,
         "attention_ids": [v["id"] for v in attention if v["verdict"] != "normal"],
-        "notifications": notifications,
+        "notifications": real_alerts(request) if real else notifications,
         "clips": clips,
-        "events": event_rows(bundle),
-        "camera_events": camera_event_rows(bundle),
+        "events": [] if real else event_rows(bundle),
+        "camera_events": [] if real else camera_event_rows(bundle),
         "rules": _rules(runtime),
-        "protected_objects": bundle.protected_objects + runtime.protected,
+        "protected_objects": list(runtime.protected)
+        if real
+        else bundle.protected_objects + runtime.protected,
         "benchmark": {
             "measured": False,
             "metrics": [],
@@ -377,7 +550,7 @@ def consumer_router() -> APIRouter:
         return ui_state(request)
 
     @r.get("/ui/protection-frames")
-    def protection_frames(request: Request):
+    def protection_frames(request: Request, still: str | None = None, t: float | None = None):
         from vigil.ingest.media import MediaError, probe
         from vigil.ingest.privacy import PrivacyViolation, assert_uploadable
 
@@ -386,7 +559,11 @@ def consumer_router() -> APIRouter:
         bundle = request.app.state.bundle
         cfg = request.app.state.config
         frames = []
-        for row in bundle.manifest.get("protection_frames", []):
+        if is_lan_request(request) and request.app.state.settings.mode != "sandbox":
+            prefer = still if still and capture_stills.CAPTURE_ID.fullmatch(still) else None
+            for row in capture_stills.capture_stills(request.app.state.settings, cfg, prefer, t):
+                frames.append({k: v for k, v in row.items() if k != "path"} | {"source": "capture"})
+        for row in [] if real_only() else bundle.manifest.get("protection_frames", []):
             cid = row.get("camera_id")
             try:
                 camera = cfg.camera(cid)
@@ -419,6 +596,61 @@ def consumer_router() -> APIRouter:
                 "estimate_usd": LIVE_ESTIMATE_USD["protect"],
             },
         }
+
+    @r.get("/ui/capture-stills/{capture_id}/{ms}.png", dependencies=[Depends(require_lan)])
+    def capture_still(capture_id: str, ms: int, request: Request) -> Response:
+        """A masked still that passed the privacy guard when it was extracted."""
+        found = capture_stills.resolve(request.app.state.settings, f"{capture_id}@{ms}")
+        if found is None:
+            raise HTTPException(404, "still not found")
+        return Response(found[1].read_bytes(), media_type="image/png",
+                        headers={"cache-control": "no-store"})  # fmt: skip
+
+    @r.get("/ui/cameras/overview", dependencies=[Depends(require_lan)])
+    def cameras_overview(request: Request):
+        """Facts per camera for Settings: clips captured, privacy review, measured placement."""
+        cfg = request.app.state.config
+        settings = request.app.state.settings
+        counts = capture_stills.capture_counts(settings)
+        measured: dict[str, bool] = {}
+        massing = settings.data_dir / "spatial" / "massing.json"
+        try:
+            doc = json.loads(massing.read_text(encoding="utf-8"))
+            for cid, cam in (doc.get("cameras") or {}).items():
+                measured[cid] = bool(isinstance(cam, dict) and cam.get("placement_measured"))
+        except (OSError, ValueError, AttributeError):
+            pass
+        rows = []
+        for camera in cfg.cameras if cfg else []:
+            rows.append({
+                "id": camera.id, "captures": counts.get(camera.id, 0),
+                "privacy_reviewed": bool(camera.privacy_reviewed),
+                "placement_measured": measured.get(camera.id, False),
+                "zones": len(camera.zones),
+            })  # fmt: skip
+        return {"cameras": rows}
+
+    @r.get("/ui/cameras/{camera_id}/preview", dependencies=[Depends(require_lan)])
+    def camera_preview(camera_id: str, request: Request):
+        """The newest masked still of a camera with its zone polygons (camera pixel frame)."""
+        cfg = request.app.state.config
+        settings = request.app.state.settings
+        try:
+            camera = cfg.camera(camera_id)
+        except (KeyError, AttributeError):
+            raise HTTPException(404, "camera not found") from None
+        still = None
+        for capture_id in capture_stills.recent_captures(settings, camera.id)[:3]:
+            row = capture_stills.extract(settings, cfg, capture_id)
+            if row:
+                still = {k: v for k, v in row.items() if k != "path"}
+                break
+        zones = [
+            {"name": name, "kind": camera.zone_kinds.get(name), "points": [list(p) for p in poly]}
+            for name, poly in camera.zones.items()
+        ]
+        return {"camera_id": camera.id, "width": camera.width, "height": camera.height,
+                "still": still, "zones": zones}  # fmt: skip
 
     @r.get("/ui/twin")
     def twin(request: Request, model: str = "generic"):
@@ -619,13 +851,15 @@ def consumer_router() -> APIRouter:
     def chat(request: Request):
         return {
             "contract_version": VERSION,
-            "evidence": evidence(request.app.state.bundle),
+            "evidence": REAL_EVIDENCE if real_only() else evidence(request.app.state.bundle),
             "threads": [
                 {
                     "id": "ask-home",
                     "title": "Ask your home",
                     "kind": "assistant",
-                    "note": "Answers use the cached visit ledger.",
+                    "note": "Answers come from your analysed clips."
+                    if real_only()
+                    else "Answers use the cached visit ledger.",
                     "messages": [],
                 },
                 {
@@ -663,6 +897,15 @@ def consumer_router() -> APIRouter:
                 "your",
             }
         }
+        if real_only():
+            text, cites = real_answer(
+                request,
+                terms
+                | {w for w in re.findall(r"[\w]+", body.text.casefold()) if w in RECURRING_WORDS},
+            )
+            key = hashlib.sha256((body.session_id + "\0" + body.text).encode()).hexdigest()[:20]
+            return {"message": {"id": "answer_" + key, "author": "vigil", "text": text,
+                                "citations": cites, "clip_id": None}}  # fmt: skip
         matches = []
         for visit in bundle.visits:
             for sentence in visit.story:

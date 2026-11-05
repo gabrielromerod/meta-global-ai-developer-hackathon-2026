@@ -129,7 +129,18 @@ _TYPE_ORDER: dict[str, int] = {
     "touch": 3,
     "removed": 4,
     "dwell": 5,
+    "carry": 6,
 }
+
+CARRIED_OBJECTS: tuple[str, ...] = ("knife", "gun")
+"""SAM 3.1 noun phrases asked on every active window (owner decision, Nov 4). A box of one of
+these sitting on a tracked person makes a ``carry`` event; a rule decides what it means."""
+CARRY_REACH = 0.3
+"""How far outside a person's box (fraction of its width; a tenth of that vertically) an
+object's centre may sit and still count as held: a hand at arm's length."""
+CARRY_MATCH_S = 0.06
+"""Object and person frames closer in time than this are the same moment (10 fps sampling)."""
+CARRY_MERGE_GAP_S = 1.0
 
 
 @dataclass(frozen=True)
@@ -314,6 +325,56 @@ def _last_full_box(track: Track) -> Box | None:
         return None
     area = max(f.box.area for f in full)
     return next(f.box for f in reversed(full) if f.box.area >= 0.9 * area)
+
+
+def _held(obj: Box, person: Box) -> bool:
+    w = person.x2 - person.x1
+    h = person.y2 - person.y1
+    cx, cy = (obj.x1 + obj.x2) / 2, (obj.y1 + obj.y2) / 2
+    reach_x, reach_y = CARRY_REACH * w, CARRY_REACH * h / 10
+    return (
+        person.x1 - reach_x <= cx <= person.x2 + reach_x
+        and person.y1 - reach_y <= cy <= person.y2 + reach_y
+    )
+
+
+def _carry_events(tracks: list[Track], k: int) -> list[_Raw]:
+    """A listed object held by a person for at least ``k`` frames: one event per held span.
+
+    The event is the person's (``track_id``), so visit assembly gives it their spatial-origin
+    role; ``target`` is the object phrase. Geometry only: no model decides what is held.
+    """
+    out: list[_Raw] = []
+    objects = [
+        t
+        for t in tracks
+        if t.cls == "object" and " ".join((t.phrase or "").lower().split()) in CARRIED_OBJECTS
+    ]
+    for obj in objects:
+        phrase = " ".join((obj.phrase or "").lower().split())
+        for person in tracks:
+            if person.cls not in TOUCH_CLASSES or person.camera_id != obj.camera_id:
+                continue
+            times = sorted(
+                of.t
+                for of in obj.frames
+                if any(
+                    abs(pf.t - of.t) < CARRY_MATCH_S and _held(of.box, pf.box)
+                    for pf in person.frames
+                )
+            )
+            spans: list[list[float]] = []
+            for t in times:
+                if spans and t - spans[-1][-1] <= CARRY_MERGE_GAP_S:
+                    spans[-1].append(t)
+                else:
+                    spans.append([t])
+            out += [
+                _Raw(obj.camera_id, person.id, "carry", span[0], span[-1], phrase)
+                for span in spans
+                if len(span) >= k
+            ]
+    return out
 
 
 def _contained(a: Box, b: Box) -> bool:
@@ -667,6 +728,7 @@ def build_events(
         if tr.cls in TOUCH_CLASSES:
             mine = sorted((p for p in protected if p.camera_id == tr.camera_id), key=lambda p: p.id)
             raws += _touch_events(tr, mine, cam, min_frames, touch_overlap, touch_merge_gap_s)
+    raws += _carry_events(known, min_frames)
     raws += _removed_events(
         known,
         watches,

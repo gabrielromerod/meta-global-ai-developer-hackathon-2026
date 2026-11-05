@@ -36,7 +36,8 @@ def test_judge_path_scenario_c(page: Page, server_url: str):
     expect(page.locator(".home-summary")).to_contain_text("5 visits → 1 needs attention")
     # The measurement caveat moved from the summary hero to the note under the visit list.
     expect(page.locator(".home-note")).to_contain_text("unmeasured")
-    expect(page.get_by_text("Demo data", exact=True)).to_be_visible()
+    # The header chip; the Home funnel bar carries a second "Demo data" chip.
+    expect(page.get_by_role("banner").get_by_text("Demo data", exact=True)).to_be_visible()
     state = page.request.get(server_url + "/api/ui/state").json()
     row = next(v for v in state["visits"] if v["id"] == "v_c")
     page.get_by_role("button", name="Open visit " + row["title"], exact=True).click()

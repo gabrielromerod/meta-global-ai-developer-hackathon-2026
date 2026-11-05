@@ -148,6 +148,12 @@ jobs:
     needs: [lint, test, frontend]
     steps:
       - uses: actions/checkout@v7
+      # The voice browser test also starts an isolated app on the runner.
+      # Docker's frontend build is inside the image, so reuse the frontend artifact here.
+      - uses: actions/download-artifact@v8.0.2
+        with:
+          name: vigil-react-dist
+          path: web-next/dist
       - uses: astral-sh/setup-uv@v10.3.3
         with:
           enable-cache: true

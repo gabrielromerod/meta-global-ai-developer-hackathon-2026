@@ -35,7 +35,13 @@ class LandmarksBlockedError(LiveUnavailableError):
 
 class LiveBackend(Protocol):
     def protect(
-        self, camera_id: str, frame_ts: float | None, x: float, y: float, label: str | None
+        self,
+        camera_id: str,
+        frame_ts: float | None,
+        x: float,
+        y: float,
+        label: str | None,
+        still: Any = None,
     ) -> LiveResult: ...
 
     def compile_rule(self, text: str, catalog: dict[str, Any]) -> LiveResult: ...
@@ -122,18 +128,26 @@ class MetaLiveBackend:
         return _ledger_len(client)
 
     def protect(
-        self, camera_id: str, frame_ts: float | None, x: float, y: float, label: str | None
+        self,
+        camera_id: str,
+        frame_ts: float | None,
+        x: float,
+        y: float,
+        label: str | None,
+        still: Any = None,
     ) -> LiveResult:
+        """`still` is a checked masked capture still; else the bundle's still for the camera."""
         from vigil.ingest.config import load_config, privacy_polygons
         from vigil.ingest.media import probe
         from vigil.ingest.review import require_privacy_review
         from vigil.meta.sam import segment_point
 
-        if self._stills_dir is None:
-            raise LiveUnavailableError("no still frames in this bundle for a live point prompt")
-        still = self._stills_dir / f"{camera_id}.png"
-        if not still.exists():
-            still = self._stills_dir / f"{camera_id}.jpg"
+        if still is None:
+            if self._stills_dir is None:
+                raise LiveUnavailableError("no still frames in this bundle for a live point prompt")
+            still = self._stills_dir / f"{camera_id}.png"
+            if not still.exists():
+                still = self._stills_dir / f"{camera_id}.jpg"
         if not still.exists():
             raise LiveUnavailableError(f"no still frame for camera {camera_id}")
         cfg = load_config(self._settings.config_path)

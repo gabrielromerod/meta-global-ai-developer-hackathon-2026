@@ -46,6 +46,34 @@ node_modules/
 *.tsbuildinfo
 docs/architecture/rendered/
 
+# Only two curated final QA screenshots belong in Git. Working captures stay local.
+qa/**/*.png
+qa/**/*.jpg
+qa/**/*.jpeg
+qa/**/*.webp
+qa/**/*.gif
+qa/**/*.bmp
+qa/**/*.tif
+qa/**/*.tiff
+qa/**/*.avif
+qa/**/*.ico
+!qa/final/home.png
+!qa/final/visit.png
+
+# Local agent permissions, scratch files and test reports
+/.claude/settings.json
+*.log
+*.tmp
+*.bak
+.coverage
+htmlcov/
+
+# QA work products are local; retain only curated public evidence.
+/qa/**
+!/qa/README.md
+!/qa/final/
+!/qa/final/**
+
 # OS / editor
 .DS_Store
 Thumbs.db

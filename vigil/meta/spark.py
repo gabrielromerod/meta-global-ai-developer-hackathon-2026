@@ -140,7 +140,7 @@ def build_appearance_request(file_id: str, tags: list[str]) -> dict:
         ],
         "text": _json_format("appearance_notes", appearance_schema(tags)),
         "reasoning": LOW_REASONING,
-        "max_output_tokens": 1500 + 150 * len(tags),
+        "max_output_tokens": 4000 + 150 * len(tags),
     }
 
 

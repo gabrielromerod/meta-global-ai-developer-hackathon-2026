@@ -327,6 +327,9 @@ def test_react_point_selection_uses_exported_still_and_explicit_mocked_model_app
     from vigil.store.export import export_session
 
     settings, _ = generated_session(tmp_path)
+    # The served app checks live availability on the wall clock; keep the credit window open
+    # so this test does not expire with the real one (the fixture's window ended Nov 5, 00:00 UTC).
+    settings = settings.model_copy(update={"credit_window_end": datetime(2099, 1, 1, tzinfo=UTC)})
     with (
         respx.mock as router,
         MetaClient(
@@ -347,6 +350,10 @@ def test_react_point_selection_uses_exported_still_and_explicit_mocked_model_app
         open_protection(page)
         page.get_by_role("button", name="Add object", exact=True).click()
         dialog = page.get_by_role("dialog", name="Protect an object")
+        # A recorded-clip still is listed first when one exists; this test uses the bundle still.
+        bundle_still = dialog.get_by_role("radio", name="Left side", exact=True)
+        if bundle_still.count():
+            bundle_still.check()
         image = dialog.get_by_role("img", name="Left side exported still")
         expect(image).to_be_visible()
         page.wait_for_function(

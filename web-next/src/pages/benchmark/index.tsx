@@ -18,10 +18,11 @@ const PLANNED=[
 export function BenchmarkPage({state}:PageProps){
   const {measured,metrics,note,models,economics}=state.benchmark;
   const showMeasured=measured&&metrics.length>0;
+  const realOnly=(state as typeof state&{real_only?:boolean}).real_only===true;
   return <div className="controls-page benchmark-page"><PageHeading title="Field benchmark" description="Measurements appear only after a labelled field evaluation." action={<Chip>{measured?'Measured results':'Not measured'}</Chip>}/>
     <div className="pv-body"><section className="st-col st-narrow" aria-labelledby="bench-title">
       <header className="pv-section-head"><h2 id="bench-title">{showMeasured?'Field benchmark':'No field benchmark yet'}</h2><Chip tone={showMeasured?'success':'default'}>{showMeasured?'Measured results':'Not measured'}</Chip></header>
-      <p className="pv-hint">{showMeasured?'Values from a labelled field evaluation on the real cameras.':'Recorded model examples are not measurements of real-camera accuracy, latency or cost. These appear after a labelled field evaluation.'}</p>
+      <p className="pv-hint">{showMeasured?'Values from a labelled field evaluation on the real cameras.':realOnly?'No labelled field evaluation has been run on your cameras yet. Accuracy, latency and cost per visit appear here after one.':'Recorded model examples are not measurements of real-camera accuracy, latency or cost. These appear after a labelled field evaluation.'}</p>
       <ul className="pv-list pv-scroll st-list" tabIndex={0} aria-label={showMeasured?'Measured results':'Planned measurements'}>
         {showMeasured?metrics.map((metric,index)=>{const value=typeof metric.value==='number'||typeof metric.value==='string'?String(metric.value):null;const label=typeof metric.label==='string'?metric.label:'Measured metric';
           return <li className="pv-row" key={typeof metric.id==='string'?metric.id:index}><span className="pv-bubble" aria-hidden="true"><Gauge/></span><div className="pv-row-body"><strong>{label}</strong>{typeof metric.note==='string'&&<span className="pv-meta">{metric.note}</span>}</div><span className="bench-value">{value===null?'Value not provided':`${value}${typeof metric.unit==='string'?' '+metric.unit:''}`}</span></li>;})

@@ -1,0 +1,20 @@
+{
+  "kind": "generated_ui",
+  "source": "http://127.0.0.1:8000/",
+  "reviewer": "Root: two reviewed final captures; smaller original compressed PNGs retained with identical pixels",
+  "reviewed": true,
+  "contains_camera_pixels": false,
+  "authenticated": false,
+  "fixture_hash_mode": "lf-normalized",
+  "fixtures": [
+    {
+      "path": "proof-fixtures/qa-final-source-5f5275ad338add99.json",
+      "sha256": "5f5275ad338add9959b3d0653cc86af0cca0ca68d6e1e29463078b66394cfc02",
+      "original_path": "../../data/qa-final-source.json"
+    }
+  ],
+  "files": {
+    "home.png": "6576932ca3a3048db93958928629c943eca34a62740adc2eac778486debd1b3c",
+    "visit.png": "707fa540290b28f67a4608e325f4a372a240f404219abe421fce7807b0d899d5"
+  }
+}

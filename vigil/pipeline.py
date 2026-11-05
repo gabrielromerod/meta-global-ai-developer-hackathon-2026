@@ -64,6 +64,7 @@ from vigil.models import (
     Watch,
     Window,
 )
+from vigil.perception.events import CARRIED_OBJECTS
 from vigil.reasoning.visits import Outage
 
 log = logging.getLogger(__name__)
@@ -146,7 +147,8 @@ def _watch_live(w: Watch, at: datetime) -> bool:
 
 
 def phrases_for(window: Window, watches: Iterable[Watch], session_start: datetime) -> list[str]:
-    """``person``, ``car`` plus every watch active on the window's camera at its start."""
+    """``person``, ``car``, the carried objects (knife, gun) and every watch active on the
+    window's camera at its start."""
     at = session_start + timedelta(seconds=window.t0)
     extra = sorted(
         {
@@ -155,8 +157,9 @@ def phrases_for(window: Window, watches: Iterable[Watch], session_start: datetim
             if w.camera_id == window.camera_id and _watch_live(w, at)
         }
         - set(BASE_PHRASES)
+        - set(CARRIED_OBJECTS)
     )
-    return [*BASE_PHRASES, *extra]
+    return [*BASE_PHRASES, *CARRIED_OBJECTS, *extra]
 
 
 def _sam_objects(

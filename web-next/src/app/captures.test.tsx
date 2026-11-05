@@ -1,11 +1,11 @@
 // @vitest-environment jsdom
 import React from 'react';
-import {afterEach, describe, expect, it} from 'vitest';
+import {afterEach, describe, expect, it, vi} from 'vitest';
 import {cleanup, render as rtlRender, screen} from '@testing-library/react';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom/vitest';
-import {CapturedClips, describeTrack, groupCaptures, groupTracks, roleNote, storyRows, type Capture} from './captures';
+import {CapturedClips, describeTrack, fitView, frameStyle, groupCaptures, groupTracks, roleNote, storyRows, type Capture} from './captures';
 
 afterEach(cleanup);
 const render = (ui: React.ReactElement) => rtlRender(<QueryClientProvider client={new QueryClient()}>{ui}</QueryClientProvider>);
@@ -77,5 +77,66 @@ describe('analysed captures', () => {
     expect(roleNote([{id: 's1', actor_role: 'unknown', role_basis: 'origin_null:t', kind: 'person'}])).toMatch(/first seen in the yard/i);
     expect(roleNote([{id: 's1', actor_role: 'external_visitor', role_basis: 'perimeter:street', kind: 'person'}])).toMatch(/from the street/);
     expect(roleNote([{id: 's1', actor_role: 'unknown', role_basis: 'origin_null:car', kind: 'vehicle'}])).toBeNull();
+  });
+});
+
+describe('cropping to the property', () => {
+  const view = {x0: 0.08, y0: 0.35, x1: 0.92, y1: 1};
+  it('keeps the whole unmasked view in the player and narrows thumbnails around the subject', () => {
+    expect(fitView(view, 8 / 3)).toEqual(view);
+    const thumb = fitView(view, 8 / 3, 16 / 9, 0.85);
+    expect(thumb.y0).toBe(0.35);
+    expect(thumb.y1).toBe(1);
+    expect(thumb.x1).toBeCloseTo(0.92);  // clamped to the view, never into the masked side
+    expect(((thumb.x1 - thumb.x0) * 8 / 3) / (thumb.y1 - thumb.y0)).toBeCloseTo(16 / 9);
+  });
+  it('places the full frame so only the region shows', () => {
+    const style = frameStyle({x0: 0, y0: 0.35, x1: 1, y1: 1});
+    expect(style.width).toBe('100%');
+    expect(parseFloat(String(style.height))).toBeCloseTo(153.85, 1);
+    expect(parseFloat(String(style.top))).toBeCloseTo(-53.85, 1);
+  });
+  it('marks masked thumbnails and shows the subject crop and SAM box', () => {
+    render(<CapturedClips captures={[clip({masked: true, frame_aspect: 8 / 3, crop: view, crop_top: 0.35, analysis: 'analysed',
+      subject: {track_id: 'cam-person-1', label: 'T3 person', t: 4.2, box: [0.4, 0.5, 0.45, 0.9], image_url: '/api/ui/captures/x/subject.jpg'}})]}/>);
+    expect(screen.getByText('Street masked · cropped to property')).toBeInTheDocument();
+    expect(screen.getByText('T3 person')).toBeInTheDocument();
+    expect(document.querySelector('img.capture-subject')?.getAttribute('src')).toBe('/api/ui/captures/x/subject.jpg');
+  });
+});
+
+describe('people seen inside the property', () => {
+  afterEach(() => vi.unstubAllGlobals());
+  it('lists real profiles with their count and filters the clips to one person', async () => {
+    const other = 'porch-cccccccccccccccccccc-dddddddddddd';
+    const profiles = {enabled: true, models_ready: true, note: '', profiles: [
+      {id: 'ap_1', name: null, flagged: false, count: 2, seen_label: 'Seen 2 times on the property', basis: 'clothing', label: 'white top, black bottoms',
+        sightings: [{capture_id: clip().id, seen_at: '2026-11-03T23:20:11+00:00'}], crops: ['/c1.jpg', '/c2.jpg'], crop_times: []},
+    ]};
+    vi.stubGlobal('fetch', vi.fn(async () => new Response(JSON.stringify(profiles), {status: 200})));
+    render(<CapturedClips captures={[clip(), clip({id: other, started_at: '2026-11-03T21:00:00+00:00', ended_at: '2026-11-03T21:00:05+00:00'})]}/>);
+    const person = await screen.findByRole('button', {name: /Recurring visitor.*Seen 2 times.*white top, black bottoms/});
+    expect(screen.queryByText(/Household|Courier/)).toBeNull();
+    await userEvent.click(person);
+    expect(screen.getByRole('button', {name: /Showing clips with white top, black bottoms/})).toBeInTheDocument();
+    expect(screen.getAllByRole('button', {name: /Person at Porch/})).toHaveLength(1);
+    await userEvent.click(screen.getByRole('button', {name: /Showing clips with/}));
+    expect(screen.getByRole('button', {name: 'All clips'})).toBeInTheDocument();
+  });
+});
+
+describe('rule alerts on a clip', () => {
+  afterEach(() => vi.unstubAllGlobals());
+  it('shows which rule raised the alert and the object SAM marked, never a face match', async () => {
+    const analysis = {id: clip().id, verdict: 'needs_attention', story_source: 'template', visits: 1, clip: {duration: 20},
+      alerts: [{rule_id: 'r_carried_object', rule: 'Possible knife or gun carried by a non-household person', event_id: 'e9', type: 'carry', object: 'knife', at: 12.4}],
+      story: [], subjects: [], gaps: [], tracks: [], zones: [], tagged: [], moment: null};
+    vi.stubGlobal('fetch', vi.fn(async (url: string) => new Response(JSON.stringify(String(url).endsWith('/analysis') ? analysis : {enabled: false, profiles: []}), {status: 200})));
+    render(<CapturedClips captures={[clip({analysis: 'analysed'})]}/>);
+    await userEvent.click(screen.getByRole('button', {name: /Person at Porch/}));
+    const alert = await screen.findByRole('alert', {name: 'Alert'});
+    expect(alert).toHaveTextContent('Possible knife or gun carried by a non-household person');
+    expect(alert).toHaveTextContent('SAM 3.1 marked a possible knife at 0:12');
+    expect(alert).toHaveTextContent(/never from their face/);
   });
 });

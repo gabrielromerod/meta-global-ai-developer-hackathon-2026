@@ -103,3 +103,9 @@ Initial baseline wall times are approximate; durations come from pytest. Later f
 | Reviewed history Gitleaks | 2026-11-03T09:02:01.538269-08:00 | 2026-11-03T09:02:49.833140-08:00 | exit 0; output data/postcutover-gitleaks.log |
 
 | Complete post-cutover tracked QA audit | 2026-11-03T08:58:01.939382-08:00 | 2026-11-03T09:03:58.087226-08:00 | exit 0; output data/postcutover-ui-audit.log |
+
+| Image archive cleanup full offline suite | 2026-11-03T11:24:03.772319-08:00 | 2026-11-03T11:26:47.329467-08:00 | exit 1; output data/image-cleanup-tests.log |
+
+| Image cleanup full offline suite with reviewed React build | 2026-11-03T11:28:26.793830-08:00 | 2026-11-03T11:31:06.742514-08:00 | exit 0; output data/image-cleanup-tests-built.log |
+
+Image-cleanup verification note: the first Main-checkout full run failed because `web-next/dist` had not been built in that checkout. The exact reviewed build was copied from the integration checkout; consumer API9 tests then passed, followed by the complete1,546-test run in158.56s. No test assertion was relaxed.

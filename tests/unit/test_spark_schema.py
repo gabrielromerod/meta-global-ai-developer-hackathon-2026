@@ -740,3 +740,9 @@ def test_spark_requests_keep_reasoning_low_and_leave_room_for_json(catalog):
     _assert_low_effort(build_appearance_request("file_1", ["T4", "T5", "T6", "T7"]), 2000)
     _assert_low_effort(build_triage_request(_summary()), 1500)
     _assert_low_effort(build_rule_request("watch the side gate", catalog), 1500)
+
+
+def test_appearance_budget_survives_a_long_reasoning_clip():
+    """A real 4-tag night-edge clip spent all 2100 tokens reasoning and returned no answer."""
+    body = build_appearance_request("file_1", ["T1", "T2", "T3", "T4"])
+    assert body["max_output_tokens"] >= 4000
